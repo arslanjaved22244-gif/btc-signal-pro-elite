@@ -1,7 +1,7 @@
 
 name: BTC Signal Pro Elite AI
 
-"on":
+on:
   workflow_dispatch:
   schedule:
     - cron: "*/30 * * * *"
