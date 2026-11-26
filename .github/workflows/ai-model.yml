@@ -34,7 +34,7 @@ jobs:
 
       - name: Run BTC AI model
 
-        run: python ai_model.py/ai_model.py
+        run: python ai_model.py
 
       - name: Save AI result
 
@@ -42,7 +42,7 @@ jobs:
 
           git config user.name "github-actions[bot]"
 
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.email "41898282+users.noreply.github.com"
 
           git add ai_result.json
 
