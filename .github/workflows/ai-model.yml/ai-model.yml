@@ -1,7 +1,7 @@
 
 name: BTC Signal Pro Elite AI
 
-on:
+"on":
   workflow_dispatch:
   schedule:
     - cron: "*/30 * * * *"
@@ -12,7 +12,6 @@ permissions:
 jobs:
   train-ai:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -21,6 +20,9 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip
 
       - name: Run BTC AI model
         run: python ai_model.py
