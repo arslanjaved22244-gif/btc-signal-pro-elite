@@ -85,8 +85,8 @@ button{background:#f5b942;color:#111;border:0;padding:12px 18px;border-radius:8p
 
 <div class="card">
 <h3>Buyer / Seller Absorption Detection</h3>
-<div class="price yellow" id="absorption">Analyzing...</div>
-<p id="absorptionText">Checking aggressive trade flow against candle reaction.</p>
+<div class="price yellow" id="absorption">Waiting for data...</div>
+<p id="absorptionText">Checking trade flow against candle reaction.</p>
 <p class="note">Heuristic estimate using sampled taker flow, candle wick, close position and volume. Not proof of institutional activity.</p>
 </div>
 
@@ -357,7 +357,6 @@ async function loadAdvanced(){
  const candleStatus=bullishCandle?"BULLISH CLOSE":
   bearishCandle?"BEARISH CLOSE":"NO CONFIRMATION";
 
- // Store all fetched CLOSED candles for accurate historical outcome lookup.
  marketData.closedCandles=candles;
 
  marketData.advanced={
@@ -403,16 +402,66 @@ async function loadAdvanced(){
  document.getElementById("support").textContent="$"+fmt(support);
  document.getElementById("resistance").textContent="$"+fmt(resistance);
 }
+
+function detectAbsorption(){
+ const a=marketData.advanced;
+ const bp=marketData.buyPressure;
+
+ if(!a||bp===undefined){
+  document.getElementById("absorption").textContent="DATA UNAVAILABLE";
+  document.getElementById("absorptionText").textContent="Waiting for both trade-flow and closed-candle data.";
+  marketData.absorption="UNKNOWN";
+  return;
+ }
+
+ const c=a.lastCandle;
+ const range=c.h-c.l;
+
+ if(range<=0){
+  marketData.absorption="UNKNOWN";
+  document.getElementById("absorption").textContent="INSUFFICIENT DATA";
+  document.getElementById("absorptionText").textContent="Candle range is not sufficient to evaluate absorption.";
+  return;
+ }
+
+ const lowerWick=Math.min(c.o,c.c)-c.l;
+ const upperWick=c.h-Math.max(c.o,c.c);
+ const lowerRatio=lowerWick/range;
+ const upperRatio=upperWick/range;
+ const closePosition=(c.c-c.l)/range;
+ const volumeStrong=a.volRatio>=1.2;
+
+ let result="NO CLEAR ABSORPTION";
+ let explanation="No strong absorption pattern detected in the latest closed candle.";
+
+ if(bp<=40&&lowerRatio>=0.30&&closePosition>=0.65&&volumeStrong){
+  result="POSSIBLE BUYER ABSORPTION";
+  explanation="Aggressive sampled selling, but price rejected lower levels and closed in the upper part of the candle with elevated volume.";
+ }
+ else if(bp>=60&&upperRatio>=0.30&&closePosition<=0.35&&volumeStrong){
+  result="POSSIBLE SELLER ABSORPTION";
+  explanation="Aggressive sampled buying, but price rejected higher levels and closed in the lower part of the candle with elevated volume.";
+ }
+
+ marketData.absorption=result;
+ document.getElementById("absorption").textContent=result;
+ document.getElementById("absorption").className="price "+(result.includes("BUYER")?"green":result.includes("SELLER")?"red":"yellow");
+ document.getElementById("absorptionText").textContent=explanation;
+}
+
 async function loadPressure(){
  const d=await get("/fapi/v1/aggTrades?symbol=BTCUSDT&limit=1000");
  let buy=0,sell=0;
+
  d.forEach(t=>{
   const v=Number(t.p)*Number(t.q);
   if(t.m)sell+=v;else buy+=v;
  });
+
  const total=buy+sell;
  const bp=total?100*buy/total:50;
  const sp=100-bp;
+
  marketData.buyPressure=bp;
  marketData.sampleBuy=buy;
  marketData.sampleSell=sell;
@@ -426,46 +475,8 @@ async function loadPressure(){
  document.getElementById("cvd").textContent=(delta>=0?"+":"-")+"$"+fmt(Math.abs(delta));
  document.getElementById("cvd").className="price "+(delta>=0?"green":"red");
  document.getElementById("cvdText").textContent=delta>=0?"Sampled taker buying exceeds selling":"Sampled taker selling exceeds buying";
-
- detectAbsorption();
 }
-function detectAbsorption(){
- const a=marketData.advanced;
- const bp=marketData.buyPressure;
- if(!a||bp===undefined)return;
 
- const c=a.lastCandle;
- const range=c.h-c.l;
- if(range<=0){
-  marketData.absorption="UNKNOWN";
-  return;
- }
- const lowerWick=Math.min(c.o,c.c)-c.l;
- const upperWick=c.h-Math.max(c.o,c.c);
- const lowerRatio=lowerWick/range;
- const upperRatio=upperWick/range;
- const closePosition=(c.c-c.l)/range;
- const volumeStrong=a.volRatio>=1.2;
-
- let result="NO CLEAR ABSORPTION";
- let explanation="No strong absorption pattern detected in the latest closed candle.";
-
- // Aggressive sellers, but price rejects the lows and closes high.
- if(bp<=40&&lowerRatio>=0.30&&closePosition>=0.65&&volumeStrong){
-  result="POSSIBLE BUYER ABSORPTION";
-  explanation="Strong sampled taker selling, but price rejected lower levels and closed in the upper part of the candle with elevated volume.";
- }
- // Aggressive buyers, but price rejects the highs and closes low.
- else if(bp>=60&&upperRatio>=0.30&&closePosition<=0.35&&volumeStrong){
-  result="POSSIBLE SELLER ABSORPTION";
-  explanation="Strong sampled taker buying, but price rejected higher levels and closed in the lower part of the candle with elevated volume.";
- }
-
- marketData.absorption=result;
- document.getElementById("absorption").textContent=result;
- document.getElementById("absorption").className="price "+(result.includes("BUYER")?"green":result.includes("SELLER")?"red":"yellow");
- document.getElementById("absorptionText").textContent=explanation;
-}
 async function loadOI(){
  const d=await get("/fapi/v1/openInterest?symbol=BTCUSDT");
  const now=Number(d.openInterest);
@@ -505,6 +516,7 @@ async function loadLiquidity(){
  const biggestAsk=[...asks].sort((a,b)=>b.q-a.q)[0];
  marketData.book.buyWall=biggestBid;
  marketData.book.sellWall=biggestAsk;
+
  document.getElementById("buyWall").textContent="$"+fmt(biggestBid.p)+" — "+fmt(biggestBid.q)+" BTC";
  document.getElementById("sellWall").textContent="$"+fmt(biggestAsk.p)+" — "+fmt(biggestAsk.q)+" BTC";
 
@@ -536,7 +548,6 @@ function updateHistoryOutcomes(){
  history.forEach(item=>{
   if(item.result!=="PENDING")return;
 
-  // Four full 15-minute candles after the signal candle.
   const targetTime=item.candleTime+(4*INTERVAL);
   const target=candles.find(c=>c.t===targetTime);
 
@@ -605,6 +616,7 @@ function clearHistory(){
  localStorage.removeItem(HISTORY_KEY);
  renderHistory();
 }
+
 function makeSetup(){
  const f=marketData.frames;
  const a=marketData.advanced;
@@ -634,6 +646,7 @@ function makeSetup(){
 
  let side="WAIT";
  let reason="No high-quality setup. Wait for clearer confirmation.";
+
  if(longOK){
   side="LONG";
   reason="Multi-timeframe bullish trend, MACD, volume, candle close and order book agree. No opposing seller absorption detected.";
@@ -660,27 +673,30 @@ function makeSetup(){
   const risk=a.atr*1.5;
   const stop=side==="LONG"?entry-risk:entry+risk;
   const targets=[1,2,3].map(n=>side==="LONG"?entry+risk*n:entry-risk*n);
+
   document.getElementById("entry").textContent="$"+fmt(entry);
   document.getElementById("stop").textContent="$"+fmt(stop);
   document.getElementById("tp1").textContent="$"+fmt(targets[0]);
   document.getElementById("tp2").textContent="$"+fmt(targets[1]);
   document.getElementById("tp3").textContent="$"+fmt(targets[2]);
   document.getElementById("riskDistance").textContent="$"+fmt(risk);
+
   document.getElementById("signal").textContent=side;
   document.getElementById("signal").className="price "+(side==="LONG"?"green":"red");
   document.getElementById("reason").textContent=reason;
   document.getElementById("signalDetails").textContent="ATR-based estimated levels. Not guaranteed execution prices.";
  }
 
- // Update completed outcomes before recording a new signal.
  updateHistoryOutcomes();
  recordSignal();
  renderHistory();
 }
+
 async function refreshAll(){
  if(busy)return;
  busy=true;
  document.getElementById("status").textContent="Updating Binance data...";
+
  try{
   await Promise.all([
    loadPrice(),
@@ -691,13 +707,20 @@ async function refreshAll(){
    loadFunding(),
    loadLiquidity()
   ]);
+
+  // FIX: Calculate absorption only after BOTH trade flow and candle data load.
+  detectAbsorption();
+
+  // Signal calculation now uses the latest absorption result.
   makeSetup();
+
   document.getElementById("status").textContent="Data updated • "+new Date().toLocaleTimeString();
  }catch(e){
   document.getElementById("status").textContent="Some data unavailable: "+e.message+". Retry shortly.";
  }
  busy=false;
 }
+
 renderHistory();
 refreshAll();
 setInterval(refreshAll,30000);
