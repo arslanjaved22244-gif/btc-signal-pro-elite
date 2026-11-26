@@ -141,6 +141,39 @@ button{background:#f5b942;color:#111;border:0;padding:12px 18px;border-radius:8p
 <p class="note">Binance public force-order stream provides liquidation snapshots, not a complete record of every liquidation. No event does not mean no liquidations occurred. This is not a forward-looking liquidation heatmap.</p>
 </div>
 
+<!-- NEW WHALE ACTIVITY TRACKER -->
+<div class="card">
+<h3>🐋 Whale Activity Tracker</h3>
+<div class="metric"><span>Connection</span><b id="whaleConnection" class="yellow">CONNECTING</b></div>
+<div class="metric"><span>Large BUY Trades (1M)</span><b id="whaleBuy1" class="green">0</b></div>
+<div class="metric"><span>Large SELL Trades (1M)</span><b id="whaleSell1" class="red">0</b></div>
+<div class="metric"><span>Large BUY Trades (5M)</span><b id="whaleBuy5" class="green">0</b></div>
+<div class="metric"><span>Large SELL Trades (5M)</span><b id="whaleSell5" class="red">0</b></div>
+<div class="metric"><span>Large BUY Trades (15M)</span><b id="whaleBuy15" class="green">0</b></div>
+<div class="metric"><span>Large SELL Trades (15M)</span><b id="whaleSell15" class="red">0</b></div>
+<div class="metric"><span>Large BUY Trades (1H)</span><b id="whaleBuy60" class="green">0</b></div>
+<div class="metric"><span>Large SELL Trades (1H)</span><b id="whaleSell60" class="red">0</b></div>
+<div class="metric"><span>BUY Notional (1H)</span><b id="whaleBuyVol" class="green">$0</b></div>
+<div class="metric"><span>SELL Notional (1H)</span><b id="whaleSellVol" class="red">$0</b></div>
+
+<h3>Large Trade Thresholds</h3>
+<div class="metric"><span>$100K+ trades (1H)</span><b id="whale100">$0</b></div>
+<div class="metric"><span>$250K+ trades (1H)</span><b id="whale250">$0</b></div>
+<div class="metric"><span>$500K+ trades (1H)</span><b id="whale500">$0</b></div>
+<div class="metric"><span>$1M+ trades (1H)</span><b id="whale1000">$0</b></div>
+
+<div class="bar">
+<div id="whaleBuyBar" class="buybar" style="width:50%"></div>
+<div id="whaleSellBar" class="sellbar" style="width:50%"></div>
+</div>
+<div class="price yellow" id="whaleAlert">COLLECTING LARGE TRADES</div>
+<p id="whaleAlertText">Waiting for large buyer and seller activity.</p>
+<h3>Recent Large Trades</h3>
+<div id="whaleEvents">No large trades received yet.</div>
+<button onclick="clearWhaleHistory()">CLEAR WHALE LOG</button>
+<p class="note">Uses Binance Futures public aggregate trade stream. Trade size is estimated as price × quantity. Large trades do not prove a trader is a whale, identify the trader, or reveal their intention. The stream is not a complete view of all exchanges.</p>
+</div>
+
 <div class="card">
 <h3>Liquidity Heatmap & Estimated Stop Zones</h3>
 <div class="metric"><span>Current Price</span><b id="poolPrice">--</b></div>
@@ -230,11 +263,14 @@ button{background:#f5b942;color:#111;border:0;padding:12px 18px;border-radius:8p
 
 <script>
 const API="https://fapi.binance.com";
-const WS_URL="wss://fstream.binance.com/market/ws/btcusdt@forceOrder";
+const WS_URL="wss://fstream.binance.com/ws/btcusdt@forceOrder";
+const WHALE_WS_URL="wss://fstream.binance.com/ws/btcusdt@aggTrade";
 const frames=[["1m","1M"],["5m","5M"],["15m","15M"],["1h","1H"],["4h","4H"],["1d","1D"]];
 const HISTORY_KEY="btc_signal_pro_history_v3";
 const LIQ_KEY="btc_signal_pro_liquidations_v1";
+const WHALE_KEY="btc_signal_pro_whales_v1";
 const INTERVAL=15*60*1000;
+const WHALE_THRESHOLDS=[100000,250000,500000,1000000];
 
 let previousOI=null;
 let busy=false;
@@ -242,6 +278,10 @@ let marketData={};
 let liqSocket=null;
 let liqReconnectTimer=null;
 let liqEvents=loadLiqEvents();
+
+let whaleSocket=null;
+let whaleReconnectTimer=null;
+let whaleEvents=loadWhaleEvents();
 
 function fmt(n){
  return Number(n).toLocaleString("en-US",{maximumFractionDigits:2});
@@ -519,14 +559,7 @@ function connectLiquidations(){
     if(!qty||!price)return;
     const time=Number(data.E||o.T||Date.now());
     const side=o.S;
-    const item={
-     id:String(time)+side+String(qty)+String(price),
-     time,
-     side,
-     price,
-     qty,
-     usd:qty*price
-    };
+    const item={id:String(time)+side+String(qty)+String(price),time,side,price,qty,usd:qty*price};
     if(liqEvents.some(x=>x.id===item.id))return;
     liqEvents.unshift(item);
     saveLiqEvents();
@@ -557,7 +590,6 @@ function renderLiquidations(){
  const l5=totals(5,"SELL"),s5=totals(5,"BUY");
  const l15=totals(15,"SELL"),s15=totals(15,"BUY");
  const l60=totals(60,"SELL"),s60=totals(60,"BUY");
-
  document.getElementById("long5").textContent=l5.count;
  document.getElementById("short5").textContent=s5.count;
  document.getElementById("long15").textContent=l15.count;
@@ -566,7 +598,6 @@ function renderLiquidations(){
  document.getElementById("short60").textContent=s60.count;
  document.getElementById("longVol").textContent="$"+fmt(l60.usd);
  document.getElementById("shortVol").textContent="$"+fmt(s60.usd);
-
  let alert="NO STRONG LIQUIDATION BURST";
  let message="No notable liquidation burst in the last five minutes.";
  if(l5.usd>0&&l5.usd>s5.usd*2&&l5.usd>100000){
@@ -579,7 +610,6 @@ function renderLiquidations(){
  document.getElementById("liqAlert").textContent=alert;
  document.getElementById("liqAlert").className="price "+(alert.includes("LONG")?"red":alert.includes("SHORT")?"green":"yellow");
  document.getElementById("liqAlertText").textContent=message;
-
  document.getElementById("liqEvents").innerHTML=recent.slice(0,15).map(x=>{
   const isLong=x.side==="SELL";
   return `<div class="zone">
@@ -596,6 +626,137 @@ function clearLiquidationHistory(){
  liqEvents=[];
  saveLiqEvents();
  renderLiquidations();
+}
+
+/* WHALE / LARGE TRADE STREAM */
+function loadWhaleEvents(){
+ try{
+  const x=JSON.parse(localStorage.getItem(WHALE_KEY)||"[]");
+  return Array.isArray(x)?x:[];
+ }catch(e){return [];}
+}
+function saveWhaleEvents(){
+ whaleEvents=whaleEvents.filter(x=>Date.now()-x.time<24*60*60*1000).slice(0,2000);
+ try{localStorage.setItem(WHALE_KEY,JSON.stringify(whaleEvents));}catch(e){}
+}
+function connectWhaleStream(){
+ if(whaleSocket&&(whaleSocket.readyState===WebSocket.OPEN||whaleSocket.readyState===WebSocket.CONNECTING))return;
+ clearTimeout(whaleReconnectTimer);
+ const status=document.getElementById("whaleConnection");
+ status.textContent="CONNECTING";
+ status.className="yellow";
+ try{
+  whaleSocket=new WebSocket(WHALE_WS_URL);
+  whaleSocket.onopen=()=>{
+   status.textContent="CONNECTED";
+   status.className="green";
+  };
+  whaleSocket.onmessage=(event)=>{
+   try{
+    const t=JSON.parse(event.data);
+    if(!t||t.s!=="BTCUSDT")return;
+    const price=Number(t.p),qty=Number(t.q);
+    const usd=price*qty;
+    if(!price||!qty||usd<100000)return;
+    const time=Number(t.T||Date.now());
+    const isBuyerMaker=Boolean(t.m);
+    const item={
+     id:String(t.a),
+     time,
+     price,
+     qty,
+     usd,
+     side:isBuyerMaker?"SELL":"BUY",
+     tradeId:t.a
+    };
+    if(whaleEvents.some(x=>x.id===item.id))return;
+    whaleEvents.unshift(item);
+    saveWhaleEvents();
+    renderWhaleActivity();
+   }catch(e){}
+  };
+  whaleSocket.onerror=()=>{
+   status.textContent="CONNECTION ERROR";
+   status.className="red";
+  };
+  whaleSocket.onclose=()=>{
+   status.textContent="DISCONNECTED";
+   status.className="red";
+   whaleReconnectTimer=setTimeout(connectWhaleStream,5000);
+  };
+ }catch(e){
+  status.textContent="UNAVAILABLE";
+  status.className="red";
+  whaleReconnectTimer=setTimeout(connectWhaleStream,10000);
+ }
+}
+function renderWhaleActivity(){
+ const now=Date.now();
+ const recent=whaleEvents.filter(x=>now-x.time<=60*60*1000);
+ function stats(minutes,side){
+  const list=whaleEvents.filter(x=>now-x.time<=minutes*60000&&x.side===side);
+  return {count:list.length,usd:list.reduce((s,x)=>s+x.usd,0)};
+ }
+ const b1=stats(1,"BUY"),s1=stats(1,"SELL");
+ const b5=stats(5,"BUY"),s5=stats(5,"SELL");
+ const b15=stats(15,"BUY"),s15=stats(15,"SELL");
+ const b60=stats(60,"BUY"),s60=stats(60,"SELL");
+
+ document.getElementById("whaleBuy1").textContent=b1.count;
+ document.getElementById("whaleSell1").textContent=s1.count;
+ document.getElementById("whaleBuy5").textContent=b5.count;
+ document.getElementById("whaleSell5").textContent=s5.count;
+ document.getElementById("whaleBuy15").textContent=b15.count;
+ document.getElementById("whaleSell15").textContent=s15.count;
+ document.getElementById("whaleBuy60").textContent=b60.count;
+ document.getElementById("whaleSell60").textContent=s60.count;
+ document.getElementById("whaleBuyVol").textContent="$"+fmt(b60.usd);
+ document.getElementById("whaleSellVol").textContent="$"+fmt(s60.usd);
+
+ const total=b60.usd+s60.usd;
+ const buyPct=total?100*b60.usd/total:50;
+ document.getElementById("whaleBuyBar").style.width=buyPct+"%";
+ document.getElementById("whaleSellBar").style.width=(100-buyPct)+"%";
+
+ WHALE_THRESHOLDS.forEach((threshold,index)=>{
+  const count=recent.filter(x=>x.usd>=threshold).length;
+  const id=["whale100","whale250","whale500","whale1000"][index];
+  document.getElementById(id).textContent=count;
+ });
+
+ let alert="NO CLEAR LARGE-TRADE DIRECTION";
+ let message="Large BUY and SELL activity is not showing a strong imbalance in the last five minutes.";
+ if(b5.usd>s5.usd*1.8&&b5.usd>=250000){
+  alert="LARGE BUY ACTIVITY";
+  message="Large taker BUY trades are outweighing large SELL trades in the last five minutes. This alone does not confirm a bullish move.";
+ }else if(s5.usd>b5.usd*1.8&&s5.usd>=250000){
+  alert="LARGE SELL ACTIVITY";
+  message="Large taker SELL trades are outweighing large BUY trades in the last five minutes. This alone does not confirm a bearish move.";
+ }else if(b5.usd+s5.usd===0){
+  alert="WAITING FOR LARGE TRADES";
+  message="No trades above the $100K threshold have been recorded in the last five minutes.";
+ }
+ document.getElementById("whaleAlert").textContent=alert;
+ document.getElementById("whaleAlert").className="price "+(alert.includes("BUY ACTIVITY")?"green":alert.includes("SELL ACTIVITY")?"red":"yellow");
+ document.getElementById("whaleAlertText").textContent=message;
+
+ document.getElementById("whaleEvents").innerHTML=recent.slice(0,20).map(x=>{
+  const isBuy=x.side==="BUY";
+  const tier=x.usd>=1000000?"$1M+":x.usd>=500000?"$500K+":x.usd>=250000?"$250K+":"$100K+";
+  return `<div class="zone">
+   <b class="${isBuy?"green":"red"}">${isBuy?"LARGE BUY":"LARGE SELL"} — ${tier}</b><br>
+   Notional: $${fmt(x.usd)}<br>
+   Price: $${fmt(x.price)}<br>
+   Quantity: ${fmt(x.qty)} BTC<br>
+   <small>${new Date(x.time).toLocaleTimeString()}</small>
+  </div>`;
+ }).join("")||"No large trades above $100K received in the last hour.";
+}
+function clearWhaleHistory(){
+ if(!confirm("Clear saved large-trade events?"))return;
+ whaleEvents=[];
+ saveWhaleEvents();
+ renderWhaleActivity();
 }
 
 /* ESTIMATED STOP-LIQUIDITY ZONES */
@@ -767,13 +928,18 @@ async function refreshAll(){
 
 renderHistory();
 renderLiquidations();
+renderWhaleActivity();
 connectLiquidations();
+connectWhaleStream();
 refreshAll();
 setInterval(refreshAll,30000);
 setInterval(renderLiquidations,10000);
+setInterval(renderWhaleActivity,5000);
+
 document.addEventListener("visibilitychange",()=>{
  if(!document.hidden){
   if(!liqSocket||liqSocket.readyState===WebSocket.CLOSED)connectLiquidations();
+  if(!whaleSocket||whaleSocket.readyState===WebSocket.CLOSED)connectWhaleStream();
   refreshAll();
  }
 });
