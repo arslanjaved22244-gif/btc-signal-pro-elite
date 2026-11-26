@@ -16,7 +16,7 @@ h2,h3{margin-top:5px}
 small{color:#9eabc4}
 table{width:100%;border-collapse:collapse;font-size:12px}
 td,th{padding:9px 3px;border-bottom:1px solid #303b55;text-align:left}
-button{background:#f5b942;border:0;padding:12px 18px;border-radius:8px;font-weight:bold}
+button{background:#f5b942;color:#111;border:0;padding:12px 18px;border-radius:8px;font-weight:bold;margin:5px 4px 5px 0}
 .bar{height:12px;background:#303b55;border-radius:8px;overflow:hidden;display:flex}
 .buybar{background:#35d39a}.sellbar{background:#ff647c}
 .zone{padding:9px;margin:7px 0;border-radius:7px;background:#222e49;font-size:13px}
@@ -67,14 +67,14 @@ button{background:#f5b942;border:0;padding:12px 18px;border-radius:8px;font-weig
 </div>
 
 <div class="card">
-<h3>Buyer vs Seller Pressure (15M)</h3>
+<h3>Buyer vs Seller Pressure</h3>
 <div id="pressure">Loading...</div>
 <div class="bar">
 <div id="buybar" class="buybar" style="width:50%"></div>
 <div id="sellbar" class="sellbar" style="width:50%"></div>
 </div>
 <p id="pressureText">Waiting...</p>
-<small>Based on recent Binance aggregate trades, not the entire market.</small>
+<small>Recent Binance aggregate trades sample, not the entire market.</small>
 </div>
 
 <div class="card">
@@ -96,16 +96,54 @@ button{background:#f5b942;border:0;padding:12px 18px;border-radius:8px;font-weig
 </div>
 
 <div class="card">
+<h3>Order Book Imbalance</h3>
+<div class="price yellow" id="imbalance">Loading...</div>
+<p id="imbalanceText">Comparing visible bid and ask quantities.</p>
+<div class="bar">
+<div id="bidbar" class="buybar" style="width:50%"></div>
+<div id="askbar" class="sellbar" style="width:50%"></div>
+</div>
+<p class="note">Based on visible Binance Futures order book depth, not all market orders.</p>
+</div>
+
+<div class="card">
+<h3>Liquidity Wall Detection</h3>
+<b class="green">Largest visible buy wall</b>
+<div class="zone" id="buyWall">Loading...</div>
+<b class="red">Largest visible sell wall</b>
+<div class="zone" id="sellWall">Loading...</div>
+<p class="note">Large displayed orders can be cancelled. A wall is not guaranteed support or resistance.</p>
+</div>
+
+<div class="card">
 <h3>Liquidity Sweep Detection (15M)</h3>
 <div class="price yellow" id="sweep">Analyzing...</div>
 <p id="sweepText">Checking recent candle highs and lows.</p>
 </div>
 
 <div class="card">
+<h3>Fake Breakout Detection</h3>
+<div class="price yellow" id="fakeBreak">Analyzing...</div>
+<p id="fakeText">Checking closed candle breakout conditions.</p>
+</div>
+
+<div class="card">
+<h3>Volume Confirmation</h3>
+<div class="price yellow" id="volumeStatus">Loading...</div>
+<p id="volumeText">Comparing last closed candle volume with previous 20 candles.</p>
+</div>
+
+<div class="card">
+<h3>Candle Close Confirmation</h3>
+<div class="price yellow" id="candleStatus">Loading...</div>
+<p id="candleText">Checking the last fully closed 15-minute candle.</p>
+</div>
+
+<div class="card">
 <h3>Support & Resistance</h3>
 <div class="metric"><span>Nearest Support</span><b id="support">--</b></div>
 <div class="metric"><span>Nearest Resistance</span><b id="resistance">--</b></div>
-<p class="note">Estimated from recent 15-minute candle highs and lows.</p>
+<p class="note">Estimated from recent closed 15-minute candles.</p>
 </div>
 
 <div class="card">
@@ -128,10 +166,18 @@ button{background:#f5b942;border:0;padding:12px 18px;border-radius:8px;font-weig
 </div>
 
 <div class="card">
+<h3>Signal History</h3>
+<p class="note">Signals are recorded once per closed 15-minute candle. Outcome is checked after four further closed candles (approximately one hour).</p>
+<div id="historyStats">No recorded signals yet.</div>
+<div id="historyList"></div>
+<button onclick="clearHistory()">CLEAR HISTORY</button>
+</div>
+
+<div class="card">
 <h3>Risk Management</h3>
 <p>Maximum leverage: 10x</p>
 <p>Always use a stop loss. 10x leverage magnifies losses. Never risk money you cannot afford to lose.</p>
-<p class="note">Entry and targets are calculated estimates, not guaranteed execution prices. Check spread, slippage and liquidation risk before any manual trade.</p>
+<p class="note">Estimated levels are not guaranteed execution prices. Check spread, slippage and liquidation risk before any manual trade.</p>
 </div>
 
 <button onclick="refreshAll()">REFRESH DATA</button>
@@ -143,12 +189,13 @@ const frames=[["1m","1M"],["5m","5M"],["15m","15M"],["1h","1H"],["4h","4H"],["1d
 let previousOI=null;
 let busy=false;
 let marketData={};
+const HISTORY_KEY="btc_signal_pro_history_v2";
 
 function fmt(n){
  return Number(n).toLocaleString("en-US",{maximumFractionDigits:2});
 }
 function average(a){
- return a.reduce((s,x)=>s+x,0)/a.length;
+ return a.length?a.reduce((s,x)=>s+x,0)/a.length:0;
 }
 function emaSeries(data,period){
  const k=2/(period+1);
@@ -165,13 +212,13 @@ function rsi(data,period=14){
  if(data.length<period+1)return 50;
  let gains=0,losses=0;
  for(let i=1;i<=period;i++){
-  let d=data[i]-data[i-1];
+  const d=data[i]-data[i-1];
   if(d>0)gains+=d;
   else losses-=d;
  }
  let ag=gains/period,al=losses/period;
  for(let i=period+1;i<data.length;i++){
-  let d=data[i]-data[i-1];
+  const d=data[i]-data[i-1];
   ag=(ag*(period-1)+Math.max(d,0))/period;
   al=(al*(period-1)+Math.max(-d,0))/period;
  }
@@ -181,7 +228,7 @@ function rsi(data,period=14){
 function macdCalc(c){
  const e12=emaSeries(c,12);
  const e26=emaSeries(c,26);
- let line=[];
+ const line=[];
  for(let i=25;i<c.length;i++)line.push(e12[i]-e26[i]);
  const sig=emaSeries(line,9);
  return {
@@ -191,9 +238,9 @@ function macdCalc(c){
  };
 }
 function atrCalc(candles,period=14){
- let trs=[];
+ const trs=[];
  for(let i=1;i<candles.length;i++){
-  let h=candles[i].h,l=candles[i].l,pc=candles[i-1].c;
+  const h=candles[i].h,l=candles[i].l,pc=candles[i-1].c;
   trs.push(Math.max(h-l,Math.abs(h-pc),Math.abs(l-pc)));
  }
  if(trs.length<period)return 0;
@@ -217,12 +264,8 @@ async function get(path){
 }
 function getCandleData(raw){
  return raw.map(x=>({
-  t:Number(x[0]),
-  o:Number(x[1]),
-  h:Number(x[2]),
-  l:Number(x[3]),
-  c:Number(x[4]),
-  v:Number(x[5])
+  t:Number(x[0]),o:Number(x[1]),h:Number(x[2]),
+  l:Number(x[3]),c:Number(x[4]),v:Number(x[5])
  }));
 }
 async function loadPrice(){
@@ -234,9 +277,8 @@ async function loadPrice(){
 async function loadFrames(){
  const results=await Promise.all(frames.map(async f=>{
   const raw=await get("/fapi/v1/klines?symbol=BTCUSDT&interval="+f[0]+"&limit=220");
-  const candles=getCandleData(raw);
-  const closed=candles.slice(0,-1);
-  const c=closed.map(x=>x.c);
+  const candles=getCandleData(raw).slice(0,-1);
+  const c=candles.map(x=>x.c);
   const e9=emaSeries(c,9).at(-1);
   const e21=emaSeries(c,21).at(-1);
   const e50=emaSeries(c,50).at(-1);
@@ -273,16 +315,46 @@ async function loadAdvanced(){
  const prior=candles.slice(-21,-1);
  const priorLow=Math.min(...prior.map(x=>x.l));
  const priorHigh=Math.max(...prior.map(x=>x.h));
+
  let sweep="NO CLEAR SWEEP";
- let sweepText="No confirmed recent sweep pattern detected.";
+ let sweepText="No recent sweep pattern detected.";
  if(last.l<priorLow&&last.c>priorLow){
   sweep="BULLISH LIQUIDITY SWEEP";
-  sweepText="Price moved below recent lows and closed back above them. Possible sell-side liquidity sweep.";
+  sweepText="Price moved below recent lows and closed back above them.";
  }else if(last.h>priorHigh&&last.c<priorHigh){
   sweep="BEARISH LIQUIDITY SWEEP";
-  sweepText="Price moved above recent highs and closed back below them. Possible buy-side liquidity sweep.";
+  sweepText="Price moved above recent highs and closed back below them.";
  }
- marketData.advanced={e9,e21,e50,e200,mm,bb,atr,support,resistance,sweep};
+
+ let fake="NO FAKE BREAKOUT";
+ let fakeText="No false breakout detected on the last closed candle.";
+ if(last.h>priorHigh&&last.c<priorHigh){
+  fake="BEARISH FAKE BREAKOUT";
+  fakeText="Candle broke above the previous range but closed back below it.";
+ }else if(last.l<priorLow&&last.c>priorLow){
+  fake="BULLISH FAKE BREAKOUT";
+  fakeText="Candle broke below the previous range but closed back above it.";
+ }
+
+ const priorVolumes=candles.slice(-21,-1).map(x=>x.v);
+ const avgVol=average(priorVolumes);
+ const volRatio=avgVol>0?last.v/avgVol:0;
+ const volumeOK=volRatio>=1.0;
+ const strongVolume=volRatio>=1.2;
+
+ const bullishCandle=last.c>last.o&&last.c>e9;
+ const bearishCandle=last.c<last.o&&last.c<e9;
+ const candleStatus=bullishCandle?"BULLISH CLOSE":
+  bearishCandle?"BEARISH CLOSE":"NO CONFIRMATION";
+
+ marketData.advanced={
+  e9,e21,e50,e200,mm,bb,atr,support,resistance,
+  sweep,fake,volRatio,volumeOK,strongVolume,
+  bullishCandle,bearishCandle,candleStatus,
+  candleTime:last.t,lastClose:last.c,
+  candleHigh:last.h,candleLow:last.l
+ };
+
  document.getElementById("ema9").textContent=fmt(e9);
  document.getElementById("ema21").textContent=fmt(e21);
  document.getElementById("ema50").textContent=fmt(e50);
@@ -295,9 +367,23 @@ async function loadAdvanced(){
  document.getElementById("bbMiddle").textContent=fmt(bb.middle);
  document.getElementById("bbLower").textContent=fmt(bb.lower);
  document.getElementById("atr").textContent=fmt(atr);
+
  document.getElementById("sweep").textContent=sweep;
  document.getElementById("sweep").className="price "+(sweep.includes("BULLISH")?"green":sweep.includes("BEARISH")?"red":"yellow");
  document.getElementById("sweepText").textContent=sweepText;
+
+ document.getElementById("fakeBreak").textContent=fake;
+ document.getElementById("fakeBreak").className="price "+(fake.includes("BULLISH")?"green":fake.includes("BEARISH")?"red":"yellow");
+ document.getElementById("fakeText").textContent=fakeText;
+
+ document.getElementById("volumeStatus").textContent=strongVolume?"STRONG VOLUME":volumeOK?"NORMAL VOLUME":"LOW VOLUME";
+ document.getElementById("volumeStatus").className="price "+(strongVolume?"green":volumeOK?"yellow":"red");
+ document.getElementById("volumeText").textContent="Last closed candle volume: "+volRatio.toFixed(2)+"x previous 20-candle average.";
+
+ document.getElementById("candleStatus").textContent=candleStatus;
+ document.getElementById("candleStatus").className="price "+(bullishCandle?"green":bearishCandle?"red":"yellow");
+ document.getElementById("candleText").textContent="Last fully closed 15M candle: "+new Date(last.t).toLocaleString()+" UTC open time.";
+
  document.getElementById("support").textContent="$"+fmt(support);
  document.getElementById("resistance").textContent="$"+fmt(resistance);
 }
@@ -342,6 +428,26 @@ async function loadLiquidity(){
  const d=await get("/fapi/v1/depth?symbol=BTCUSDT&limit=100");
  const bids=d.bids.map(x=>({p:Number(x[0]),q:Number(x[1])}));
  const asks=d.asks.map(x=>({p:Number(x[0]),q:Number(x[1])}));
+ const bidQty=bids.slice(0,20).reduce((s,x)=>s+x.q,0);
+ const askQty=asks.slice(0,20).reduce((s,x)=>s+x.q,0);
+ const total=bidQty+askQty;
+ const imbalance=total?100*(bidQty-askQty)/total:0;
+ marketData.book={imbalance,bidQty,askQty};
+
+ document.getElementById("imbalance").textContent=(imbalance>=0?"+":"")+imbalance.toFixed(1)+"%";
+ document.getElementById("imbalance").className="price "+(imbalance>5?"green":imbalance< -5?"red":"yellow");
+ document.getElementById("imbalanceText").textContent=imbalance>5?"Visible bid depth is stronger.":imbalance< -5?"Visible ask depth is stronger.":"Visible bid and ask depth is relatively balanced.";
+ const bidPct=total?100*bidQty/total:50;
+ document.getElementById("bidbar").style.width=bidPct+"%";
+ document.getElementById("askbar").style.width=(100-bidPct)+"%";
+
+ const biggestBid=[...bids].sort((a,b)=>b.q-a.q)[0];
+ const biggestAsk=[...asks].sort((a,b)=>b.q-a.q)[0];
+ marketData.book.buyWall=biggestBid;
+ marketData.book.sellWall=biggestAsk;
+ document.getElementById("buyWall").textContent="$"+fmt(biggestBid.p)+" — "+fmt(biggestBid.q)+" BTC";
+ document.getElementById("sellWall").textContent="$"+fmt(biggestAsk.p)+" — "+fmt(biggestAsk.q)+" BTC";
+
  bids.sort((a,b)=>b.q-a.q);
  asks.sort((a,b)=>b.q-a.q);
  let html="<b class='green'>BUY LIQUIDITY — BIDS</b>";
@@ -350,58 +456,141 @@ async function loadLiquidity(){
  asks.slice(0,5).forEach(x=>html+=`<div class="zone">Ask $${fmt(x.p)} — ${fmt(x.q)} BTC</div>`);
  document.getElementById("liquidity").innerHTML=html;
 }
+function readHistory(){
+ try{return JSON.parse(localStorage.getItem(HISTORY_KEY)||"[]");}
+ catch(e){return [];}
+}
+function saveHistory(history){
+ try{localStorage.setItem(HISTORY_KEY,JSON.stringify(history.slice(0,30)));}
+ catch(e){console.log("History storage unavailable");}
+}
+function recordAndUpdateHistory(){
+ const a=marketData.advanced;
+ const f=marketData.frames;
+ if(!a||!f||!marketData.price)return;
+ let history=readHistory();
+
+ // Check outcomes after four completed 15-minute candles.
+ history.forEach(item=>{
+  if(item.result!=="PENDING"||a.candleTime<item.candleTime+60*60*1000)return;
+  const resultPrice=marketData.closedCandles?.find(c=>c.t===item.candleTime+60*60*1000)?.c;
+  if(!resultPrice)return;
+  const move=item.side==="LONG"?resultPrice-item.entry:item.entry-resultPrice;
+  item.result=move>0?"WIN":move<0?"LOSS":"BREAKEVEN";
+  item.exit=resultPrice;
+  item.move=move;
+  item.checkedAt=Date.now();
+ });
+
+ const side=marketData.currentSide;
+ const existing=history.some(x=>x.candleTime===a.candleTime);
+ if((side==="LONG"||side==="SHORT")&&!existing){
+  history.unshift({
+   candleTime:a.candleTime,
+   side,
+   entry:a.lastClose,
+   result:"PENDING",
+   exit:null,
+   move:null
+  });
+ }
+ saveHistory(history);
+ renderHistory();
+}
+function renderHistory(){
+ const h=readHistory();
+ const done=h.filter(x=>x.result==="WIN"||x.result==="LOSS");
+ const wins=done.filter(x=>x.result==="WIN").length;
+ const accuracy=done.length?100*wins/done.length:0;
+ document.getElementById("historyStats").innerHTML=
+ `<div class="metric"><span>Total signals</span><b>${h.length}</b></div>
+ <div class="metric"><span>Completed</span><b>${done.length}</b></div>
+ <div class="metric"><span>Wins</span><b class="green">${wins}</b></div>
+ <div class="metric"><span>Losses</span><b class="red">${done.length-wins}</b></div>
+ <div class="metric"><span>Observed win rate</span><b>${done.length?accuracy.toFixed(1)+"%":"Not enough data"}</b></div>`;
+ document.getElementById("historyList").innerHTML=h.slice(0,10).map(x=>
+ `<div class="zone">
+ <b class="${x.side==="LONG"?"green":"red"}">${x.side}</b> — Entry $${fmt(x.entry)}
+ <br><small>${new Date(x.candleTime+15*60*1000).toLocaleString()}</small>
+ <br>Result: <b class="${x.result==="WIN"?"green":x.result==="LOSS"?"red":"yellow"}">${x.result}</b>
+ ${x.exit!==null?" — Exit $"+fmt(x.exit):""}
+ </div>`
+ ).join("")||"No signals recorded yet.";
+}
+function clearHistory(){
+ if(!confirm("Delete all saved signal history?"))return;
+ localStorage.removeItem(HISTORY_KEY);
+ renderHistory();
+}
 function makeSetup(){
  const f=marketData.frames;
  const a=marketData.advanced;
- if(!f||!a||!marketData.price)return;
+ const b=marketData.book;
+ if(!f||!a||!b||!marketData.price)return;
+
  const m15=f.find(x=>x.name==="15M");
  const h1=f.find(x=>x.name==="1H");
  const h4=f.find(x=>x.name==="4H");
- let side="WAIT",reason="No high-quality setup. Wait for clearer confirmation.";
- const longOK=m15.trend==="BULLISH"&&h1.trend==="BULLISH"&&h4.trend==="BULLISH"&&
-  a.mm.hist>0&&m15.rsi>50&&m15.rsi<70&&a.e9>a.e21;
- const shortOK=m15.trend==="BEARISH"&&h1.trend==="BEARISH"&&h4.trend==="BEARISH"&&
-  a.mm.hist<0&&m15.rsi<50&&m15.rsi>30&&a.e9<a.e21;
- if(longOK&&marketData.buyPressure>=50){
+
+ const longTrend=m15.trend==="BULLISH"&&h1.trend==="BULLISH"&&h4.trend==="BULLISH";
+ const shortTrend=m15.trend==="BEARISH"&&h1.trend==="BEARISH"&&h4.trend==="BEARISH";
+
+ const longOK=longTrend&&a.mm.hist>0&&m15.rsi>50&&m15.rsi<70&&
+  a.e9>a.e21&&marketData.buyPressure>=50&&b.imbalance>=5&&
+  a.volumeOK&&a.bullishCandle&&a.fake!=="BEARISH FAKE BREAKOUT";
+ const shortOK=shortTrend&&a.mm.hist<0&&m15.rsi<50&&m15.rsi>30&&
+  a.e9<a.e21&&marketData.buyPressure<=50&&b.imbalance<=-5&&
+  a.volumeOK&&a.bearishCandle&&a.fake!=="BULLISH FAKE BREAKOUT";
+
+ let side="WAIT";
+ let reason="No high-quality setup. Wait for clearer confirmation.";
+ if(longOK){
   side="LONG";
-  reason="15M, 1H and 4H trends align bullish. MACD and RSI confirm momentum.";
- }else if(shortOK&&marketData.buyPressure<=50){
+  reason="Multi-timeframe bullish trend, MACD, volume, candle close and order book agree.";
+ }else if(shortOK){
   side="SHORT";
-  reason="15M, 1H and 4H trends align bearish. MACD and RSI confirm momentum.";
+  reason="Multi-timeframe bearish trend, MACD, volume, candle close and order book agree.";
  }
+ marketData.currentSide=side;
+
  const sideEl=document.getElementById("setupSide");
  sideEl.textContent=side;
  sideEl.className="price "+(side==="LONG"?"green":side==="SHORT"?"red":"yellow");
  document.getElementById("setupReason").textContent=reason;
+
  if(side==="WAIT"||a.atr<=0){
   ["entry","stop","tp1","tp2","tp3","riskDistance"].forEach(id=>document.getElementById(id).textContent="--");
   document.getElementById("signal").textContent="WAIT";
   document.getElementById("signal").className="price yellow";
-  document.getElementById("reason").textContent="No confirmed trade setup. Multi-timeframe confirmation is required.";
+  document.getElementById("reason").textContent="No confirmed trade setup. Multi-factor confirmation is required.";
   document.getElementById("signalDetails").textContent=reason;
-  return;
+ }else{
+  const entry=marketData.price;
+  const risk=a.atr*1.5;
+  const stop=side==="LONG"?entry-risk:entry+risk;
+  const targets=[1,2,3].map(n=>side==="LONG"?entry+risk*n:entry-risk*n);
+  document.getElementById("entry").textContent="$"+fmt(entry);
+  document.getElementById("stop").textContent="$"+fmt(stop);
+  document.getElementById("tp1").textContent="$"+fmt(targets[0]);
+  document.getElementById("tp2").textContent="$"+fmt(targets[1]);
+  document.getElementById("tp3").textContent="$"+fmt(targets[2]);
+  document.getElementById("riskDistance").textContent="$"+fmt(risk);
+  document.getElementById("signal").textContent=side;
+  document.getElementById("signal").className="price "+(side==="LONG"?"green":"red");
+  document.getElementById("reason").textContent=reason;
+  document.getElementById("signalDetails").textContent="ATR-based estimated levels. Not guaranteed execution prices.";
  }
- const entry=marketData.price;
- const risk=a.atr*1.5;
- const stop=side==="LONG"?entry-risk:entry+risk;
- const targets=[1,2,3].map(n=>side==="LONG"?entry+risk*n:entry-risk*n);
- document.getElementById("entry").textContent="$"+fmt(entry);
- document.getElementById("stop").textContent="$"+fmt(stop);
- document.getElementById("tp1").textContent="$"+fmt(targets[0]);
- document.getElementById("tp2").textContent="$"+fmt(targets[1]);
- document.getElementById("tp3").textContent="$"+fmt(targets[2]);
- document.getElementById("riskDistance").textContent="$"+fmt(risk);
- document.getElementById("signal").textContent=side;
- document.getElementById("signal").className="price "+(side==="LONG"?"green":"red");
- document.getElementById("reason").textContent="Technical conditions aligned. Check the setup and risk before trading.";
- document.getElementById("signalDetails").textContent="ATR-based estimated levels. Not a guaranteed entry or prediction.";
+ recordAndUpdateHistory();
 }
 async function refreshAll(){
  if(busy)return;
  busy=true;
  document.getElementById("status").textContent="Updating Binance data...";
  try{
-  await Promise.all([loadPrice(),loadFrames(),loadAdvanced(),loadPressure(),loadOI(),loadFunding(),loadLiquidity()]);
+  await Promise.all([
+   loadPrice(),loadFrames(),loadAdvanced(),
+   loadPressure(),loadOI(),loadFunding(),loadLiquidity()
+  ]);
   makeSetup();
   document.getElementById("status").textContent="Data updated • "+new Date().toLocaleTimeString();
  }catch(e){
@@ -409,6 +598,36 @@ async function refreshAll(){
  }
  busy=false;
 }
+async function loadAdvancedWithHistory(){
+ await loadAdvanced();
+}
+async function initHistoryCandles(){
+ try{
+  const raw=await get("/fapi/v1/klines?symbol=BTCUSDT&interval=15m&limit=10");
+  marketData.closedCandles=getCandleData(raw).slice(0,-1);
+ }catch(e){
+  marketData.closedCandles=[];
+ }
+}
+const originalRefresh=refreshAll;
+refreshAll=async function(){
+ if(busy)return;
+ busy=true;
+ document.getElementById("status").textContent="Updating Binance data...";
+ try{
+  await Promise.all([
+   loadPrice(),loadFrames(),loadAdvanced(),
+   loadPressure(),loadOI(),loadFunding(),loadLiquidity(),
+   initHistoryCandles()
+  ]);
+  makeSetup();
+  document.getElementById("status").textContent="Data updated • "+new Date().toLocaleTimeString();
+ }catch(e){
+  document.getElementById("status").textContent="Some data unavailable: "+e.message+". Retry shortly.";
+ }
+ busy=false;
+};
+renderHistory();
 refreshAll();
 setInterval(refreshAll,30000);
 </script>
