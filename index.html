@@ -1,1 +1,115 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BTC Signal Pro Elite</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:18px;background:#0b1020;color:#eef2ff;font-family:Arial,sans-serif}
+h1{color:#f5b942;font-size:25px}
+.card{background:#171f35;padding:17px;border-radius:14px;margin:14px 0}
+.price{font-size:30px;font-weight:bold}
+.green{color:#35d39a}.red{color:#ff647c}
+small{color:#9eabc4}
+table{width:100%;border-collapse:collapse}
+td,th{padding:12px 5px;border-bottom:1px solid #303b55;text-align:left}
+button{background:#f5b942;border:0;padding:13px 20px;border-radius:9px;font-weight:bold}
+</style>
+</head>
+<body>
+<h1>₿ BTC Signal Pro Elite</h1>
+<small>BINANCE FUTURES • MANUAL SIGNALS ONLY</small>
+
+<div class="card">
+<small>LIVE BTC/USDT PRICE</small>
+<div class="price" id="price">Connecting...</div>
+<small id="updated">Waiting for Binance data</small>
+</div>
+
+<div class="card">
+<h2>Market Signal</h2>
+<div class="price" id="signal">WAIT</div>
+<p id="reason">Collecting market data...</p>
+</div>
+
+<div class="card">
+<h3>Multi-Timeframe Analysis</h3>
+<table>
+<thead><tr><th>Timeframe</th><th>Trend</th><th>RSI</th></tr></thead>
+<tbody id="rows"><tr><td colspan="3">Loading...</td></tr></tbody>
+</table>
+</div>
+
+<div class="card">
+<h3>Risk Management</h3>
+<p>Maximum leverage: 10x</p>
+<p>Always use a stop loss. Never risk money you cannot afford to lose.</p>
+</div>
+
+<button onclick="loadData()">REFRESH DATA</button>
+<p><small id="status">Starting...</small></p>
+
+<script>
+const frames=["1m","5m","15m","1h","4h","1d"];
+const names=["1M","5M","15M","1H","4H","1D"];
+
+function calcRSI(c){
+ let up=0,down=0;
+ for(let i=c.length-14;i<c.length;i++){
+  let d=c[i]-c[i-1];
+  if(d>0)up+=d;else down-=d;
+ }
+ if(down===0)return 100;
+ return 100-100/(1+up/down);
+}
+
+function average(a,n){
+ return a.slice(-n).reduce((s,v)=>s+v,0)/n;
+}
+
+async function loadData(){
+ document.getElementById("status").textContent="Loading live data...";
+ try{
+  const p=await fetch("https://fapi.binance.com/fapi/v1/ticker/price?symbol=BTCUSDT");
+  if(!p.ok)throw Error("Price unavailable");
+  const pd=await p.json();
+  document.getElementById("price").textContent="$"+Number(pd.price).toLocaleString("en-US",{maximumFractionDigits:2});
+
+  const results=await Promise.all(frames.map(async(tf)=>{
+   const u="https://fapi.binance.com/fapi/v1/klines?symbol=BTCUSDT&interval="+tf+"&limit=220";
+   const r=await fetch(u);
+   if(!r.ok)throw Error("Candle data unavailable");
+   const d=await r.json();
+   const c=d.map(x=>Number(x[4]));
+   return {
+    trend:average(c,9)>average(c,21)?"BULLISH":"BEARISH",
+    rsi:calcRSI(c)
+   };
+  }));
+
+  let score=results.reduce((s,x)=>s+(x.trend==="BULLISH"?1:-1),0);
+  let signal="WAIT",reason="Mixed market conditions. Wait for confirmation.";
+  if(score>=4){signal="UP";reason="Most timeframes show bullish trend. Confirmation is still required.";}
+  if(score<=-4){signal="DOWN";reason="Most timeframes show bearish trend. Confirmation is still required.";}
+
+  const el=document.getElementById("signal");
+  el.textContent=signal;
+  el.className="price "+(signal==="UP"?"green":signal==="DOWN"?"red":"");
+  document.getElementById("reason").textContent=reason;
+  document.getElementById("rows").innerHTML=results.map((x,i)=>
+   "<tr><td>"+names[i]+"</td><td class='"+(x.trend==="BULLISH"?"green":"red")+"'>"+x.trend+"</td><td>"+x.rsi.toFixed(1)+"</td></tr>"
+  ).join("");
+  document.getElementById("updated").textContent="Updated: "+new Date().toLocaleTimeString();
+  document.getElementById("status").textContent="Live Binance data connected • Refreshes every 30 seconds";
+ }catch(e){
+  document.getElementById("status").textContent="Data error: "+e.message;
+ }
+}
+loadData();
+setInterval(loadData,30000);
+</script>
+</body>
+</html>
+
