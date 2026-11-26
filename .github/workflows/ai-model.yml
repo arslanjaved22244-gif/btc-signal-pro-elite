@@ -1,15 +1,34 @@
-  - name: Setup Python
-    uses: actions/setup-python@v5
-    with:
-      python-version: "3.11"
 
-  - name: Run BTC AI model
-    run: python ai_model.py/ai_model.py
+name: BTC Signal Pro Elite AI
 
-  - name: Save AI result
-    run: |
-      git config user.name "github-actions[bot]"
-      git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-      git add ai_result.json
-      git diff --cached --quiet || git commit -m "Update AI prediction"
-      git push
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/30 * * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  train-ai:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run BTC AI model
+        run: python ai_model.py/ai_model.py
+
+      - name: Save AI result
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ai_result.json
+          git diff --cached --quiet || git commit -m "Update AI prediction"
+          git push
