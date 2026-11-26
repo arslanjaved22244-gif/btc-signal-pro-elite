@@ -123,6 +123,26 @@ button{background:#f5b942;color:#111;border:0;padding:12px 18px;border-radius:8p
 </div>
 
 <div class="card">
+<h3>Liquidity Heatmap & Estimated Stop Zones</h3>
+<div class="metric"><span>Current BTC Price</span><b id="poolPrice">--</b></div>
+<div class="zone">
+ <b class="red">Potential Short-Stop Liquidity (Above Price)</b>
+ <div id="upperPools">Calculating upper liquidity pools...</div>
+</div>
+<div class="zone">
+ <b class="green">Potential Long-Stop Liquidity (Below Price)</b>
+ <div id="lowerPools">Calculating lower liquidity pools...</div>
+</div>
+<div class="metric"><span>Nearest Upper Pool</span><b id="nearestUpper">--</b></div>
+<div class="metric"><span>Distance to Upper Pool</span><b id="upperDistance">--</b></div>
+<div class="metric"><span>Nearest Lower Pool</span><b id="nearestLower">--</b></div>
+<div class="metric"><span>Distance to Lower Pool</span><b id="lowerDistance">--</b></div>
+<div class="price yellow" id="poolAlert">ANALYZING...</div>
+<p id="poolAlertText">Checking recent repeated highs and lows.</p>
+<p class="note">Estimated stop/liquidity pools derived from repeated 15M swing highs and lows. These are NOT actual exchange liquidation levels or verified trader positions. Heatmap intensity is based on repeated price touches, not measured liquidation volume.</p>
+</div>
+
+<div class="card">
 <h3>Liquidity Sweep Detection (15M)</h3>
 <div class="price yellow" id="sweep">Analyzing...</div>
 <p id="sweepText">Checking recent candle highs and lows.</p>
@@ -303,13 +323,11 @@ async function loadFrames(){
  document.getElementById("frames").innerHTML=results.map(x=>
  `<tr><td>${x.name}</td><td class="${x.trend==="BULLISH"?"green":x.trend==="BEARISH"?"red":"yellow"}">${x.trend}</td><td>${x.rsi.toFixed(1)}</td><td>${fmt(x.ema50)}</td></tr>`
  ).join("");
- const score=results.reduce((s,x)=>s+(x.trend==="BULLISH"?1:x.trend==="BEARISH"?-1:0),0);
- marketData.score=score;
+ marketData.score=results.reduce((s,x)=>s+(x.trend==="BULLISH"?1:x.trend==="BEARISH"?-1:0),0);
 }
 async function loadAdvanced(){
  const raw=await get("/fapi/v1/klines?symbol=BTCUSDT&interval=15m&limit=220");
- const allCandles=getCandleData(raw);
- const candles=allCandles.slice(0,-1);
+ const candles=getCandleData(raw).slice(0,-1);
  const c=candles.map(x=>x.c);
  const e9=emaSeries(c,9).at(-1);
  const e21=emaSeries(c,21).at(-1);
@@ -358,7 +376,6 @@ async function loadAdvanced(){
   bearishCandle?"BEARISH CLOSE":"NO CONFIRMATION";
 
  marketData.closedCandles=candles;
-
  marketData.advanced={
   e9,e21,e50,e200,mm,bb,atr,support,resistance,
   sweep,fake,volRatio,volumeOK,strongVolume,
@@ -416,7 +433,6 @@ function detectAbsorption(){
 
  const c=a.lastCandle;
  const range=c.h-c.l;
-
  if(range<=0){
   marketData.absorption="UNKNOWN";
   document.getElementById("absorption").textContent="INSUFFICIENT DATA";
@@ -437,8 +453,7 @@ function detectAbsorption(){
  if(bp<=40&&lowerRatio>=0.30&&closePosition>=0.65&&volumeStrong){
   result="POSSIBLE BUYER ABSORPTION";
   explanation="Aggressive sampled selling, but price rejected lower levels and closed in the upper part of the candle with elevated volume.";
- }
- else if(bp>=60&&upperRatio>=0.30&&closePosition<=0.35&&volumeStrong){
+ }else if(bp>=60&&upperRatio>=0.30&&closePosition<=0.35&&volumeStrong){
   result="POSSIBLE SELLER ABSORPTION";
   explanation="Aggressive sampled buying, but price rejected higher levels and closed in the lower part of the candle with elevated volume.";
  }
@@ -452,7 +467,6 @@ function detectAbsorption(){
 async function loadPressure(){
  const d=await get("/fapi/v1/aggTrades?symbol=BTCUSDT&limit=1000");
  let buy=0,sell=0;
-
  d.forEach(t=>{
   const v=Number(t.p)*Number(t.q);
   if(t.m)sell+=v;else buy+=v;
@@ -461,7 +475,6 @@ async function loadPressure(){
  const total=buy+sell;
  const bp=total?100*buy/total:50;
  const sp=100-bp;
-
  marketData.buyPressure=bp;
  marketData.sampleBuy=buy;
  marketData.sampleSell=sell;
@@ -529,6 +542,120 @@ async function loadLiquidity(){
  document.getElementById("liquidity").innerHTML=html;
 }
 
+/* ESTIMATED LIQUIDITY POOL ENGINE
+   Uses repeated 15M swing highs and lows.
+   It does not read actual liquidation orders. */
+function updateLiquidityHeatmap(){
+ const candles=marketData.closedCandles||[];
+ const price=marketData.price;
+ const a=marketData.advanced;
+
+ if(candles.length<30||!price||!a){
+  document.getElementById("upperPools").textContent="Not enough data.";
+  document.getElementById("lowerPools").textContent="Not enough data.";
+  return;
+ }
+
+ const sample=candles.slice(-120);
+ const tolerance=Math.max(a.atr*0.18,price*0.0003);
+ const highs=[];
+ const lows=[];
+
+ for(let i=2;i<sample.length-2;i++){
+  const c=sample[i];
+  const isHigh=c.h>sample[i-1].h&&c.h>sample[i-2].h&&c.h>=sample[i+1].h&&c.h>=sample[i+2].h;
+  const isLow=c.l<sample[i-1].l&&c.l<sample[i-2].l&&c.l<=sample[i+1].l&&c.l<=sample[i+2].l;
+  if(isHigh)highs.push({price:c.h,time:c.t,volume:c.v});
+  if(isLow)lows.push({price:c.l,time:c.t,volume:c.v});
+ }
+
+ function clusterLevels(points){
+  const sorted=[...points].sort((x,y)=>x.price-y.price);
+  const clusters=[];
+
+  sorted.forEach(p=>{
+   let found=clusters.find(g=>Math.abs(p.price-g.average)<=tolerance);
+   if(!found){
+    found={items:[p],average:p.price};
+    clusters.push(found);
+   }else{
+    found.items.push(p);
+    found.average=average(found.items.map(x=>x.price));
+   }
+  });
+
+  return clusters.map(g=>({
+   price:g.average,
+   touches:g.items.length,
+   volume:average(g.items.map(x=>x.volume))
+  })).filter(g=>g.touches>=2);
+ }
+
+ const upper=clusterLevels(highs)
+  .filter(x=>x.price>price)
+  .sort((x,y)=>x.price-y.price);
+
+ const lower=clusterLevels(lows)
+  .filter(x=>x.price<price)
+  .sort((x,y)=>y.price-x.price);
+
+ function strength(n){
+  if(n>=4)return "STRONG";
+  if(n>=3)return "MODERATE";
+  return "LIGHT";
+ }
+ function poolHTML(list,side){
+  if(!list.length)return "No repeated "+side+" pool found in recent candles.";
+  return list.slice(0,4).map((p,i)=>{
+   const distance=Math.abs(p.price-price)/price*100;
+   return `<div class="zone">
+    <b>${side==="upper"?"Upper pool":"Lower pool"} ${i+1}</b><br>
+    Price: <b>$${fmt(p.price)}</b><br>
+    Repeated touches: ${p.touches}<br>
+    Relative intensity: <b class="${p.touches>=4?"red":p.touches>=3?"yellow":"green"}">${strength(p.touches)}</b><br>
+    Distance from current price: ${distance.toFixed(2)}%
+   </div>`;
+  }).join("");
+ }
+
+ document.getElementById("poolPrice").textContent="$"+fmt(price);
+ document.getElementById("upperPools").innerHTML=poolHTML(upper,"upper");
+ document.getElementById("lowerPools").innerHTML=poolHTML(lower,"lower");
+
+ const nearUp=upper[0];
+ const nearDown=lower[0];
+
+ document.getElementById("nearestUpper").textContent=nearUp?"$"+fmt(nearUp.price):"Not detected";
+ document.getElementById("upperDistance").textContent=nearUp?((nearUp.price-price)/price*100).toFixed(2)+"%":"--";
+ document.getElementById("nearestLower").textContent=nearDown?"$"+fmt(nearDown.price):"Not detected";
+ document.getElementById("lowerDistance").textContent=nearDown?((price-nearDown.price)/price*100).toFixed(2)+"%":"--";
+
+ let alert="NO CLEAR NEARBY POOL";
+ let message="No repeated liquidity pool is close enough to current price.";
+
+ if(nearUp&&((nearUp.price-price)/price*100)<0.35){
+  alert="UPPER LIQUIDITY NEARBY";
+  message="Price is relatively close to a repeated swing-high area. A move above it could trigger stops, but a sweep is not guaranteed.";
+ }
+ if(nearDown&&((price-nearDown.price)/price*100)<0.35){
+  alert="LOWER LIQUIDITY NEARBY";
+  message="Price is relatively close to a repeated swing-low area. A move below it could trigger stops, but a sweep is not guaranteed.";
+ }
+ if(nearUp&&nearDown&&
+  ((nearUp.price-price)/price*100)<0.35&&
+  ((price-nearDown.price)/price*100)<0.35){
+  alert="LIQUIDITY ON BOTH SIDES";
+  message="Repeated swing levels are close both above and below price. Direction is uncertain.";
+ }
+
+ const el=document.getElementById("poolAlert");
+ el.textContent=alert;
+ el.className="price "+(alert.includes("UPPER")?"red":alert.includes("LOWER")?"green":"yellow");
+ document.getElementById("poolAlertText").textContent=message;
+
+ marketData.liquidityPools={upper,lower,nearestUpper:nearUp||null,nearestLower:nearDown||null};
+}
+
 function readHistory(){
  try{
   const value=JSON.parse(localStorage.getItem(HISTORY_KEY)||"[]");
@@ -547,17 +674,11 @@ function updateHistoryOutcomes(){
 
  history.forEach(item=>{
   if(item.result!=="PENDING")return;
-
   const targetTime=item.candleTime+(4*INTERVAL);
   const target=candles.find(c=>c.t===targetTime);
+  if(!target||target.closeTime>Date.now())return;
 
-  if(!target)return;
-  if(target.closeTime>Date.now())return;
-
-  const move=item.side==="LONG"
-   ?target.c-item.entry
-   :item.entry-target.c;
-
+  const move=item.side==="LONG"?target.c-item.entry:item.entry-target.c;
   item.exit=target.c;
   item.move=move;
   item.result=move>0?"WIN":move<0?"LOSS":"BREAKEVEN";
@@ -573,8 +694,7 @@ function recordSignal(){
  if(!a||!side||side==="WAIT")return;
 
  let history=readHistory();
- const exists=history.some(x=>x.candleTime===a.candleTime);
- if(exists)return;
+ if(history.some(x=>x.candleTime===a.candleTime))return;
 
  history.unshift({
   candleTime:a.candleTime,
@@ -708,10 +828,8 @@ async function refreshAll(){
    loadLiquidity()
   ]);
 
-  // FIX: Calculate absorption only after BOTH trade flow and candle data load.
   detectAbsorption();
-
-  // Signal calculation now uses the latest absorption result.
+  updateLiquidityHeatmap();
   makeSetup();
 
   document.getElementById("status").textContent="Data updated • "+new Date().toLocaleTimeString();
