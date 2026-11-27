@@ -5,6 +5,8 @@ on:
   push:
     paths:
       - "ai_model.py/**"
+      - "tests/**"
+      - "signal_engine.py"
       - ".github/workflows/ai-model.yml"
   schedule:
     - cron: "*/5 * * * *"
@@ -42,7 +44,10 @@ jobs:
           python -m pip install --upgrade pip numpy scikit-learn xgboost
           python -m pip install torch --index-url https://download.pytorch.org/whl/cpu
 
-      - name: Test adaptive learning safety
+      - name: Compile application modules
+        run: python -m py_compile ai_model.py/ai_model.py signal_engine.py
+
+      - name: Test adaptive learning and feedback safety
         run: python -m unittest discover -s tests -v
 
       - name: Run BTC AI model
