@@ -399,6 +399,7 @@ def quality_gate(ai, paper, metrics):
             and float(walk["accuracy"]) > float(walk["majority_class_baseline_pct"])),
         "macro_f1_at_least_30": walk.get("macro_f1") is not None and float(walk["macro_f1"]) >= 30.0,
         "shadow_sample_at_least_30": int(shadow.get("closed_forecasts", 0) or 0) >= 30,
+        "shadow_beats_majority_baseline": shadow.get("beats_majority_baseline") is True,
         "shadow_validation_passed": shadow.get("validation_gate_passed_now") is True,
         "cost_aware_backtest_completed": backtest.get("status") == "COMPLETED" and int(backtest.get("total_candles", 0) or 0) >= 300,
         "cost_aware_backtest_positive": backtest.get("net_return_pct") is not None and float(backtest["net_return_pct"]) > 0
@@ -406,7 +407,7 @@ def quality_gate(ai, paper, metrics):
     passed = all(checks.values())
     return {"status": "PASSED" if passed else "BLOCKED", "passed": passed, "checks": checks,
             "passed_checks": sum(checks.values()), "total_checks": len(checks),
-            "policy": "Directional signals remain blocked until AI validation beats the majority baseline, macro-F1 is >=30, shadow sample >=30 and passes its validation, and a >=300-candle cost-aware holdout backtest is positive.",
+            "policy": "Directional signals remain blocked until AI validation beats the majority baseline, macro-F1 is >=30, shadow sample >=30, beats its own majority-class baseline and passes its validation, and a >=300-candle cost-aware holdout backtest is positive.",
             "note": "This is a conservative evidence gate, not proof of future profitability."}
 
 
