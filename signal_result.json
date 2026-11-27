@@ -1,12 +1,12 @@
 {
   "system": "BTC Signal Pro Elite Hybrid Confluence Engine",
   "version": "4.3-hybrid-sweep-validated-futures",
-  "generated_at": "2026-11-27T19:11:31.817627+00:00",
+  "generated_at": "2026-11-27T19:23:42.212142+00:00",
   "symbol": "BTCUSDT",
-  "market_type": "OKX_BTC_USDT_SWAP",
-  "market_exchange": "OKX",
-  "market_instrument": "BTC-USDT-SWAP",
-  "market_source": "https://www.okx.com/api/v5/market (BTC-USDT-SWAP perpetual)",
+  "market_type": "BITGET_USDT_FUTURES",
+  "market_exchange": "Bitget",
+  "market_instrument": "BTCUSDT",
+  "market_source": "https://api.bitget.com/api/v2/mix/market (USDT-FUTURES)",
   "execution_price_note": "Use this exchange feed as the analysis reference only; verify the live Binance Futures execution price and spread before any manual entry.",
   "signal": "WAIT",
   "early_setup": {
@@ -14,96 +14,36 @@
     "status": "NO_CLEAR_EARLY_SETUP",
     "momentum_scores": {
       "LONG": 0.0,
-      "SHORT": 2.0
+      "SHORT": 0.0
     },
-    "momentum_margin": 2.0,
+    "momentum_margin": 0.0,
     "note": "Early setup is a watchlist hint only, not an entry signal. Confirm the main signal and manual risk levels before any trade."
   },
-  "confidence_score": 58.7,
+  "confidence_score": 13.04,
   "scores": {
     "LONG": 1.5,
-    "SHORT": 6.75
+    "SHORT": 0.75
   },
   "timeframe_analysis": {
     "5m": {
-      "available": true,
-      "bias": "BEARISH",
-      "momentum_bias": "NEUTRAL",
-      "price": 59831.1,
-      "ema50": 60033.07,
-      "ema200": 60721.74,
-      "rsi14": 47.25,
-      "atr14": 87.39,
-      "macd": {
-        "line": -23.72861,
-        "signal": -45.23888,
-        "histogram": 21.51027
-      },
-      "age_seconds": 65
+      "available": false,
+      "bias": "UNKNOWN"
     },
     "15m": {
-      "available": true,
-      "bias": "NEUTRAL",
-      "momentum_bias": "NEUTRAL",
-      "price": 59885.8,
-      "ema50": 60635.63,
-      "ema200": 60614.6,
-      "rsi14": 40.23,
-      "atr14": 306.94,
-      "macd": {
-        "line": -347.91077,
-        "signal": -384.13666,
-        "histogram": 36.22588
-      },
-      "age_seconds": 665
+      "available": false,
+      "bias": "UNKNOWN"
     },
     "1h": {
-      "available": true,
-      "bias": "BEARISH",
-      "momentum_bias": "BEARISH",
-      "price": 59885.8,
-      "ema50": 60628.93,
-      "ema200": 61007.71,
-      "rsi14": 38.14,
-      "atr14": 640.34,
-      "macd": {
-        "line": -189.61621,
-        "signal": 39.59652,
-        "histogram": -229.21273
-      },
-      "age_seconds": 665
+      "available": false,
+      "bias": "UNKNOWN"
     },
     "4h": {
-      "available": true,
-      "bias": "BEARISH",
-      "momentum_bias": "NEUTRAL",
-      "price": 60076.5,
-      "ema50": 61319.55,
-      "ema200": 68778.08,
-      "rsi14": 45.92,
-      "atr14": 1182.58,
-      "macd": {
-        "line": 104.23469,
-        "signal": -45.02399,
-        "histogram": 149.25868
-      },
-      "age_seconds": 11465
+      "available": false,
+      "bias": "UNKNOWN"
     },
     "1d": {
-      "available": true,
-      "bias": "BEARISH",
-      "momentum_bias": "BEARISH",
-      "price": 60076.5,
-      "ema50": 71143.61,
-      "ema200": 73475.95,
-      "rsi14": 31.23,
-      "atr14": 3375.61,
-      "macd": {
-        "line": -4522.89153,
-        "signal": -4502.17037,
-        "histogram": -20.72115
-      },
-      "age_seconds": 11465
+      "available": false,
+      "bias": "UNKNOWN"
     }
   },
   "liquidity_sweep": {
@@ -111,13 +51,13 @@
     "status": "NO_CONFIRMED_SWEEP"
   },
   "order_flow": {
-    "cvd_base": 1349.57,
-    "order_book_imbalance": -0.573204,
+    "cvd_base": 0.1948,
+    "order_book_imbalance": -0.151315,
     "order_book_imbalance_method": "Top-20 visible levels; quote-notional (price \u00d7 quantity); (bid-ask)/(bid+ask)",
-    "funding_rate_pct": 0.000717,
+    "funding_rate_pct": 0.0043,
     "funding_crowding": "NEUTRAL",
-    "open_interest_change_30m_pct": -0.3019,
-    "taker_buy_sell_ratio": 1.279287383692143
+    "open_interest_change_30m_pct": null,
+    "taker_buy_sell_ratio": 2.926805143422351
   },
   "ml_context": {
     "model_version": "4.4-validation-consistent",
@@ -128,7 +68,7 @@
     "signal": "WAIT"
   },
   "risk_levels": {
-    "entry_reference": 59831.1,
+    "entry_reference": null,
     "stop_loss": null,
     "take_profit_1": null,
     "take_profit_2": null,
@@ -141,12 +81,11 @@
     "futures_only": true,
     "status": "HEALTHY",
     "warnings": [
-      "OKX BTC-USDT-SWAP is a separate exchange perpetual reference; confirm execution venue price and liquidity."
-    ],
-    "derivatives_confluence_status": "AVAILABLE"
+      "Bitget USDT-FUTURES is a separate venue; verify execution venue price and liquidity."
+    ]
   },
   "news_guard": {
-    "generated_at": "2026-11-27T19:11:07.273273+00:00",
+    "generated_at": "2026-11-27T19:23:19.133453+00:00",
     "source": "Google News RSS public fallback + Trump's Truth independent archive (unofficial)",
     "available": true,
     "block": false,
@@ -160,13 +99,12 @@
   },
   "volatility_guard": {
     "blocked": false,
-    "atr_5m_pct": 0.1461,
+    "atr_5m_pct": 0.0,
     "atr_threshold_pct": 0.45,
     "range_spike": false
   },
   "warnings": [
-    "OKX BTC-USDT-SWAP is a separate exchange perpetual reference; confirm execution venue price and liquidity.",
-    "Directional entries blocked: AI must use verified perpetual Futures data AND pass the global walk-forward validation gate. Spot, unknown-source or failed-validation ML cannot authorize a Futures trade."
+    "Bitget USDT-FUTURES is a separate venue; verify execution venue price and liquidity."
   ],
   "execution": "MANUAL_ONLY_NO_ORDERS"
 }

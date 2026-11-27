@@ -1,137 +1,26 @@
 {
-  "generated_at": "2026-11-27T19:11:31.890843+00:00",
+  "generated_at": "2026-11-27T19:23:42.294436+00:00",
   "timeframe_indicators": {
     "5m": {
-      "available": true,
-      "ema50": 60033.07,
-      "ema200": 60721.74,
-      "rsi14": 47.25,
-      "macd": {
-        "macd": -23.7286,
-        "signal": -45.2389,
-        "histogram": 21.5103,
-        "bullish": true,
-        "cross_up": false,
-        "cross_down": false
-      },
-      "structure": {
-        "trend": "RANGE",
-        "event": "NONE",
-        "last_swing_high": 59959.9,
-        "last_swing_low": 59752.6,
-        "note": "Confirmed pivots use candles on both sides; most recent pivot is delayed by the confirmation window."
-      },
-      "volatility_atr14": 87.39,
-      "atr_pct": 0.1461
+      "available": false
     },
     "15m": {
-      "available": true,
-      "ema50": 60635.63,
-      "ema200": 60614.6,
-      "rsi14": 40.23,
-      "macd": {
-        "macd": -347.9108,
-        "signal": -384.1367,
-        "histogram": 36.2259,
-        "bullish": true,
-        "cross_up": false,
-        "cross_down": false
-      },
-      "structure": {
-        "trend": "RANGE",
-        "event": "NONE",
-        "last_swing_high": 60525.1,
-        "last_swing_low": 59468.9,
-        "note": "Confirmed pivots use candles on both sides; most recent pivot is delayed by the confirmation window."
-      },
-      "volatility_atr14": 306.94,
-      "atr_pct": 0.5125
+      "available": false
     },
     "1h": {
-      "available": true,
-      "ema50": 60628.93,
-      "ema200": 61007.71,
-      "rsi14": 38.14,
-      "macd": {
-        "macd": -189.6162,
-        "signal": 39.5965,
-        "histogram": -229.2127,
-        "bullish": false,
-        "cross_up": false,
-        "cross_down": false
-      },
-      "structure": {
-        "trend": "RANGE",
-        "event": "NONE",
-        "last_swing_high": 62199.2,
-        "last_swing_low": 58729.6,
-        "note": "Confirmed pivots use candles on both sides; most recent pivot is delayed by the confirmation window."
-      },
-      "volatility_atr14": 640.34,
-      "atr_pct": 1.0693
+      "available": false
     },
     "4h": {
-      "available": true,
-      "ema50": 61319.55,
-      "ema200": 68778.08,
-      "rsi14": 45.92,
-      "macd": {
-        "macd": 104.2347,
-        "signal": -45.024,
-        "histogram": 149.2587,
-        "bullish": true,
-        "cross_up": false,
-        "cross_down": false
-      },
-      "structure": {
-        "trend": "RANGE",
-        "event": "NONE",
-        "last_swing_high": 61620.0,
-        "last_swing_low": 59886.8,
-        "note": "Confirmed pivots use candles on both sides; most recent pivot is delayed by the confirmation window."
-      },
-      "volatility_atr14": 1182.58,
-      "atr_pct": 1.9685
+      "available": false
     },
     "1d": {
-      "available": true,
-      "ema50": 71143.61,
-      "ema200": 73475.95,
-      "rsi14": 31.23,
-      "macd": {
-        "macd": -4522.8915,
-        "signal": -4502.1704,
-        "histogram": -20.7212,
-        "bullish": false,
-        "cross_up": false,
-        "cross_down": false
-      },
-      "structure": {
-        "trend": "DOWNTREND",
-        "event": "NONE",
-        "last_swing_high": 64570.0,
-        "last_swing_low": 55100.0,
-        "note": "Confirmed pivots use candles on both sides; most recent pivot is delayed by the confirmation window."
-      },
-      "volatility_atr14": 3375.61,
-      "atr_pct": 5.6188
+      "available": false
     }
   },
   "backtest_5m": {
-    "status": "COMPLETED",
-    "method": "Chronological 60/20/20 split; reported trades only in final 20% holdout",
-    "total_candles": 599,
-    "test_candles": 240,
-    "test_start_time": 1795734600000,
-    "trades": 10,
-    "win_rate_pct": 20.0,
-    "net_return_pct": -2.7,
-    "profit_factor": 0.043,
-    "max_drawdown_pct": 2.7,
-    "fee_per_side_pct": 0.05,
-    "slippage_per_side_pct": 0.02,
-    "round_trip_cost_pct": 0.13999999999999999,
-    "warning": "Illustrative OHLCV simulation; funding, partial fills, liquidation and intrabar stop execution are not modeled."
+    "status": "INSUFFICIENT_DATA",
+    "candles": 199,
+    "minimum": 300
   },
   "risk_10x": {
     "status": "WAIT_OR_EQUITY_REQUIRED",
