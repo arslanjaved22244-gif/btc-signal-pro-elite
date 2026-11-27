@@ -77,6 +77,46 @@ class FeedHealthTests(unittest.TestCase):
         states = {item["name"]: item["passed"] for item in result["items"]}
         self.assertTrue(states["open_interest_history"])
 
+    def test_current_oi_snapshot_counts_but_is_not_called_history(self):
+        self.market["feeds"]["open_interest_history_5m"] = {
+            "ok": False, "error": "historical series unavailable"
+        }
+        self.market["feeds"]["open_interest_current"] = {
+            "ok": True, "data": {"openInterest": "123"}
+        }
+        result = INTEL.feed_health(
+            self.market, self.news, self.liquidation, self.comparison, now=self.now
+        )
+        oi = next(item for item in result["items"] if item["name"] == "open_interest_data")
+        self.assertTrue(oi["passed"])
+        self.assertIn("current OI snapshot", oi["detail"])
+
+    def test_recent_derived_visible_depth_counts_when_raw_feed_flag_missing(self):
+        self.market["feeds"]["order_book"] = {"ok": False}
+        self.market["derived"].update({
+            "visible_depth_bid_notional_usdt": 1000,
+            "visible_depth_ask_notional_usdt": 900
+        })
+        result = INTEL.feed_health(
+            self.market, self.news, self.liquidation, self.comparison, now=self.now
+        )
+        depth = next(item for item in result["items"] if item["name"] == "order_book_depth")
+        self.assertTrue(depth["passed"])
+        self.assertIn("derived top-20", depth["detail"])
+
+    def test_stale_derived_visible_depth_does_not_count(self):
+        self.market["generated_at"] = "2020-01-01T00:00:00+00:00"
+        self.market["feeds"]["order_book"] = {"ok": False}
+        self.market["derived"].update({
+            "visible_depth_bid_notional_usdt": 1000,
+            "visible_depth_ask_notional_usdt": 900
+        })
+        result = INTEL.feed_health(
+            self.market, self.news, self.liquidation, self.comparison, now=self.now
+        )
+        depth = next(item for item in result["items"] if item["name"] == "order_book_depth")
+        self.assertFalse(depth["passed"])
+
     def test_missing_timestamps_fail_closed(self):
         self.market["feeds"]["open_interest_history_5m"]["data"] = [
             {"sumOpenInterest": 100}
