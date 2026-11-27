@@ -1,7 +1,7 @@
 {
   "system": "BTC Signal Pro Elite Advanced ML",
   "model": "Multinomial Logistic Regression",
-  "model_version": "3.0-binance-mtf-balanced-walkforward",
+  "model_version": "3.1-multi-source-mtf-balanced-walkforward",
   "data_source": "Kraken Spot public OHLC (fallback)",
   "symbol": "BTC/USD",
   "base_interval": "5m",
@@ -14,41 +14,41 @@
   ],
   "signal": "WAIT",
   "class_scores": {
-    "SHORT": 25.28,
-    "WAIT": 50.52,
-    "LONG": 24.21
+    "SHORT": 28.35,
+    "WAIT": 47.8,
+    "LONG": 23.85
   },
-  "confidence_score": 50.52,
-  "confidence_margin": 25.24,
+  "confidence_score": 47.8,
+  "confidence_margin": 19.45,
   "walk_forward_metrics": {
     "accuracy": 25.97,
-    "macro_precision": 44.94,
-    "macro_recall": 34.98,
-    "macro_f1": 20.12,
+    "macro_precision": 44.33,
+    "macro_recall": 34.96,
+    "macro_f1": 20.1,
     "per_class": {
       "SHORT": {
-        "precision": 40.0,
-        "recall": 8.79,
-        "f1": 14.41,
-        "support": 91
+        "precision": 38.1,
+        "recall": 8.7,
+        "f1": 14.16,
+        "support": 92
       },
       "WAIT": {
-        "precision": 23.38,
+        "precision": 23.48,
         "recall": 91.53,
-        "f1": 37.24,
+        "f1": 37.37,
         "support": 59
       },
       "LONG": {
         "precision": 71.43,
-        "recall": 4.63,
-        "f1": 8.7,
-        "support": 108
+        "recall": 4.67,
+        "f1": 8.77,
+        "support": 107
       }
     },
     "confusion_matrix": [
       [
         8,
-        82,
+        83,
         1
       ],
       [
@@ -57,8 +57,8 @@
         1
       ],
       [
-        8,
-        95,
+        9,
+        93,
         5
       ]
     ]
@@ -70,20 +70,20 @@
       "test_samples": 86,
       "metrics": {
         "accuracy": 26.74,
-        "macro_precision": 45.65,
+        "macro_precision": 44.64,
         "macro_recall": 40.3,
-        "macro_f1": 24.58,
+        "macro_f1": 24.49,
         "per_class": {
           "SHORT": {
-            "precision": 50.0,
+            "precision": 46.67,
             "recall": 22.58,
-            "f1": 31.11,
+            "f1": 30.43,
             "support": 31
           },
           "WAIT": {
-            "precision": 20.29,
+            "precision": 20.59,
             "recall": 93.33,
-            "f1": 33.33,
+            "f1": 33.73,
             "support": 15
           },
           "LONG": {
@@ -105,8 +105,8 @@
             0
           ],
           [
-            6,
-            32,
+            7,
+            31,
             2
           ]
         ]
@@ -174,7 +174,7 @@
             "precision": 0.0,
             "recall": 0.0,
             "f1": 0.0,
-            "support": 29
+            "support": 30
           },
           "WAIT": {
             "precision": 22.09,
@@ -186,13 +186,13 @@
             "precision": 0.0,
             "recall": 0.0,
             "f1": 0.0,
-            "support": 38
+            "support": 37
           }
         },
         "confusion_matrix": [
           [
             0,
-            29,
+            30,
             0
           ],
           [
@@ -202,7 +202,7 @@
           ],
           [
             0,
-            38,
+            37,
             0
           ]
         ]
@@ -212,11 +212,11 @@
   "training_samples": 517,
   "future_horizon": "3 candles / 15 minutes",
   "neutral_threshold_pct": 0.05,
-  "last_price": 60464.5,
-  "last_candle_time": 1795738200000,
-  "generated_at": "2026-11-27T00:17:11.321513+00:00",
+  "last_price": 60518.3,
+  "last_candle_time": 1795738500000,
+  "generated_at": "2026-11-27T00:20:16.165382+00:00",
   "limitations": [
-    "Uses one consistent OHLCV source across all timeframes. Kraken fallback is spot data, not Binance Futures data; CVD, open interest, funding, order book and liquidation feeds are not model features yet.",
+    "Uses one consistent OHLCV source across all timeframes. Source fallback order is Binance USD-M Futures, Binance Spot, then Kraken Spot. When a spot source is used, it is not Futures data; CVD, open interest, funding, order book and liquidation feeds are not model features yet.",
     "Class scores are model scores, not calibrated real-world win probabilities.",
     "Walk-forward metrics are historical diagnostics, not guarantees of future performance."
   ]
