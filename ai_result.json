@@ -1,8 +1,8 @@
 {
   "system": "BTC Signal Pro Elite Advanced ML",
   "model": "Multinomial Logistic Regression",
-  "model_version": "3.1-multi-source-mtf-balanced-walkforward",
-  "data_source": "Kraken Spot public OHLC (fallback)",
+  "model_version": "3.2-expanded-history-multi-source-walkforward",
+  "data_source": "Coinbase Exchange public candles (fallback)",
   "symbol": "BTC/USD",
   "base_interval": "5m",
   "feature_timeframes": [
@@ -14,209 +14,209 @@
   ],
   "signal": "WAIT",
   "class_scores": {
-    "SHORT": 28.35,
-    "WAIT": 47.8,
-    "LONG": 23.85
+    "SHORT": 33.43,
+    "WAIT": 33.83,
+    "LONG": 32.74
   },
-  "confidence_score": 47.8,
-  "confidence_margin": 19.45,
+  "confidence_score": 33.83,
+  "confidence_margin": 0.4,
   "walk_forward_metrics": {
-    "accuracy": 25.97,
-    "macro_precision": 44.33,
-    "macro_recall": 34.96,
-    "macro_f1": 20.1,
+    "accuracy": 33.19,
+    "macro_precision": 35.45,
+    "macro_recall": 37.64,
+    "macro_f1": 29.13,
     "per_class": {
       "SHORT": {
-        "precision": 38.1,
-        "recall": 8.7,
-        "f1": 14.16,
-        "support": 92
+        "precision": 43.93,
+        "recall": 50.43,
+        "f1": 46.96,
+        "support": 581
       },
       "WAIT": {
-        "precision": 23.48,
-        "recall": 91.53,
-        "f1": 37.37,
-        "support": 59
+        "precision": 21.32,
+        "recall": 57.2,
+        "f1": 31.06,
+        "support": 243
       },
       "LONG": {
-        "precision": 71.43,
-        "recall": 4.67,
-        "f1": 8.77,
-        "support": 107
+        "precision": 41.1,
+        "recall": 5.28,
+        "f1": 9.36,
+        "support": 568
       }
     },
     "confusion_matrix": [
       [
-        8,
-        83,
-        1
+        293,
+        253,
+        35
       ],
       [
-        4,
-        54,
-        1
+        96,
+        139,
+        8
       ],
       [
-        9,
-        93,
-        5
+        278,
+        260,
+        30
       ]
     ]
   },
   "walk_forward_folds": [
     {
       "fold": 1,
-      "train_samples": 255,
-      "test_samples": 86,
+      "train_samples": 1390,
+      "test_samples": 464,
       "metrics": {
-        "accuracy": 26.74,
-        "macro_precision": 44.64,
-        "macro_recall": 40.3,
-        "macro_f1": 24.49,
+        "accuracy": 28.66,
+        "macro_precision": 21.11,
+        "macro_recall": 34.9,
+        "macro_f1": 23.85,
         "per_class": {
           "SHORT": {
-            "precision": 46.67,
-            "recall": 22.58,
-            "f1": 30.43,
-            "support": 31
+            "precision": 43.68,
+            "recall": 39.18,
+            "f1": 41.3,
+            "support": 194
           },
           "WAIT": {
-            "precision": 20.59,
-            "recall": 93.33,
-            "f1": 33.73,
-            "support": 15
+            "precision": 19.66,
+            "recall": 65.52,
+            "f1": 30.24,
+            "support": 87
           },
           "LONG": {
-            "precision": 66.67,
-            "recall": 5.0,
-            "f1": 9.3,
-            "support": 40
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 183
           }
         },
         "confusion_matrix": [
           [
-            7,
-            23,
-            1
-          ],
-          [
-            1,
-            14,
+            76,
+            118,
             0
           ],
           [
-            7,
-            31,
-            2
+            30,
+            57,
+            0
+          ],
+          [
+            68,
+            115,
+            0
           ]
         ]
       }
     },
     {
       "fold": 2,
-      "train_samples": 341,
-      "test_samples": 86,
+      "train_samples": 1854,
+      "test_samples": 464,
       "metrics": {
-        "accuracy": 29.07,
-        "macro_precision": 39.77,
-        "macro_recall": 32.41,
-        "macro_f1": 21.55,
+        "accuracy": 37.5,
+        "macro_precision": 38.48,
+        "macro_recall": 34.84,
+        "macro_f1": 28.58,
         "per_class": {
           "SHORT": {
-            "precision": 16.67,
-            "recall": 3.23,
-            "f1": 5.41,
-            "support": 31
+            "precision": 44.38,
+            "recall": 67.62,
+            "f1": 53.58,
+            "support": 210
           },
           "WAIT": {
-            "precision": 27.63,
-            "recall": 84.0,
-            "f1": 41.58,
-            "support": 25
+            "precision": 18.11,
+            "recall": 31.94,
+            "f1": 23.12,
+            "support": 72
           },
           "LONG": {
-            "precision": 75.0,
-            "recall": 10.0,
-            "f1": 17.65,
-            "support": 30
+            "precision": 52.94,
+            "recall": 4.95,
+            "f1": 9.05,
+            "support": 182
           }
         },
         "confusion_matrix": [
           [
-            1,
-            30,
-            0
+            142,
+            61,
+            7
           ],
           [
-            3,
-            21,
+            48,
+            23,
             1
           ],
           [
-            2,
-            25,
-            3
+            130,
+            43,
+            9
           ]
         ]
       }
     },
     {
       "fold": 3,
-      "train_samples": 427,
-      "test_samples": 86,
+      "train_samples": 2318,
+      "test_samples": 464,
       "metrics": {
-        "accuracy": 22.09,
-        "macro_precision": 7.36,
-        "macro_recall": 33.33,
-        "macro_f1": 12.06,
+        "accuracy": 33.41,
+        "macro_precision": 35.32,
+        "macro_recall": 40.99,
+        "macro_f1": 32.02,
         "per_class": {
           "SHORT": {
-            "precision": 0.0,
-            "recall": 0.0,
-            "f1": 0.0,
-            "support": 30
+            "precision": 43.35,
+            "recall": 42.37,
+            "f1": 42.86,
+            "support": 177
           },
           "WAIT": {
-            "precision": 22.09,
-            "recall": 100.0,
-            "f1": 36.19,
-            "support": 19
+            "precision": 25.11,
+            "recall": 70.24,
+            "f1": 36.99,
+            "support": 84
           },
           "LONG": {
-            "precision": 0.0,
-            "recall": 0.0,
-            "f1": 0.0,
-            "support": 37
+            "precision": 37.5,
+            "recall": 10.34,
+            "f1": 16.22,
+            "support": 203
           }
         },
         "confusion_matrix": [
           [
-            0,
-            30,
-            0
+            75,
+            74,
+            28
           ],
           [
-            0,
-            19,
-            0
+            18,
+            59,
+            7
           ],
           [
-            0,
-            37,
-            0
+            80,
+            102,
+            21
           ]
         ]
       }
     }
   ],
-  "training_samples": 517,
+  "training_samples": 2786,
   "future_horizon": "3 candles / 15 minutes",
   "neutral_threshold_pct": 0.05,
-  "last_price": 60518.3,
+  "last_price": 60533.51,
   "last_candle_time": 1795738500000,
-  "generated_at": "2026-11-27T00:20:16.165382+00:00",
+  "generated_at": "2026-11-27T00:22:29.221046+00:00",
   "limitations": [
-    "Uses one consistent OHLCV source across all timeframes. Source fallback order is Binance USD-M Futures, Binance Spot, then Kraken Spot. When a spot source is used, it is not Futures data; CVD, open interest, funding, order book and liquidation feeds are not model features yet.",
+    "Uses one consistent OHLCV source across all timeframes. Source fallback order is Binance USD-M Futures, Binance Spot, Coinbase Exchange, then Kraken Spot. Coinbase 4h candles are aggregated from 1h candles. Spot sources are not Futures data; CVD, open interest, funding, order book and liquidation feeds are not model features yet.",
     "Class scores are model scores, not calibrated real-world win probabilities.",
     "Walk-forward metrics are historical diagnostics, not guarantees of future performance."
   ]
