@@ -122,11 +122,11 @@
         "signal": "WAIT",
         "raw_model_class": "LONG",
         "scores": {
-          "SHORT": 29.04,
-          "WAIT": 29.88,
-          "LONG": 41.07
+          "SHORT": 29.14,
+          "WAIT": 29.71,
+          "LONG": 41.15
         },
-        "confidence_margin": 11.19,
+        "confidence_margin": 11.44,
         "holdout_accuracy": 35.96,
         "macro_f1": 17.63,
         "training_samples": 2074,
@@ -137,11 +137,11 @@
         "signal": "WAIT",
         "raw_model_class": "LONG",
         "scores": {
-          "SHORT": 28.53,
-          "WAIT": 32.07,
-          "LONG": 39.4
+          "SHORT": 28.36,
+          "WAIT": 32.34,
+          "LONG": 39.29
         },
-        "confidence_margin": 7.32,
+        "confidence_margin": 6.95,
         "holdout_accuracy": 35.26,
         "macro_f1": 17.38,
         "training_samples": 2069,
@@ -152,19 +152,39 @@
         "signal": "WAIT",
         "raw_model_class": "LONG",
         "scores": {
-          "SHORT": 28.85,
-          "WAIT": 21.93,
-          "LONG": 49.22
+          "SHORT": 28.74,
+          "WAIT": 22.48,
+          "LONG": 48.78
         },
-        "confidence_margin": 20.37,
+        "confidence_margin": 20.04,
         "holdout_accuracy": 36.49,
         "macro_f1": 17.82,
         "training_samples": 2058,
         "validation_samples": 518,
         "status": "WEAK EDGE \u2014 WAIT"
+      },
+      "4h": {
+        "signal": "LONG",
+        "raw_model_class": "LONG",
+        "scores": {
+          "SHORT": 3.01,
+          "WAIT": 19.73,
+          "LONG": 77.26
+        },
+        "confidence_margin": 57.53,
+        "holdout_accuracy": 41.29,
+        "macro_f1": 19.48,
+        "training_samples": 1993,
+        "validation_samples": 511,
+        "status": "VALIDATED HOLDOUT"
       }
     },
-    "method": "chronological holdout horizon models + volatility regime + 20-candle liquidity sweep detector"
+    "tree_ensemble": {
+      "status": "DEPENDENCY ERROR",
+      "detail": "No module named 'numpy'",
+      "forecasts": {}
+    },
+    "method": "four-horizon chronological ML + Random Forest + gradient boosting + XGBoost (when installed) + volatility regime + liquidity sweep detector"
   },
   "walk_forward_folds": [
     {
@@ -334,7 +354,7 @@
   "neutral_threshold_pct": 0.05,
   "last_price": 77522.6,
   "last_candle_time": 1793490900000,
-  "generated_at": "2026-11-27T11:09:45.142854+00:00",
+  "generated_at": "2026-11-27T11:15:04.636708+00:00",
   "limitations": [
     "Training is strictly Binance USD-M Futures OHLCV. If Futures endpoints fail, training fails closed and never substitutes Spot data. CVD, open interest, funding, order book and liquidation remain separate confluence inputs.",
     "Class scores are model scores, not calibrated real-world win probabilities.",
