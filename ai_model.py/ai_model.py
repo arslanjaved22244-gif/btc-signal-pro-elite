@@ -612,6 +612,13 @@ def main():
     margin = ordered[0] - ordered[1]
     calibrated_class = predict_with_wait_threshold(scores, final_wait_threshold)
     signal = CLASSES[calibrated_class] if calibrated_class == 1 or (scores[calibrated_class] >= 0.48 and margin >= 0.10) else "WAIT"
+    model_probabilities = {
+        "full_history_logistic": predict(final_model["full_history"], latest),
+        "recent_regime_logistic": predict(final_model["recent_regime"], latest),
+        "nearest_centroid": predict_centroid(final_model["centroid"], latest),
+        "decision_stumps": predict_stumps(final_model["stumps"], latest)
+    }
+    model_votes = {name: CLASSES[max(range(3), key=lambda k: probs[k])] for name, probs in model_probabilities.items()}
     result = {
         "system": "BTC Signal Pro Elite Advanced ML",
         "model": "Four-model vote: full-history logistic, recent-regime logistic, nearest-centroid and decision-stump ensemble",
@@ -622,6 +629,8 @@ def main():
         "feature_timeframes": list(INTERVALS.keys()),
         "signal": signal,
         "class_scores": {name: round(scores[i] * 100, 2) for i, name in enumerate(CLASSES)},
+        "individual_model_votes": model_votes,
+        "individual_model_scores": {name: {cls: round(probs[i] * 100, 2) for i, cls in enumerate(CLASSES)} for name, probs in model_probabilities.items()},
         "confidence_score": round(scores[best] * 100, 2),
         "confidence_margin": round(margin * 100, 2),
         "wait_probability_threshold": final_wait_threshold,
