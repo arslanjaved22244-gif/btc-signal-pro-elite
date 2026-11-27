@@ -37,6 +37,9 @@ def main():
             "https://api.bybit.com/v5/market/tickers?category=linear&symbol=BTCUSDT",
             "https://api.bytick.com/v5/market/tickers?category=linear&symbol=BTCUSDT"
         ],
+        "Bitget USDT-FUTURES": [
+            "https://api.bitget.com/api/v2/mix/market/ticker?productType=USDT-FUTURES&symbol=BTCUSDT"
+        ],
         "OKX BTC-USDT-SWAP": [
             "https://www.okx.com/api/v5/market/ticker?instId=BTC-USDT-SWAP"
         ]
@@ -50,6 +53,10 @@ def main():
                 if int(data.get("retCode", -1)) != 0:
                     raise ValueError(data.get("retMsg", "Bybit API error"))
                 price = float(data["result"]["list"][0]["lastPrice"])
+            elif name.startswith("Bitget"):
+                if data.get("code") != "00000":
+                    raise ValueError(data.get("msg", "Bitget API error"))
+                price = float(data["data"][0]["last"] if "last" in data["data"][0] else data["data"][0]["lastPr"])
             else:
                 price = float(data["data"][0]["last"])
             venues[name] = {"available": True, "price": price, "endpoint": endpoint,
@@ -66,6 +73,7 @@ def main():
     result = {
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "symbol": "BTCUSDT perpetual contracts only",
+        "venues_checked": ["Binance USD-M Futures", "Bybit linear perpetual", "Bitget USDT-FUTURES", "OKX BTC-USDT-SWAP"],
         "reference": reference_name,
         "venues": venues,
         "status": "COMPARISON_AVAILABLE" if len(available) >= 2 else "PARTIAL_OR_UNAVAILABLE",
