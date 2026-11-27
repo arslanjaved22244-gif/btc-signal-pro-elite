@@ -1,24 +1,25 @@
 # BTC Signal Pro Elite
 
-Signal-only BTC/USDT Futures dashboard and scheduled monitor.
+Phone-friendly BTC/USDT signal dashboard. It is **signal-only**: it does not connect to your Binance account, place orders, or require exchange API keys.
 
-## Scheduled monitor
-GitHub Actions runs `bot/monitor.py` approximately every 5 minutes and can also be started manually from the Actions tab.
+## Open the dashboard
+GitHub Pages: https://arslanjaved22244-gif.github.io/btc-signal-pro-elite/
 
-### Telegram setup (required for phone alerts)
-In the repository on GitHub:
-1. Open **Settings → Secrets and variables → Actions**.
-2. Add repository secret `TELEGRAM_BOT_TOKEN` (from your Telegram bot created with BotFather).
-3. Add repository secret `TELEGRAM_CHAT_ID` (your private chat ID; start the bot and send it a message first).
-4. Open **Actions → BTC Signal Pro Elite Monitor → Run workflow** to test.
+## What is included
+- Multi-timeframe BTC context: 5m, 15m, 1h, 4h and 1d.
+- Experimental ML forecasts for 15m, 30m, 1h and 4h, including a Random Forest, gradient-boosting, neural MLP and optional XGBoost ensemble.
+- Chronological holdout validation and conservative WAIT gates. Model scores are not calibrated win probabilities and are not guarantees of future performance.
+- Public derivatives monitor: funding, open interest where available, CVD proxy, taker buy ratio, order-book imbalance and large-trade size alerts.
+- Headline-based news safety pause of at least 30 minutes. Headlines can extend the pause while they remain in the recent feed. This is not a direct Trump/X feed and cannot guarantee detection of every breaking event or public post.
+- Dashboard market snapshot is updated by scheduled GitHub Actions; schedules are best-effort and can be delayed.
 
-Never put the bot token in `index.html`, source code, screenshots, or public messages. If the repository is public, keep all credentials in GitHub Secrets.
+## Important limitations
+- Derivatives data comes from public exchange endpoints (Bybit with OKX fallback); individual fields can be unavailable during API outages or when the provider does not publish the requested history.
+- Large trades are size alerts, not verified whale identities.
+- CVD is an estimate from recent public trades, not exchange-wide consolidated order flow.
+- Experimental AI forecasts may return WAIT frequently when validation quality is weak. That is intentional.
+- Max leverage guidance is 10x only as a ceiling, not a recommendation. Leverage magnifies losses; fees, funding, slippage and liquidation can make outcomes worse.
+- No model accuracy or profit is guaranteed. Review all signals manually and use independent risk controls.
 
-## Monitor behavior and limitations
-- Uses public Binance USD-M Futures market endpoints; no Binance API key and no trading permissions are used.
-- Checks BTC price, 15m/1h/4h/1d EMA structure, RSI, ATR, funding, open interest, taker buy volume, recent aggregate trades (CVD proxy), and order-book imbalance.
-- Sends Telegram alerts when the signal state changes. Signals are LONG / SHORT / WAIT and are for manual review only. No orders are placed.
-- Google News RSS is used as a headline-based risk filter. A recent relevant headline starts a 30-minute safety pause; a headline still appearing in the recent feed may extend it. This is not a direct X/Twitter feed and cannot guarantee detection of every breaking event or public post.
-- GitHub scheduled workflows are best-effort and may be delayed; this is not a continuously running 24/7 server or guaranteed real-time alert system.
-- The monitor is rule-based, not a proven predictive AI model. Backtests or experimental dashboard estimates do not guarantee future results.
-- Max leverage guidance is 10x. Leverage magnifies losses; stop execution can differ due to slippage, fees, funding, and liquidation risk.
+## Automation
+The repository uses GitHub Actions to refresh the AI output and public market snapshot. You can inspect run history in the repository's **Actions** tab. No Telegram setup is required for the dashboard.
