@@ -1,7 +1,7 @@
 {
   "system": "BTC Signal Pro Elite Hybrid Confluence Engine",
   "version": "4.3-hybrid-sweep-validated-futures",
-  "generated_at": "2026-11-27T18:10:55.409151+00:00",
+  "generated_at": "2026-11-27T18:11:51.820948+00:00",
   "symbol": "BTCUSDT",
   "market_type": "OKX_BTC_USDT_SWAP",
   "market_exchange": "OKX",
@@ -39,7 +39,7 @@
         "signal": -120.57536,
         "histogram": 22.85279
       },
-      "age_seconds": 27
+      "age_seconds": 83
     },
     "15m": {
       "available": true,
@@ -55,7 +55,7 @@
         "signal": -403.53859,
         "histogram": -15.08958
       },
-      "age_seconds": 627
+      "age_seconds": 684
     },
     "1h": {
       "available": true,
@@ -71,7 +71,7 @@
         "signal": 96.8997,
         "histogram": -235.88013
       },
-      "age_seconds": 627
+      "age_seconds": 684
     },
     "4h": {
       "available": true,
@@ -87,7 +87,7 @@
         "signal": -45.02399,
         "histogram": 149.25868
       },
-      "age_seconds": 7827
+      "age_seconds": 7884
     },
     "1d": {
       "available": true,
@@ -103,7 +103,7 @@
         "signal": -4502.17037,
         "histogram": -20.72115
       },
-      "age_seconds": 7828
+      "age_seconds": 7884
     }
   },
   "liquidity_sweep": {
@@ -111,9 +111,9 @@
     "status": "NO_CONFIRMED_SWEEP"
   },
   "order_flow": {
-    "cvd_base": -397.59,
-    "order_book_imbalance": -0.567448,
-    "funding_rate_pct": 0.001256,
+    "cvd_base": -436.72,
+    "order_book_imbalance": -0.837541,
+    "funding_rate_pct": 0.001279,
     "funding_crowding": "NEUTRAL",
     "open_interest_change_30m_pct": -1.0446,
     "taker_buy_sell_ratio": 1.134091708545171
@@ -145,7 +145,7 @@
     "derivatives_confluence_status": "AVAILABLE"
   },
   "news_guard": {
-    "generated_at": "2026-11-27T18:10:30.102796+00:00",
+    "generated_at": "2026-11-27T18:11:25.997813+00:00",
     "source": "Google News RSS public fallback + Trump's Truth independent archive (unofficial)",
     "available": true,
     "block": false,
