@@ -980,6 +980,14 @@ def main():
         if validation_gate and scores[calibrated_class] >= 0.48 and margin >= 0.10
         else "WAIT"
     )
+    trend_alignment = multi_timeframe_trend_alignment(data)
+    alignment_veto = None
+    if signal == "LONG" and trend_alignment["bearish_timeframes"] >= 3 and trend_alignment["bearish_timeframes"] > trend_alignment["bullish_timeframes"]:
+        signal = "WAIT"
+        alignment_veto = "LONG blocked: at least 3 timeframes have bearish EMA structure."
+    elif signal == "SHORT" and trend_alignment["bullish_timeframes"] >= 3 and trend_alignment["bullish_timeframes"] > trend_alignment["bearish_timeframes"]:
+        signal = "WAIT"
+        alignment_veto = "SHORT blocked: at least 3 timeframes have bullish EMA structure."
     model_probabilities = {
         "full_history_logistic": predict(final_model["full_history"], latest),
         "recent_regime_logistic": predict(final_model["recent_regime"], latest),
@@ -1007,7 +1015,7 @@ def main():
         "ensemble_configuration": {"models": ["full_history_logistic", "recent_regime_logistic", "nearest_centroid", "decision_stumps"], "weights": {"full_history_logistic": 0.35, "recent_regime_logistic": 0.20, "nearest_centroid": 0.20, "decision_stumps": 0.25}, "recent_training_window": final_model["recent_window"]},
         "walk_forward_metrics": validation,
         "validation_gate": {"passed": validation_gate, "minimum_accuracy_pct": 38.0, "minimum_macro_f1_pct": 30.0, "must_beat_majority_baseline": True, "decision": "directional signals allowed" if validation_gate else "WAIT only — historical validation too weak"},
-        "advanced_intelligence": {"market_regime": regime_analysis, "multi_timeframe_trend_alignment": multi_timeframe_trend_alignment(data), "multi_horizon_forecasts": horizon_forecasts, "tree_ensemble": tree_ensemble, "tree_blend_applied_to_primary_signal": tree_blend_applied, "method": "four-horizon chronological ML + Random Forest + gradient boosting + neural MLP + XGBoost (when installed) + volatility regime + liquidity sweep detector"},
+        "advanced_intelligence": {"market_regime": regime_analysis, "multi_timeframe_trend_alignment": trend_alignment, "alignment_veto": alignment_veto, "multi_horizon_forecasts": horizon_forecasts, "tree_ensemble": tree_ensemble, "tree_blend_applied_to_primary_signal": tree_blend_applied, "method": "four-horizon chronological ML + Random Forest + gradient boosting + neural MLP + XGBoost (when installed) + volatility regime + liquidity sweep detector"},
         "walk_forward_folds": folds,
         "training_samples": len(rows),
         "label_distribution": {name: labels.count(i) for i, name in enumerate(CLASSES)},
