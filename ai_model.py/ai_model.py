@@ -980,6 +980,147 @@ def advanced_tree_ensemble(data, prepared):
 
 
 
+
+def update_prediction_feedback(data, result, path="prediction_feedback.json"):
+    """
+    Resolve matured 15m forecasts against later closed candles and retain a
+    bounded audit trail. This is evaluation feedback, not automatic retraining.
+    """
+    candles = data["5m"]
+    candle_times = [item["time"] for item in candles]
+    latest_time = candle_times[-1]
+    try:
+        with open(path, "r", encoding="utf-8") as handle:
+            ledger = json.load(handle)
+        if not isinstance(ledger, dict) or not isinstance(ledger.get("predictions"), list):
+            ledger = {"version": 1, "predictions": []}
+    except (OSError, ValueError, TypeError):
+        ledger = {"version": 1, "predictions": []}
+
+    records = ledger.get("predictions", [])
+    for record in records:
+        if record.get("status") != "PENDING":
+            continue
+        target_time = int(record.get("target_time", 0))
+        target_index = bisect.bisect_left(candle_times, target_time)
+        if target_index >= len(candles):
+            continue
+        # Do not score a forecast until the target candle itself is closed.
+        actual_price = candles[target_index]["close"]
+        start_price = float(record.get("reference_price", 0))
+        if start_price <= 0:
+            record["status"] = "INVALID"
+            continue
+        realized_return = actual_price / start_price - 1.0
+        threshold = float(record.get("threshold_pct", MOVE_THRESHOLD))
+        actual_class = 2 if realized_return > threshold else 0 if realized_return < -threshold else 1
+        record.update({
+            "status": "EVALUATED",
+            "actual_class": CLASSES[actual_class],
+            "actual_return_pct": round(realized_return * 100.0, 5),
+            "actual_close": actual_price,
+            "evaluated_at_candle_time": candle_times[target_index],
+            "correct": record.get("predicted_class") == CLASSES[actual_class]
+        })
+
+    prediction_time = latest_time
+    origin_index = len(candles) - 1
+    target_time = prediction_time + FUTURE_CANDLES * INTERVALS["5m"] * 60_000
+    threshold_pct = adaptive_move_threshold(candles, origin_index, FUTURE_CANDLES)
+    models = {}
+    scores = result.get("class_scores", {})
+    if scores:
+        models["primary_ensemble"] = {
+            "class": max(CLASSES, key=lambda name: float(scores.get(name, 0.0))),
+            "scores": scores,
+            "approved_signal": result.get("signal", "WAIT")
+        }
+    intelligence = result.get("advanced_intelligence", {})
+    temporal = intelligence.get("temporal_sequence_model", {})
+    if temporal.get("raw_model_class") in CLASSES:
+        models["temporal_sequence"] = {
+            "class": temporal["raw_model_class"],
+            "scores": temporal.get("scores", {}),
+            "approved_signal": temporal.get("signal", "WAIT")
+        }
+    tree = intelligence.get("tree_ensemble", {}).get("forecasts", {}).get("15m", {})
+    if tree.get("raw_model_class") in CLASSES:
+        models["tree_ensemble_15m"] = {
+            "class": tree["raw_model_class"],
+            "scores": tree.get("scores", {}),
+            "approved_signal": tree.get("signal", "WAIT")
+        }
+
+    known = {item.get("id") for item in records}
+    for model_name, prediction in models.items():
+        record_id = f"{model_name}:{prediction_time}:{target_time}"
+        if record_id in known:
+            continue
+        records.append({
+            "id": record_id,
+            "model": model_name,
+            "prediction_time": prediction_time,
+            "target_time": target_time,
+            "horizon_minutes": 15,
+            "reference_price": candles[-1]["close"],
+            "threshold_pct": threshold_pct,
+            "predicted_class": prediction["class"],
+            "approved_signal": prediction["approved_signal"],
+            "scores": prediction["scores"],
+            "status": "PENDING"
+        })
+
+    records = sorted(records, key=lambda item: int(item.get("prediction_time", 0)))[-1000:]
+    summary = {}
+    for model_name in ("primary_ensemble", "temporal_sequence", "tree_ensemble_15m"):
+        evaluated = [item for item in records
+                     if item.get("model") == model_name and item.get("status") == "EVALUATED"]
+        pending = sum(1 for item in records
+                      if item.get("model") == model_name and item.get("status") == "PENDING")
+        if evaluated:
+            accuracy = sum(1 for item in evaluated if item.get("correct")) / len(evaluated) * 100.0
+            class_f1 = []
+            for class_name in CLASSES:
+                tp = sum(1 for item in evaluated
+                         if item.get("predicted_class") == class_name
+                         and item.get("actual_class") == class_name)
+                fp = sum(1 for item in evaluated
+                         if item.get("predicted_class") == class_name
+                         and item.get("actual_class") != class_name)
+                fn_count = sum(1 for item in evaluated
+                               if item.get("predicted_class") != class_name
+                               and item.get("actual_class") == class_name)
+                precision = tp / (tp + fp) if tp + fp else 0.0
+                recall = tp / (tp + fn_count) if tp + fn_count else 0.0
+                class_f1.append(2 * precision * recall / (precision + recall)
+                                if precision + recall else 0.0)
+            macro_f1 = sum(class_f1) / len(CLASSES) * 100.0
+        else:
+            accuracy, macro_f1 = None, None
+        summary[model_name] = {
+            "evaluated_predictions": len(evaluated),
+            "pending_predictions": pending,
+            "realized_accuracy_pct": round(accuracy, 2) if accuracy is not None else None,
+            "realized_macro_f1_pct": round(macro_f1, 2) if macro_f1 is not None else None,
+            "status": "COLLECTING LIVE OUTCOMES" if len(evaluated) < 30 else "LIVE FEEDBACK SAMPLE"
+        }
+
+    ledger = {
+        "version": 1,
+        "last_updated": datetime.now(timezone.utc).isoformat(),
+        "scoring_rule": "15m realized return classified using the prediction-time ATR neutral threshold",
+        "predictions": records
+    }
+    with open(path, "w", encoding="utf-8") as handle:
+        json.dump(ledger, handle, indent=2)
+    return {
+        "status": "ACTIVE",
+        "method": "matured forecast vs subsequent closed 5m candle",
+        "history_retained": len(records),
+        "models": summary,
+        "note": "Live outcomes are tracked for evaluation; this does not silently retrain or alter model weights."
+    }
+
 def main():
     print("BTC Signal Pro Elite - Advanced ML starting...")
     data = {}
@@ -1145,6 +1286,7 @@ def main():
             "Walk-forward metrics are historical diagnostics, not guarantees of future performance."
         ]
     }
+    result["prediction_feedback"] = update_prediction_feedback(data, result)
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         json.dump(result, f, indent=2)
     print(json.dumps(result, indent=2))
