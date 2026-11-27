@@ -30,7 +30,7 @@ footer{color:var(--muted);font-size:12px;margin-top:24px;line-height:1.6}
  <div class="card"><div class="label">Aggressive Sell</div><div class="value" id="sell">—</div><div class="small">BTC volume</div></div>
  <div class="card"><div class="label">Book Imbalance</div><div class="value" id="imbalance">—</div><div class="small">Top 100 visible levels</div></div>
 </div>
-<h2 class="section">AI model assessment</h2><div class="card"><table>
+<h2 class="section">AI model assessment</h2><div class="card"><table><tr><td>Hybrid engine signal</td><td id="hybridSignal">WAIT</td></tr><tr><td>Confluence score</td><td id="hybridConfidence">—</td></tr><tr><td>Risk levels (reference only)</td><td id="riskLevels">—</td></tr><tr><td>Funding crowding</td><td id="crowding">—</td></tr><tr><td>OI change / taker ratio</td><td id="positioning">—</td></tr>
 <tr><td>Model version</td><td id="version">—</td></tr><tr><td>Training samples</td><td id="samples">—</td></tr>
 <tr><td>Walk-forward accuracy</td><td id="accuracy">—</td></tr><tr><td>Macro F1</td><td id="f1">—</td></tr>
 <tr><td>SHORT score</td><td id="short">—</td></tr><tr><td>WAIT score</td><td id="wait">—</td></tr><tr><td>LONG score</td><td id="long">—</td></tr>
@@ -42,14 +42,14 @@ const $=id=>document.getElementById(id),fmt=(n,d=2)=>Number.isFinite(Number(n))?
 async function get(path){const r=await fetch(path+"?t="+Date.now(),{cache:"no-store"});if(!r.ok)throw Error(path+" HTTP "+r.status);return r.json()}
 async function refresh(){
  try{
-  const [m,a]=await Promise.all([get("./market_data.json"),get("./ai_result.json")]);
+  const [m,a,s]=await Promise.all([get("./market_data.json"),get("./ai_result.json"),get("./signal_result.json")]);
   const q=m.data_quality||{},tf=m.timeframes||{},feeds=m.feeds||{},derived=m.derived||{};
   const good=q.status==="HEALTHY"&&q.five_minute_data_fresh;
   $("status").textContent=good?"FUTURES DATA HEALTHY":"DATA DEGRADED";
   $("status").style.color=good?"var(--green)":"var(--red)";
-  const signal=good?(a.signal||"WAIT"):"WAIT";
+  const signal=good?(s.signal||"WAIT"):"WAIT";
   $("signal").textContent=signal;$("signal").className="signal "+signal;
-  $("model").textContent=(a.model_version||"Model pending")+" • "+(a.data_source||"");
+  $("model").textContent=(s.version||a.model_version||"Model pending")+" • Futures hybrid confluence";
   const candles=tf["5m"]?.candles||[],last=candles[candles.length-1];
   $("price").textContent=last?"$"+fmt(last.close):"—";
   $("priceSource").textContent="Binance USD-M Futures • "+(tf["5m"]?.age_seconds??"—")+"s old";
@@ -62,12 +62,12 @@ async function refresh(){
   $("buy").textContent=derived.aggressive_buy_base==null?"—":fmt(derived.aggressive_buy_base,4);
   $("sell").textContent=derived.aggressive_sell_base==null?"—":fmt(derived.aggressive_sell_base,4);
   $("imbalance").textContent=derived.order_book_imbalance==null?"—":fmt(derived.order_book_imbalance*100,2)+"%";
-  $("version").textContent=a.model_version||"—";$("samples").textContent=fmt(a.training_samples,0);
+  $("version").textContent=s.version||a.model_version||"—";$("samples").textContent=fmt(a.training_samples,0);\n  $("hybridSignal").textContent=s.signal||"WAIT";$("hybridConfidence").textContent=fmt(s.confidence_score)+"%";\n  const rr=s.risk_levels||{};$("riskLevels").textContent=rr.stop_loss?"SL "+fmt(rr.stop_loss)+" / TP1 "+fmt(rr.take_profit_1)+" / TP2 "+fmt(rr.take_profit_2):"WAIT / unavailable";\n  $("crowding").textContent=s.order_flow?.funding_crowding||"—";$("positioning").textContent="OI "+fmt(s.order_flow?.open_interest_change_30m_pct)+"% / Taker "+fmt(s.order_flow?.taker_buy_sell_ratio);
   $("accuracy").textContent=a.walk_forward_metrics?.accuracy==null?"—":a.walk_forward_metrics.accuracy+"%";
   $("f1").textContent=a.walk_forward_metrics?.macro_f1==null?"—":a.walk_forward_metrics.macro_f1+"%";
   $("short").textContent=(a.class_scores?.SHORT??"—")+"%";$("wait").textContent=(a.class_scores?.WAIT??"—")+"%";$("long").textContent=(a.class_scores?.LONG??"—")+"%";
-  const warnings=[...(q.warnings||[])];if(!good)warnings.unshift("Market data is degraded or stale; signal forced to WAIT.");
-  if(a.data_source&&/Spot|Kraken|Coinbase/i.test(a.data_source))warnings.push("AI training data is spot market fallback, not Futures. Treat model output cautiously.");
+  const warnings=[...(q.warnings||[]),...(s.warnings||[])];if(!good)warnings.unshift("Market data is degraded or stale; signal forced to WAIT.");
+  if(a.data_source&&/Spot|Kraken|Coinbase/i.test(a.data_source))warnings.push("Historical ML model uses spot fallback, not Futures; hybrid engine does not treat it as Futures confirmation.");
   $("warning").textContent=warnings.length?warnings.join(" "):"Manual signals only. No orders are placed. Liquidations feed is not connected.";
  }catch(e){$("status").textContent="WAITING FOR DATA";$("signal").textContent="WAIT";$("signal").className="signal WAIT";$("warning").textContent="Live data files not published yet: "+e.message}
 }
