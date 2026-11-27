@@ -27,7 +27,7 @@ def on_error(ws, error):
 ws=websocket.WebSocketApp(URL,on_open=on_open,on_message=on_message,on_error=on_error)
 def run():
     import threading
-    t=threading.Thread(target=lambda:ws.run_forever(ping_interval=0,timeout=5),daemon=True); t.start()
+    t=threading.Thread(target=lambda:ws.run_forever(ping_interval=0),daemon=True); t.start()
     deadline=time.time()+WINDOW
     while time.time()<deadline and t.is_alive(): time.sleep(.5)
     try: ws.close()
