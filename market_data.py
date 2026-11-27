@@ -72,7 +72,7 @@ def candles(interval, limit=300):
     return rows
 
 
-def collect():
+def collect_binance():
     generated = datetime.now(timezone.utc).isoformat()
     result = {
         "system": "BTC Signal Pro Elite Futures Data Engine",
@@ -189,3 +189,166 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+def bybit_request(path, params=None, timeout=15):
+    query = urllib.parse.urlencode(params or {})
+    url = "https://api.bybit.com" + path + (("?" + query) if query else "")
+    req = urllib.request.Request(url, headers={"User-Agent": "BTC-Signal-Pro-Elite/5.0"})
+    with urllib.request.urlopen(req, timeout=timeout) as response:
+        raw = response.read()
+    if not raw.strip():
+        raise ValueError("Empty response from Bybit API")
+    payload = json.loads(raw.decode("utf-8"))
+    if payload.get("retCode") != 0:
+        raise RuntimeError("Bybit API error: " + str(payload.get("retCode")) + " " + str(payload.get("retMsg")))
+    return payload.get("result", {})
+
+
+def bybit_feed(path, params=None):
+    started = time.time()
+    try:
+        return {"ok": True, "data": bybit_request(path, params),
+                "latency_ms": round((time.time()-started)*1000)}
+    except Exception as exc:
+        return {"ok": False, "error": str(exc),
+                "latency_ms": round((time.time()-started)*1000)}
+
+
+def bybit_candles(interval, limit=300):
+    iv = {"5m":"5", "15m":"15", "1h":"60", "4h":"240", "1d":"D"}[interval]
+    result = bybit_request("/v5/market/kline", {
+        "category":"linear", "symbol":SYMBOL, "interval":iv, "limit":str(limit)
+    })
+    now_ms = int(time.time()*1000)
+    duration = {"5m":300000,"15m":900000,"1h":3600000,"4h":14400000,"1d":86400000}[interval]
+    rows = []
+    for r in reversed(result.get("list", [])):
+        start = int(r[0])
+        if start + duration > now_ms:
+            continue
+        rows.append({
+            "time":start, "open":float(r[1]), "high":float(r[2]),
+            "low":float(r[3]), "close":float(r[4]), "volume":float(r[5]),
+            "quote_volume":float(r[6]), "trades":0,
+            "taker_buy_base":None, "taker_buy_quote":None
+        })
+    if len(rows) < 50:
+        raise ValueError("Insufficient completed Bybit linear Futures candles")
+    return rows
+
+
+def collect_bybit():
+    generated = datetime.now(timezone.utc).isoformat()
+    result = {
+        "system":"BTC Signal Pro Elite Futures Data Engine",
+        "version":"5.0-bybit-linear-futures-fallback",
+        "symbol":SYMBOL, "market_type":"BYBIT_LINEAR_USDT_PERPETUAL",
+        "exchange":"Bybit", "generated_at":generated,
+        "source":"https://api.bybit.com/v5/market (linear USDT perpetual)",
+        "timeframes":{}, "feeds":{}, "data_quality":{}
+    }
+    for tf in TIMEFRAMES:
+        try:
+            rows=bybit_candles(tf)
+            result["timeframes"][tf]={"ok":True,"candles":rows,
+                "last_closed_candle_time":rows[-1]["time"],
+                "age_seconds":max(0,int(time.time()*1000-rows[-1]["time"]-{"5m":300000,"15m":900000,"1h":3600000,"4h":14400000,"1d":86400000}[tf])//1000)}
+        except Exception as exc:
+            result["timeframes"][tf]={"ok":False,"error":str(exc)}
+
+    ticker=bybit_feed("/v5/market/tickers",{"category":"linear","symbol":SYMBOL})
+    result["feeds"]["mark_price_funding"]=ticker
+    if ticker["ok"]:
+        rows=ticker["data"].get("list",[])
+        t=rows[0] if rows else {}
+        ticker["data"]={
+            "markPrice":t.get("markPrice"),"lastPrice":t.get("lastPrice"),
+            "lastFundingRate":t.get("fundingRate"),"nextFundingTime":t.get("nextFundingTime")
+        }
+    result["feeds"]["open_interest_current"]=bybit_feed(
+        "/v5/market/tickers",{"category":"linear","symbol":SYMBOL})
+    if result["feeds"]["open_interest_current"]["ok"]:
+        rows=result["feeds"]["open_interest_current"]["data"].get("list",[])
+        result["feeds"]["open_interest_current"]["data"]={"openInterest":rows[0].get("openInterest") if rows else None}
+
+    result["feeds"]["open_interest_history_5m"]=bybit_feed(
+        "/v5/market/open-interest",{"category":"linear","symbol":SYMBOL,"intervalTime":"5min","limit":"30"})
+    if result["feeds"]["open_interest_history_5m"]["ok"]:
+        result["feeds"]["open_interest_history_5m"]["data"]=result["feeds"]["open_interest_history_5m"]["data"].get("list",[])
+    result["feeds"]["taker_flow_5m"]=bybit_feed(
+        "/v5/market/account-ratio",{"category":"linear","symbol":SYMBOL,"period":"5min","limit":"30"})
+    if result["feeds"]["taker_flow_5m"]["ok"]:
+        result["feeds"]["taker_flow_5m"]["data"]=result["feeds"]["taker_flow_5m"]["data"].get("list",[])
+    result["feeds"]["order_book"]=bybit_feed(
+        "/v5/market/orderbook",{"category":"linear","symbol":SYMBOL,"limit":"50"})
+    if result["feeds"]["order_book"]["ok"]:
+        ob=result["feeds"]["order_book"]["data"]
+        result["feeds"]["order_book"]["data"]={"bids":ob.get("b",[]),"asks":ob.get("a",[])}
+    result["feeds"]["recent_agg_trades"]=bybit_feed(
+        "/v5/market/recent-trade",{"category":"linear","symbol":SYMBOL,"limit":"1000"})
+    if result["feeds"]["recent_agg_trades"]["ok"]:
+        trades=result["feeds"]["recent_agg_trades"]["data"].get("list",[])
+        result["feeds"]["recent_agg_trades"]["data"]=[
+            {"q":x.get("size",0),"m":x.get("side")=="Sell","price":x.get("price"),"time":x.get("time")}
+            for x in trades]
+    result["feeds"]["funding_history"]=bybit_feed(
+        "/v5/market/funding/history",{"category":"linear","symbol":SYMBOL,"limit":"10"})
+    if result["feeds"]["funding_history"]["ok"]:
+        result["feeds"]["funding_history"]["data"]=result["feeds"]["funding_history"]["data"].get("list",[])
+
+    trades=result["feeds"]["recent_agg_trades"]
+    if trades["ok"]:
+        buys=sells=0.0
+        for trade in trades["data"]:
+            qty=float(trade.get("q",0) or 0)
+            if trade.get("m"): sells+=qty
+            else: buys+=qty
+        result["derived"]={"cvd_base":round(buys-sells,8),
+            "aggressive_buy_base":round(buys,8),"aggressive_sell_base":round(sells,8),
+            "trade_count":len(trades["data"]),
+            "cvd_note":"Rolling snapshot from latest Bybit linear perpetual trades, not historical exchange-wide CVD."}
+    else:
+        result["derived"]={"cvd_base":None,"note":"CVD unavailable because Bybit recent trades failed."}
+    book=result["feeds"]["order_book"]
+    if book["ok"]:
+        bids=sum(float(x[1]) for x in book["data"].get("bids",[]))
+        asks=sum(float(x[1]) for x in book["data"].get("asks",[]))
+        total=bids+asks
+        result["derived"].update({"visible_depth_bid_base":round(bids,8),
+            "visible_depth_ask_base":round(asks,8),
+            "order_book_imbalance":round((bids-asks)/total,6) if total else None,
+            "order_book_note":"Bybit top-50 visible levels only; depth changes rapidly."})
+
+    result["feeds"]["liquidations"]={"ok":False,"status":"not_collected",
+        "reason":"The existing Binance force-order WebSocket is not a Bybit liquidation feed; no cross-exchange substitution is made."}
+    core=all(result["timeframes"].get(tf,{}).get("ok") for tf in TIMEFRAMES)
+    fresh=result["timeframes"].get("5m",{}).get("age_seconds",999999)<=600
+    result["data_quality"]={"core_timeframes_ok":core,"five_minute_data_fresh":fresh,
+        "futures_only":True,"status":"HEALTHY" if core and fresh else "DEGRADED","warnings":[]}
+    if not core: result["data_quality"]["warnings"].append("One or more Bybit linear Futures candle timeframes failed.")
+    if not fresh: result["data_quality"]["warnings"].append("5m Bybit linear Futures candle data is stale.")
+    for key,feed in result["feeds"].items():
+        if key!="liquidations" and not feed.get("ok"):
+            result["data_quality"]["warnings"].append(key+" feed unavailable: "+feed.get("error","unknown"))
+    result["data_quality"]["warnings"].append("Using Bybit linear USDT perpetual reference data because Binance API returned empty HTTP 202 responses. Verify Binance execution price independently.")
+    result["data_quality"]["warnings"].append("Liquidation monitor remains Binance-only and is not treated as Bybit liquidation coverage.")
+    return result
+
+
+def collect():
+    primary=collect_binance()
+    if primary.get("data_quality",{}).get("core_timeframes_ok") and primary.get("data_quality",{}).get("five_minute_data_fresh"):
+        return primary
+    try:
+        fallback=collect_bybit()
+        if fallback.get("data_quality",{}).get("core_timeframes_ok") and fallback.get("data_quality",{}).get("five_minute_data_fresh"):
+            fallback["fallback_from"]="Binance USD-M Futures"
+            fallback["binance_failure_summary"]=primary.get("data_quality",{}).get("warnings",[])
+            return fallback
+        fallback["data_quality"]["warnings"].append("Bybit fallback also failed core data checks; Binance diagnostics retained below.")
+        fallback["binance_failure_summary"]=primary.get("data_quality",{}).get("warnings",[])
+        return fallback
+    except Exception as exc:
+        primary["data_quality"]["warnings"].append("Bybit linear Futures fallback failed: "+str(exc))
+        return primary
