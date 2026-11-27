@@ -9,6 +9,7 @@ on:
   push:
     paths:
       - "market_data.py"
+      - "institutional_intelligence.py"
       - "paper_trader.py"
       - "exchange_compare.py"
       - "news_guard.py"
@@ -51,6 +52,8 @@ jobs:
         run: python paper_trader.py
       - name: Calculate MACD, market structure, backtest and 10x risk
         run: python advanced_modules.py
+      - name: Build six-part institutional intelligence
+        run: python institutional_intelligence.py
       - name: Publish market and signal snapshots
         run: |
           git config user.name "github-actions[bot]"
@@ -59,7 +62,7 @@ jobs:
           # Keep this run's generated JSON, but base its commit on the newest main.
           # This avoids rebase conflicts when scheduled runs overlap with code deploys.
           git reset --mixed origin/main
-          git add market_data.json event_guard.json event_guard_state.json signal_result.json advanced_metrics.json liquidation_data.json alert_state.json alert_status.json exchange_comparison.json paper_trading.json
+          git add market_data.json event_guard.json event_guard_state.json signal_result.json advanced_metrics.json institutional_intelligence.json liquidation_data.json alert_state.json alert_status.json exchange_comparison.json paper_trading.json
           if ! git diff --cached --quiet; then
             git commit -m "Refresh Futures data and AI signal"
           fi
