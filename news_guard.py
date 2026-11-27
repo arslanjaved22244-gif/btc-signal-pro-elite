@@ -66,9 +66,40 @@ def collect():
             source_used = "Google News RSS public fallback"
         except Exception as exc:
             errors.append("Google News RSS: " + str(exc))
-    if source_used:
+    # Supplement headline monitoring with a public, independent archive of
+    # Trump's Truth Social posts. This is NOT an official/verified direct API.
+    trump_feed_available = False
+    try:
+        trump_req = urllib.request.Request(
+            "https://www.trumpstruth.org/feed",
+            headers={"User-Agent": "Mozilla/5.0 BTC-Signal-Pro-Elite/5.0", "Accept": "application/rss+xml, application/xml, text/xml"}
+        )
+        with urllib.request.urlopen(trump_req, timeout=15) as response:
+            trump_root = ET.fromstring(response.read())
+        for item in trump_root.findall("./channel/item"):
+            title = item.findtext("title", "")
+            description = item.findtext("description", "")
+            link = item.findtext("link", "")
+            try:
+                published = parsedate_to_datetime(item.findtext("pubDate", "")).astimezone(timezone.utc)
+            except Exception:
+                continue
+            articles.append({
+                "title": (title + " " + description)[:1200],
+                "domain": urllib.parse.urlparse(link).netloc or "trumpstruth.org",
+                "published": published,
+                "source": "Trump's Truth independent Truth Social archive (unofficial)",
+                "post_url": link
+            })
+        trump_feed_available = True
+    except Exception as exc:
+        errors.append("Trump Truth Social archive: " + str(exc))
+
+    if source_used or trump_feed_available:
         result["available"] = True
-        result["source"] = source_used
+        sources = ([source_used] if source_used else []) + (["Trump's Truth independent archive (unofficial)"] if trump_feed_available else [])
+        result["source"] = " + ".join(sources)
+        result["sources"] = sources
         for article in articles:
             title = str(article.get("title", ""))
             domain = str(article.get("domain", ""))
@@ -88,6 +119,8 @@ def collect():
                 continue
             result["matched_events"].append({
                 "title": title[:300], "domain": domain,
+                "source": article.get("source", source_used or "Unknown"),
+                "post_url": article.get("post_url"),
                 "published_at": published.isoformat(),
                 "age_minutes": round(max(0, age) / 60, 1),
                 "matched_terms": matched[:8]
