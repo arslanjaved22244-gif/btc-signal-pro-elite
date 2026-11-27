@@ -11,13 +11,13 @@ SPEC.loader.exec_module(MODEL)
 
 
 class AdaptiveLearningTests(unittest.TestCase):
-    def run_weights(self, records, minimum_samples=30):
+    def run_weights(self, records, minimum_samples=30, market_regime=None):
         handle = tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=False)
         path = Path(handle.name)
         try:
             json.dump({"version": 1, "predictions": records}, handle)
             handle.close()
-            return MODEL.adaptive_component_weights(str(path), minimum_samples)
+            return MODEL.adaptive_component_weights(str(path), minimum_samples, market_regime)
         finally:
             path.unlink(missing_ok=True)
 
@@ -49,7 +49,7 @@ class AdaptiveLearningTests(unittest.TestCase):
                     "actual_class": "LONG" if index < 24 else "SHORT",
                     "correct": index < 24, "market_regime": "BULL TREND"
                 })
-        weights, report = self.run_weights(records, minimum_samples=20)
+        weights, report = self.run_weights(records, minimum_samples=20, market_regime="BULL TREND")
         self.assertTrue(report["regime_specific_weights_active"])
         self.assertEqual(report["market_regime"], "BULL TREND")
         self.assertAlmostEqual(sum(weights.values()), 1.0, places=8)
