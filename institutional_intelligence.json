@@ -1,7 +1,7 @@
 {
   "system": "BTC Signal Pro Elite Institutional Intelligence",
   "version": "1.0-six-upgrades",
-  "generated_at": "2026-11-27T21:35:05.170955+00:00",
+  "generated_at": "2026-11-27T21:43:33.170289+00:00",
   "market_regime": {
     "status": "AVAILABLE",
     "regime": "BEAR_TREND",
@@ -30,14 +30,14 @@
     "status": "AVAILABLE",
     "venue": "Deribit public BTC options",
     "put_call_open_interest_ratio": 0.804,
-    "call_open_interest": 189342.7,
-    "put_open_interest": 152230.3,
-    "call_volume_24h": 13972.4,
-    "put_volume_24h": 15397.4,
-    "average_call_mark_iv_pct": 54.79,
-    "average_put_mark_iv_pct": 54.79,
+    "call_open_interest": 189344.2,
+    "put_open_interest": 152233.3,
+    "call_volume_24h": 13916.1,
+    "put_volume_24h": 15386.6,
+    "average_call_mark_iv_pct": 54.75,
+    "average_put_mark_iv_pct": 54.75,
     "approx_max_pain_strike": 68000.0,
-    "btc_index_price": 59729.82,
+    "btc_index_price": 59783.78,
     "instruments_sampled": 960,
     "note": "Aggregated listed BTC options snapshot; max-pain is an approximation across returned instruments, not a price target."
   },
@@ -46,12 +46,12 @@
     "window": "14 days of hourly returns",
     "correlations_vs_btc": {
       "NASDAQ": {
-        "correlation": 0.751,
+        "correlation": 0.752,
         "samples": 60,
         "status": "AVAILABLE"
       },
       "DXY": {
-        "correlation": -0.483,
+        "correlation": -0.485,
         "samples": 204,
         "status": "AVAILABLE"
       },
@@ -67,20 +67,20 @@
     "15m": {
       "status": "RESEARCH_ONLY",
       "scenario": "SHORT_BIAS",
-      "directional_score": -4.73,
-      "recent_momentum_pct": -0.0338,
-      "ema_spread_bps": -1.42,
-      "atr_pct": 0.1116,
+      "directional_score": -4.13,
+      "recent_momentum_pct": 0.0368,
+      "ema_spread_bps": -1.08,
+      "atr_pct": 0.1137,
       "regime": "BEAR_TREND",
       "note": "Heuristic scenario, not a calibrated probability or an entry signal."
     },
     "30m": {
       "status": "RESEARCH_ONLY",
       "scenario": "SHORT_BIAS",
-      "directional_score": -4.53,
-      "recent_momentum_pct": 0.0482,
-      "ema_spread_bps": -1.42,
-      "atr_pct": 0.1116,
+      "directional_score": -4.04,
+      "recent_momentum_pct": 0.0741,
+      "ema_spread_bps": -1.08,
+      "atr_pct": 0.1137,
       "regime": "BEAR_TREND",
       "note": "Heuristic scenario, not a calibrated probability or an entry signal."
     },
@@ -111,6 +111,70 @@
     "total_checks": 7,
     "policy": "Directional signals remain blocked until AI validation beats the majority baseline, macro-F1 is >=30, shadow sample >=30 and passes its validation, and a >=300-candle cost-aware holdout backtest is positive.",
     "note": "This is a conservative evidence gate, not proof of future profitability."
+  },
+  "feed_health": {
+    "status": "PARTIAL",
+    "passed": 8,
+    "total": 11,
+    "items": [
+      {
+        "name": "5m_futures_candles",
+        "passed": true,
+        "detail": "candle age 181s"
+      },
+      {
+        "name": "all_five_timeframes",
+        "passed": true,
+        "detail": "5m / 15m / 1h / 4h / 1d"
+      },
+      {
+        "name": "funding_snapshot",
+        "passed": true,
+        "detail": "public mark-price/funding endpoint"
+      },
+      {
+        "name": "open_interest_history",
+        "passed": false,
+        "detail": "timestamp unavailable"
+      },
+      {
+        "name": "executed_taker_flow",
+        "passed": true,
+        "detail": "exchange taker buy/sell volume feed; not account positioning"
+      },
+      {
+        "name": "rolling_cvd",
+        "passed": true,
+        "detail": "latest aggregate trades only; not exchange-wide historical CVD"
+      },
+      {
+        "name": "order_book_depth",
+        "passed": false,
+        "detail": "visible public depth snapshot"
+      },
+      {
+        "name": "fresh_news_scan",
+        "passed": true,
+        "detail": "news snapshot age 0.48m"
+      },
+      {
+        "name": "trump_public_post_archive",
+        "passed": true,
+        "detail": "unofficial third-party RSS archive; may lag or omit posts"
+      },
+      {
+        "name": "cross_exchange_perpetuals",
+        "passed": true,
+        "detail": "2 venues available; snapshot age 0.04m"
+      },
+      {
+        "name": "continuous_liquidation_stream",
+        "passed": false,
+        "detail": "not connected / no recent message"
+      }
+    ],
+    "market_snapshot_age_minutes": 0.57,
+    "note": "A feed marked unavailable is not guessed or replaced. This audit reports source presence and freshness, not signal accuracy. GitHub Actions sampled liquidation data does not count as a continuous stream."
   },
   "execution": "MANUAL_ONLY_NO_ORDERS",
   "disclaimer": "Public-data research context only. Scenarios are not calibrated probabilities; unavailable feeds are explicitly marked."

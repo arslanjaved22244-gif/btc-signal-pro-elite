@@ -1,15 +1,15 @@
 {
-  "generated_at": "2026-11-27T21:35:05.097581+00:00",
+  "generated_at": "2026-11-27T21:43:33.123647+00:00",
   "timeframe_indicators": {
     "5m": {
       "available": true,
-      "ema50": 59892.28,
-      "ema200": 60507.24,
-      "rsi14": 47.93,
+      "ema50": 59885.29,
+      "ema200": 60492.75,
+      "rsi14": 51.98,
       "macd": {
-        "macd": -15.663,
-        "signal": -23.0769,
-        "histogram": 7.4138,
+        "macd": -13.2106,
+        "signal": -20.2436,
+        "histogram": 7.033,
         "bullish": true,
         "cross_up": false,
         "cross_down": false
@@ -21,8 +21,8 @@
         "last_swing_low": 59694.1,
         "note": "Confirmed pivots use candles on both sides; most recent pivot is delayed by the confirmation window."
       },
-      "volatility_atr14": 66.71,
-      "atr_pct": 0.1116
+      "volatility_atr14": 68.04,
+      "atr_pct": 0.1137
     },
     "15m": {
       "available": true,
@@ -122,12 +122,12 @@
     "method": "Chronological 60/20/20 split; reported trades only in final 20% holdout",
     "total_candles": 599,
     "test_candles": 240,
-    "test_start_time": 1795742700000,
+    "test_start_time": 1795743300000,
     "trades": 11,
-    "win_rate_pct": 18.18,
-    "net_return_pct": -2.92,
-    "profit_factor": 0.047,
-    "max_drawdown_pct": 2.92,
+    "win_rate_pct": 9.09,
+    "net_return_pct": -2.89,
+    "profit_factor": 0.025,
+    "max_drawdown_pct": 2.89,
     "fee_per_side_pct": 0.05,
     "slippage_per_side_pct": 0.02,
     "round_trip_cost_pct": 0.13999999999999999,
