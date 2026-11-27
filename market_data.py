@@ -365,12 +365,27 @@ def okx_feed(path, params=None):
 
 def okx_candles(interval, limit=300):
     bar={"5m":"5m","15m":"15m","1h":"1H","4h":"4H","1d":"1D"}[interval]
-    raw=okx_request("/api/v5/market/history-candles",{
-        "instId":"BTC-USDT-SWAP","bar":bar,"limit":str(limit)})
+    # The 5m backtest needs more than one OKX history page. Walk backward
+    # using the oldest timestamp returned; never include the live candle.
+    raw_all=[]
+    cursor=None
+    pages=2 if interval=="5m" else 1
+    for _ in range(pages):
+        params={"instId":"BTC-USDT-SWAP","bar":bar,"limit":str(limit)}
+        if cursor is not None:
+            params["after"]=str(cursor)
+        batch=okx_request("/api/v5/market/history-candles",params)
+        if not batch:
+            break
+        raw_all.extend(batch)
+        oldest=min(int(x[0]) for x in batch)
+        if len(batch)<limit or oldest<=0:
+            break
+        cursor=oldest
+    by_time={int(x[0]):x for x in raw_all if len(x)>=9}
     rows=[]
-    now_ms=int(time.time()*1000)
-    for r in reversed(raw):
-        if len(r)<9 or str(r[8])!="1":
+    for r in sorted(by_time.values(),key=lambda x:int(x[0])):
+        if str(r[8])!="1":
             continue
         rows.append({"time":int(r[0]),"open":float(r[1]),"high":float(r[2]),
             "low":float(r[3]),"close":float(r[4]),"volume":float(r[5]),
@@ -430,7 +445,7 @@ def collect_okx():
     result["feeds"]["open_interest_history_5m"]=oi_hist
 
     taker=okx_feed("/api/v5/rubik/stat/taker-volume",{
-        "ccy":"BTC","instType":"CONTRACTS","period":"5m"})
+        "ccy":"BTC","instType":"SWAP","period":"5m"})
     if taker["ok"]:
         normalized=[]
         for point in taker["data"]:
