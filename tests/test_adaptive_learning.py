@@ -107,5 +107,30 @@ class AdaptiveLearningTests(unittest.TestCase):
         self.assertTrue(all(0.0 < value < 1.0 for value in weights.values()))
 
 
+    def test_cost_aware_move_threshold_covers_estimated_round_trip_cost(self):
+        flat = [
+            {"open": 10000.0, "high": 10000.0, "low": 10000.0,
+             "close": 10000.0, "volume": 100.0}
+            for _ in range(20)
+        ]
+        threshold = MODEL.adaptive_move_threshold(flat, 19, 3)
+        self.assertGreaterEqual(threshold, 0.0018)
+
+    def test_cost_aware_move_threshold_expands_with_volatility(self):
+        quiet = [
+            {"open": 10000.0, "high": 10005.0, "low": 9995.0,
+             "close": 10000.0, "volume": 100.0}
+            for _ in range(20)
+        ]
+        volatile = [
+            {"open": 10000.0, "high": 10100.0, "low": 9900.0,
+             "close": 10000.0, "volume": 100.0}
+            for _ in range(20)
+        ]
+        quiet_threshold = MODEL.adaptive_move_threshold(quiet, 19, 3)
+        volatile_threshold = MODEL.adaptive_move_threshold(volatile, 19, 3)
+        self.assertGreater(volatile_threshold, quiet_threshold)
+
+
 if __name__ == "__main__":
     unittest.main()
