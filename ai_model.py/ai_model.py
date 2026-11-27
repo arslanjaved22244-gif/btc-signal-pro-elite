@@ -701,6 +701,62 @@ def candle_atr(candles, index, period=14):
         trs.append(max(c["high"]-c["low"],abs(c["high"]-prev),abs(c["low"]-prev)))
     return sum(trs)/len(trs) if trs else 0.0
 
+def multi_timeframe_trend_alignment(data):
+    """Compare confirmed EMA structure across available timeframes."""
+    details = {}
+    directions = []
+    for tf, candles in data.items():
+        closes = [x["close"] for x in candles]
+        if len(closes) < 200:
+            details[tf] = {"trend": "INSUFFICIENT HISTORY", "samples": len(closes)}
+            continue
+        e20 = ema(closes, 20)
+        e50 = ema(closes, 50)
+        e200 = ema(closes, 200)
+        last = closes[-1]
+        slope = (e20[-1] / e20[-6] - 1.0) if e20[-6] else 0.0
+        if last > e20[-1] > e50[-1] > e200[-1] and slope > 0:
+            trend, direction = "BULLISH", 1
+        elif last < e20[-1] < e50[-1] < e200[-1] and slope < 0:
+            trend, direction = "BEARISH", -1
+        else:
+            trend, direction = "MIXED", 0
+        directions.append(direction)
+        details[tf] = {
+            "trend": trend,
+            "ema20_slope_pct": round(slope * 100, 4),
+            "close_vs_ema200_pct": round((last / e200[-1] - 1.0) * 100, 4) if e200[-1] else 0.0,
+            "samples": len(closes)
+        }
+    total = len(directions)
+    bullish = sum(1 for x in directions if x == 1)
+    bearish = sum(1 for x in directions if x == -1)
+    mixed = total - bullish - bearish
+    score = (bullish - bearish) / total if total else 0.0
+    if total < 3:
+        label = "INSUFFICIENT TIMEFRAMES"
+    elif bullish >= total - 1:
+        label = "STRONG BULLISH ALIGNMENT"
+    elif bearish >= total - 1:
+        label = "STRONG BEARISH ALIGNMENT"
+    elif bullish > bearish:
+        label = "PARTIAL BULLISH ALIGNMENT"
+    elif bearish > bullish:
+        label = "PARTIAL BEARISH ALIGNMENT"
+    else:
+        label = "MIXED / NO ALIGNMENT"
+    return {
+        "alignment": label,
+        "alignment_score": round(score, 3),
+        "bullish_timeframes": bullish,
+        "bearish_timeframes": bearish,
+        "mixed_timeframes": mixed,
+        "timeframes_checked": total,
+        "by_timeframe": details,
+        "note": "EMA alignment is contextual confirmation, not a standalone entry signal."
+    }
+
+
 def advanced_regime(data):
     c=data["5m"]; closes=[x["close"] for x in c]
     e20=ema(closes,20); e50=ema(closes,50); e200=ema(closes,200)
@@ -951,7 +1007,7 @@ def main():
         "ensemble_configuration": {"models": ["full_history_logistic", "recent_regime_logistic", "nearest_centroid", "decision_stumps"], "weights": {"full_history_logistic": 0.35, "recent_regime_logistic": 0.20, "nearest_centroid": 0.20, "decision_stumps": 0.25}, "recent_training_window": final_model["recent_window"]},
         "walk_forward_metrics": validation,
         "validation_gate": {"passed": validation_gate, "minimum_accuracy_pct": 38.0, "minimum_macro_f1_pct": 30.0, "must_beat_majority_baseline": True, "decision": "directional signals allowed" if validation_gate else "WAIT only — historical validation too weak"},
-        "advanced_intelligence": {"market_regime": regime_analysis, "multi_horizon_forecasts": horizon_forecasts, "tree_ensemble": tree_ensemble, "tree_blend_applied_to_primary_signal": tree_blend_applied, "method": "four-horizon chronological ML + Random Forest + gradient boosting + neural MLP + XGBoost (when installed) + volatility regime + liquidity sweep detector"},
+        "advanced_intelligence": {"market_regime": regime_analysis, "multi_timeframe_trend_alignment": multi_timeframe_trend_alignment(data), "multi_horizon_forecasts": horizon_forecasts, "tree_ensemble": tree_ensemble, "tree_blend_applied_to_primary_signal": tree_blend_applied, "method": "four-horizon chronological ML + Random Forest + gradient boosting + neural MLP + XGBoost (when installed) + volatility regime + liquidity sweep detector"},
         "walk_forward_folds": folds,
         "training_samples": len(rows),
         "label_distribution": {name: labels.count(i) for i, name in enumerate(CLASSES)},
