@@ -4,132 +4,12 @@
   "symbol": "BTC-USDT-SWAP",
   "market_type": "OKX_BTC_USDT_SWAP",
   "exchange": "OKX",
-  "generated_at": "2026-11-27T16:50:23.469269+00:00",
+  "generated_at": "2026-11-27T17:43:25.642757+00:00",
   "source": "https://www.okx.com/api/v5/market (BTC-USDT-SWAP perpetual)",
   "timeframes": {
     "5m": {
       "ok": true,
       "candles": [
-        {
-          "time": 1795618500000,
-          "open": 57693.1,
-          "high": 58243.2,
-          "low": 57683.0,
-          "close": 58208.7,
-          "volume": 290082.38,
-          "quote_volume": 168140483.65842,
-          "trades": 0,
-          "taker_buy_base": null,
-          "taker_buy_quote": null
-        },
-        {
-          "time": 1795618800000,
-          "open": 58208.8,
-          "high": 58710.6,
-          "low": 58097.0,
-          "close": 58580.3,
-          "volume": 337038.07,
-          "quote_volume": 196955993.92545,
-          "trades": 0,
-          "taker_buy_base": null,
-          "taker_buy_quote": null
-        },
-        {
-          "time": 1795619100000,
-          "open": 58580.3,
-          "high": 58580.3,
-          "low": 57885.2,
-          "close": 57936.1,
-          "volume": 213586.05,
-          "quote_volume": 124201764.23838,
-          "trades": 0,
-          "taker_buy_base": null,
-          "taker_buy_quote": null
-        },
-        {
-          "time": 1795619400000,
-          "open": 57936.1,
-          "high": 58038.6,
-          "low": 57745.1,
-          "close": 57969.9,
-          "volume": 110625.14,
-          "quote_volume": 64046001.30603,
-          "trades": 0,
-          "taker_buy_base": null,
-          "taker_buy_quote": null
-        },
-        {
-          "time": 1795619700000,
-          "open": 57969.9,
-          "high": 57969.9,
-          "low": 57655.0,
-          "close": 57692.9,
-          "volume": 118597.82,
-          "quote_volume": 68508682.3023,
-          "trades": 0,
-          "taker_buy_base": null,
-          "taker_buy_quote": null
-        },
-        {
-          "time": 1795620000000,
-          "open": 57693.0,
-          "high": 58017.7,
-          "low": 57693.0,
-          "close": 57870.0,
-          "volume": 67758.83,
-          "quote_volume": 39224528.56359,
-          "trades": 0,
-          "taker_buy_base": null,
-          "taker_buy_quote": null
-        },
-        {
-          "time": 1795620300000,
-          "open": 57870.1,
-          "high": 58127.3,
-          "low": 57850.7,
-          "close": 57960.3,
-          "volume": 98136.1,
-          "quote_volume": 56920878.32809,
-          "trades": 0,
-          "taker_buy_base": null,
-          "taker_buy_quote": null
-        },
-        {
-          "time": 1795620600000,
-          "open": 57960.4,
-          "high": 58349.9,
-          "low": 57877.2,
-          "close": 58343.9,
-          "volume": 144662.29,
-          "quote_volume": 84068233.92211,
-          "trades": 0,
-          "taker_buy_base": null,
-          "taker_buy_quote": null
-        },
-        {
-          "time": 1795620900000,
-          "open": 58343.9,
-          "high": 58665.0,
-          "low": 58185.9,
-          "close": 58295.7,
-          "volume": 238651.94,
-          "quote_volume": 139557833.51979,
-          "trades": 0,
-          "taker_buy_base": null,
-          "taker_buy_quote": null
-        },
-        {
-          "time": 1795621200000,
-          "open": 58295.6,
-          "high": 58354.7,
-          "low": 58170.2,
-          "close": 58172.1,
-          "volume": 89693.68,
-          "quote_volume": 52262692.95628,
-          "trades": 0,
-          "taker_buy_base": null,
-          "taker_buy_quote": null
-        },
         {
           "time": 1795621500000,
           "open": 58172.0,
@@ -7197,50 +7077,134 @@
           "trades": 0,
           "taker_buy_base": null,
           "taker_buy_quote": null
+        },
+        {
+          "time": 1795798200000,
+          "open": 60131.2,
+          "high": 60227.2,
+          "low": 60102.6,
+          "close": 60165.6,
+          "volume": 31217.54,
+          "quote_volume": 18781051.86744,
+          "trades": 0,
+          "taker_buy_base": null,
+          "taker_buy_quote": null
+        },
+        {
+          "time": 1795798500000,
+          "open": 60165.6,
+          "high": 60174.0,
+          "low": 59928.0,
+          "close": 59928.0,
+          "volume": 59437.79,
+          "quote_volume": 35665010.98117,
+          "trades": 0,
+          "taker_buy_base": null,
+          "taker_buy_quote": null
+        },
+        {
+          "time": 1795798800000,
+          "open": 59928.0,
+          "high": 59979.6,
+          "low": 59840.9,
+          "close": 59942.4,
+          "volume": 46949.39,
+          "quote_volume": 28126779.18933,
+          "trades": 0,
+          "taker_buy_base": null,
+          "taker_buy_quote": null
+        },
+        {
+          "time": 1795799100000,
+          "open": 59942.4,
+          "high": 60032.3,
+          "low": 59876.2,
+          "close": 59909.1,
+          "volume": 42588.3,
+          "quote_volume": 25528940.06737,
+          "trades": 0,
+          "taker_buy_base": null,
+          "taker_buy_quote": null
+        },
+        {
+          "time": 1795799400000,
+          "open": 59909.1,
+          "high": 59997.0,
+          "low": 59897.7,
+          "close": 59940.8,
+          "volume": 13830.86,
+          "quote_volume": 8291606.2593,
+          "trades": 0,
+          "taker_buy_base": null,
+          "taker_buy_quote": null
+        },
+        {
+          "time": 1795799700000,
+          "open": 59940.7,
+          "high": 59978.2,
+          "low": 59842.0,
+          "close": 59876.3,
+          "volume": 22222.8,
+          "quote_volume": 13310698.55075,
+          "trades": 0,
+          "taker_buy_base": null,
+          "taker_buy_quote": null
+        },
+        {
+          "time": 1795800000000,
+          "open": 59876.4,
+          "high": 59977.8,
+          "low": 59802.2,
+          "close": 59818.8,
+          "volume": 41059.24,
+          "quote_volume": 24582802.93298,
+          "trades": 0,
+          "taker_buy_base": null,
+          "taker_buy_quote": null
+        },
+        {
+          "time": 1795800300000,
+          "open": 59818.7,
+          "high": 59825.5,
+          "low": 59512.9,
+          "close": 59652.7,
+          "volume": 154364.6,
+          "quote_volume": 92121271.25815,
+          "trades": 0,
+          "taker_buy_base": null,
+          "taker_buy_quote": null
+        },
+        {
+          "time": 1795800600000,
+          "open": 59652.7,
+          "high": 59727.7,
+          "low": 59565.0,
+          "close": 59686.6,
+          "volume": 42560.25,
+          "quote_volume": 25378387.87396,
+          "trades": 0,
+          "taker_buy_base": null,
+          "taker_buy_quote": null
+        },
+        {
+          "time": 1795800900000,
+          "open": 59686.5,
+          "high": 59747.2,
+          "low": 59550.6,
+          "close": 59573.4,
+          "volume": 35095.56,
+          "quote_volume": 20932553.05684,
+          "trades": 0,
+          "taker_buy_base": null,
+          "taker_buy_quote": null
         }
       ],
-      "last_closed_candle_time": 1795797900000,
-      "age_seconds": 23
+      "last_closed_candle_time": 1795800900000,
+      "age_seconds": 205
     },
     "15m": {
       "ok": true,
       "candles": [
-        {
-          "time": 1795528800000,
-          "open": 59988.2,
-          "high": 60486.8,
-          "low": 59951.7,
-          "close": 60298.4,
-          "volume": 177098.7,
-          "quote_volume": 106758836.74347,
-          "trades": 0,
-          "taker_buy_base": null,
-          "taker_buy_quote": null
-        },
-        {
-          "time": 1795529700000,
-          "open": 60298.5,
-          "high": 60476.9,
-          "low": 60260.0,
-          "close": 60400.0,
-          "volume": 93087.73,
-          "quote_volume": 56204451.36283,
-          "trades": 0,
-          "taker_buy_base": null,
-          "taker_buy_quote": null
-        },
-        {
-          "time": 1795530600000,
-          "open": 60400.0,
-          "high": 60666.0,
-          "low": 60022.3,
-          "close": 60437.6,
-          "volume": 528638.78,
-          "quote_volume": 318947765.15574,
-          "trades": 0,
-          "taker_buy_base": null,
-          "taker_buy_quote": null
-        },
         {
           "time": 1795531500000,
           "open": 60437.7,
@@ -10792,26 +10756,50 @@
           "trades": 0,
           "taker_buy_base": null,
           "taker_buy_quote": null
-        }
-      ],
-      "last_closed_candle_time": 1795797000000,
-      "age_seconds": 324
-    },
-    "1h": {
-      "ok": true,
-      "candles": [
+        },
         {
-          "time": 1794718800000,
-          "open": 64902.3,
-          "high": 64998.0,
-          "low": 64414.0,
-          "close": 64478.6,
-          "volume": 275223.6,
-          "quote_volume": 178221419.2623,
+          "time": 1795797900000,
+          "open": 60267.8,
+          "high": 60329.0,
+          "low": 59928.0,
+          "close": 59928.0,
+          "volume": 128494.89,
+          "quote_volume": 77224293.16653,
           "trades": 0,
           "taker_buy_base": null,
           "taker_buy_quote": null
         },
+        {
+          "time": 1795798800000,
+          "open": 59928.0,
+          "high": 60032.3,
+          "low": 59840.9,
+          "close": 59940.8,
+          "volume": 103368.55,
+          "quote_volume": 61947325.516,
+          "trades": 0,
+          "taker_buy_base": null,
+          "taker_buy_quote": null
+        },
+        {
+          "time": 1795799700000,
+          "open": 59940.7,
+          "high": 59978.2,
+          "low": 59512.9,
+          "close": 59652.7,
+          "volume": 217646.64,
+          "quote_volume": 130014772.74188,
+          "trades": 0,
+          "taker_buy_base": null,
+          "taker_buy_quote": null
+        }
+      ],
+      "last_closed_candle_time": 1795799700000,
+      "age_seconds": 806
+    },
+    "1h": {
+      "ok": true,
+      "candles": [
         {
           "time": 1794722400000,
           "open": 64478.7,
@@ -14387,10 +14375,22 @@
           "trades": 0,
           "taker_buy_base": null,
           "taker_buy_quote": null
+        },
+        {
+          "time": 1795795200000,
+          "open": 60076.5,
+          "high": 60525.1,
+          "low": 59775.1,
+          "close": 59928.0,
+          "volume": 868473.67,
+          "quote_volume": 522347024.73287,
+          "trades": 0,
+          "taker_buy_base": null,
+          "taker_buy_quote": null
         }
       ],
-      "last_closed_candle_time": 1795791600000,
-      "age_seconds": 3024
+      "last_closed_candle_time": 1795795200000,
+      "age_seconds": 2606
     },
     "4h": {
       "ok": true,
@@ -17985,7 +17985,7 @@
         }
       ],
       "last_closed_candle_time": 1795780800000,
-      "age_seconds": 3024
+      "age_seconds": 6206
     },
     "1d": {
       "ok": true,
@@ -21580,70 +21580,30 @@
         }
       ],
       "last_closed_candle_time": 1795708800000,
-      "age_seconds": 3024
+      "age_seconds": 6206
     }
   },
   "feeds": {
     "mark_price_funding": {
       "ok": true,
       "data": {
-        "lastPrice": "60118.9",
-        "markPrice": "60118.9",
-        "lastFundingRate": "-0.0000056279717100",
+        "lastPrice": "59559.2",
+        "markPrice": "59559.2",
+        "lastFundingRate": "0.0000046895331594",
         "nextFundingTime": "1795852800000"
       },
-      "latency_ms": 201
+      "latency_ms": 138
     },
     "open_interest_current": {
       "ok": true,
       "data": {
-        "openInterest": "3197854.88000001439",
-        "openInterestCurrency": "31978.5488000001439"
+        "openInterest": "3196337.37000001459",
+        "openInterestCurrency": "31963.3737000001459"
       }
     },
     "open_interest_history_5m": {
       "ok": true,
       "data": [
-        {
-          "sumOpenInterest": "1987734620.42949670886679",
-          "timestamp": "1795789500000"
-        },
-        {
-          "sumOpenInterest": "1950475214.93040597935196",
-          "timestamp": "1795789800000"
-        },
-        {
-          "sumOpenInterest": "1934328534.21060659923992",
-          "timestamp": "1795790100000"
-        },
-        {
-          "sumOpenInterest": "1908418015.6092070930314",
-          "timestamp": "1795790400000"
-        },
-        {
-          "sumOpenInterest": "1885992440.2676067219519",
-          "timestamp": "1795790700000"
-        },
-        {
-          "sumOpenInterest": "1881086107.2267067928781",
-          "timestamp": "1795791000000"
-        },
-        {
-          "sumOpenInterest": "1877247006.60480674551776",
-          "timestamp": "1795791300000"
-        },
-        {
-          "sumOpenInterest": "1914418755.21233757524826",
-          "timestamp": "1795791600000"
-        },
-        {
-          "sumOpenInterest": "1914240093.63000753525",
-          "timestamp": "1795791900000"
-        },
-        {
-          "sumOpenInterest": "1928489542.27064775283469",
-          "timestamp": "1795792200000"
-        },
         {
           "sumOpenInterest": "1927644885.7630869797871",
           "timestamp": "1795792500000"
@@ -21721,391 +21681,365 @@
           "timestamp": "1795797900000"
         },
         {
-          "sumOpenInterest": "1924145942.15893854857969",
+          "sumOpenInterest": "1924449940.70590893457675",
           "timestamp": "1795798200000"
+        },
+        {
+          "sumOpenInterest": "1913139788.45432841453762",
+          "timestamp": "1795798500000"
+        },
+        {
+          "sumOpenInterest": "1905405661.9546885081146",
+          "timestamp": "1795798800000"
+        },
+        {
+          "sumOpenInterest": "1907494006.12443856152483",
+          "timestamp": "1795799100000"
+        },
+        {
+          "sumOpenInterest": "1910678667.87242900602204",
+          "timestamp": "1795799400000"
+        },
+        {
+          "sumOpenInterest": "1908193004.07512861503398",
+          "timestamp": "1795799700000"
+        },
+        {
+          "sumOpenInterest": "1908373333.01972805785592",
+          "timestamp": "1795800000000"
+        },
+        {
+          "sumOpenInterest": "1902720102.63936886987456",
+          "timestamp": "1795800300000"
+        },
+        {
+          "sumOpenInterest": "1905756284.49102858391092",
+          "timestamp": "1795800600000"
+        },
+        {
+          "sumOpenInterest": "1903692552.64160861315684",
+          "timestamp": "1795800900000"
+        },
+        {
+          "sumOpenInterest": "1903203072.122808603819",
+          "timestamp": "1795801200000"
         }
       ],
-      "latency_ms": 225
+      "latency_ms": 214
     },
     "taker_flow_5m": {
       "ok": true,
       "data": [
         {
-          "buySellRatio": 1.0263112285259595,
-          "buyVol": 3611092.6756,
-          "sellVol": 3518516.192,
-          "timestamp": "1795776600000"
-        },
-        {
-          "buySellRatio": 0.9110047522962583,
-          "buyVol": 3557900.0875,
-          "sellVol": 3905468.1971,
-          "timestamp": "1795776900000"
-        },
-        {
-          "buySellRatio": 1.2058440742979077,
-          "buyVol": 2543795.404,
-          "sellVol": 2109555.8358,
-          "timestamp": "1795777200000"
-        },
-        {
-          "buySellRatio": 0.3682898505846569,
-          "buyVol": 5053212.4177,
-          "sellVol": 13720748.5074,
-          "timestamp": "1795777500000"
-        },
-        {
-          "buySellRatio": 1.6362724986537196,
-          "buyVol": 10921358.0924,
-          "sellVol": 6674535.0187,
-          "timestamp": "1795777800000"
-        },
-        {
-          "buySellRatio": 1.4665505079955772,
-          "buyVol": 3086554.5629,
-          "sellVol": 2104635.7054,
-          "timestamp": "1795778100000"
-        },
-        {
-          "buySellRatio": 1.5654006776098552,
-          "buyVol": 6966332.2871,
-          "sellVol": 4450191.179,
-          "timestamp": "1795778400000"
-        },
-        {
-          "buySellRatio": 1.1040203934852755,
-          "buyVol": 5588533.4285,
-          "sellVol": 5061983.8741,
-          "timestamp": "1795778700000"
-        },
-        {
-          "buySellRatio": 1.0381091576870414,
-          "buyVol": 1853708.4917,
-          "sellVol": 1785658.5485,
-          "timestamp": "1795779000000"
-        },
-        {
-          "buySellRatio": 1.8261297314997815,
-          "buyVol": 10773250.851,
-          "sellVol": 5899499.1786,
-          "timestamp": "1795779300000"
-        },
-        {
-          "buySellRatio": 1.2097494282012213,
-          "buyVol": 6927002.2554,
-          "sellVol": 5725981.0122,
-          "timestamp": "1795779600000"
-        },
-        {
-          "buySellRatio": 0.3836227207573224,
-          "buyVol": 5148705.2354,
-          "sellVol": 13421272.9247,
+          "buySellRatio": 0.37899113115653216,
+          "buyVol": 4995540.3639,
+          "sellVol": 13181153.7348,
           "timestamp": "1795779900000"
         },
         {
-          "buySellRatio": 0.4056431046052419,
-          "buyVol": 21239097.7201,
-          "sellVol": 52359074.9577,
+          "buySellRatio": 0.4038960266386442,
+          "buyVol": 20661423.3292,
+          "sellVol": 51155302.2721,
           "timestamp": "1795780200000"
         },
         {
-          "buySellRatio": 0.892380604321812,
-          "buyVol": 9169231.3408,
-          "sellVol": 10275023.1195,
+          "buySellRatio": 0.9174910823009631,
+          "buyVol": 8898282.5179,
+          "sellVol": 9698494.8296,
           "timestamp": "1795780500000"
         },
         {
-          "buySellRatio": 3.028773574497663,
-          "buyVol": 15121126.2204,
-          "sellVol": 4992491.4651,
+          "buySellRatio": 3.2703273667795125,
+          "buyVol": 14747956.734,
+          "sellVol": 4509627.0434,
           "timestamp": "1795780800000"
         },
         {
-          "buySellRatio": 0.8337047627238333,
-          "buyVol": 7938916.6324,
-          "sellVol": 9522455.655,
+          "buySellRatio": 0.8247039544455665,
+          "buyVol": 7686473.6527,
+          "sellVol": 9320282.2798,
           "timestamp": "1795781100000"
         },
         {
-          "buySellRatio": 0.763556867230829,
-          "buyVol": 5440805.2139,
-          "sellVol": 7125605.7635,
+          "buySellRatio": 0.7542036664622465,
+          "buyVol": 5239624.1836,
+          "sellVol": 6947227.1438,
           "timestamp": "1795781400000"
         },
         {
-          "buySellRatio": 0.5728177713719396,
-          "buyVol": 5111726.8921,
-          "sellVol": 8923827.3454,
+          "buySellRatio": 0.5728416691461026,
+          "buyVol": 4964702.8353,
+          "sellVol": 8666797.6558,
           "timestamp": "1795781700000"
         },
         {
-          "buySellRatio": 0.38486783947020603,
-          "buyVol": 3368374.9686,
-          "sellVol": 8752030.2378,
+          "buySellRatio": 0.3837178253769273,
+          "buyVol": 3259557.3596,
+          "sellVol": 8494672.7622,
           "timestamp": "1795782000000"
         },
         {
-          "buySellRatio": 4.147373973070465,
-          "buyVol": 16023767.1153,
-          "sellVol": 3863593.4978,
+          "buySellRatio": 4.420374753522684,
+          "buyVol": 15720388.7095,
+          "sellVol": 3556347.5013,
           "timestamp": "1795782300000"
         },
         {
-          "buySellRatio": 0.5585838097702686,
-          "buyVol": 2328662.0505,
-          "sellVol": 4168867.7863,
+          "buySellRatio": 0.5626324428251789,
+          "buyVol": 2233514.2595,
+          "sellVol": 3969757.322,
           "timestamp": "1795782600000"
         },
         {
-          "buySellRatio": 0.8520395864717977,
-          "buyVol": 7810152.9039,
-          "sellVol": 9166420.232,
+          "buySellRatio": 0.8548948489392207,
+          "buyVol": 7610176.8463,
+          "sellVol": 8901886.42,
           "timestamp": "1795782900000"
         },
         {
-          "buySellRatio": 0.7109821075614474,
-          "buyVol": 3746109.1162,
-          "sellVol": 5268921.7863,
+          "buySellRatio": 0.7209173830331222,
+          "buyVol": 3641542.778,
+          "sellVol": 5051262.2718,
           "timestamp": "1795783200000"
         },
         {
-          "buySellRatio": 0.9731788950457465,
-          "buyVol": 2340481.3271,
-          "sellVol": 2404985.701,
+          "buySellRatio": 1.0124590349984597,
+          "buyVol": 2312019.8473,
+          "sellVol": 2283568.7839,
           "timestamp": "1795783500000"
         },
         {
-          "buySellRatio": 0.6494698914381005,
-          "buyVol": 5377042.6385,
-          "sellVol": 8279125.3442,
+          "buySellRatio": 0.6660318582005785,
+          "buyVol": 5232456.7472,
+          "sellVol": 7856165.8617,
           "timestamp": "1795783800000"
         },
         {
-          "buySellRatio": 0.8129176848900823,
-          "buyVol": 6461598.2138,
-          "sellVol": 7948650.0711,
+          "buySellRatio": 0.8121837032323209,
+          "buyVol": 6237395.6995,
+          "sellVol": 7679784.3575,
           "timestamp": "1795784100000"
         },
         {
-          "buySellRatio": 2.568001141090832,
-          "buyVol": 10594533.9468,
-          "sellVol": 4125595.4981,
+          "buySellRatio": 2.5812486942741826,
+          "buyVol": 10122576.7113,
+          "sellVol": 3921581.3392,
           "timestamp": "1795784400000"
         },
         {
-          "buySellRatio": 0.6856431984164889,
-          "buyVol": 4892027.8884,
-          "sellVol": 7134947.0099,
+          "buySellRatio": 0.6656891498537416,
+          "buyVol": 4626704.8136,
+          "sellVol": 6950248.1971,
           "timestamp": "1795784700000"
         },
         {
-          "buySellRatio": 2.211834388891271,
-          "buyVol": 12378993.5173,
-          "sellVol": 5596709.0391,
+          "buySellRatio": 2.233037765391781,
+          "buyVol": 12047258.5788,
+          "sellVol": 5395008.8823,
           "timestamp": "1795785000000"
         },
         {
-          "buySellRatio": 3.37975225153731,
-          "buyVol": 13559816.0571,
-          "sellVol": 4012073.977,
+          "buySellRatio": 3.3352513124475096,
+          "buyVol": 13173091.8517,
+          "sellVol": 3949654.9488,
           "timestamp": "1795785300000"
         },
         {
-          "buySellRatio": 0.39358132495039044,
-          "buyVol": 11003112.83,
-          "sellVol": 27956389.5248,
+          "buySellRatio": 0.39689242114707884,
+          "buyVol": 10626208.9826,
+          "sellVol": 26773524.5533,
           "timestamp": "1795785600000"
         },
         {
-          "buySellRatio": 0.9161508915120842,
-          "buyVol": 25024365.8293,
-          "sellVol": 27314677.1576,
+          "buySellRatio": 0.9088007267951235,
+          "buyVol": 24112372.235,
+          "sellVol": 26532078.5119,
           "timestamp": "1795785900000"
         },
         {
-          "buySellRatio": 1.4188472360837365,
-          "buyVol": 13906308.6202,
-          "sellVol": 9801131.698,
+          "buySellRatio": 1.469441383626918,
+          "buyVol": 13778682.8213,
+          "sellVol": 9376816.9148,
           "timestamp": "1795786200000"
         },
         {
-          "buySellRatio": 1.6962944416848715,
-          "buyVol": 16289570.9182,
-          "sellVol": 9603032.6563,
+          "buySellRatio": 1.733543711180885,
+          "buyVol": 15953120.2345,
+          "sellVol": 9202606.275,
           "timestamp": "1795786500000"
         },
         {
-          "buySellRatio": 0.8817306936787079,
-          "buyVol": 11760029.9204,
-          "sellVol": 13337439.6567,
+          "buySellRatio": 0.8876086887933659,
+          "buyVol": 11386429.0779,
+          "sellVol": 12828208.2202,
           "timestamp": "1795786800000"
         },
         {
-          "buySellRatio": 0.607008797285104,
-          "buyVol": 4090307.1855,
-          "sellVol": 6738464.4239,
+          "buySellRatio": 0.5849935574599713,
+          "buyVol": 3800565.7992,
+          "sellVol": 6496765.222,
           "timestamp": "1795787100000"
         },
         {
-          "buySellRatio": 0.9785581334384609,
-          "buyVol": 8853922.7897,
-          "sellVol": 9047927.2382,
+          "buySellRatio": 0.9437552892389325,
+          "buyVol": 8410945.3298,
+          "sellVol": 8912210.0037,
           "timestamp": "1795787400000"
         },
         {
-          "buySellRatio": 0.8553325911602978,
-          "buyVol": 6362503.6634,
-          "sellVol": 7438631.1584,
+          "buySellRatio": 0.8544367289025215,
+          "buyVol": 6204692.5898,
+          "sellVol": 7261734.4034,
           "timestamp": "1795787700000"
         },
         {
-          "buySellRatio": 0.37554141603429897,
-          "buyVol": 2603458.5141,
-          "sellVol": 6932546.992,
+          "buySellRatio": 0.3909004062788827,
+          "buyVol": 2523650.8998,
+          "sellVol": 6455994.5686,
           "timestamp": "1795788000000"
         },
         {
-          "buySellRatio": 0.6119406026397882,
-          "buyVol": 3694995.989,
-          "sellVol": 6038161.1762,
+          "buySellRatio": 0.6434711565724226,
+          "buyVol": 3588572.4859,
+          "sellVol": 5576897.1915,
           "timestamp": "1795788300000"
         },
         {
-          "buySellRatio": 0.39829800075180255,
-          "buyVol": 2223380.0585,
-          "sellVol": 5582202.407,
+          "buySellRatio": 0.39414087963602956,
+          "buyVol": 1971648.8477,
+          "sellVol": 5002396.2232,
           "timestamp": "1795788600000"
         },
         {
-          "buySellRatio": 0.8348631335694066,
-          "buyVol": 7917609.8462,
-          "sellVol": 9483721.9753,
+          "buySellRatio": 0.8438997297422922,
+          "buyVol": 7680315.5522,
+          "sellVol": 9100981.1729,
           "timestamp": "1795788900000"
         },
         {
-          "buySellRatio": 0.5429308927637763,
-          "buyVol": 3427123.3555,
-          "sellVol": 6312264.4174,
+          "buySellRatio": 0.5623962172761786,
+          "buyVol": 3342567.8779,
+          "sellVol": 5943439.4742,
           "timestamp": "1795789200000"
         },
         {
-          "buySellRatio": 0.9824627373507625,
-          "buyVol": 11097349.0746,
-          "sellVol": 11295440.1757,
+          "buySellRatio": 0.9324789462155202,
+          "buyVol": 10254726.9619,
+          "sellVol": 10997274.5267,
           "timestamp": "1795789500000"
         },
         {
-          "buySellRatio": 0.6901716388992106,
-          "buyVol": 17373495.0136,
-          "sellVol": 25172716.5163,
+          "buySellRatio": 0.6986763718373622,
+          "buyVol": 16717945.2244,
+          "sellVol": 23928024.3304,
           "timestamp": "1795789800000"
         },
         {
-          "buySellRatio": 0.6592912307876616,
-          "buyVol": 114947378.9818,
-          "sellVol": 174349928.5505,
+          "buySellRatio": 0.6534542802223848,
+          "buyVol": 109419737.6427,
+          "sellVol": 167448191.7931,
           "timestamp": "1795790100000"
         },
         {
-          "buySellRatio": 0.6369304663832327,
-          "buyVol": 121736995.843,
-          "sellVol": 191130747.0253,
+          "buySellRatio": 0.6315408048626842,
+          "buyVol": 116926224.7044,
+          "sellVol": 185144370.4098,
           "timestamp": "1795790400000"
         },
         {
-          "buySellRatio": 1.009576340715244,
-          "buyVol": 162759460.9844,
-          "sellVol": 161215605.4183,
+          "buySellRatio": 1.0053189258744832,
+          "buyVol": 154524435.6489,
+          "sellVol": 153706880.147,
           "timestamp": "1795790700000"
         },
         {
-          "buySellRatio": 0.6881997781029449,
-          "buyVol": 129069724.6239,
-          "sellVol": 187546884.9753,
+          "buySellRatio": 0.6938572941103223,
+          "buyVol": 127221757.4825,
+          "sellVol": 183354356.2378,
           "timestamp": "1795791000000"
         },
         {
-          "buySellRatio": 0.5757312845201922,
-          "buyVol": 134082314.3641,
-          "sellVol": 232890443.8046,
+          "buySellRatio": 0.5736505962092447,
+          "buyVol": 132519478.4329,
+          "sellVol": 231010791.7757,
           "timestamp": "1795791300000"
         },
         {
-          "buySellRatio": 1.0260122865154022,
-          "buyVol": 58044233.1313,
-          "sellVol": 56572649.1721,
+          "buySellRatio": 1.0251775138757508,
+          "buyVol": 57638941.8888,
+          "sellVol": 56223377.0334,
           "timestamp": "1795791600000"
         },
         {
-          "buySellRatio": 0.9190801653770921,
-          "buyVol": 177512892.9681,
-          "sellVol": 193141903.8896,
+          "buySellRatio": 0.9189042424588248,
+          "buyVol": 175718341.1335,
+          "sellVol": 191225954.7995,
           "timestamp": "1795791900000"
         },
         {
-          "buySellRatio": 1.1930455342712825,
-          "buyVol": 76832571.3976,
-          "sellVol": 64400367.9579,
+          "buySellRatio": 1.1888801824006907,
+          "buyVol": 72327473.7851,
+          "sellVol": 60836638.4231,
           "timestamp": "1795792200000"
         },
         {
-          "buySellRatio": 1.5680445666435243,
-          "buyVol": 119730923.2149,
-          "sellVol": 76356836.8922,
+          "buySellRatio": 1.5591198036149891,
+          "buyVol": 118149228.4695,
+          "sellVol": 75779441.8335,
           "timestamp": "1795792500000"
         },
         {
-          "buySellRatio": 1.0412552814784155,
-          "buyVol": 53809558.0932,
-          "sellVol": 51677584.7867,
+          "buySellRatio": 1.0431496582584043,
+          "buyVol": 53313402.5337,
+          "sellVol": 51108105.2576,
           "timestamp": "1795792800000"
         },
         {
-          "buySellRatio": 0.882737195904918,
-          "buyVol": 46200490.5891,
-          "sellVol": 52337763.4968,
+          "buySellRatio": 0.8592712074680202,
+          "buyVol": 44023209.7764,
+          "sellVol": 51233195.5194,
           "timestamp": "1795793100000"
         },
         {
-          "buySellRatio": 1.030172150224909,
-          "buyVol": 37573796.0237,
-          "sellVol": 36473317.6057,
+          "buySellRatio": 1.0629369595502083,
+          "buyVol": 36015088.7923,
+          "sellVol": 33882619.7252,
           "timestamp": "1795793400000"
         },
         {
-          "buySellRatio": 0.9946956852975037,
-          "buyVol": 32292907.9918,
-          "sellVol": 32465113.1689,
+          "buySellRatio": 0.9672029619682164,
+          "buyVol": 29931628.7869,
+          "sellVol": 30946585.1159,
           "timestamp": "1795793700000"
         },
         {
-          "buySellRatio": 1.4818722474880892,
-          "buyVol": 72194242.8972,
-          "sellVol": 48718263.6827,
+          "buySellRatio": 1.4936740750060091,
+          "buyVol": 69952473.9563,
+          "sellVol": 46832488.5106,
           "timestamp": "1795794000000"
         },
         {
-          "buySellRatio": 0.9448105016575158,
-          "buyVol": 30586282.4517,
-          "sellVol": 32372928.1142,
+          "buySellRatio": 0.9565757621815287,
+          "buyVol": 30399465.1742,
+          "sellVol": 31779464.1847,
           "timestamp": "1795794300000"
         },
         {
-          "buySellRatio": 0.6543660048434913,
-          "buyVol": 25941312.297,
-          "sellVol": 39643429.0672,
+          "buySellRatio": 0.6622521280976568,
+          "buyVol": 25557472.0518,
+          "sellVol": 38591755.2658,
           "timestamp": "1795794600000"
         },
         {
-          "buySellRatio": 0.6032814351382562,
-          "buyVol": 12705585.6634,
-          "sellVol": 21060793.3932,
+          "buySellRatio": 0.6326304436045329,
+          "buyVol": 12391443.9919,
+          "sellVol": 19587176.2372,
           "timestamp": "1795794900000"
         },
         {
-          "buySellRatio": 1.0521738309854012,
-          "buyVol": 14585953.6442,
-          "sellVol": 13862684.2967,
+          "buySellRatio": 1.037411392109483,
+          "buyVol": 13910597.9569,
+          "sellVol": 13408950.4537,
           "timestamp": "1795795200000"
         },
         {
@@ -22161,3625 +22095,3691 @@
           "buyVol": 11981582.7701,
           "sellVol": 18434054.375,
           "timestamp": "1795797900000"
+        },
+        {
+          "buySellRatio": 1.1383754307413176,
+          "buyVol": 13396475.4417,
+          "sellVol": 11768064.4539,
+          "timestamp": "1795798200000"
+        },
+        {
+          "buySellRatio": 1.5879595843498178,
+          "buyVol": 12846947.5978,
+          "sellVol": 8090223.2805,
+          "timestamp": "1795798500000"
+        },
+        {
+          "buySellRatio": 0.5819057118326756,
+          "buyVol": 13902898.1514,
+          "sellVol": 23892011.8306,
+          "timestamp": "1795798800000"
+        },
+        {
+          "buySellRatio": 0.7713476333937329,
+          "buyVol": 13525015.1724,
+          "sellVol": 17534266.7649,
+          "timestamp": "1795799100000"
+        },
+        {
+          "buySellRatio": 0.7377574392870135,
+          "buyVol": 12178199.9872,
+          "sellVol": 16507051.4219,
+          "timestamp": "1795799400000"
+        },
+        {
+          "buySellRatio": 1.0966220705957879,
+          "buyVol": 4963829.0854,
+          "sellVol": 4526471.9893,
+          "timestamp": "1795799700000"
+        },
+        {
+          "buySellRatio": 0.8295207634724565,
+          "buyVol": 6776099.3948,
+          "sellVol": 8168691.7232,
+          "timestamp": "1795800000000"
+        },
+        {
+          "buySellRatio": 0.9088770886028145,
+          "buyVol": 12294165.2685,
+          "sellVol": 13526763.3244,
+          "timestamp": "1795800300000"
+        },
+        {
+          "buySellRatio": 0.5401909362726414,
+          "buyVol": 35691958.5067,
+          "sellVol": 66072857.0401,
+          "timestamp": "1795800600000"
+        },
+        {
+          "buySellRatio": 0.7702330938713462,
+          "buyVol": 12353153.3663,
+          "sellVol": 16038201.2466,
+          "timestamp": "1795800900000"
+        },
+        {
+          "buySellRatio": 0.5838745046530749,
+          "buyVol": 8763174.1948,
+          "sellVol": 15008660.4655,
+          "timestamp": "1795801200000"
         }
       ],
-      "latency_ms": 203
+      "latency_ms": 158
     },
     "order_book": {
       "ok": true,
       "data": {
         "bids": [
           [
-            "60113.4",
-            "195.83",
+            "59559.2",
+            "373.38",
             "0",
-            "11"
+            "22"
           ],
           [
-            "60113.3",
-            "0.02",
-            "0",
-            "2"
-          ],
-          [
-            "60113.2",
-            "0.03",
-            "0",
-            "3"
-          ],
-          [
-            "60113.1",
-            "0.01",
-            "0",
-            "1"
-          ],
-          [
-            "60113",
-            "0.01",
-            "0",
-            "1"
-          ],
-          [
-            "60112.9",
-            "0.01",
-            "0",
-            "1"
-          ],
-          [
-            "60112.8",
-            "0.15",
-            "0",
-            "1"
-          ],
-          [
-            "60112.7",
-            "0.02",
-            "0",
-            "2"
-          ],
-          [
-            "60112.6",
-            "0.03",
-            "0",
-            "3"
-          ],
-          [
-            "60112.5",
-            "5",
-            "0",
-            "1"
-          ],
-          [
-            "60112.3",
-            "0.33",
-            "0",
-            "1"
-          ],
-          [
-            "60111.5",
-            "0.03",
-            "0",
-            "3"
-          ],
-          [
-            "60111.3",
-            "0.01",
-            "0",
-            "1"
-          ],
-          [
-            "60111.1",
-            "0.03",
-            "0",
-            "3"
-          ],
-          [
-            "60111",
-            "1.08",
-            "0",
-            "9"
-          ],
-          [
-            "60110.9",
-            "39.26",
-            "0",
-            "3"
-          ],
-          [
-            "60110.8",
-            "0.02",
-            "0",
-            "1"
-          ],
-          [
-            "60110.7",
-            "0.03",
-            "0",
-            "2"
-          ],
-          [
-            "60110.6",
-            "0.04",
-            "0",
-            "3"
-          ],
-          [
-            "60110.5",
-            "0.03",
-            "0",
-            "2"
-          ],
-          [
-            "60110.4",
-            "0.02",
-            "0",
-            "2"
-          ],
-          [
-            "60110.3",
-            "0.84",
-            "0",
-            "1"
-          ],
-          [
-            "60110.2",
-            "0.02",
-            "0",
-            "2"
-          ],
-          [
-            "60110.1",
-            "0.01",
-            "0",
-            "1"
-          ],
-          [
-            "60109.9",
-            "0.01",
-            "0",
-            "1"
-          ],
-          [
-            "60109.7",
-            "0.01",
-            "0",
-            "1"
-          ],
-          [
-            "60109.5",
-            "0.03",
-            "0",
-            "2"
-          ],
-          [
-            "60109",
-            "0.02",
-            "0",
-            "2"
-          ],
-          [
-            "60108.9",
-            "49.91",
-            "0",
-            "1"
-          ],
-          [
-            "60108.4",
-            "0.02",
-            "0",
-            "1"
-          ],
-          [
-            "60108.3",
-            "0.03",
-            "0",
-            "3"
-          ],
-          [
-            "60108.2",
-            "0.64",
-            "0",
-            "1"
-          ],
-          [
-            "60108.1",
-            "78.91",
-            "0",
-            "2"
-          ],
-          [
-            "60108",
-            "0.07",
-            "0",
-            "6"
-          ],
-          [
-            "60107.9",
-            "51.71",
-            "0",
-            "1"
-          ],
-          [
-            "60107.5",
-            "0.02",
-            "0",
-            "2"
-          ],
-          [
-            "60107.4",
-            "0.01",
-            "0",
-            "1"
-          ],
-          [
-            "60107.3",
-            "0.02",
-            "0",
-            "1"
-          ],
-          [
-            "60107.2",
-            "4.41",
-            "0",
-            "2"
-          ],
-          [
-            "60107",
-            "0.01",
-            "0",
-            "1"
-          ],
-          [
-            "60106.8",
-            "0.01",
-            "0",
-            "1"
-          ],
-          [
-            "60106.6",
+            "59559.1",
             "0.05",
             "0",
             "4"
           ],
           [
-            "60106.5",
+            "59559",
             "0.03",
             "0",
-            "3"
+            "2"
           ],
           [
-            "60106.4",
+            "59558.9",
             "0.02",
             "0",
             "1"
           ],
           [
-            "60106.2",
+            "59558.8",
             "0.02",
             "0",
             "1"
           ],
           [
-            "60106",
+            "59558.4",
             "0.02",
             "0",
-            "2"
+            "1"
           ],
           [
-            "60105.9",
-            "8.01",
-            "0",
-            "2"
-          ],
-          [
-            "60105.7",
+            "59558.2",
             "0.01",
             "0",
             "1"
           ],
           [
-            "60105.6",
-            "0.83",
+            "59557.9",
+            "0.03",
+            "0",
+            "3"
+          ],
+          [
+            "59557.5",
+            "0.02",
+            "0",
+            "2"
+          ],
+          [
+            "59557.3",
+            "0.02",
             "0",
             "1"
           ],
           [
-            "60105.5",
-            "8.15",
+            "59557.2",
+            "0.01",
+            "0",
+            "1"
+          ],
+          [
+            "59557.1",
+            "0.03",
+            "0",
+            "3"
+          ],
+          [
+            "59557",
+            "75.98",
+            "0",
+            "5"
+          ],
+          [
+            "59556.9",
+            "8.41",
+            "0",
+            "3"
+          ],
+          [
+            "59556.7",
+            "0.02",
+            "0",
+            "1"
+          ],
+          [
+            "59556.6",
+            "0.04",
+            "0",
+            "3"
+          ],
+          [
+            "59556.5",
+            "0.02",
+            "0",
+            "1"
+          ],
+          [
+            "59556.4",
+            "0.02",
+            "0",
+            "1"
+          ],
+          [
+            "59556.3",
+            "0.02",
+            "0",
+            "1"
+          ],
+          [
+            "59556.2",
+            "0.02",
+            "0",
+            "1"
+          ],
+          [
+            "59556",
+            "0.03",
+            "0",
+            "3"
+          ],
+          [
+            "59555.8",
+            "0.02",
+            "0",
+            "1"
+          ],
+          [
+            "59555.7",
+            "0.02",
+            "0",
+            "1"
+          ],
+          [
+            "59555.6",
+            "0.03",
+            "0",
+            "2"
+          ],
+          [
+            "59555.5",
+            "0.03",
+            "0",
+            "2"
+          ],
+          [
+            "59555.4",
+            "0.02",
+            "0",
+            "1"
+          ],
+          [
+            "59555.3",
+            "0.01",
+            "0",
+            "1"
+          ],
+          [
+            "59555.1",
+            "0.05",
+            "0",
+            "4"
+          ],
+          [
+            "59554.3",
+            "0.01",
+            "0",
+            "1"
+          ],
+          [
+            "59554.1",
+            "0.01",
+            "0",
+            "1"
+          ],
+          [
+            "59554",
+            "0.04",
+            "0",
+            "3"
+          ],
+          [
+            "59553.9",
+            "8.17",
+            "0",
+            "1"
+          ],
+          [
+            "59553.8",
+            "0.02",
+            "0",
+            "2"
+          ],
+          [
+            "59553.7",
+            "27.34",
+            "0",
+            "3"
+          ],
+          [
+            "59553.6",
+            "2.22",
+            "0",
+            "1"
+          ],
+          [
+            "59553.3",
+            "0.03",
+            "0",
+            "3"
+          ],
+          [
+            "59553.2",
+            "0.15",
+            "0",
+            "1"
+          ],
+          [
+            "59553",
+            "0.02",
+            "0",
+            "2"
+          ],
+          [
+            "59552.9",
+            "0.03",
+            "0",
+            "2"
+          ],
+          [
+            "59552.8",
+            "0.03",
+            "0",
+            "3"
+          ],
+          [
+            "59552.7",
+            "0.84",
+            "0",
+            "1"
+          ],
+          [
+            "59552.6",
+            "0.03",
+            "0",
+            "2"
+          ],
+          [
+            "59552.4",
+            "0.01",
+            "0",
+            "1"
+          ],
+          [
+            "59552.3",
+            "0.03",
+            "0",
+            "3"
+          ],
+          [
+            "59552.2",
+            "20.42",
+            "0",
+            "2"
+          ],
+          [
+            "59552.1",
+            "0.01",
+            "0",
+            "1"
+          ],
+          [
+            "59551.8",
+            "0.03",
+            "0",
+            "2"
+          ],
+          [
+            "59551.7",
+            "0.02",
+            "0",
+            "2"
+          ],
+          [
+            "59551.6",
+            "62.85",
+            "0",
+            "2"
+          ],
+          [
+            "59551.5",
+            "0.01",
             "0",
             "1"
           ]
         ],
         "asks": [
           [
-            "60113.5",
-            "1117.14",
+            "59559.3",
+            "758.53",
             "0",
-            "49"
+            "21"
           ],
           [
-            "60113.6",
-            "34.02",
-            "0",
-            "3"
-          ],
-          [
-            "60113.8",
-            "86.19",
-            "0",
-            "2"
-          ],
-          [
-            "60113.9",
-            "195.81",
-            "0",
-            "2"
-          ],
-          [
-            "60114",
-            "34.02",
+            "59559.4",
+            "0.04",
             "0",
             "3"
           ],
           [
-            "60114.6",
-            "125.92",
-            "0",
-            "1"
-          ],
-          [
-            "60114.8",
-            "0.84",
-            "0",
-            "1"
-          ],
-          [
-            "60114.9",
-            "6.65",
-            "0",
-            "1"
-          ],
-          [
-            "60115.4",
+            "59559.5",
             "0.02",
             "0",
-            "2"
-          ],
-          [
-            "60115.8",
-            "0.01",
-            "0",
             "1"
           ],
           [
-            "60116.3",
-            "0.01",
-            "0",
-            "1"
-          ],
-          [
-            "60116.8",
-            "0.01",
-            "0",
-            "1"
-          ],
-          [
-            "60117",
-            "0.06",
-            "0",
-            "6"
-          ],
-          [
-            "60117.1",
-            "8.34",
-            "0",
-            "4"
-          ],
-          [
-            "60117.2",
-            "313.11",
-            "0",
-            "4"
-          ],
-          [
-            "60117.3",
-            "217.72",
-            "0",
-            "2"
-          ],
-          [
-            "60117.4",
-            "0.08",
-            "0",
-            "1"
-          ],
-          [
-            "60117.5",
-            "0.38",
-            "0",
-            "1"
-          ],
-          [
-            "60118.4",
+            "59559.6",
             "0.02",
             "0",
+            "1"
+          ],
+          [
+            "59559.7",
+            "0.86",
+            "0",
             "2"
           ],
           [
-            "60118.5",
-            "281.78",
-            "0",
-            "7"
-          ],
-          [
-            "60118.8",
+            "59559.8",
             "0.01",
             "0",
             "1"
           ],
           [
-            "60118.9",
-            "403.36",
-            "0",
-            "4"
-          ],
-          [
-            "60119",
-            "452.42",
-            "0",
-            "17"
-          ],
-          [
-            "60119.1",
+            "59559.9",
             "0.04",
             "0",
             "2"
           ],
           [
-            "60119.2",
-            "0.03",
+            "59560",
+            "0.01",
+            "0",
+            "1"
+          ],
+          [
+            "59560.2",
+            "0.02",
             "0",
             "2"
           ],
           [
-            "60119.3",
+            "59560.6",
             "0.02",
             "0",
             "1"
           ],
           [
-            "60119.4",
-            "0.03",
-            "0",
-            "2"
-          ],
-          [
-            "60119.6",
-            "3.32",
+            "59560.8",
+            "0.01",
             "0",
             "1"
           ],
           [
-            "60119.8",
+            "59560.9",
+            "0.03",
+            "0",
+            "3"
+          ],
+          [
+            "59561",
             "0.84",
             "0",
             "1"
           ],
           [
-            "60119.9",
-            "0.01",
+            "59561.3",
+            "0.02",
             "0",
-            "1"
+            "2"
           ],
           [
-            "60120",
-            "126.02",
-            "0",
-            "11"
-          ],
-          [
-            "60120.2",
-            "56.76",
+            "59561.4",
+            "53.47",
             "0",
             "5"
           ],
           [
-            "60120.3",
-            "161.82",
-            "0",
-            "2"
-          ],
-          [
-            "60120.4",
-            "0.01",
+            "59561.5",
+            "97.37",
             "0",
             "1"
           ],
           [
-            "60120.5",
-            "0.02",
-            "0",
-            "1"
-          ],
-          [
-            "60120.6",
-            "3.56",
-            "0",
-            "2"
-          ],
-          [
-            "60120.7",
-            "0.02",
-            "0",
-            "1"
-          ],
-          [
-            "60120.8",
-            "0.02",
-            "0",
-            "1"
-          ],
-          [
-            "60120.9",
-            "0.87",
+            "59561.6",
+            "0.03",
             "0",
             "3"
           ],
           [
-            "60121",
-            "0.03",
+            "59561.7",
+            "108.36",
             "0",
-            "2"
+            "7"
           ],
           [
-            "60121.2",
-            "0.01",
-            "0",
-            "1"
-          ],
-          [
-            "60121.6",
-            "0.05",
-            "0",
-            "4"
-          ],
-          [
-            "60121.7",
-            "3.32",
-            "0",
-            "1"
-          ],
-          [
-            "60122.1",
+            "59561.9",
             "0.02",
             "0",
             "2"
           ],
           [
-            "60122.2",
-            "7.07",
+            "59562",
+            "10.04",
+            "0",
+            "5"
+          ],
+          [
+            "59562.1",
+            "0.85",
             "0",
             "2"
           ],
           [
-            "60122.4",
-            "0.03",
-            "0",
-            "2"
-          ],
-          [
-            "60122.6",
+            "59562.4",
             "0.01",
             "0",
             "1"
           ],
           [
-            "60122.7",
+            "59562.6",
+            "0.01",
+            "0",
+            "1"
+          ],
+          [
+            "59562.8",
+            "0.02",
+            "0",
+            "1"
+          ],
+          [
+            "59562.9",
+            "0.02",
+            "0",
+            "2"
+          ],
+          [
+            "59563",
+            "135.69",
+            "0",
+            "1"
+          ],
+          [
+            "59563.2",
+            "0.01",
+            "0",
+            "1"
+          ],
+          [
+            "59563.3",
             "0.03",
             "0",
-            "2"
+            "3"
           ],
           [
-            "60122.8",
-            "0.55",
+            "59563.4",
+            "270.69",
+            "0",
+            "1"
+          ],
+          [
+            "59563.5",
+            "4.12",
+            "0",
+            "1"
+          ],
+          [
+            "59563.6",
+            "0.01",
+            "0",
+            "1"
+          ],
+          [
+            "59563.7",
+            "5.02",
+            "0",
+            "3"
+          ],
+          [
+            "59563.8",
+            "0.01",
+            "0",
+            "1"
+          ],
+          [
+            "59563.9",
+            "0.02",
+            "0",
+            "1"
+          ],
+          [
+            "59564",
+            "0.86",
             "0",
             "2"
           ],
           [
-            "60122.9",
-            "8.32",
+            "59564.1",
+            "0.01",
+            "0",
+            "1"
+          ],
+          [
+            "59564.2",
+            "0.01",
+            "0",
+            "1"
+          ],
+          [
+            "59564.6",
+            "0.01",
+            "0",
+            "1"
+          ],
+          [
+            "59564.7",
+            "7.07",
+            "0",
+            "5"
+          ],
+          [
+            "59564.8",
+            "126.4",
+            "0",
+            "1"
+          ],
+          [
+            "59565",
+            "0.12",
+            "0",
+            "11"
+          ],
+          [
+            "59565.1",
+            "123.51",
+            "0",
+            "2"
+          ],
+          [
+            "59565.2",
+            "100.01",
+            "0",
+            "2"
+          ],
+          [
+            "59565.3",
+            "0.15",
+            "0",
+            "1"
+          ],
+          [
+            "59565.4",
+            "0.01",
+            "0",
+            "1"
+          ],
+          [
+            "59565.5",
+            "89.53",
+            "0",
+            "2"
+          ],
+          [
+            "59565.6",
+            "10.41",
+            "0",
+            "1"
+          ],
+          [
+            "59565.7",
+            "1.34",
+            "0",
+            "3"
+          ],
+          [
+            "59565.9",
+            "0.01",
+            "0",
+            "1"
+          ],
+          [
+            "59566.1",
+            "3.37",
             "0",
             "2"
           ]
         ]
       },
-      "latency_ms": 212
+      "latency_ms": 167
     },
     "recent_agg_trades": {
       "ok": true,
       "data": [
         {
-          "q": "2",
+          "q": "0.17",
           "m": false,
-          "price": "60119",
-          "time": "1795798224490"
+          "price": "59559.2",
+          "time": "1795801406158"
         },
         {
           "q": "0.01",
-          "m": true,
-          "price": "60118.9",
-          "time": "1795798224475"
-        },
-        {
-          "q": "1",
-          "m": true,
-          "price": "60118.9",
-          "time": "1795798224444"
-        },
-        {
-          "q": "2.99",
-          "m": true,
-          "price": "60118.9",
-          "time": "1795798223841"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60119",
-          "time": "1795798223838"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60119",
-          "time": "1795798223838"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60119",
-          "time": "1795798223838"
-        },
-        {
-          "q": "0.08",
-          "m": true,
-          "price": "60119.2",
-          "time": "1795798223838"
-        },
-        {
-          "q": "0.07",
-          "m": true,
-          "price": "60119.2",
-          "time": "1795798223838"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60119.3",
-          "time": "1795798223838"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60119.4",
-          "time": "1795798223838"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60119.5",
-          "time": "1795798223838"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60119.8",
-          "time": "1795798223838"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60119.8",
-          "time": "1795798223838"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60120",
-          "time": "1795798223838"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60120",
-          "time": "1795798223838"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60120",
-          "time": "1795798223838"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60120.1",
-          "time": "1795798223838"
-        },
-        {
-          "q": "0.03",
-          "m": true,
-          "price": "60120.1",
-          "time": "1795798223838"
-        },
-        {
-          "q": "0.29",
-          "m": true,
-          "price": "60120.1",
-          "time": "1795798223838"
-        },
-        {
-          "q": "0.65",
-          "m": true,
-          "price": "60120.1",
-          "time": "1795798223838"
-        },
-        {
-          "q": "0.13",
-          "m": true,
-          "price": "60120.1",
-          "time": "1795798223838"
-        },
-        {
-          "q": "0.25",
-          "m": true,
-          "price": "60120.1",
-          "time": "1795798223838"
-        },
-        {
-          "q": "0.1",
-          "m": true,
-          "price": "60120.1",
-          "time": "1795798223838"
-        },
-        {
-          "q": "0.35",
-          "m": true,
-          "price": "60120.1",
-          "time": "1795798223838"
-        },
-        {
-          "q": "0.3",
-          "m": true,
-          "price": "60120.1",
-          "time": "1795798223837"
-        },
-        {
-          "q": "0.3",
-          "m": true,
-          "price": "60120.1",
-          "time": "1795798223837"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60120.1",
-          "time": "1795798223837"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60120.1",
-          "time": "1795798223837"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60120.1",
-          "time": "1795798223837"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60120.1",
-          "time": "1795798223837"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60120.3",
-          "time": "1795798223834"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60120.4",
-          "time": "1795798223834"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60120.5",
-          "time": "1795798223834"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60120.6",
-          "time": "1795798223834"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60120.7",
-          "time": "1795798223834"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60120.8",
-          "time": "1795798223834"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60120.9",
-          "time": "1795798223834"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60121",
-          "time": "1795798223834"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60121",
-          "time": "1795798223834"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60121.4",
-          "time": "1795798223834"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60122.2",
-          "time": "1795798223834"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60122.6",
-          "time": "1795798223834"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60123",
-          "time": "1795798223834"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60123.4",
-          "time": "1795798223834"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60123.4",
-          "time": "1795798223834"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60124.3",
-          "time": "1795798223834"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60124.4",
-          "time": "1795798223834"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60124.8",
-          "time": "1795798223833"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60124.9",
-          "time": "1795798223833"
-        },
-        {
-          "q": "2.63",
-          "m": true,
-          "price": "60124.9",
-          "time": "1795798223833"
-        },
-        {
-          "q": "1.37",
-          "m": true,
-          "price": "60124.9",
-          "time": "1795798223833"
-        },
-        {
-          "q": "0.03",
-          "m": true,
-          "price": "60124.9",
-          "time": "1795798223833"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60124.9",
-          "time": "1795798223833"
-        },
-        {
-          "q": "0.04",
-          "m": true,
-          "price": "60124.9",
-          "time": "1795798223833"
-        },
-        {
-          "q": "8.05",
-          "m": true,
-          "price": "60124.9",
-          "time": "1795798223833"
-        },
-        {
-          "q": "0.24",
           "m": false,
-          "price": "60125",
-          "time": "1795798223636"
+          "price": "59559.2",
+          "time": "1795801406158"
         },
         {
           "q": "0.01",
           "m": false,
-          "price": "60125",
-          "time": "1795798223581"
+          "price": "59559.2",
+          "time": "1795801406158"
         },
         {
           "q": "0.01",
-          "m": true,
-          "price": "60124.9",
-          "time": "1795798223489"
-        },
-        {
-          "q": "0.08",
-          "m": true,
-          "price": "60124.9",
-          "time": "1795798223366"
-        },
-        {
-          "q": "0.49",
-          "m": false,
-          "price": "60125",
-          "time": "1795798223271"
-        },
-        {
-          "q": "0.1",
-          "m": false,
-          "price": "60125",
-          "time": "1795798223023"
-        },
-        {
-          "q": "3.38",
-          "m": false,
-          "price": "60125",
-          "time": "1795798222898"
-        },
-        {
-          "q": "1.48",
-          "m": false,
-          "price": "60125",
-          "time": "1795798222789"
-        },
-        {
-          "q": "1.62",
-          "m": false,
-          "price": "60125",
-          "time": "1795798222679"
-        },
-        {
-          "q": "0.4",
-          "m": true,
-          "price": "60124.9",
-          "time": "1795798222426"
-        },
-        {
-          "q": "0.35",
           "m": false,
-          "price": "60125",
-          "time": "1795798222424"
-        },
-        {
-          "q": "0.5",
-          "m": true,
-          "price": "60124.9",
-          "time": "1795798222340"
-        },
-        {
-          "q": "0.2",
-          "m": true,
-          "price": "60124.9",
-          "time": "1795798222302"
+          "price": "59559.2",
+          "time": "1795801406158"
         },
         {
           "q": "0.01",
           "m": false,
-          "price": "60125",
-          "time": "1795798222171"
-        },
-        {
-          "q": "0.09",
-          "m": true,
-          "price": "60124.9",
-          "time": "1795798222018"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60125",
-          "time": "1795798222017"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60125.1",
-          "time": "1795798222017"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60125.2",
-          "time": "1795798222017"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60125.2",
-          "time": "1795798222017"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60125.2",
-          "time": "1795798222017"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60125.3",
-          "time": "1795798222017"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60125.3",
-          "time": "1795798222017"
-        },
-        {
-          "q": "0.34",
-          "m": true,
-          "price": "60125.3",
-          "time": "1795798222017"
-        },
-        {
-          "q": "1.41",
-          "m": true,
-          "price": "60125.3",
-          "time": "1795798222017"
-        },
-        {
-          "q": "0.12",
-          "m": true,
-          "price": "60125.3",
-          "time": "1795798222017"
+          "price": "59559",
+          "time": "1795801406158"
         },
         {
-          "q": "0.02",
-          "m": true,
-          "price": "60125.3",
-          "time": "1795798222017"
-        },
-        {
-          "q": "0.05",
-          "m": true,
-          "price": "60125.3",
-          "time": "1795798222017"
-        },
-        {
-          "q": "0.32",
-          "m": true,
-          "price": "60125.3",
-          "time": "1795798222017"
-        },
-        {
           "q": "0.01",
-          "m": true,
-          "price": "60125.3",
-          "time": "1795798222017"
-        },
-        {
-          "q": "0.98",
-          "m": true,
-          "price": "60125.3",
-          "time": "1795798222017"
-        },
-        {
-          "q": "0.89",
-          "m": true,
-          "price": "60125.3",
-          "time": "1795798221915"
-        },
-        {
-          "q": "6.86",
-          "m": true,
-          "price": "60125.3",
-          "time": "1795798221522"
-        },
-        {
-          "q": "15",
-          "m": false,
-          "price": "60125.4",
-          "time": "1795798221394"
-        },
-        {
-          "q": "0.52",
-          "m": true,
-          "price": "60125.3",
-          "time": "1795798221317"
-        },
-        {
-          "q": "1.23",
           "m": false,
-          "price": "60125.4",
-          "time": "1795798221284"
+          "price": "59559",
+          "time": "1795801406158"
         },
         {
           "q": "0.01",
-          "m": false,
-          "price": "60125.4",
-          "time": "1795798221284"
-        },
-        {
-          "q": "0.02",
           "m": false,
-          "price": "60125.4",
-          "time": "1795798221284"
+          "price": "59559",
+          "time": "1795801406158"
         },
         {
-          "q": "0.02",
-          "m": false,
-          "price": "60125.4",
-          "time": "1795798221284"
-        },
-        {
           "q": "0.01",
-          "m": false,
-          "price": "60125.4",
-          "time": "1795798221284"
-        },
-        {
-          "q": "1.77",
-          "m": false,
-          "price": "60125.4",
-          "time": "1795798221284"
-        },
-        {
-          "q": "15",
-          "m": true,
-          "price": "60125.3",
-          "time": "1795798221262"
-        },
-        {
-          "q": "5",
-          "m": false,
-          "price": "60125.4",
-          "time": "1795798221105"
-        },
-        {
-          "q": "0.2",
-          "m": false,
-          "price": "60125.4",
-          "time": "1795798220906"
-        },
-        {
-          "q": "27.03",
-          "m": false,
-          "price": "60125.4",
-          "time": "1795798220799"
-        },
-        {
-          "q": "0.02",
           "m": false,
-          "price": "60125.4",
-          "time": "1795798220799"
+          "price": "59557.9",
+          "time": "1795801406158"
         },
         {
           "q": "0.01",
-          "m": false,
-          "price": "60125.4",
-          "time": "1795798220799"
-        },
-        {
-          "q": "2.94",
           "m": false,
-          "price": "60125.4",
-          "time": "1795798220799"
-        },
-        {
-          "q": "10.69",
-          "m": true,
-          "price": "60125.3",
-          "time": "1795798220649"
+          "price": "59557.8",
+          "time": "1795801406158"
         },
         {
           "q": "0.01",
-          "m": false,
-          "price": "60125.3",
-          "time": "1795798220572"
-        },
-        {
-          "q": "1.09",
-          "m": false,
-          "price": "60125",
-          "time": "1795798220568"
-        },
-        {
-          "q": "0.05",
           "m": false,
-          "price": "60125",
-          "time": "1795798220568"
+          "price": "59557.1",
+          "time": "1795801406158"
         },
         {
           "q": "0.01",
           "m": false,
-          "price": "60125",
-          "time": "1795798220568"
+          "price": "59556.9",
+          "time": "1795801406158"
         },
         {
           "q": "0.01",
           "m": false,
-          "price": "60124.9",
-          "time": "1795798220568"
+          "price": "59556.9",
+          "time": "1795801406158"
         },
         {
-          "q": "0.01",
-          "m": false,
-          "price": "60124.9",
-          "time": "1795798220568"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60124.9",
-          "time": "1795798220568"
-        },
-        {
-          "q": "1",
-          "m": false,
-          "price": "60124.8",
-          "time": "1795798220568"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60124.7",
-          "time": "1795798220567"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60124.7",
-          "time": "1795798220567"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60124.7",
-          "time": "1795798220567"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60123.9",
-          "time": "1795798220567"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60123.9",
-          "time": "1795798220567"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60123.7",
-          "time": "1795798220567"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60123.6",
-          "time": "1795798220567"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60123.5",
-          "time": "1795798220566"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60123.4",
-          "time": "1795798220565"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60123.4",
-          "time": "1795798220565"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60123.4",
-          "time": "1795798220565"
-        },
-        {
-          "q": "0.15",
-          "m": false,
-          "price": "60123.3",
-          "time": "1795798220565"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60123.2",
-          "time": "1795798220565"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60123",
-          "time": "1795798220564"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60122.9",
-          "time": "1795798220564"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60122.7",
-          "time": "1795798220564"
-        },
-        {
-          "q": "0.06",
-          "m": false,
-          "price": "60122.7",
-          "time": "1795798220563"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60122.6",
-          "time": "1795798220563"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60122.6",
-          "time": "1795798220563"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60122.4",
-          "time": "1795798220563"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60122.4",
-          "time": "1795798220563"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60122.1",
-          "time": "1795798220563"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60121.9",
-          "time": "1795798220563"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60121.9",
-          "time": "1795798220563"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60121.5",
-          "time": "1795798220562"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60121.3",
-          "time": "1795798220562"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60121.3",
-          "time": "1795798220562"
-        },
-        {
-          "q": "0.02",
-          "m": false,
-          "price": "60121.2",
-          "time": "1795798220562"
-        },
-        {
-          "q": "0.12",
-          "m": false,
-          "price": "60121.2",
-          "time": "1795798220557"
-        },
-        {
-          "q": "0.02",
-          "m": false,
-          "price": "60121.2",
-          "time": "1795798220557"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60121.2",
-          "time": "1795798220557"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60121.1",
-          "time": "1795798220555"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60121.1",
-          "time": "1795798220555"
-        },
-        {
-          "q": "0.02",
-          "m": false,
-          "price": "60121.1",
-          "time": "1795798220555"
-        },
-        {
-          "q": "0.02",
-          "m": false,
-          "price": "60121",
-          "time": "1795798220555"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60121",
-          "time": "1795798220555"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60120.9",
-          "time": "1795798220555"
-        },
-        {
-          "q": "0.02",
-          "m": false,
-          "price": "60120.9",
-          "time": "1795798220555"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60120.9",
-          "time": "1795798220555"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60120.9",
-          "time": "1795798220555"
-        },
-        {
-          "q": "0.02",
-          "m": false,
-          "price": "60120.8",
-          "time": "1795798220555"
-        },
-        {
-          "q": "0.02",
-          "m": false,
-          "price": "60120.5",
-          "time": "1795798220555"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60120.3",
-          "time": "1795798220555"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60120.3",
-          "time": "1795798220555"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60120",
-          "time": "1795798220555"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60119.4",
-          "time": "1795798220555"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60119.3",
-          "time": "1795798220554"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60119.2",
-          "time": "1795798220553"
-        },
-        {
-          "q": "11.79",
-          "m": false,
-          "price": "60119.2",
-          "time": "1795798220553"
-        },
-        {
-          "q": "0.1",
-          "m": false,
-          "price": "60119.2",
-          "time": "1795798220551"
-        },
-        {
-          "q": "0.02",
-          "m": false,
-          "price": "60119.1",
-          "time": "1795798220551"
-        },
-        {
-          "q": "0.02",
-          "m": false,
-          "price": "60119",
-          "time": "1795798220507"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60119",
-          "time": "1795798220507"
-        },
-        {
-          "q": "0.02",
-          "m": false,
-          "price": "60119",
-          "time": "1795798220507"
-        },
-        {
-          "q": "0.02",
-          "m": false,
-          "price": "60119",
-          "time": "1795798220507"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60119",
-          "time": "1795798220507"
-        },
-        {
-          "q": "1.95",
-          "m": false,
-          "price": "60119",
-          "time": "1795798220507"
-        },
-        {
-          "q": "0.02",
-          "m": false,
-          "price": "60119",
-          "time": "1795798220507"
-        },
-        {
-          "q": "29.58",
-          "m": false,
-          "price": "60119",
-          "time": "1795798220507"
-        },
-        {
-          "q": "4.42",
-          "m": false,
-          "price": "60119",
-          "time": "1795798220173"
-        },
-        {
-          "q": "0.02",
-          "m": false,
-          "price": "60118.9",
-          "time": "1795798219978"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60118.9",
-          "time": "1795798219978"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60118.9",
-          "time": "1795798219978"
-        },
-        {
-          "q": "0.02",
-          "m": false,
-          "price": "60118.9",
-          "time": "1795798219978"
-        },
-        {
-          "q": "30.92",
-          "m": false,
-          "price": "60118.9",
-          "time": "1795798219978"
-        },
-        {
-          "q": "3.08",
-          "m": false,
-          "price": "60118.9",
-          "time": "1795798219822"
-        },
-        {
-          "q": "1.11",
-          "m": false,
-          "price": "60118.9",
-          "time": "1795798219822"
-        },
-        {
-          "q": "0.13",
-          "m": false,
-          "price": "60118.9",
-          "time": "1795798219706"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60118.8",
-          "time": "1795798219704"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60118.8",
-          "time": "1795798219704"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60118.5",
-          "time": "1795798219704"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60118.5",
-          "time": "1795798219704"
-        },
-        {
-          "q": "0.02",
-          "m": false,
-          "price": "60118.3",
-          "time": "1795798219704"
-        },
-        {
-          "q": "0.1",
-          "m": false,
-          "price": "60117.6",
-          "time": "1795798219701"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60117.3",
-          "time": "1795798219700"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60117.3",
-          "time": "1795798219700"
-        },
-        {
-          "q": "0.1",
-          "m": false,
-          "price": "60117.2",
-          "time": "1795798219699"
-        },
-        {
-          "q": "0.1",
-          "m": false,
-          "price": "60117.2",
-          "time": "1795798219699"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60117.2",
-          "time": "1795798219699"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60117.2",
-          "time": "1795798219699"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60117.2",
-          "time": "1795798219699"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60117.2",
-          "time": "1795798219699"
-        },
-        {
-          "q": "0.02",
-          "m": false,
-          "price": "60117.2",
-          "time": "1795798219699"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60117.2",
-          "time": "1795798219699"
-        },
-        {
-          "q": "1.22",
-          "m": false,
-          "price": "60117.2",
-          "time": "1795798219699"
-        },
-        {
-          "q": "0.02",
-          "m": false,
-          "price": "60117.2",
-          "time": "1795798219639"
-        },
-        {
-          "q": "1.92",
-          "m": false,
-          "price": "60117.2",
-          "time": "1795798219316"
-        },
-        {
-          "q": "0.09",
-          "m": true,
-          "price": "60117.1",
-          "time": "1795798219276"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60117.1",
-          "time": "1795798219123"
-        },
-        {
-          "q": "2.02",
-          "m": true,
-          "price": "60117.1",
-          "time": "1795798219080"
-        },
-        {
-          "q": "0.14",
-          "m": false,
-          "price": "60117.2",
-          "time": "1795798219044"
-        },
-        {
-          "q": "0.02",
-          "m": false,
-          "price": "60117.2",
-          "time": "1795798219044"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60117.2",
-          "time": "1795798219044"
-        },
-        {
-          "q": "0.09",
-          "m": true,
-          "price": "60117.1",
-          "time": "1795798219043"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60117.1",
-          "time": "1795798219042"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60117.1",
-          "time": "1795798219042"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60117.1",
-          "time": "1795798219042"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60117",
-          "time": "1795798219042"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60117",
-          "time": "1795798219042"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60116.9",
-          "time": "1795798219042"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60116.6",
-          "time": "1795798219042"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60116.4",
-          "time": "1795798219042"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60116.3",
-          "time": "1795798219042"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60116.3",
-          "time": "1795798219042"
-        },
-        {
-          "q": "0.14",
-          "m": false,
-          "price": "60116.2",
-          "time": "1795798219038"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60116.1",
-          "time": "1795798219037"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60116.1",
-          "time": "1795798219037"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60116.1",
-          "time": "1795798219037"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60116.1",
-          "time": "1795798219037"
-        },
-        {
-          "q": "0.02",
-          "m": false,
-          "price": "60116.1",
-          "time": "1795798219037"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60115.8",
-          "time": "1795798219037"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60115.8",
-          "time": "1795798219037"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60115.7",
-          "time": "1795798219037"
-        },
-        {
-          "q": "0.02",
-          "m": false,
-          "price": "60115.6",
-          "time": "1795798219037"
-        },
-        {
-          "q": "0.02",
-          "m": false,
-          "price": "60115.5",
-          "time": "1795798219037"
-        },
-        {
-          "q": "0.02",
-          "m": false,
-          "price": "60115.4",
-          "time": "1795798219037"
-        },
-        {
-          "q": "0.15",
-          "m": false,
-          "price": "60115.3",
-          "time": "1795798219037"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60114.8",
-          "time": "1795798219035"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60114.8",
-          "time": "1795798219035"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60114.6",
-          "time": "1795798219035"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60114.6",
-          "time": "1795798219035"
-        },
-        {
-          "q": "0.02",
-          "m": false,
-          "price": "60114.3",
-          "time": "1795798219035"
-        },
-        {
-          "q": "0.02",
-          "m": false,
-          "price": "60114.2",
-          "time": "1795798219035"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60114",
-          "time": "1795798219035"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60113.9",
-          "time": "1795798219035"
-        },
-        {
-          "q": "0.02",
-          "m": false,
-          "price": "60113.9",
-          "time": "1795798219035"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60113.7",
-          "time": "1795798219035"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60113.6",
-          "time": "1795798219035"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60112.4",
-          "time": "1795798219034"
-        },
-        {
-          "q": "0.02",
-          "m": false,
-          "price": "60112.3",
-          "time": "1795798219034"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60112.3",
-          "time": "1795798219034"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60112.3",
-          "time": "1795798219034"
-        },
-        {
-          "q": "0.47",
-          "m": false,
-          "price": "60112.3",
-          "time": "1795798219034"
-        },
-        {
-          "q": "0.05",
-          "m": false,
-          "price": "60112.3",
-          "time": "1795798219034"
-        },
-        {
-          "q": "0.02",
-          "m": false,
-          "price": "60112.3",
-          "time": "1795798219034"
-        },
-        {
-          "q": "0.1",
-          "m": false,
-          "price": "60112.3",
-          "time": "1795798219034"
-        },
-        {
-          "q": "0.08",
-          "m": false,
-          "price": "60112.3",
-          "time": "1795798219034"
-        },
-        {
-          "q": "0.08",
-          "m": false,
-          "price": "60112.3",
-          "time": "1795798219034"
-        },
-        {
-          "q": "13.29",
-          "m": false,
-          "price": "60112.3",
-          "time": "1795798219034"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60112.3",
-          "time": "1795798219034"
-        },
-        {
-          "q": "0.02",
-          "m": false,
-          "price": "60112.3",
-          "time": "1795798219034"
-        },
-        {
-          "q": "5.36",
-          "m": false,
-          "price": "60112.3",
-          "time": "1795798219034"
-        },
-        {
-          "q": "2.31",
-          "m": false,
-          "price": "60112.3",
-          "time": "1795798218782"
-        },
-        {
-          "q": "2.91",
-          "m": true,
-          "price": "60112.2",
-          "time": "1795798218588"
-        },
-        {
-          "q": "0.02",
-          "m": false,
-          "price": "60112.3",
-          "time": "1795798218409"
-        },
-        {
-          "q": "0.83",
-          "m": false,
-          "price": "60112.3",
-          "time": "1795798217531"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60112.2",
-          "time": "1795798217413"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60112.2",
-          "time": "1795798217413"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60111.9",
-          "time": "1795798217413"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60111.8",
-          "time": "1795798217413"
-        },
-        {
-          "q": "0.02",
-          "m": false,
-          "price": "60111.7",
-          "time": "1795798217413"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60111.3",
-          "time": "1795798217413"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60111",
-          "time": "1795798217413"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60110.9",
-          "time": "1795798217412"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60110.9",
-          "time": "1795798217412"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60110.9",
-          "time": "1795798217412"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60110.5",
-          "time": "1795798217412"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60110.5",
-          "time": "1795798217412"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60110.4",
-          "time": "1795798217412"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60109.9",
-          "time": "1795798217412"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60109.8",
-          "time": "1795798217412"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60109.7",
-          "time": "1795798217412"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60109.6",
-          "time": "1795798217412"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60109.4",
-          "time": "1795798217412"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60109.3",
-          "time": "1795798217412"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60109.3",
-          "time": "1795798217412"
-        },
-        {
-          "q": "0.02",
-          "m": false,
-          "price": "60109.2",
-          "time": "1795798217412"
-        },
-        {
-          "q": "8.47",
-          "m": true,
-          "price": "60109.1",
-          "time": "1795798217410"
-        },
-        {
-          "q": "1.92",
-          "m": true,
-          "price": "60109.1",
-          "time": "1795798217410"
-        },
-        {
-          "q": "4.61",
-          "m": true,
-          "price": "60109.1",
-          "time": "1795798217410"
-        },
-        {
-          "q": "0.13",
-          "m": false,
-          "price": "60109.2",
-          "time": "1795798217402"
-        },
-        {
-          "q": "0.1",
-          "m": false,
-          "price": "60109.2",
-          "time": "1795798217402"
-        },
-        {
-          "q": "0.12",
-          "m": false,
-          "price": "60109.2",
-          "time": "1795798217402"
-        },
-        {
-          "q": "0.12",
-          "m": false,
-          "price": "60109.2",
-          "time": "1795798217402"
-        },
-        {
-          "q": "0.1",
-          "m": false,
-          "price": "60109.2",
-          "time": "1795798217402"
-        },
-        {
-          "q": "0.8",
-          "m": false,
-          "price": "60109.2",
-          "time": "1795798217401"
-        },
-        {
-          "q": "0.79",
-          "m": false,
-          "price": "60109.2",
-          "time": "1795798217401"
-        },
-        {
-          "q": "0.15",
-          "m": false,
-          "price": "60109.2",
-          "time": "1795798217401"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60109.2",
-          "time": "1795798217401"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60108.8",
-          "time": "1795798217401"
-        },
-        {
-          "q": "0.29",
-          "m": false,
-          "price": "60108.8",
-          "time": "1795798217401"
-        },
-        {
-          "q": "0.02",
-          "m": false,
-          "price": "60108.4",
-          "time": "1795798217401"
-        },
-        {
-          "q": "0.29",
-          "m": false,
-          "price": "60108.2",
-          "time": "1795798217401"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60108.2",
-          "time": "1795798217401"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60108.1",
-          "time": "1795798217401"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60108",
-          "time": "1795798217401"
-        },
-        {
-          "q": "0.03",
-          "m": false,
-          "price": "60107.8",
-          "time": "1795798217399"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60107.7",
-          "time": "1795798217399"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60107.7",
-          "time": "1795798217399"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60107.7",
-          "time": "1795798217399"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60106.9",
-          "time": "1795798217399"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60106.8",
-          "time": "1795798217399"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60106.8",
-          "time": "1795798217399"
-        },
-        {
-          "q": "0.02",
-          "m": false,
-          "price": "60106.7",
-          "time": "1795798217398"
-        },
-        {
-          "q": "5.12",
-          "m": false,
-          "price": "60106.7",
-          "time": "1795798217398"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60106.7",
-          "time": "1795798217398"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60106.7",
-          "time": "1795798217398"
-        },
-        {
-          "q": "0.02",
-          "m": false,
-          "price": "60106.7",
-          "time": "1795798217398"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60106.7",
-          "time": "1795798217115"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60106.7",
-          "time": "1795798217115"
-        },
-        {
-          "q": "0.16",
-          "m": false,
-          "price": "60106.6",
-          "time": "1795798217099"
-        },
-        {
-          "q": "0.12",
-          "m": false,
-          "price": "60106.6",
-          "time": "1795798217098"
-        },
-        {
-          "q": "0.19",
-          "m": false,
-          "price": "60106.6",
-          "time": "1795798217098"
-        },
-        {
-          "q": "0.12",
-          "m": false,
-          "price": "60106.6",
-          "time": "1795798217098"
-        },
-        {
-          "q": "0.16",
-          "m": false,
-          "price": "60106.6",
-          "time": "1795798217098"
-        },
-        {
-          "q": "0.16",
-          "m": false,
-          "price": "60106.6",
-          "time": "1795798217098"
-        },
-        {
-          "q": "0.16",
-          "m": false,
-          "price": "60106.6",
-          "time": "1795798217098"
-        },
-        {
-          "q": "0.14",
-          "m": false,
-          "price": "60106.6",
-          "time": "1795798217098"
-        },
-        {
-          "q": "0.08",
-          "m": false,
-          "price": "60106.6",
-          "time": "1795798217098"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60106.5",
-          "time": "1795798217098"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60106.5",
-          "time": "1795798217098"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60106.5",
-          "time": "1795798217098"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60106",
-          "time": "1795798217098"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60106",
-          "time": "1795798217098"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60106",
-          "time": "1795798217098"
-        },
-        {
-          "q": "1.5",
-          "m": false,
-          "price": "60105.9",
-          "time": "1795798217097"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60105.9",
-          "time": "1795798217097"
-        },
-        {
-          "q": "0.02",
-          "m": false,
-          "price": "60105.9",
-          "time": "1795798217097"
-        },
-        {
-          "q": "7.12",
-          "m": false,
-          "price": "60105.9",
-          "time": "1795798217097"
-        },
-        {
-          "q": "5.69",
-          "m": false,
-          "price": "60105.9",
-          "time": "1795798216926"
-        },
-        {
-          "q": "0.11",
-          "m": false,
-          "price": "60105.9",
-          "time": "1795798216926"
-        },
-        {
-          "q": "0.09",
-          "m": true,
-          "price": "60105.6",
-          "time": "1795798216689"
-        },
-        {
-          "q": "1.27",
-          "m": true,
-          "price": "60105.6",
-          "time": "1795798216689"
-        },
-        {
-          "q": "1.24",
-          "m": true,
-          "price": "60105.6",
-          "time": "1795798216688"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60106.1",
-          "time": "1795798216688"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60106.1",
-          "time": "1795798216688"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60106.4",
-          "time": "1795798216688"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60106.4",
-          "time": "1795798216688"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60106.4",
-          "time": "1795798216688"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60106.5",
-          "time": "1795798216688"
-        },
-        {
-          "q": "0.1",
-          "m": true,
-          "price": "60106.6",
-          "time": "1795798216688"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60106.6",
-          "time": "1795798216688"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60106.6",
-          "time": "1795798216688"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60106.6",
-          "time": "1795798216688"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60106.7",
-          "time": "1795798216687"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60106.7",
-          "time": "1795798216687"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60106.8",
-          "time": "1795798216687"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60107",
-          "time": "1795798216687"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60107.1",
-          "time": "1795798216687"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60107.5",
-          "time": "1795798216687"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60107.5",
-          "time": "1795798216687"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60107.5",
-          "time": "1795798216687"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60107.6",
-          "time": "1795798216687"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60107.6",
-          "time": "1795798216687"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60107.7",
-          "time": "1795798216687"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60107.8",
-          "time": "1795798216687"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60108",
-          "time": "1795798216687"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60108",
-          "time": "1795798216687"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60108",
-          "time": "1795798216687"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60108",
-          "time": "1795798216687"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60108",
-          "time": "1795798216687"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60108.1",
-          "time": "1795798216687"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60108.3",
-          "time": "1795798216687"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60108.8",
-          "time": "1795798216687"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60108.8",
-          "time": "1795798216687"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60108.9",
-          "time": "1795798216687"
-        },
-        {
-          "q": "0.29",
-          "m": true,
-          "price": "60109",
-          "time": "1795798216687"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60110.1",
-          "time": "1795798216687"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60110.2",
-          "time": "1795798216686"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60110.2",
-          "time": "1795798216686"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60110.6",
-          "time": "1795798216686"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60110.7",
-          "time": "1795798216686"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60110.7",
-          "time": "1795798216686"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60110.8",
-          "time": "1795798216686"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60110.9",
-          "time": "1795798216686"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60110.9",
-          "time": "1795798216686"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60110.9",
-          "time": "1795798216686"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60111",
-          "time": "1795798216686"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60111",
-          "time": "1795798216686"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60111",
-          "time": "1795798216686"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60111",
-          "time": "1795798216686"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60111",
-          "time": "1795798216686"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60111",
-          "time": "1795798216686"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60111",
-          "time": "1795798216686"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60111.3",
-          "time": "1795798216686"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60111.3",
-          "time": "1795798216686"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60111.3",
-          "time": "1795798216686"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60111.4",
-          "time": "1795798216686"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60111.7",
-          "time": "1795798216686"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60111.9",
-          "time": "1795798216686"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60112.5",
-          "time": "1795798216686"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60112.6",
-          "time": "1795798216686"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60112.6",
-          "time": "1795798216686"
-        },
-        {
-          "q": "8.37",
-          "m": true,
-          "price": "60112.7",
-          "time": "1795798216685"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60112.7",
-          "time": "1795798216684"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60112.7",
-          "time": "1795798216684"
-        },
-        {
-          "q": "0.07",
-          "m": true,
-          "price": "60112.7",
-          "time": "1795798216684"
-        },
-        {
-          "q": "0.32",
-          "m": true,
-          "price": "60112.7",
-          "time": "1795798216684"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60112.7",
-          "time": "1795798216684"
-        },
-        {
-          "q": "5.6",
-          "m": true,
-          "price": "60112.7",
-          "time": "1795798216684"
-        },
-        {
-          "q": "5.27",
-          "m": true,
-          "price": "60112.7",
-          "time": "1795798216684"
-        },
-        {
-          "q": "0.14",
-          "m": true,
-          "price": "60112.7",
-          "time": "1795798216542"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60112.8",
-          "time": "1795798216541"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60112.8",
-          "time": "1795798216541"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60112.8",
-          "time": "1795798216541"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60112.8",
-          "time": "1795798216541"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60113.2",
-          "time": "1795798216541"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60113.7",
-          "time": "1795798216541"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60113.9",
-          "time": "1795798216541"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60114",
-          "time": "1795798216541"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60114",
-          "time": "1795798216541"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60114",
-          "time": "1795798216541"
-        },
-        {
-          "q": "0.15",
-          "m": true,
-          "price": "60114.1",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60114.1",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60114.1",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60114.1",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60114.2",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60114.4",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60114.5",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60114.5",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60114.5",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60114.6",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60114.6",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60114.7",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60114.9",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60114.9",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60114.9",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60115",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60115",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60115.1",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60115.1",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60115.4",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60115.5",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60115.6",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60115.6",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60115.6",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60115.6",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60116",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60116.1",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60116.1",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.03",
-          "m": true,
-          "price": "60116.3",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60117",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60117.2",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60117.2",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60117.6",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60117.9",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60117.9",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60118",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60118",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60118.1",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60118.2",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60118.3",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60118.3",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60118.6",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60118.9",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60119.2",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60119.4",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60119.4",
-          "time": "1795798216540"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60120",
-          "time": "1795798216539"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60120.1",
-          "time": "1795798216539"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60120.1",
-          "time": "1795798216539"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60120.1",
-          "time": "1795798216539"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60120.2",
-          "time": "1795798216539"
-        },
-        {
-          "q": "1.61",
-          "m": true,
-          "price": "60120.2",
-          "time": "1795798216539"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60120.2",
-          "time": "1795798216539"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60120.2",
-          "time": "1795798216539"
-        },
-        {
-          "q": "0.02",
-          "m": true,
-          "price": "60120.2",
-          "time": "1795798216539"
-        },
-        {
-          "q": "0.03",
-          "m": true,
-          "price": "60120.2",
-          "time": "1795798216539"
-        },
-        {
           "q": "0.02",
-          "m": true,
-          "price": "60120.2",
-          "time": "1795798216539"
-        },
-        {
-          "q": "0.1",
-          "m": true,
-          "price": "60120.2",
-          "time": "1795798216539"
-        },
-        {
-          "q": "0.51",
-          "m": true,
-          "price": "60120.2",
-          "time": "1795798216539"
-        },
-        {
-          "q": "0.33",
-          "m": true,
-          "price": "60120.2",
-          "time": "1795798216539"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60120.2",
-          "time": "1795798216539"
-        },
-        {
-          "q": "0.1",
-          "m": true,
-          "price": "60120.2",
-          "time": "1795798216539"
-        },
-        {
-          "q": "78.18",
-          "m": true,
-          "price": "60120.2",
-          "time": "1795798216539"
-        },
-        {
-          "q": "5",
-          "m": true,
-          "price": "60120.2",
-          "time": "1795798216503"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60120.2",
-          "time": "1795798216503"
-        },
-        {
-          "q": "4.89",
-          "m": true,
-          "price": "60120.2",
-          "time": "1795798216503"
-        },
-        {
-          "q": "3.48",
-          "m": true,
-          "price": "60120.2",
-          "time": "1795798216462"
-        },
-        {
-          "q": "0.01",
-          "m": true,
-          "price": "60120.2",
-          "time": "1795798216462"
-        },
-        {
-          "q": "0.95",
-          "m": true,
-          "price": "60120.2",
-          "time": "1795798216462"
-        },
-        {
-          "q": "16.04",
-          "m": false,
-          "price": "60120.3",
-          "time": "1795798216129"
-        },
-        {
-          "q": "80",
-          "m": false,
-          "price": "60120.3",
-          "time": "1795798216129"
-        },
-        {
-          "q": "1.52",
           "m": false,
-          "price": "60120.3",
-          "time": "1795798216129"
+          "price": "59556.8",
+          "time": "1795801406158"
         },
         {
-          "q": "2.13",
+          "q": "1.18",
           "m": false,
-          "price": "60120.3",
-          "time": "1795798216129"
+          "price": "59556.8",
+          "time": "1795801405978"
         },
         {
           "q": "0.31",
           "m": false,
-          "price": "60120.3",
-          "time": "1795798216129"
+          "price": "59556.8",
+          "time": "1795801405893"
+        },
+        {
+          "q": "0.32",
+          "m": false,
+          "price": "59556.8",
+          "time": "1795801405893"
+        },
+        {
+          "q": "0.02",
+          "m": false,
+          "price": "59556.8",
+          "time": "1795801405893"
+        },
+        {
+          "q": "0.02",
+          "m": false,
+          "price": "59556.8",
+          "time": "1795801405893"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59556.8",
+          "time": "1795801405893"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59556.8",
+          "time": "1795801405893"
+        },
+        {
+          "q": "0.25",
+          "m": false,
+          "price": "59556.8",
+          "time": "1795801405893"
+        },
+        {
+          "q": "1.52",
+          "m": false,
+          "price": "59556.7",
+          "time": "1795801405883"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59556.7",
+          "time": "1795801405883"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59556.7",
+          "time": "1795801405883"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59556.6",
+          "time": "1795801405883"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59556",
+          "time": "1795801405883"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59556",
+          "time": "1795801405883"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59555.9",
+          "time": "1795801405883"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59555.9",
+          "time": "1795801405883"
+        },
+        {
+          "q": "0.02",
+          "m": false,
+          "price": "59555.9",
+          "time": "1795801405883"
+        },
+        {
+          "q": "0.02",
+          "m": false,
+          "price": "59555.8",
+          "time": "1795801405883"
+        },
+        {
+          "q": "0.02",
+          "m": false,
+          "price": "59555.7",
+          "time": "1795801405883"
+        },
+        {
+          "q": "0.02",
+          "m": false,
+          "price": "59555.6",
+          "time": "1795801405883"
+        },
+        {
+          "q": "0.02",
+          "m": false,
+          "price": "59555.5",
+          "time": "1795801405883"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59555.4",
+          "time": "1795801405883"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59555.4",
+          "time": "1795801405883"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59553.8",
+          "time": "1795801405883"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59553.8",
+          "time": "1795801405883"
+        },
+        {
+          "q": "0.02",
+          "m": false,
+          "price": "59553.7",
+          "time": "1795801405883"
+        },
+        {
+          "q": "0.54",
+          "m": false,
+          "price": "59553.7",
+          "time": "1795801405883"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59553.7",
+          "time": "1795801405883"
+        },
+        {
+          "q": "6.53",
+          "m": false,
+          "price": "59553.7",
+          "time": "1795801405565"
+        },
+        {
+          "q": "0.02",
+          "m": false,
+          "price": "59553.7",
+          "time": "1795801405565"
+        },
+        {
+          "q": "0.02",
+          "m": false,
+          "price": "59553.7",
+          "time": "1795801405565"
+        },
+        {
+          "q": "0.16",
+          "m": true,
+          "price": "59553.6",
+          "time": "1795801405402"
         },
         {
           "q": "0.02",
           "m": true,
-          "price": "60120.2",
-          "time": "1795798216061"
-        },
-        {
-          "q": "49.93",
-          "m": false,
-          "price": "60120.4",
-          "time": "1795798216016"
-        },
-        {
-          "q": "0.01",
-          "m": false,
-          "price": "60120.3",
-          "time": "1795798216016"
+          "price": "59553.6",
+          "time": "1795801405174"
         },
         {
           "q": "0.17",
           "m": false,
-          "price": "60120.3",
-          "time": "1795798216016"
+          "price": "59553.7",
+          "time": "1795801405142"
         },
         {
           "q": "0.01",
           "m": false,
-          "price": "60120.3",
-          "time": "1795798216016"
-        },
-        {
-          "q": "8.38",
-          "m": false,
-          "price": "60120.3",
-          "time": "1795798216016"
+          "price": "59553.6",
+          "time": "1795801405141"
         },
         {
           "q": "0.01",
           "m": false,
-          "price": "60120.2",
-          "time": "1795798216016"
+          "price": "59553.6",
+          "time": "1795801405141"
         },
         {
-          "q": "13.31",
+          "q": "0.01",
           "m": false,
-          "price": "60120.2",
-          "time": "1795798216016"
+          "price": "59553.6",
+          "time": "1795801405141"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59553.3",
+          "time": "1795801405141"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59553.2",
+          "time": "1795801405141"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59553.2",
+          "time": "1795801405141"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59553.1",
+          "time": "1795801405141"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59553",
+          "time": "1795801405140"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59553",
+          "time": "1795801405140"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59553",
+          "time": "1795801405140"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59552.6",
+          "time": "1795801405140"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59552.5",
+          "time": "1795801405140"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59552.2",
+          "time": "1795801405140"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59552.2",
+          "time": "1795801405140"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59552.1",
+          "time": "1795801405140"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59552.1",
+          "time": "1795801405140"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59552.1",
+          "time": "1795801405140"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59552.1",
+          "time": "1795801405140"
         },
         {
           "q": "0.02",
           "m": false,
-          "price": "60120.2",
-          "time": "1795798216016"
+          "price": "59552",
+          "time": "1795801405135"
         },
         {
           "q": "0.01",
           "m": false,
-          "price": "60120.1",
-          "time": "1795798216016"
+          "price": "59552",
+          "time": "1795801405135"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59552",
+          "time": "1795801405135"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59552",
+          "time": "1795801405135"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59552",
+          "time": "1795801405135"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59551.9",
+          "time": "1795801405119"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59551.9",
+          "time": "1795801405119"
+        },
+        {
+          "q": "0.02",
+          "m": false,
+          "price": "59551.9",
+          "time": "1795801405119"
+        },
+        {
+          "q": "0.02",
+          "m": false,
+          "price": "59551.8",
+          "time": "1795801405119"
+        },
+        {
+          "q": "0.02",
+          "m": false,
+          "price": "59551.7",
+          "time": "1795801405119"
+        },
+        {
+          "q": "0.02",
+          "m": false,
+          "price": "59551.6",
+          "time": "1795801405119"
+        },
+        {
+          "q": "0.02",
+          "m": false,
+          "price": "59551.5",
+          "time": "1795801405119"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59550.2",
+          "time": "1795801405119"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59550",
+          "time": "1795801405119"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59549.8",
+          "time": "1795801405119"
+        },
+        {
+          "q": "0.02",
+          "m": false,
+          "price": "59549.7",
+          "time": "1795801405119"
+        },
+        {
+          "q": "0.17",
+          "m": false,
+          "price": "59549.3",
+          "time": "1795801405119"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59549.3",
+          "time": "1795801405119"
+        },
+        {
+          "q": "0.02",
+          "m": false,
+          "price": "59549.2",
+          "time": "1795801405119"
+        },
+        {
+          "q": "0.02",
+          "m": false,
+          "price": "59549.2",
+          "time": "1795801405119"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59549.2",
+          "time": "1795801405119"
+        },
+        {
+          "q": "0.03",
+          "m": false,
+          "price": "59549.2",
+          "time": "1795801405119"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59549.2",
+          "time": "1795801405119"
+        },
+        {
+          "q": "0.05",
+          "m": false,
+          "price": "59549.2",
+          "time": "1795801405119"
+        },
+        {
+          "q": "0.37",
+          "m": false,
+          "price": "59549.2",
+          "time": "1795801405119"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59549.2",
+          "time": "1795801405119"
+        },
+        {
+          "q": "0.03",
+          "m": false,
+          "price": "59549.2",
+          "time": "1795801405119"
+        },
+        {
+          "q": "0.84",
+          "m": false,
+          "price": "59549.2",
+          "time": "1795801405119"
+        },
+        {
+          "q": "0.57",
+          "m": false,
+          "price": "59549.2",
+          "time": "1795801405119"
+        },
+        {
+          "q": "3.36",
+          "m": false,
+          "price": "59549.2",
+          "time": "1795801405119"
+        },
+        {
+          "q": "0.24",
+          "m": false,
+          "price": "59549.2",
+          "time": "1795801405119"
+        },
+        {
+          "q": "0.05",
+          "m": false,
+          "price": "59549.2",
+          "time": "1795801405048"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59549.2",
+          "time": "1795801405048"
+        },
+        {
+          "q": "0.03",
+          "m": false,
+          "price": "59549.2",
+          "time": "1795801405048"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59549.2",
+          "time": "1795801405048"
+        },
+        {
+          "q": "0.02",
+          "m": false,
+          "price": "59549.2",
+          "time": "1795801405048"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59549.2",
+          "time": "1795801405048"
+        },
+        {
+          "q": "10.16",
+          "m": false,
+          "price": "59549.2",
+          "time": "1795801404684"
+        },
+        {
+          "q": "9.75",
+          "m": false,
+          "price": "59549.2",
+          "time": "1795801404654"
+        },
+        {
+          "q": "11.88",
+          "m": false,
+          "price": "59549.2",
+          "time": "1795801404595"
+        },
+        {
+          "q": "0.71",
+          "m": false,
+          "price": "59549.2",
+          "time": "1795801404525"
+        },
+        {
+          "q": "4.65",
+          "m": false,
+          "price": "59549.2",
+          "time": "1795801404525"
+        },
+        {
+          "q": "6.15",
+          "m": false,
+          "price": "59549.2",
+          "time": "1795801403026"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59549.2",
+          "time": "1795801403026"
+        },
+        {
+          "q": "10",
+          "m": true,
+          "price": "59549.1",
+          "time": "1795801402958"
+        },
+        {
+          "q": "2.87",
+          "m": true,
+          "price": "59549.1",
+          "time": "1795801402952"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59549.1",
+          "time": "1795801402952"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59549.1",
+          "time": "1795801402952"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59549.2",
+          "time": "1795801402288"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59549.3",
+          "time": "1795801402288"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59549.3",
+          "time": "1795801402288"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59549.4",
+          "time": "1795801402288"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59549.5",
+          "time": "1795801402288"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59549.7",
+          "time": "1795801402288"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59549.9",
+          "time": "1795801402288"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59550",
+          "time": "1795801402288"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59550",
+          "time": "1795801402288"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59550",
+          "time": "1795801402288"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59550",
+          "time": "1795801402288"
+        },
+        {
+          "q": "0.04",
+          "m": true,
+          "price": "59550",
+          "time": "1795801402288"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59550.2",
+          "time": "1795801402288"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59550.2",
+          "time": "1795801402288"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59550.4",
+          "time": "1795801402288"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59550.4",
+          "time": "1795801402288"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59550.8",
+          "time": "1795801402288"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59550.8",
+          "time": "1795801402288"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59551",
+          "time": "1795801402288"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59551.3",
+          "time": "1795801402288"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59551.4",
+          "time": "1795801402288"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59551.5",
+          "time": "1795801402288"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59551.5",
+          "time": "1795801402288"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59551.6",
+          "time": "1795801402288"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59551.8",
+          "time": "1795801402288"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59551.9",
+          "time": "1795801402288"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59552",
+          "time": "1795801402288"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59552.3",
+          "time": "1795801402288"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59552.4",
+          "time": "1795801402288"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59552.7",
+          "time": "1795801402287"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59552.9",
+          "time": "1795801402287"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59553",
+          "time": "1795801402287"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59553",
+          "time": "1795801402287"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59553.2",
+          "time": "1795801402287"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59553.3",
+          "time": "1795801402287"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59553.5",
+          "time": "1795801402287"
+        },
+        {
+          "q": "0.29",
+          "m": true,
+          "price": "59553.6",
+          "time": "1795801402287"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59553.6",
+          "time": "1795801402287"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59553.6",
+          "time": "1795801402287"
+        },
+        {
+          "q": "1.84",
+          "m": false,
+          "price": "59553.7",
+          "time": "1795801402228"
+        },
+        {
+          "q": "28.51",
+          "m": true,
+          "price": "59553.6",
+          "time": "1795801402197"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59553.6",
+          "time": "1795801402197"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59553.7",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59554",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59554.1",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59554.4",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59554.5",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59554.7",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59555.1",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59555.2",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59555.3",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59555.7",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59555.7",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.15",
+          "m": true,
+          "price": "59555.9",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59556",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59556",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59556",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59556.1",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59556.2",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59556.2",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59556.2",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59556.4",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59557.1",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59557.2",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59557.3",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59557.4",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59557.5",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59557.6",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59557.7",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59557.7",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59557.7",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59557.7",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59557.8",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59557.8",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59557.8",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59557.9",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.25",
+          "m": true,
+          "price": "59558",
+          "time": "1795801402191"
+        },
+        {
+          "q": "4.13",
+          "m": true,
+          "price": "59558",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59558.1",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59558.2",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59558.3",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59558.3",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.13",
+          "m": true,
+          "price": "59558.4",
+          "time": "1795801402191"
+        },
+        {
+          "q": "0.18",
+          "m": true,
+          "price": "59558.7",
+          "time": "1795801402190"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59558.8",
+          "time": "1795801402190"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59559",
+          "time": "1795801402190"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59559.3",
+          "time": "1795801402190"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59559.4",
+          "time": "1795801402190"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59559.5",
+          "time": "1795801402190"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59559.6",
+          "time": "1795801402190"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59559.6",
+          "time": "1795801402190"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59559.6",
+          "time": "1795801402190"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59559.7",
+          "time": "1795801402190"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59559.7",
+          "time": "1795801402190"
+        },
+        {
+          "q": "1.15",
+          "m": true,
+          "price": "59559.8",
+          "time": "1795801402188"
+        },
+        {
+          "q": "1.16",
+          "m": true,
+          "price": "59559.8",
+          "time": "1795801402188"
+        },
+        {
+          "q": "0.35",
+          "m": true,
+          "price": "59559.8",
+          "time": "1795801402188"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59559.8",
+          "time": "1795801402188"
+        },
+        {
+          "q": "0.17",
+          "m": true,
+          "price": "59559.8",
+          "time": "1795801402188"
+        },
+        {
+          "q": "0.13",
+          "m": true,
+          "price": "59559.8",
+          "time": "1795801402188"
+        },
+        {
+          "q": "0.23",
+          "m": true,
+          "price": "59559.8",
+          "time": "1795801402188"
+        },
+        {
+          "q": "0.18",
+          "m": true,
+          "price": "59559.8",
+          "time": "1795801402188"
+        },
+        {
+          "q": "0.06",
+          "m": true,
+          "price": "59559.8",
+          "time": "1795801402188"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59559.8",
+          "time": "1795801402188"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59559.8",
+          "time": "1795801402188"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59559.8",
+          "time": "1795801402188"
+        },
+        {
+          "q": "1.68",
+          "m": true,
+          "price": "59559.8",
+          "time": "1795801402170"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59559.8",
+          "time": "1795801401976"
+        },
+        {
+          "q": "1.33",
+          "m": false,
+          "price": "59559.9",
+          "time": "1795801401721"
+        },
+        {
+          "q": "0.63",
+          "m": false,
+          "price": "59559.9",
+          "time": "1795801401475"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59559.9",
+          "time": "1795801401475"
+        },
+        {
+          "q": "0.09",
+          "m": false,
+          "price": "59559.9",
+          "time": "1795801401475"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59559.9",
+          "time": "1795801401454"
+        },
+        {
+          "q": "1.05",
+          "m": true,
+          "price": "59559.8",
+          "time": "1795801401206"
+        },
+        {
+          "q": "47.94",
+          "m": false,
+          "price": "59559.9",
+          "time": "1795801401118"
+        },
+        {
+          "q": "44.71",
+          "m": false,
+          "price": "59559.9",
+          "time": "1795801401118"
+        },
+        {
+          "q": "2",
+          "m": false,
+          "price": "59559.9",
+          "time": "1795801400977"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59559.8",
+          "time": "1795801400887"
+        },
+        {
+          "q": "1.61",
+          "m": true,
+          "price": "59559.8",
+          "time": "1795801400658"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59559.8",
+          "time": "1795801400658"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59559.8",
+          "time": "1795801400658"
+        },
+        {
+          "q": "0.03",
+          "m": true,
+          "price": "59559.8",
+          "time": "1795801400658"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59559.8",
+          "time": "1795801400658"
+        },
+        {
+          "q": "0.09",
+          "m": false,
+          "price": "59559.9",
+          "time": "1795801400286"
+        },
+        {
+          "q": "0.17",
+          "m": true,
+          "price": "59559.8",
+          "time": "1795801399120"
+        },
+        {
+          "q": "0.18",
+          "m": true,
+          "price": "59559.8",
+          "time": "1795801399120"
+        },
+        {
+          "q": "0.19",
+          "m": true,
+          "price": "59559.8",
+          "time": "1795801399120"
+        },
+        {
+          "q": "0.19",
+          "m": true,
+          "price": "59559.8",
+          "time": "1795801399120"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59560",
+          "time": "1795801399120"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59560.4",
+          "time": "1795801399120"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59560.8",
+          "time": "1795801399120"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59561.1",
+          "time": "1795801399120"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59561.1",
+          "time": "1795801399120"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59561.2",
+          "time": "1795801399120"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59561.5",
+          "time": "1795801399119"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59561.8",
+          "time": "1795801399119"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59561.8",
+          "time": "1795801399119"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59561.8",
+          "time": "1795801399119"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59561.8",
+          "time": "1795801399119"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59561.9",
+          "time": "1795801399119"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59561.9",
+          "time": "1795801399119"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59561.9",
+          "time": "1795801399119"
         },
         {
           "q": "0.15",
           "m": false,
-          "price": "60120",
-          "time": "1795798216016"
+          "price": "59562",
+          "time": "1795801399074"
         },
         {
           "q": "0.01",
           "m": false,
-          "price": "60120",
-          "time": "1795798216016"
+          "price": "59562",
+          "time": "1795801399074"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59561.9",
+          "time": "1795801398431"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59561.9",
+          "time": "1795801398430"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59561.9",
+          "time": "1795801398430"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59561.8",
+          "time": "1795801398429"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59561.6",
+          "time": "1795801398429"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59561.6",
+          "time": "1795801398429"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59561.6",
+          "time": "1795801398429"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59561.6",
+          "time": "1795801398429"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59561.4",
+          "time": "1795801398429"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59561.1",
+          "time": "1795801398429"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59561",
+          "time": "1795801398429"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59561",
+          "time": "1795801398429"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59560.8",
+          "time": "1795801398429"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59560.5",
+          "time": "1795801398429"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59560.2",
+          "time": "1795801398429"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59560",
+          "time": "1795801398429"
+        },
+        {
+          "q": "0.09",
+          "m": false,
+          "price": "59559.7",
+          "time": "1795801398428"
+        },
+        {
+          "q": "0.09",
+          "m": false,
+          "price": "59559.7",
+          "time": "1795801398428"
+        },
+        {
+          "q": "0.18",
+          "m": false,
+          "price": "59559.7",
+          "time": "1795801398428"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59559.7",
+          "time": "1795801398428"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59559.7",
+          "time": "1795801398428"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59559.7",
+          "time": "1795801398428"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59559.6",
+          "time": "1795801398428"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59559",
+          "time": "1795801398428"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59558.9",
+          "time": "1795801398428"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59558.9",
+          "time": "1795801398428"
+        },
+        {
+          "q": "26.62",
+          "m": false,
+          "price": "59557.9",
+          "time": "1795801398426"
+        },
+        {
+          "q": "0.12",
+          "m": false,
+          "price": "59557.9",
+          "time": "1795801398426"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59557.9",
+          "time": "1795801398426"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59557.8",
+          "time": "1795801398424"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59557.8",
+          "time": "1795801398424"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59557.8",
+          "time": "1795801398424"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59557.8",
+          "time": "1795801398424"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59557.8",
+          "time": "1795801398424"
+        },
+        {
+          "q": "0.35",
+          "m": false,
+          "price": "59557.7",
+          "time": "1795801398423"
+        },
+        {
+          "q": "0.58",
+          "m": false,
+          "price": "59557.7",
+          "time": "1795801398423"
+        },
+        {
+          "q": "0.34",
+          "m": false,
+          "price": "59557.7",
+          "time": "1795801398423"
+        },
+        {
+          "q": "0.07",
+          "m": false,
+          "price": "59557.7",
+          "time": "1795801398423"
+        },
+        {
+          "q": "0.02",
+          "m": false,
+          "price": "59557.7",
+          "time": "1795801398423"
+        },
+        {
+          "q": "0.02",
+          "m": false,
+          "price": "59557.7",
+          "time": "1795801398423"
+        },
+        {
+          "q": "0.24",
+          "m": false,
+          "price": "59557.7",
+          "time": "1795801398423"
+        },
+        {
+          "q": "0.71",
+          "m": false,
+          "price": "59557.7",
+          "time": "1795801398379"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59557.7",
+          "time": "1795801398379"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59557.7",
+          "time": "1795801398379"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59557.7",
+          "time": "1795801398379"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59557.6",
+          "time": "1795801398379"
+        },
+        {
+          "q": "6.71",
+          "m": false,
+          "price": "59557.6",
+          "time": "1795801398379"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59557.6",
+          "time": "1795801398379"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59557.6",
+          "time": "1795801398379"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59557.5",
+          "time": "1795801398379"
+        },
+        {
+          "q": "30.15",
+          "m": false,
+          "price": "59557.4",
+          "time": "1795801398379"
+        },
+        {
+          "q": "0.17",
+          "m": false,
+          "price": "59557.3",
+          "time": "1795801398379"
+        },
+        {
+          "q": "8.46",
+          "m": false,
+          "price": "59557.3",
+          "time": "1795801398379"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59556.6",
+          "time": "1795801398379"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59556.6",
+          "time": "1795801398379"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59556.2",
+          "time": "1795801398379"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59556",
+          "time": "1795801398379"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59556",
+          "time": "1795801398379"
+        },
+        {
+          "q": "0.02",
+          "m": false,
+          "price": "59555.9",
+          "time": "1795801398379"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59554.1",
+          "time": "1795801398379"
+        },
+        {
+          "q": "0.01",
+          "m": false,
+          "price": "59554.1",
+          "time": "1795801398379"
+        },
+        {
+          "q": "0.02",
+          "m": false,
+          "price": "59554",
+          "time": "1795801398379"
+        },
+        {
+          "q": "0.02",
+          "m": false,
+          "price": "59554",
+          "time": "1795801398379"
+        },
+        {
+          "q": "0.09",
+          "m": false,
+          "price": "59554",
+          "time": "1795801398379"
+        },
+        {
+          "q": "3.51",
+          "m": false,
+          "price": "59554",
+          "time": "1795801398379"
+        },
+        {
+          "q": "0.24",
+          "m": true,
+          "price": "59553.9",
+          "time": "1795801398215"
+        },
+        {
+          "q": "0.11",
+          "m": true,
+          "price": "59553.9",
+          "time": "1795801398214"
+        },
+        {
+          "q": "0.12",
+          "m": true,
+          "price": "59553.9",
+          "time": "1795801398214"
+        },
+        {
+          "q": "0.1",
+          "m": true,
+          "price": "59553.9",
+          "time": "1795801398214"
+        },
+        {
+          "q": "0.14",
+          "m": true,
+          "price": "59553.9",
+          "time": "1795801398213"
+        },
+        {
+          "q": "0.32",
+          "m": true,
+          "price": "59553.9",
+          "time": "1795801398212"
+        },
+        {
+          "q": "4.2",
+          "m": true,
+          "price": "59553.9",
+          "time": "1795801398212"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59554.4",
+          "time": "1795801398212"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59554.4",
+          "time": "1795801398212"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59554.5",
+          "time": "1795801398212"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59555.2",
+          "time": "1795801398212"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59555.3",
+          "time": "1795801398212"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59555.5",
+          "time": "1795801398212"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59555.6",
+          "time": "1795801398212"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59555.8",
+          "time": "1795801398212"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59555.9",
+          "time": "1795801398212"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59555.9",
+          "time": "1795801398212"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59556",
+          "time": "1795801398212"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59556",
+          "time": "1795801398212"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59556.2",
+          "time": "1795801398212"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59556.6",
+          "time": "1795801398212"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59556.8",
+          "time": "1795801398212"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59556.8",
+          "time": "1795801398212"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59556.8",
+          "time": "1795801398212"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59556.9",
+          "time": "1795801398212"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59556.9",
+          "time": "1795801398212"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59556.9",
+          "time": "1795801398212"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59557.5",
+          "time": "1795801398212"
+        },
+        {
+          "q": "0.15",
+          "m": true,
+          "price": "59557.7",
+          "time": "1795801398212"
+        },
+        {
+          "q": "0.3",
+          "m": true,
+          "price": "59557.8",
+          "time": "1795801398212"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59557.8",
+          "time": "1795801398212"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59557.8",
+          "time": "1795801398212"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59558",
+          "time": "1795801398207"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59558.2",
+          "time": "1795801398207"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59558.2",
+          "time": "1795801398207"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59558.2",
+          "time": "1795801398207"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59558.8",
+          "time": "1795801398207"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59558.9",
+          "time": "1795801398207"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59559",
+          "time": "1795801398207"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59559",
+          "time": "1795801398207"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59559.9",
+          "time": "1795801398207"
+        },
+        {
+          "q": "0.04",
+          "m": true,
+          "price": "59560",
+          "time": "1795801398207"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59560",
+          "time": "1795801398207"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59560.3",
+          "time": "1795801398207"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59560.3",
+          "time": "1795801398207"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59560.5",
+          "time": "1795801398207"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59560.8",
+          "time": "1795801398207"
+        },
+        {
+          "q": "1",
+          "m": true,
+          "price": "59561.5",
+          "time": "1795801398207"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59561.6",
+          "time": "1795801398207"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59561.6",
+          "time": "1795801398207"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59561.6",
+          "time": "1795801398207"
+        },
+        {
+          "q": "1.9",
+          "m": true,
+          "price": "59561.8",
+          "time": "1795801398207"
+        },
+        {
+          "q": "4.64",
+          "m": true,
+          "price": "59561.9",
+          "time": "1795801398207"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59561.9",
+          "time": "1795801398207"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59561.9",
+          "time": "1795801398207"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59562",
+          "time": "1795801398207"
+        },
+        {
+          "q": "0.03",
+          "m": true,
+          "price": "59562.2",
+          "time": "1795801398206"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59562.2",
+          "time": "1795801398206"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59562.2",
+          "time": "1795801398205"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59562.2",
+          "time": "1795801398205"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59562.3",
+          "time": "1795801398205"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59562.3",
+          "time": "1795801398205"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59562.4",
+          "time": "1795801398205"
+        },
+        {
+          "q": "1.35",
+          "m": true,
+          "price": "59562.4",
+          "time": "1795801398205"
+        },
+        {
+          "q": "0.12",
+          "m": true,
+          "price": "59562.4",
+          "time": "1795801398203"
+        },
+        {
+          "q": "0.5",
+          "m": true,
+          "price": "59562.4",
+          "time": "1795801398202"
+        },
+        {
+          "q": "0.51",
+          "m": true,
+          "price": "59562.4",
+          "time": "1795801398202"
+        },
+        {
+          "q": "0.61",
+          "m": true,
+          "price": "59562.4",
+          "time": "1795801398202"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59562.5",
+          "time": "1795801398202"
+        },
+        {
+          "q": "0.45",
+          "m": true,
+          "price": "59562.6",
+          "time": "1795801398201"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59562.7",
+          "time": "1795801398201"
+        },
+        {
+          "q": "0.06",
+          "m": true,
+          "price": "59562.9",
+          "time": "1795801398201"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59562.9",
+          "time": "1795801398201"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59562.9",
+          "time": "1795801398201"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59562.9",
+          "time": "1795801398201"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59563",
+          "time": "1795801398201"
+        },
+        {
+          "q": "1.45",
+          "m": true,
+          "price": "59563",
+          "time": "1795801398201"
+        },
+        {
+          "q": "0.33",
+          "m": true,
+          "price": "59563",
+          "time": "1795801398201"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59563",
+          "time": "1795801398201"
+        },
+        {
+          "q": "4.67",
+          "m": true,
+          "price": "59563",
+          "time": "1795801398201"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59563",
+          "time": "1795801398198"
+        },
+        {
+          "q": "3.07",
+          "m": false,
+          "price": "59563.1",
+          "time": "1795801398134"
+        },
+        {
+          "q": "0.12",
+          "m": true,
+          "price": "59563",
+          "time": "1795801398092"
+        },
+        {
+          "q": "0.1",
+          "m": true,
+          "price": "59563",
+          "time": "1795801398091"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59563.2",
+          "time": "1795801398091"
+        },
+        {
+          "q": "0.48",
+          "m": true,
+          "price": "59563.4",
+          "time": "1795801398091"
+        },
+        {
+          "q": "0.05",
+          "m": true,
+          "price": "59563.5",
+          "time": "1795801398091"
+        },
+        {
+          "q": "1.71",
+          "m": true,
+          "price": "59563.6",
+          "time": "1795801398091"
+        },
+        {
+          "q": "1.62",
+          "m": true,
+          "price": "59563.6",
+          "time": "1795801398089"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59563.7",
+          "time": "1795801398089"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59563.6",
+          "time": "1795801398089"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59563.6",
+          "time": "1795801398089"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59563.6",
+          "time": "1795801398089"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59563.6",
+          "time": "1795801398089"
+        },
+        {
+          "q": "0.39",
+          "m": true,
+          "price": "59563.7",
+          "time": "1795801398089"
+        },
+        {
+          "q": "0.61",
+          "m": true,
+          "price": "59563.7",
+          "time": "1795801398089"
+        },
+        {
+          "q": "0.04",
+          "m": true,
+          "price": "59563.7",
+          "time": "1795801398089"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59563.7",
+          "time": "1795801398089"
+        },
+        {
+          "q": "0.08",
+          "m": true,
+          "price": "59563.7",
+          "time": "1795801398089"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59563.7",
+          "time": "1795801398089"
+        },
+        {
+          "q": "0.12",
+          "m": true,
+          "price": "59563.7",
+          "time": "1795801398089"
+        },
+        {
+          "q": "0.31",
+          "m": true,
+          "price": "59563.7",
+          "time": "1795801398089"
+        },
+        {
+          "q": "0.05",
+          "m": true,
+          "price": "59563.7",
+          "time": "1795801397898"
+        },
+        {
+          "q": "45.79",
+          "m": false,
+          "price": "59563.8",
+          "time": "1795801397773"
+        },
+        {
+          "q": "4.57",
+          "m": false,
+          "price": "59563.8",
+          "time": "1795801397773"
+        },
+        {
+          "q": "39.24",
+          "m": true,
+          "price": "59563.7",
+          "time": "1795801397437"
+        },
+        {
+          "q": "0.11",
+          "m": true,
+          "price": "59563.7",
+          "time": "1795801397311"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59563.7",
+          "time": "1795801397311"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59563.7",
+          "time": "1795801397311"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59563.8",
+          "time": "1795801397310"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59563.9",
+          "time": "1795801397310"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59564.1",
+          "time": "1795801397310"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59564.2",
+          "time": "1795801397310"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59564.3",
+          "time": "1795801397310"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59564.4",
+          "time": "1795801397310"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59564.5",
+          "time": "1795801397310"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59564.5",
+          "time": "1795801397310"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59564.5",
+          "time": "1795801397310"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59564.7",
+          "time": "1795801397310"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59565",
+          "time": "1795801397310"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59565",
+          "time": "1795801397310"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59565",
+          "time": "1795801397310"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59565",
+          "time": "1795801397310"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59565",
+          "time": "1795801397310"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59565.2",
+          "time": "1795801397310"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59565.5",
+          "time": "1795801397310"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59565.6",
+          "time": "1795801397310"
+        },
+        {
+          "q": "0.15",
+          "m": true,
+          "price": "59565.6",
+          "time": "1795801397310"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59565.6",
+          "time": "1795801397310"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59566.1",
+          "time": "1795801397310"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59566.9",
+          "time": "1795801397310"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59566.9",
+          "time": "1795801397310"
+        },
+        {
+          "q": "3.27",
+          "m": true,
+          "price": "59567.2",
+          "time": "1795801397310"
+        },
+        {
+          "q": "0.93",
+          "m": true,
+          "price": "59567.2",
+          "time": "1795801397310"
+        },
+        {
+          "q": "4.2",
+          "m": true,
+          "price": "59567.2",
+          "time": "1795801397310"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59567.5",
+          "time": "1795801397310"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59567.6",
+          "time": "1795801397310"
+        },
+        {
+          "q": "0.19",
+          "m": true,
+          "price": "59567.6",
+          "time": "1795801397310"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59567.7",
+          "time": "1795801397310"
+        },
+        {
+          "q": "0.28",
+          "m": true,
+          "price": "59567.7",
+          "time": "1795801397310"
+        },
+        {
+          "q": "0.03",
+          "m": true,
+          "price": "59567.7",
+          "time": "1795801397310"
+        },
+        {
+          "q": "0.31",
+          "m": true,
+          "price": "59567.7",
+          "time": "1795801397310"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59567.7",
+          "time": "1795801397310"
+        },
+        {
+          "q": "0.32",
+          "m": true,
+          "price": "59567.7",
+          "time": "1795801397310"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59567.7",
+          "time": "1795801397310"
+        },
+        {
+          "q": "2.16",
+          "m": true,
+          "price": "59567.7",
+          "time": "1795801397310"
+        },
+        {
+          "q": "5.88",
+          "m": false,
+          "price": "59567.8",
+          "time": "1795801397154"
+        },
+        {
+          "q": "0.82",
+          "m": true,
+          "price": "59567.7",
+          "time": "1795801397114"
+        },
+        {
+          "q": "0.83",
+          "m": true,
+          "price": "59567.7",
+          "time": "1795801397114"
+        },
+        {
+          "q": "0.06",
+          "m": true,
+          "price": "59567.7",
+          "time": "1795801397114"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59567.8",
+          "time": "1795801397114"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59567.8",
+          "time": "1795801397114"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59567.8",
+          "time": "1795801397114"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59567.9",
+          "time": "1795801397114"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59568",
+          "time": "1795801397114"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59568",
+          "time": "1795801397114"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59568",
+          "time": "1795801397114"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59568.1",
+          "time": "1795801397114"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59568.1",
+          "time": "1795801397114"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59568.1",
+          "time": "1795801397114"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59568.2",
+          "time": "1795801397114"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59568.3",
+          "time": "1795801397114"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59568.3",
+          "time": "1795801397114"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59568.5",
+          "time": "1795801397114"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59568.5",
+          "time": "1795801397114"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59569.5",
+          "time": "1795801397114"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59569.6",
+          "time": "1795801397114"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59569.6",
+          "time": "1795801397114"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59569.6",
+          "time": "1795801397114"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59569.7",
+          "time": "1795801397114"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59569.7",
+          "time": "1795801397114"
+        },
+        {
+          "q": "0.2",
+          "m": true,
+          "price": "59569.7",
+          "time": "1795801397114"
+        },
+        {
+          "q": "0.02",
+          "m": true,
+          "price": "59569.7",
+          "time": "1795801397114"
+        },
+        {
+          "q": "0.25",
+          "m": true,
+          "price": "59569.7",
+          "time": "1795801397114"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59569.7",
+          "time": "1795801397114"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59569.7",
+          "time": "1795801397114"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59569.8",
+          "time": "1795801396803"
+        },
+        {
+          "q": "0.01",
+          "m": true,
+          "price": "59569.8",
+          "time": "1795801396803"
         }
       ],
-      "latency_ms": 202
+      "latency_ms": 253
     },
     "funding_history": {
       "ok": true,
@@ -25875,7 +25875,7 @@
           "realizedRate": "0.0000250961202131"
         }
       ],
-      "latency_ms": 194
+      "latency_ms": 144
     },
     "liquidations": {
       "ok": false,
@@ -25894,14 +25894,14 @@
     "derivatives_confluence_status": "AVAILABLE"
   },
   "derived": {
-    "cvd_base": 175.17,
-    "aggressive_buy_base": 372.68,
-    "aggressive_sell_base": 197.51,
+    "cvd_base": 157.81,
+    "aggressive_buy_base": 298.18,
+    "aggressive_sell_base": 140.37,
     "trade_count": 500,
     "cvd_note": "Rolling snapshot from latest OKX swap trades.",
-    "visible_depth_bid_base": 445.84,
-    "visible_depth_ask_base": 3650.75,
-    "order_book_imbalance": -0.782336
+    "visible_depth_bid_base": 580.7,
+    "visible_depth_ask_base": 1909.09,
+    "order_book_imbalance": -0.533535
   },
   "fallback_from": "Binance USD-M Futures and Bybit linear Futures",
   "prior_source_failures": [
