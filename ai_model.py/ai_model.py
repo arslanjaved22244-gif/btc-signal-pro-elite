@@ -946,16 +946,21 @@ def temporal_sequence_horizon_forecasts(data, prepared, sequence_length=12):
             predictions = [max(range(3), key=lambda k: row[k]) for row in test_probs]
             metrics = classification_metrics(y_test.tolist(), predictions)
             majority = max(targets[split:].count(k) / max(1, len(y_test)) * 100.0 for k in range(3))
-            latest_features = combined_features(data, len(candles) - 1, prepared)
-            latest_window = indexed[-(sequence_length - 1):] + [(len(candles) - 1, latest_features, 1)]
-            if latest_features is None or len(latest_window) != sequence_length or any(
+            latest_window = []
+            for candle_index in range(len(candles) - sequence_length, len(candles)):
+                latest_row = combined_features(data, candle_index, prepared)
+                if latest_row is None:
+                    latest_window = []
+                    break
+                latest_window.append((candle_index, latest_row))
+            if len(latest_window) != sequence_length or any(
                 latest_window[k][0] + 1 != latest_window[k + 1][0]
                 for k in range(sequence_length - 1)
             ):
                 output[name] = {"signal": "WAIT", "status": "LATEST SEQUENCE UNAVAILABLE"}
                 continue
             latest_vector = np.asarray([[
-                value for _, row, _ in latest_window for value in row
+                value for _, row in latest_window for value in row
             ]], dtype=float)
             latest_raw = model.predict_proba(latest_vector)[0]
             probs = [float(latest_raw[classes.index(k)]) if k in classes else 0.0 for k in range(3)]
