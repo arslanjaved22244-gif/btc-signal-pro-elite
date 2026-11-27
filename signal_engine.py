@@ -98,6 +98,54 @@ def feed_data(market, key):
     return feed.get("data") if feed.get("ok") else None
 
 
+def detect_recent_liquidity_sweep(market):
+    """Detect a confirmed wick-and-reclaim on recent closed 15m Futures candles."""
+    item = market.get("timeframes", {}).get("15m", {})
+    candles = item.get("candles", []) if item.get("ok") else []
+    if len(candles) < 25:
+        return {"direction": "NONE", "status": "INSUFFICIENT_15M_HISTORY"}
+
+    # Ignore a potentially still-forming final candle when feed timestamps are current.
+    # The data engine publishes completed candles, but keep the detector robust to feeds
+    # that include the live candle by checking its open timestamp against UTC now.
+    import time
+    now_ms = int(time.time() * 1000)
+    if candles and int(candles[-1].get("time", 0)) + 15 * 60 * 1000 > now_ms:
+        candles = candles[:-1]
+    if len(candles) < 25:
+        return {"direction": "NONE", "status": "INSUFFICIENT_CLOSED_CANDLES"}
+
+    # Check the most recent eight completed bars; each candidate is compared with
+    # the 20 bars immediately before it, avoiding look-ahead.
+    for index in range(len(candles) - 1, max(19, len(candles) - 9), -1):
+        candle = candles[index]
+        prior = candles[index - 20:index]
+        prior_high = max(float(x["high"]) for x in prior)
+        prior_low = min(float(x["low"]) for x in prior)
+        high = float(candle["high"])
+        low = float(candle["low"])
+        close = float(candle["close"])
+        avg_range = sum(float(x["high"]) - float(x["low"]) for x in prior[-14:]) / min(14, len(prior))
+        min_wick = max(avg_range * 0.08, close * 0.00015)
+        if low < prior_low - min_wick and close > prior_low:
+            return {
+                "direction": "LONG", "status": "CONFIRMED_BULLISH_SWEEP",
+                "level": round(prior_low, 2), "wick_extreme": round(low, 2),
+                "close": round(close, 2), "time": int(candle.get("time", 0)),
+                "bars_ago": len(candles) - 1 - index,
+                "note": "15m wick swept below the prior 20-bar low and closed back above it."
+            }
+        if high > prior_high + min_wick and close < prior_high:
+            return {
+                "direction": "SHORT", "status": "CONFIRMED_BEARISH_SWEEP",
+                "level": round(prior_high, 2), "wick_extreme": round(high, 2),
+                "close": round(close, 2), "time": int(candle.get("time", 0)),
+                "bars_ago": len(candles) - 1 - index,
+                "note": "15m wick swept above the prior 20-bar high and closed back below it."
+            }
+    return {"direction": "NONE", "status": "NO_CONFIRMED_SWEEP"}
+
+
 def run():
     market, model, news = load(MARKET_FILE), load(MODEL_FILE), load(NEWS_FILE)
     quality = market.get("data_quality", {})
@@ -107,6 +155,7 @@ def run():
     premium = feed_data(market, "mark_price_funding") or {}
     oi_hist = feed_data(market, "open_interest_history_5m") or []
     taker_hist = feed_data(market, "taker_flow_5m") or []
+    liquidity_sweep = detect_recent_liquidity_sweep(market)
 
     votes = {"LONG": 0.0, "SHORT": 0.0}
     weights = {"5m": 1.0, "15m": 1.5, "1h": 2.0, "4h": 2.0, "1d": 1.0}
@@ -130,6 +179,13 @@ def run():
             votes["LONG"] += 0.75
         elif imbalance < -0.12:
             votes["SHORT"] += 0.75
+
+    # A confirmed 15m wick-and-reclaim adds modest reversal evidence; it never
+    # overrides the Futures ML agreement, news lock, volatility breaker or score gate.
+    if liquidity_sweep.get("direction") == "LONG":
+        votes["LONG"] += 1.25
+    elif liquidity_sweep.get("direction") == "SHORT":
+        votes["SHORT"] += 1.25
 
     # Funding is a crowding warning, not a standalone directional trigger.
     funding = float(premium.get("lastFundingRate", 0) or 0)
@@ -169,7 +225,7 @@ def run():
             votes["SHORT"] += 0.5
 
     available_weight = sum(weights[tf] for tf, a in analyses.items() if a.get("available"))
-    max_weight = sum(weights.values()) + 2.75
+    max_weight = sum(weights.values()) + 4.0
     long_score = votes["LONG"]
     short_score = votes["SHORT"]
     total = long_score + short_score
@@ -261,7 +317,7 @@ def run():
 
     return {
         "system": "BTC Signal Pro Elite Hybrid Confluence Engine",
-        "version": "4.1-hybrid-futures-confluence",
+        "version": "4.2-hybrid-sweep-confluence",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "symbol": "BTCUSDT",
         "market_type": market.get("market_type", "UNKNOWN"),
@@ -279,6 +335,7 @@ def run():
         "confidence_score": round(confidence, 2),
         "scores": {"LONG": round(long_score, 2), "SHORT": round(short_score, 2)},
         "timeframe_analysis": analyses,
+        "liquidity_sweep": liquidity_sweep,
         "order_flow": {"cvd_base": cvd, "order_book_imbalance": imbalance,
                        "funding_rate_pct": round(funding_pct, 6), "funding_crowding": crowding,
                        "open_interest_change_30m_pct": round(oi_change_pct, 4) if oi_change_pct is not None else None,
