@@ -147,13 +147,35 @@ class AdaptiveLearningTests(unittest.TestCase):
         self.assertFalse(report["checks"]["positive_average_net_return_passed"])
         self.assertFalse(report["checks"]["net_win_rate_passed"])
 
+    def test_validation_gate_requires_each_direction_to_be_profitable(self):
+        validation = {
+            "accuracy": 68.0, "macro_f1": 36.0,
+            "majority_class_baseline_pct": 65.0,
+            "cost_aware_backtest": {
+                "trades": 35, "average_net_trade_return_pct": 0.025,
+                "estimated_net_win_rate_pct": 54.0,
+                "directional_performance": {
+                    "SHORT": {"trades": 16, "average_net_trade_return_pct": 0.03, "net_win_rate_pct": 56.25},
+                    "LONG": {"trades": 19, "average_net_trade_return_pct": -0.01, "net_win_rate_pct": 42.0}
+                }
+            }
+        }
+        passed, report = MODEL.evaluate_validation_gate(validation, True)
+        self.assertFalse(passed)
+        self.assertTrue(report["checks"]["short_direction_passed"])
+        self.assertFalse(report["checks"]["long_direction_passed"])
+
     def test_validation_gate_requires_futures_and_profitable_sample(self):
         validation = {
             "accuracy": 68.0, "macro_f1": 36.0,
             "majority_class_baseline_pct": 65.0,
             "cost_aware_backtest": {
                 "trades": 35, "average_net_trade_return_pct": 0.025,
-                "estimated_net_win_rate_pct": 54.0
+                "estimated_net_win_rate_pct": 54.0,
+                "directional_performance": {
+                    "SHORT": {"trades": 16, "average_net_trade_return_pct": 0.03, "net_win_rate_pct": 56.25},
+                    "LONG": {"trades": 19, "average_net_trade_return_pct": 0.02, "net_win_rate_pct": 52.63}
+                }
             }
         }
         passed, report = MODEL.evaluate_validation_gate(validation, True)
