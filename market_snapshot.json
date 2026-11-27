@@ -1,15 +1,15 @@
 {
-  "price": 59774.2,
-  "funding_rate": 1.68971983604e-05,
-  "funding_percent": 0.00168971983604,
-  "open_interest": 3239956.810000016,
-  "oi_change_5m_pct": -0.053690535580428723,
+  "price": 59779.8,
+  "funding_rate": 1.74463594729e-05,
+  "funding_percent": 0.00174463594729,
+  "open_interest": 3239156.360000016,
+  "oi_change_5m_pct": -0.015336299205542898,
   "oi_history": [
     {
       "timestamp": "1795816200000",
-      "oi_contracts": "3239761.9700000161",
-      "oi_coin": "32397.619700000161",
-      "oi_usd": "1935757777.07500961975"
+      "oi_contracts": "3239693.08000001615",
+      "oi_coin": "32396.9308000001615",
+      "oi_usd": "1936500621.0253696535333"
     },
     {
       "timestamp": "1795815900000",
@@ -18,23 +18,23 @@
       "oi_usd": "1936797654.10860961921342"
     }
   ],
-  "orderbook_imbalance": 0.3361959170266712,
-  "cvd_proxy": -0.5954714761811408,
-  "taker_buy_ratio": 0.20226426190942953,
+  "orderbook_imbalance": -0.8133638260739571,
+  "cvd_proxy": -0.15974179949940776,
+  "taker_buy_ratio": 0.4201291002502961,
   "large_trades": [],
   "data_source": "OKX public BTC-USDT-SWAP perpetual API",
-  "as_of": "2026-11-27T21:53:16.165970+00:00",
+  "as_of": "2026-11-27T21:55:15.487860+00:00",
   "oi_note": "OKX public 5-minute open-interest history when available",
-  "atr_5m_pct": 0.10743,
-  "latest_range_atr_ratio": 0.556,
+  "atr_5m_pct": 0.0987,
+  "latest_range_atr_ratio": 0.964,
   "volatility_status": "NORMAL",
   "volatility_source": "Bybit/OKX completed BTC perpetual 5m candles",
   "oi_change_source": "OKX 5-minute OI history",
-  "signal": "WAIT",
-  "reason": "Derivatives flow is mixed or squeeze/crowding filters are active",
+  "signal": "SHORT",
+  "reason": "Negative taker flow, CVD and order-book imbalance",
   "news_pause_active": false,
   "pause_until": "2026-11-27T18:13:05.922760+00:00",
   "news_alerts": [],
-  "updated_at": "2026-11-27T21:53:17.488905+00:00",
+  "updated_at": "2026-11-27T21:55:16.831480+00:00",
   "safety_note": "Signal-only; manual trading only. Large trades are trade-size alerts, not verified whale identities. Trump social posts are monitored through a third-party archive RSS, not an official API."
 }

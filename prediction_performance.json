@@ -1,8 +1,8 @@
 {
   "source": "OKX BTC-USDT-SWAP public ticker; same-exchange reference and evaluation; directional close comparison only",
-  "updated_at": "2026-11-27T21:53:17.361661+00:00",
+  "updated_at": "2026-11-27T21:55:16.829864+00:00",
   "model_generated_at": "2026-11-27T21:42:19.999587+00:00",
-  "current_price": 59774.2,
+  "current_price": 59779.0,
   "stats": {
     "15m": {
       "evaluated": 19,
