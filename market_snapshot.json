@@ -1,15 +1,15 @@
 {
-  "price": 59807.1,
-  "funding_rate": 5.01128426156e-05,
-  "funding_percent": 0.00501128426156,
-  "open_interest": 3204252.9300000146,
-  "oi_change_5m_pct": 0.0,
+  "price": 59785.5,
+  "funding_rate": 5.08039078128e-05,
+  "funding_percent": 0.00508039078128,
+  "open_interest": 3204637.500000015,
+  "oi_change_5m_pct": -0.07166929439248136,
   "oi_history": [
     {
       "timestamp": "1795821600000",
-      "oi_contracts": "3204503.19000001492",
-      "oi_coin": "32045.0319000001492",
-      "oi_usd": "1916741538.0666089242488"
+      "oi_contracts": "3204252.93000001483",
+      "oi_coin": "32042.5293000001483",
+      "oi_usd": "1915367822.93094886475114"
     },
     {
       "timestamp": "1795821300000",
@@ -18,23 +18,23 @@
       "oi_usd": "1916741538.0666089242488"
     }
   ],
-  "orderbook_imbalance": -0.45598677259356996,
-  "cvd_proxy": 0.9427698441935551,
-  "taker_buy_ratio": 0.9713849220967776,
+  "orderbook_imbalance": -0.8972952075483078,
+  "cvd_proxy": -0.35102783477217137,
+  "taker_buy_ratio": 0.3244860826139143,
   "large_trades": [],
   "data_source": "OKX public BTC-USDT-SWAP perpetual API",
-  "as_of": "2026-11-27T23:21:29.381963+00:00",
+  "as_of": "2026-11-27T23:24:51.162990+00:00",
   "oi_note": "OKX public 5-minute open-interest history when available",
   "atr_5m_pct": 0.14657,
   "latest_range_atr_ratio": 0.851,
   "volatility_status": "NORMAL",
   "volatility_source": "Bybit/OKX completed BTC perpetual 5m candles",
   "oi_change_source": "OKX 5-minute OI history",
-  "signal": "WAIT",
-  "reason": "Derivatives flow is mixed or squeeze/crowding filters are active",
+  "signal": "SHORT",
+  "reason": "Negative taker flow, CVD and order-book imbalance",
   "news_pause_active": false,
   "pause_until": "2026-11-27T18:13:05.922760+00:00",
   "news_alerts": [],
-  "updated_at": "2026-11-27T23:21:42.661796+00:00",
+  "updated_at": "2026-11-27T23:24:52.623283+00:00",
   "safety_note": "Signal-only; manual trading only. Large trades are trade-size alerts, not verified whale identities. Trump social posts are monitored through a third-party archive RSS, not an official API."
 }
