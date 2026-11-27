@@ -541,7 +541,9 @@ def predict_stumps(model,row):
 
 def train_ensemble(rows, labels):
     full_model=train_model(rows,labels)
-    recent_window=min(3000,len(rows))
+    # Use a genuinely different recent-regime training window; when history
+    # is short, do not accidentally duplicate the full-history model.
+    recent_window=min(3000,max(200,int(len(rows)*0.65)))
     recent_model=train_model(rows[-recent_window:],labels[-recent_window:])
     centroid_model=train_centroid(rows,labels)
     stump_model=train_stumps(rows,labels)
@@ -2130,12 +2132,48 @@ def fetch_macro_news_risk():
         result["matched_events"],
         key=lambda item: item.get("age_minutes") if item.get("age_minutes") is not None else 99999
     )[:20]
+    # Retain a detected event across scheduled runs, so a later API timeout
+    # cannot silently erase an active 30-minute risk window.
+    previous_events = []
+    try:
+        with open(OUTPUT_FILE, "r", encoding="utf-8") as previous_file:
+            previous_result = json.load(previous_file)
+        previous_events = previous_result.get("macro_news_risk", {}).get("matched_events", [])
+    except (OSError, ValueError, TypeError):
+        previous_events = []
+    known_keys = {
+        (item.get("title"), item.get("published_at"))
+        for item in result["matched_events"]
+    }
+    for item in previous_events:
+        try:
+            published = datetime.fromisoformat(str(item.get("published_at")))
+            if published.tzinfo is None:
+                published = published.replace(tzinfo=timezone.utc)
+            age = max(0.0, (datetime.now(timezone.utc)-published).total_seconds()/60.0)
+            key = (item.get("title"), item.get("published_at"))
+            if age <= 30 and key not in known_keys:
+                cached = dict(item)
+                cached["age_minutes"] = round(age, 1)
+                cached["cached_from_previous_run"] = True
+                result["matched_events"].append(cached)
+                known_keys.add(key)
+        except Exception:
+            continue
+    fresh = [item for item in result["matched_events"]
+             if item.get("age_minutes") is not None and item["age_minutes"] <= 30]
+    result["matched_events"] = sorted(
+        result["matched_events"],
+        key=lambda item: item.get("age_minutes") if item.get("age_minutes") is not None else 99999
+    )[:20]
     result["high_risk"] = bool(fresh)
     result["fresh_high_risk_count"] = len(fresh)
     result["status"] = (
         "HIGH_RISK_EVENT" if fresh else
         "CLEAR" if result.get("provider_used") else "UNAVAILABLE"
     )
+    if fresh and not result.get("provider_used"):
+        result["status"] = "CACHED_HIGH_RISK_EVENT"
     result["retrieved_at"] = datetime.now(timezone.utc).isoformat()
     return result
 
