@@ -10,6 +10,8 @@ def main():
     sig=load("signal_result.json"); adv=load("advanced_metrics.json")
     state=load("alert_state.json")
     side=sig.get("signal","WAIT")
+    early=sig.get("early_setup",{})
+    early_side=early.get("direction","WAIT")
     result={"status":"NOT_CONFIGURED","sent":False}
     if token and chat and side in ("LONG","SHORT") and state.get("last_signal")!=side:
         r=sig.get("risk_levels",{}); flow=sig.get("order_flow",{})
@@ -27,6 +29,19 @@ def main():
         with urllib.request.urlopen(req,timeout=20) as res: payload=json.loads(res.read().decode())
         result={"status":"SENT" if payload.get("ok") else "FAILED","sent":bool(payload.get("ok"))}
         if result["sent"]: state["last_signal"]=side
+    elif token and chat and early_side in ("LONG","SHORT") and state.get("last_early_setup")!=early_side:
+        scores=early.get("momentum_scores",{})
+        msg=("BTC/USDT EARLY SETUP WATCH: "+early_side+
+             "\\nStatus: WATCH ONLY — NOT AN ENTRY SIGNAL"+
+             "\\nMomentum scores: LONG "+str(scores.get("LONG"))+" | SHORT "+str(scores.get("SHORT"))+
+             "\\nEntry reference: "+str(sig.get("risk_levels",{}).get("entry_reference"))+
+             "\\nWait for the main confirmed signal and risk levels. No orders are placed.")
+        url="https://api.telegram.org/bot"+token+"/sendMessage"
+        data=urllib.parse.urlencode({"chat_id":chat,"text":msg}).encode()
+        req=urllib.request.Request(url,data=data)
+        with urllib.request.urlopen(req,timeout=20) as res: payload=json.loads(res.read().decode())
+        result={"status":"WATCH_SENT" if payload.get("ok") else "FAILED","sent":bool(payload.get("ok"))}
+        if result["sent"]: state["last_early_setup"]=early_side
     elif token and chat: result={"status":"NO_NEW_LONG_SHORT_SIGNAL","sent":False}
     with open("alert_state.json","w",encoding="utf-8") as f:json.dump(state,f,indent=2)
     with open("alert_status.json","w",encoding="utf-8") as f:json.dump(result,f,indent=2)
