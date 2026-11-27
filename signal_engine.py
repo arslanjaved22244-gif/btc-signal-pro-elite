@@ -54,6 +54,17 @@ def atr(candles, period=14):
     return sum(tr[-period:]) / period
 
 
+def macd(values):
+    def calc(period):
+        alpha=2/(period+1); out=[values[0]]
+        for v in values[1:]: out.append(alpha*v+(1-alpha)*out[-1])
+        return out
+    if len(values)<35: return None
+    line=[a-b for a,b in zip(calc(12),calc(26))]
+    alpha=2/10; sig=[line[0]]
+    for v in line[1:]: sig.append(alpha*v+(1-alpha)*sig[-1])
+    return {"line":line[-1],"signal":sig[-1],"histogram":line[-1]-sig[-1]}
+
 def timeframe_analysis(item):
     if not item.get("ok"):
         return {"available": False, "bias": "UNKNOWN"}
@@ -69,6 +80,7 @@ def timeframe_analysis(item):
         "available": True, "bias": bias, "price": round(price, 2),
         "ema50": round(e50, 2), "ema200": round(e200, 2),
         "rsi14": round(r, 2), "atr14": round(atr(rows) or 0, 2),
+        "macd": {k: round(v, 5) for k,v in (macd(closes) or {}).items()},
         "age_seconds": item.get("age_seconds")
     }
 
