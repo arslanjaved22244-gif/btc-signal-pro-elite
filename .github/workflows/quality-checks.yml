@@ -1,0 +1,40 @@
+name: BTC Signal Pro Elite Quality Checks
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - "ai_model.py/**"
+      - "tests/**"
+      - "market_data.py"
+      - "signal_engine.py"
+      - "paper_trader.py"
+      - "institutional_intelligence.py"
+      - ".github/workflows/quality-checks.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: btc-signal-quality-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Compile all production modules
+        run: |
+          python -m py_compile ai_model.py/ai_model.py market_data.py signal_engine.py paper_trader.py institutional_intelligence.py advanced_modules.py news_guard.py exchange_compare.py liquidation_monitor.py
+
+      - name: Run complete unit test suite
+        run: python -m unittest discover -s tests -v
