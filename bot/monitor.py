@@ -151,15 +151,20 @@ def update_prediction_performance():
   if not forecasts: forecasts=model.get("advanced_intelligence",{}).get("multi_horizon_forecasts",{})
   # Anchor forecast outcomes to the same OKX perpetual ticker used for
   # evaluation. Never compare a Kraken/Spot model price with an OKX Futures price.
+  # A raw directional class is not an approved signal unless the global source
+  # and validation gates both pass.
+  validation=model.get("validation_gate",{})
+  source_validated=(validation.get("passed") is True and validation.get("futures_source_passed") is True)
   reference_time=now()
   for horizon,mins in (("15m",15),("30m",30),("60m",60),("4h",240)):
    fc=forecasts.get(horizon,{})
-   direction=fc.get("signal","WAIT")
+   raw_direction=fc.get("raw_model_class",fc.get("signal","WAIT"))
+   if raw_direction not in ("LONG","SHORT","WAIT"): raw_direction="WAIT"
+   direction=fc.get("signal","WAIT") if source_validated else "WAIT"
    if direction not in ("LONG","SHORT","WAIT"): direction="WAIT"
-   raw_direction=fc.get("raw_model_class",direction)
-   if raw_direction not in ("LONG","SHORT","WAIT"): raw_direction=direction
    records.append({"model_generated_at":generated,"logged_at":reference_time.isoformat(),"horizon":horizon,
     "horizon_minutes":mins,"direction":direction,"raw_direction":raw_direction,
+    "source_validated":source_validated,"model_source":model.get("data_source"),
     "reference_price":price,"reference_exchange":"OKX BTC-USDT-SWAP",
     "outcome":None,"evaluated_at":None,"realized_change_pct":None,
     "correct":None,"raw_correct":None,"validation_status":fc.get("status","unknown")})
@@ -194,7 +199,7 @@ def update_prediction_performance():
    and x.get("outcome") is not None and x.get("reference_exchange")!="OKX BTC-USDT-SWAP")
   directional=[x for x in group if x.get("direction") in ("LONG","SHORT") and isinstance(x.get("correct"),bool)]
   wins=sum(1 for x in directional if x["correct"])
-  raw_directional=[x for x in group if x.get("raw_direction") in ("LONG","SHORT") and isinstance(x.get("raw_correct"),bool)]
+  raw_directional=[x for x in group if x.get("source_validated") is True and x.get("raw_direction") in ("LONG","SHORT") and isinstance(x.get("raw_correct"),bool)]
   raw_wins=sum(1 for x in raw_directional if x["raw_correct"])
   stats[horizon]={"evaluated":len(group),"directional_calls":len(directional),"correct":wins,
    "directional_accuracy_pct":round(100*wins/len(directional),2) if directional else None,
