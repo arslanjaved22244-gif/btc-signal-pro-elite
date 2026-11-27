@@ -16,22 +16,44 @@ def save_json(path,obj):
  with open(path,"w",encoding="utf-8") as f:json.dump(obj,f,indent=2)
 def api(path,params):return get_json(BASE+path+"?"+urllib.parse.urlencode(params))
 def news_scan():
- terms=["bitcoin","crypto","trump","tariff","war","iran","israel","sanction","federal reserve","fed","fomc","hack","sec","exchange","etf","attack"]
+ # Google News covers global headlines; Trump's Truth is an independent archive RSS
+ # of public @realDonaldTrump Truth Social posts (not an official platform API).
+ terms=["bitcoin","crypto","trump","tariff","war","iran","israel","sanction","federal reserve","fed","fomc","hack","sec","exchange","etf","attack","oil","energy","inflation","interest rate","china","russia","ukraine","nato","military","treasury","dollar","trade deal","export","ban","embargo"]
  queries=["Bitcoin OR crypto Trump tariff war Iran Israel sanctions Fed FOMC hack SEC","Trump statement markets Bitcoin crypto"]
  hits=[]; current=now()
  for query in queries:
   url="https://news.google.com/rss/search?q="+urllib.parse.quote(query)+"&hl=en-US&gl=US&ceid=US:en"
   try:
    req=urllib.request.Request(url,headers={"User-Agent":"Mozilla/5.0 BTC-Signal-Pro-Elite"})
-   with urllib.request.urlopen(req,timeout=15) as r:root=ET.fromstring(r.read())
+   with urllib.request.urlopen(req,timeout=15) as r:root=ET.fromstring(r)
    for item in root.findall(".//item"):
     title=item.findtext("title") or ""; pub=item.findtext("pubDate") or ""
     try:dt=parsedate_to_datetime(pub).astimezone(timezone.utc)
     except Exception:continue
     age=(current-dt).total_seconds()/60
-    if -2<=age<=60 and any(t in title.lower() for t in terms):hits.append({"title":title,"published":dt.isoformat(),"age_minutes":round(age,1)})
-  except Exception as exc:print("News feed warning:",str(exc)[:160])
- unique={x["title"]:x for x in hits};return sorted(unique.values(),key=lambda x:x["age_minutes"])
+    if -2<=age<=90 and any(t in title.lower() for t in terms):
+     hits.append({"title":title,"published":dt.isoformat(),"age_minutes":round(age,1),"source":"Google News RSS","url":item.findtext("link") or ""})
+  except Exception as exc:print("Google News warning:",str(exc)[:160])
+ # Third-party archive says it checks @realDonaldTrump posts every few minutes.
+ try:
+  req=urllib.request.Request("https://www.trumpstruth.org/feed",headers={"User-Agent":"Mozilla/5.0 BTC-Signal-Pro-Elite","Accept":"application/rss+xml, application/xml, text/xml"})
+  with urllib.request.urlopen(req,timeout=15) as r:root=ET.fromstring(r)
+  for item in root.findall(".//item"):
+   title=item.findtext("title") or "Donald Trump Truth Social post"
+   desc=item.findtext("description") or ""
+   pub=item.findtext("pubDate") or ""
+   try:dt=parsedate_to_datetime(pub).astimezone(timezone.utc)
+   except Exception:continue
+   age=(current-dt).total_seconds()/60
+   body=(title+" "+desc).lower()
+   # Only posts plausibly relevant to market/geopolitical risk trigger a pause.
+   risk_terms=["bitcoin","crypto","cryptocurrency","tariff","trade","china","russia","ukraine","iran","israel","war","military","oil","energy","sanction","federal reserve","fed","interest rate","inflation","dollar","treasury","sec","bank","tax","export","embargo","attack","nuclear","venezuela"]
+   if -2<=age<=90 and any(t in body for t in risk_terms):
+    hits.append({"title":title[:280],"published":dt.isoformat(),"age_minutes":round(age,1),"source":"Trump's Truth archive RSS (third-party)","url":item.findtext("link") or ""})
+ except Exception as exc:print("Trump Truth archive warning:",str(exc)[:160])
+ unique={(x["source"],x["title"]):x for x in hits}
+ return sorted(unique.values(),key=lambda x:x["age_minutes"])
+
 def market_data_bybit():
  tick=api("/v5/market/tickers",{"category":"linear","symbol":"BTCUSDT"})["result"]["list"][0]
  price=float(tick["lastPrice"]);funding=float(tick.get("fundingRate") or 0)
@@ -177,6 +199,25 @@ def score_signal(m,paused):
  return "WAIT","Derivatives flow is mixed or squeeze/crowding filters are active"
 def main():
  state=load_state();m=market_data();news=news_scan();update_prediction_performance();current=now();pause_until=state.get("pause_until")
+ # Build a genuine rolling 5-minute OI delta from consecutive public OI snapshots.
+ # The GitHub Actions cache preserves this lightweight sample between runs.
+ oi_now=m.get("open_interest")
+ if oi_now is not None:
+  try:
+   prev=state.get("oi_sample") or {}
+   prev_value=float(prev.get("value"));prev_time=datetime.fromisoformat(prev.get("time"))
+   age=(current-prev_time).total_seconds()
+   if 240<=age<=720 and prev_value:
+    m["oi_change_5m_pct"]=(float(oi_now)-prev_value)/prev_value*100
+    m["oi_change_sample_age_seconds"]=round(age,1)
+   else:
+    m["oi_change_5m_pct"]=None
+    m["oi_note"]="Waiting for a valid 4-12 minute OI sample pair"
+  except Exception:
+   m["oi_change_5m_pct"]=None
+   m["oi_note"]="Collecting first OI baseline sample"
+  state["oi_sample"]={"value":float(oi_now),"time":current.isoformat()}
+
  if news:
   try:old=datetime.fromisoformat(pause_until) if pause_until else current
   except Exception:old=current
@@ -185,7 +226,7 @@ def main():
  try:paused=bool(pause_until and current<datetime.fromisoformat(pause_until))
  except Exception:paused=False
  signal,reason=score_signal(m,paused)
- m.update({"signal":signal,"reason":reason,"news_pause_active":paused,"pause_until":pause_until,"news_alerts":news[:8],"updated_at":current.isoformat(),"safety_note":"Signal-only; manual trading only. Large trades are trade-size alerts, not verified whale identities."})
+ m.update({"signal":signal,"reason":reason,"news_pause_active":paused,"pause_until":pause_until,"news_alerts":news[:8],"updated_at":current.isoformat(),"safety_note":"Signal-only; manual trading only. Large trades are trade-size alerts, not verified whale identities. Trump social posts are monitored through a third-party archive RSS, not an official API."})
  save_json(OUT,m);save_json(STATE,{"pause_until":pause_until,"pause_reason":state.get("pause_reason"),"last_check":current.isoformat(),"last_signal":signal})
  print(json.dumps(m,indent=2))
 if __name__=="__main__":main()
