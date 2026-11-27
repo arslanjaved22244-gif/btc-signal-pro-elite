@@ -888,6 +888,105 @@ def temporal_sequence_forecast(rows, labels, sequence_length=12):
     except Exception as exc:
         return {"signal": "WAIT", "status": "TRAINING ERROR", "detail": str(exc)[:240]}
 
+
+def temporal_sequence_horizon_forecasts(data, prepared, sequence_length=12):
+    """Independent ordered-sequence neural forecasts for 15m, 30m, 1h and 4h."""
+    output = {}
+    try:
+        import numpy as np
+        from sklearn.pipeline import make_pipeline
+        from sklearn.preprocessing import StandardScaler
+        from sklearn.neural_network import MLPClassifier
+    except Exception as exc:
+        return {"status": "DEPENDENCY ERROR", "detail": str(exc)[:200], "forecasts": {}}
+    candles = data["5m"]
+    for horizon, name in ((3, "15m"), (6, "30m"), (12, "1h"), (48, "4h")):
+        indexed = []
+        start = max(200, len(candles) - 1400)
+        for i in range(start, len(candles) - horizon):
+            features = combined_features(data, i, prepared)
+            if features is None:
+                continue
+            move = candles[i + horizon]["close"] / candles[i]["close"] - 1.0
+            volatility = candle_atr(candles, i, 14) / candles[i]["close"]
+            threshold = max(0.00035, volatility * 0.20 * math.sqrt(horizon / FUTURE_CANDLES))
+            label = 2 if move > threshold else 0 if move < -threshold else 1
+            indexed.append((i, features, label))
+        sequences, targets = [], []
+        for end in range(sequence_length - 1, len(indexed)):
+            window = indexed[end - sequence_length + 1:end + 1]
+            # Skip gaps so each window represents consecutive five-minute candles.
+            if any(window[k][0] + 1 != window[k + 1][0] for k in range(len(window) - 1)):
+                continue
+            sequences.append([value for _, row, _ in window for value in row])
+            targets.append(window[-1][2])
+        split = int(len(sequences) * 0.80)
+        train_end = split - (sequence_length + horizon)
+        x_train = np.asarray(sequences[:train_end], dtype=float)
+        y_train = np.asarray(targets[:train_end], dtype=int)
+        x_test = np.asarray(sequences[split:], dtype=float)
+        y_test = np.asarray(targets[split:], dtype=int)
+        if len(x_train) < 220 or len(x_test) < 35 or len(set(y_train.tolist())) < 2:
+            output[name] = {"signal": "WAIT", "status": "INSUFFICIENT PURGED HOLDOUT",
+                            "training_samples": len(x_train), "validation_samples": len(x_test)}
+            continue
+        model = make_pipeline(
+            StandardScaler(),
+            MLPClassifier(hidden_layer_sizes=(64, 32), activation="relu",
+                          solver="adam", alpha=0.025, batch_size=64,
+                          learning_rate_init=0.0006, max_iter=70,
+                          early_stopping=False, shuffle=False, random_state=71 + horizon)
+        )
+        try:
+            model.fit(x_train, y_train)
+            raw_test = model.predict_proba(x_test)
+            classes = list(model[-1].classes_)
+            test_probs = [[float(row[classes.index(k)]) if k in classes else 0.0
+                           for k in range(3)] for row in raw_test]
+            predictions = [max(range(3), key=lambda k: row[k]) for row in test_probs]
+            metrics = classification_metrics(y_test.tolist(), predictions)
+            majority = max(targets[split:].count(k) / max(1, len(y_test)) * 100.0 for k in range(3))
+            latest_features = combined_features(data, len(candles) - 1, prepared)
+            latest_window = indexed[-(sequence_length - 1):] + [(len(candles) - 1, latest_features, 1)]
+            if latest_features is None or len(latest_window) != sequence_length or any(
+                latest_window[k][0] + 1 != latest_window[k + 1][0]
+                for k in range(sequence_length - 1)
+            ):
+                output[name] = {"signal": "WAIT", "status": "LATEST SEQUENCE UNAVAILABLE"}
+                continue
+            latest_vector = np.asarray([[
+                value for _, row, _ in latest_window for value in row
+            ]], dtype=float)
+            latest_raw = model.predict_proba(latest_vector)[0]
+            probs = [float(latest_raw[classes.index(k)]) if k in classes else 0.0 for k in range(3)]
+            total = sum(probs) or 1.0
+            probs = [value / total for value in probs]
+            ordered = sorted(probs, reverse=True)
+            candidate = CLASSES[max(range(3), key=lambda k: probs[k])]
+            margin = ordered[0] - ordered[1]
+            passed = (metrics["accuracy"] >= 38.0 and metrics["accuracy"] > majority
+                      and metrics["macro_f1"] >= 30.0 and margin >= 0.10
+                      and candidate != "WAIT")
+            output[name] = {
+                "signal": candidate if passed else "WAIT",
+                "raw_model_class": candidate,
+                "scores": {label: round(probs[k] * 100.0, 2) for k, label in enumerate(CLASSES)},
+                "confidence_margin": round(margin * 100.0, 2),
+                "holdout_accuracy": metrics["accuracy"],
+                "macro_f1": metrics["macro_f1"],
+                "majority_baseline_pct": round(majority, 2),
+                "training_samples": len(x_train),
+                "validation_samples": len(x_test),
+                "sequence_length": sequence_length,
+                "purge_candles": sequence_length + horizon,
+                "architecture": "StandardScaler + temporal MLP 64-32 (ReLU)",
+                "status": "VALIDATED TEMPORAL MODEL" if passed else "WEAK EDGE — WAIT"
+            }
+        except Exception as exc:
+            output[name] = {"signal": "WAIT", "status": "TRAINING ERROR", "detail": str(exc)[:200]}
+    return {"status": "COMPLETE", "forecasts": output,
+            "method": "four independent chronological sequence classifiers; 12 ordered 5m candles"}
+
 def advanced_tree_ensemble(data, prepared):
     """Chronological Random Forest + gradient boosting + XGBoost ensemble."""
     try:
@@ -1170,6 +1269,7 @@ def main():
     regime_analysis = advanced_regime(data)
     horizon_forecasts = advanced_horizon_models(data, prepared)
     temporal_model = temporal_sequence_forecast(rows, labels, sequence_length=12)
+    temporal_horizons = temporal_sequence_horizon_forecasts(data, prepared, sequence_length=12)
     tree_ensemble = advanced_tree_ensemble(data, prepared)
     tree_blend_applied = False
     tree_primary = tree_ensemble.get("forecasts", {}).get("15m", {})
@@ -1256,7 +1356,7 @@ def main():
         "ensemble_configuration": {"models": ["full_history_logistic", "recent_regime_logistic", "nearest_centroid", "decision_stumps"], "weights": {"full_history_logistic": 0.35, "recent_regime_logistic": 0.20, "nearest_centroid": 0.20, "decision_stumps": 0.25}, "recent_training_window": final_model["recent_window"]},
         "walk_forward_metrics": validation,
         "validation_gate": {"passed": validation_gate, "minimum_accuracy_pct": 38.0, "minimum_macro_f1_pct": 30.0, "must_beat_majority_baseline": True, "decision": "directional signals allowed" if validation_gate else "WAIT only — historical validation too weak"},
-        "advanced_intelligence": {"market_regime": regime_analysis, "multi_timeframe_trend_alignment": trend_alignment, "alignment_veto": alignment_veto, "multi_horizon_forecasts": horizon_forecasts, "multi_horizon_consensus": horizon_consensus, "temporal_sequence_model": temporal_model, "temporal_model_veto": temporal_veto, "tree_ensemble": tree_ensemble, "tree_blend_applied_to_primary_signal": tree_blend_applied, "method": "ordered 12-candle temporal neural network + four-horizon chronological ML + Random Forest + gradient boosting + neural MLP + XGBoost (when installed) + volatility regime + liquidity sweep detector"},
+        "advanced_intelligence": {"market_regime": regime_analysis, "multi_timeframe_trend_alignment": trend_alignment, "alignment_veto": alignment_veto, "multi_horizon_forecasts": horizon_forecasts, "multi_horizon_consensus": horizon_consensus, "temporal_sequence_model": temporal_model, "temporal_sequence_horizons": temporal_horizons, "temporal_model_veto": temporal_veto, "tree_ensemble": tree_ensemble, "tree_blend_applied_to_primary_signal": tree_blend_applied, "method": "ordered 12-candle temporal neural network + four-horizon chronological ML + Random Forest + gradient boosting + neural MLP + XGBoost (when installed) + volatility regime + liquidity sweep detector"},
         "walk_forward_folds": folds,
         "training_samples": len(rows),
         "label_distribution": {name: labels.count(i) for i, name in enumerate(CLASSES)},
