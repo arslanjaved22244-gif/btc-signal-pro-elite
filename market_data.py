@@ -343,8 +343,15 @@ def okx_request(path, params=None, timeout=15):
     query = urllib.parse.urlencode(params or {})
     url = "https://www.okx.com" + path + (("?" + query) if query else "")
     req = urllib.request.Request(url, headers={"User-Agent":"BTC-Signal-Pro-Elite/5.1","Accept":"application/json"})
-    with urllib.request.urlopen(req, timeout=timeout) as response:
-        raw=response.read()
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as response:
+            raw=response.read()
+    except urllib.error.HTTPError as exc:
+        try:
+            detail=exc.read(400).decode("utf-8",errors="replace")
+        except Exception:
+            detail=""
+        raise RuntimeError(f"OKX HTTP {exc.code}: {detail[:300]}") from exc
     if not raw.strip():
         raise ValueError("Empty response from OKX public API")
     payload=json.loads(raw.decode("utf-8"))
