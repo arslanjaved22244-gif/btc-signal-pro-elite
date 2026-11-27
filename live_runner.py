@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parent
 OUT = ROOT / "liquidation_data.json"
 URL = "wss://fstream.binance.com/ws/btcusdt@forceOrder"
 lock = threading.Lock()
-status = {"connected": False, "last_message": None, "last_error": None}
+status = {"connected": False, "last_message": None, "last_error": None, "market_ok": False, "market_updated_at": None}
 try:
     existing = json.loads(OUT.read_text(encoding="utf-8")) if OUT.exists() else {}
     events = [item for item in existing.get("events", [])
@@ -103,16 +103,29 @@ def dashboard_server():
                     connected = status["connected"]
                     last_message = status["last_message"]
                     last_error = status["last_error"]
+                    market_ok = status["market_ok"]
+                    market_updated_at = status["market_updated_at"]
+                market_fresh = False
+                if market_ok and market_updated_at:
+                    try:
+                        updated = datetime.fromisoformat(market_updated_at.replace("Z", "+00:00"))
+                        market_fresh = (datetime.now(timezone.utc) - updated).total_seconds() <= 180
+                    except (TypeError, ValueError):
+                        market_fresh = False
+                healthy = connected and market_fresh
                 body = json.dumps({
                     "service": "BTC Signal Pro Elite live runner",
                     "process_alive": True,
                     "liquidation_websocket_connected": connected,
-                    "continuous": connected,
+                    "market_collection_healthy": market_ok,
+                    "market_snapshot_fresh_within_180s": market_fresh,
+                    "market_updated_at": market_updated_at,
+                    "continuous": healthy,
                     "last_message_at": last_message,
                     "last_error": last_error,
                     "checked_at": utc()
                 }).encode("utf-8")
-                self.send_response(200 if connected else 503)
+                self.send_response(200 if healthy else 503)
                 self.send_header("Content-Type", "application/json")
                 self.send_header("Content-Length", str(len(body)))
                 self.end_headers()
@@ -146,6 +159,9 @@ def monitor_worker():
         started = time.time()
         try:
             market_ok = run_step("Futures market collection", "market_data.py", timeout=100)
+            with lock:
+                status["market_ok"] = market_ok
+                status["market_updated_at"] = utc() if market_ok else None
             if not market_ok:
                 publish_wait_override(ROOT / "signal_result.json", "MARKET_DATA", "Latest Futures market collection failed; prior snapshots are stale.")
                 print("Market collection failed; published signal forced to WAIT.", flush=True)
@@ -162,9 +178,15 @@ def monitor_worker():
                         run_step("Advanced metrics", "advanced_modules.py", timeout=60)
             run_step("Derivatives and news monitor", "bot/monitor.py", timeout=55)
         except subprocess.TimeoutExpired as exc:
+            with lock:
+                status["market_ok"] = False
+                status["market_updated_at"] = None
             publish_wait_override(ROOT / "signal_result.json", "RUNNER_TIMEOUT", str(exc))
             print("Live scan timed out; signal forced to WAIT:", str(exc), flush=True)
         except Exception as exc:
+            with lock:
+                status["market_ok"] = False
+                status["market_updated_at"] = None
             publish_wait_override(ROOT / "signal_result.json", "RUNNER_EXCEPTION", str(exc))
             print("Live monitor runner error; signal forced to WAIT:", str(exc), flush=True)
         elapsed = time.time() - started
