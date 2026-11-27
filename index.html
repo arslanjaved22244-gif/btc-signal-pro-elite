@@ -44,7 +44,7 @@ button{background:#f5b942;color:#111;border:0;padding:12px 18px;border-radius:8p
 <div class="card">
 <small>LIVE BTC/USDT PRICE</small>
 <div class="price" id="price">Loading...</div>
-<small id="updated">Connecting...</small>
+<small id="updated">Connecting...</small><p class="note">Price refresh: 5 seconds in this browser. AI, Futures snapshots and paper-trading results update on the GitHub Actions schedule (about every 5 minutes; scheduling can be delayed).</p>
 </div>
 
 <div class="card">
@@ -333,6 +333,25 @@ button{background:#f5b942;color:#111;border:0;padding:12px 18px;border-radius:8p
 <div class="metric"><span>Tracker updated</span><b id="perfUpdated">Waiting...</b></div>
 <div class="metric"><span>Recorded forecasts</span><b id="perfRecords">0</b></div>
 <p class="note" id="perfNote">Historical performance will appear after forecast horizons have elapsed. Small samples are not statistically reliable.</p>
+</div>
+<div class="card" id="paperTradingCard">
+<h3>15-Minute Paper Trading (No Real Orders)</h3>
+<div class="note">Signals are simulated against completed perpetual Futures candles. Estimated 0.14% round-trip cost is deducted; this is not live execution.</div>
+<div class="scoregrid">
+<div class="scoretile">Closed paper trades<b id="paperTrades">--</b></div>
+<div class="scoretile">Net win rate<b id="paperWinRate">--</b></div>
+<div class="scoretile">Compounded net return<b id="paperNet">--</b></div>
+<div class="scoretile">Maximum drawdown<b id="paperDD">--</b></div>
+</div>
+<div class="metric"><span>Pending / WAIT abstentions</span><b id="paperPending">-- / --</b></div>
+<div class="metric"><span>Paper tracker updated</span><b id="paperUpdated">--</b></div>
+<p class="note" id="paperNote">Waiting for the first paper-trading snapshot.</p>
+</div>
+<div class="card" id="exchangeCompareCard">
+<h3>Perpetual Exchange Price Divergence</h3>
+<div class="note">Compares public BTC perpetual contracts only. A missing venue is shown as unavailable, never replaced with Spot data.</div>
+<div id="exchangePrices">Loading exchange comparison...</div>
+<p class="note" id="exchangeNote">Waiting for comparison snapshot.</p>
 </div>
 <div class="card">
 <h3>Experimental ML Forecast</h3>
@@ -1588,6 +1607,43 @@ async function loadPredictionPerformance(force=false){
  finally{performanceBusy=false;}
 }
 
+let paperLastLoad=0,paperBusy=false;
+async function loadPaperTrading(force=false){
+ if(paperBusy||(!force&&Date.now()-paperLastLoad<60000))return;
+ paperBusy=true;
+ try{
+  const r=await fetch("./paper_trading.json?ts="+Date.now(),{cache:"no-store"});
+  if(!r.ok)throw Error("Paper trading snapshot not published yet");
+  const d=await r.json();
+  setText("paperTrades",String(d.closed_trades||0));
+  setText("paperWinRate",d.win_rate_pct==null?"Collecting...":Number(d.win_rate_pct).toFixed(1)+"%");
+  setText("paperNet",(d.net_return_pct_compounded==null?"--":Number(d.net_return_pct_compounded).toFixed(2)+"%"));
+  setText("paperDD",d.max_drawdown_pct==null?"--":Number(d.max_drawdown_pct).toFixed(2)+"%");
+  setText("paperPending",(d.pending_trades||0)+" / "+(d.wait_abstentions||0));
+  setText("paperUpdated",d.updated_at?new Date(d.updated_at).toLocaleString():"--");
+  setText("paperNote",(d.source||"")+". "+(d.limitations||""));
+  paperLastLoad=Date.now();
+ }catch(e){setText("paperNote","Tracker initializing: "+e.message);}
+ finally{paperBusy=false;}
+}
+let exchangeLastLoad=0,exchangeBusy=false;
+async function loadExchangeComparison(force=false){
+ if(exchangeBusy||(!force&&Date.now()-exchangeLastLoad<60000))return;
+ exchangeBusy=true;
+ try{
+  const r=await fetch("./exchange_comparison.json?ts="+Date.now(),{cache:"no-store"});
+  if(!r.ok)throw Error("Exchange comparison not published yet");
+  const d=await r.json(),v=d.venues||{};
+  const labels=Object.keys(v);
+  $("exchangePrices").innerHTML=labels.map(name=>{
+   const x=v[name];
+   return '<div class="metric"><span>'+name+'</span><b class="'+(x.available?"":"yellow")+'">'+(x.available?"$"+fmt(x.price)+" • "+(x.difference_pct>=0?"+":"")+Number(x.difference_pct||0).toFixed(4)+"%":"UNAVAILABLE")+'</b></div>';
+  }).join("");
+  setText("exchangeNote","Reference: "+(d.reference||"none")+" • "+(d.status||"")+" • "+(d.generated_at?new Date(d.generated_at).toLocaleString():"")+" • "+(d.warning||""));
+  exchangeLastLoad=Date.now();
+ }catch(e){setText("exchangeNote",e.message);}
+ finally{exchangeBusy=false;}
+}
 let derivativesLastLoad=0,derivativesBusy=false;
 async function loadDerivativesIntelligence(force=false){
  if(derivativesBusy||(!force&&Date.now()-derivativesLastLoad<60000))return;
@@ -1734,6 +1790,8 @@ loadAdvancedIntelligence();
 loadHybridSignal();
 loadDerivativesIntelligence();
 loadPredictionPerformance();
+loadPaperTrading();
+loadExchangeComparison();
 loadLiquidationSnapshot();
 connectLiq();
 connectWhales();
