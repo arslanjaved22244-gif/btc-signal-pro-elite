@@ -787,6 +787,12 @@ def main():
     regime_analysis = advanced_regime(data)
     horizon_forecasts = advanced_horizon_models(data, prepared)
     tree_ensemble = advanced_tree_ensemble(data, prepared)
+    tree_blend_applied = False
+    tree_primary = tree_ensemble.get("forecasts", {}).get("15m", {})
+    if tree_primary.get("signal") in ("LONG", "SHORT") and tree_primary.get("macro_f1", 0) >= 25.0:
+        tree_scores = [float(tree_primary.get("scores", {}).get(name, 0)) / 100.0 for name in CLASSES]
+        scores = [0.65 * scores[k] + 0.35 * tree_scores[k] for k in range(3)]
+        tree_blend_applied = True
     best = max(range(3), key=lambda k: scores[k])
     ordered = sorted(scores, reverse=True)
     margin = ordered[0] - ordered[1]
@@ -816,7 +822,7 @@ def main():
         "wait_probability_threshold": final_wait_threshold,
         "ensemble_configuration": {"models": ["full_history_logistic", "recent_regime_logistic", "nearest_centroid", "decision_stumps"], "weights": {"full_history_logistic": 0.35, "recent_regime_logistic": 0.20, "nearest_centroid": 0.20, "decision_stumps": 0.25}, "recent_training_window": final_model["recent_window"]},
         "walk_forward_metrics": validation,
-        "advanced_intelligence": {"market_regime": regime_analysis, "multi_horizon_forecasts": horizon_forecasts, "tree_ensemble": tree_ensemble, "method": "four-horizon chronological ML + Random Forest + gradient boosting + XGBoost (when installed) + volatility regime + liquidity sweep detector"},
+        "advanced_intelligence": {"market_regime": regime_analysis, "multi_horizon_forecasts": horizon_forecasts, "tree_ensemble": tree_ensemble, "tree_blend_applied_to_primary_signal": tree_blend_applied, "method": "four-horizon chronological ML + Random Forest + gradient boosting + neural MLP + XGBoost (when installed) + volatility regime + liquidity sweep detector"},
         "walk_forward_folds": folds,
         "training_samples": len(rows),
         "label_distribution": {name: labels.count(i) for i, name in enumerate(CLASSES)},
