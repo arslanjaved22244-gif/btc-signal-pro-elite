@@ -343,6 +343,18 @@
       "average_net_trade_return_pct": -0.23673,
       "compounded_net_return_pct": -3.2969,
       "net_max_drawdown_pct": 4.3117,
+      "directional_performance": {
+        "SHORT": {
+          "trades": 7,
+          "net_win_rate_pct": 42.86,
+          "average_net_trade_return_pct": -0.12235
+        },
+        "LONG": {
+          "trades": 7,
+          "net_win_rate_pct": 42.86,
+          "average_net_trade_return_pct": -0.35112
+        }
+      },
       "trade_sample": [
         {
           "fold": 1,
@@ -460,7 +472,9 @@
       "majority_baseline_passed": true,
       "minimum_backtest_trades_passed": false,
       "positive_average_net_return_passed": false,
-      "net_win_rate_passed": false
+      "net_win_rate_passed": false,
+      "short_direction_passed": false,
+      "long_direction_passed": false
     },
     "backtest_trade_count": 14,
     "minimum_backtest_trades": 30,
@@ -474,7 +488,7 @@
     "api_key_required": false,
     "features": {
       "open_interest": {
-        "latest_contracts": 801986330.0,
+        "latest_contracts": 801907980.0,
         "direction": "UNAVAILABLE \u2014 SINGLE DERIBIT SNAPSHOT",
         "samples": 1,
         "provider": "Deribit BTC perpetual",
@@ -489,10 +503,10 @@
         "provider": "Deribit BTC perpetual"
       },
       "taker_flow": {
-        "buy_amount_contract_units": 1682110.0,
-        "sell_amount_contract_units": 1737670.0,
-        "buy_sell_ratio": 0.968,
-        "buy_imbalance_pct": -1.62,
+        "buy_amount_contract_units": 1626640.0,
+        "sell_amount_contract_units": 1403560.0,
+        "buy_sell_ratio": 1.1589,
+        "buy_imbalance_pct": 7.36,
         "bias": "BALANCED",
         "samples": 1000,
         "window": "latest 1000 Deribit BTC perpetual trades",
@@ -500,10 +514,10 @@
         "note": "Cross-exchange contract-amount flow proxy, not Binance BTC spot CVD."
       },
       "orderbook_snapshot": {
-        "bid_quantity_contract_units_top5": 108870.0,
-        "ask_quantity_contract_units_top5": 102450.0,
-        "bid_ask_imbalance_pct": 3.04,
-        "bias": "BALANCED",
+        "bid_quantity_contract_units_top5": 16860.0,
+        "ask_quantity_contract_units_top5": 177910.0,
+        "bid_ask_imbalance_pct": -82.69,
+        "bias": "ASK_HEAVY",
         "provider": "Deribit BTC perpetual",
         "note": "Cross-exchange snapshot; not Binance order-book depth."
       },
@@ -534,7 +548,7 @@
       "bybit_orderbook: HTTP Error 403: Forbidden"
     ],
     "available_context_fields": 4,
-    "retrieved_at": "2026-11-27T17:42:11.080904+00:00"
+    "retrieved_at": "2026-11-27T17:44:13.346487+00:00"
   },
   "macro_news_risk": {
     "status": "HIGH_RISK_EVENT",
@@ -552,7 +566,7 @@
         "domain": "Benzinga",
         "url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxQSFZjelZmOEgtejdybEpZWUgwWV9tRnU2bHhHMTlWbUNpZlRBV1V2eGozQjctdktNd3E3d2F1OTQyN1Y5VVgwX1lRWXRHM183c3h1RElKc25CYXFsN21DVHpJQWNlMWJaTE5XYXpXRXM5QW1fendhU0R4Rkl4a2FpekJmOFFwc3NzWHlFTFVSUkU3TmhrU3ZGcE9wSWJWMDRfUzhQVGhUTHJtNXRzYWVkZV9xNldlOVFibDZsd29CdjFLOHUtOU1yaWp3?oc=5",
         "published_at": "2026-11-27T17:31:03+00:00",
-        "age_minutes": 11.3,
+        "age_minutes": 13.3,
         "matched_terms": [
           "fed"
         ],
@@ -563,7 +577,7 @@
         "domain": "Yahoo Finance",
         "url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxPU1RZbWVZTzRENUptQmU2Q1F5d2I1bXlBamx1Qjg5ZUNJeUYxcEVtMHBJZGh2QmFNM0FvWEZkSEFvLVMteDFfS1ZWX21EcDh1QXVPSllXa294Z3hDLUdoa2JwaHlySDJrTi1aTVR2RDloZVAwOTBUcGtsQ3VhWE5mT19jX2tLTmt0OHZYTzlB?oc=5",
         "published_at": "2026-11-27T17:30:00+00:00",
-        "age_minutes": 12.3,
+        "age_minutes": 14.3,
         "matched_terms": [
           "etf"
         ],
@@ -574,7 +588,7 @@
         "domain": "Coinpaper",
         "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxPMTRjaWp5NVRZMHd0aXpWdjhNZUcwdmprYlM3RjJyVnpCMGRLcXBVRDgxLURXc3pIYTBwTnBmbzFlZTVGU0VwUHpSUWZuSXcwTjJZZFYzc3VpdjZJdHJtRjVGVXpyNDZxMzF4NzNOSzRNTlZ0RTgxVXhjaG1RNk1sUGFGZ3R6a0FJMXYzWkhZQ0t4YTduVDhncjdCTHR2TTFId3hv?oc=5",
         "published_at": "2026-11-27T17:15:45+00:00",
-        "age_minutes": 26.6,
+        "age_minutes": 28.6,
         "matched_terms": [
           "etf"
         ],
@@ -585,7 +599,7 @@
         "domain": "Crypto Briefing",
         "url": "https://news.google.com/rss/articles/CBMic0FVX3lxTFBrSjVGTVdyaEF2dHpoeGdDNXUzb3NZUXNpS2FpVDlvNS1ETC1fWElZcUl2TUlxdGoxVHF5ZGd5dk1aaFdpODJHdUstRWdMWWF5U0h1WlYwdXVtQ1VUSGpkS2Q0S3VqcFFlbmhZdGlSSkh2enc?oc=5",
         "published_at": "2026-11-27T17:12:05+00:00",
-        "age_minutes": 30.2,
+        "age_minutes": 32.3,
         "matched_terms": [
           "war",
           "china"
@@ -597,7 +611,7 @@
         "domain": "Yahoo Finance",
         "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQMHlNbjZOdDZpV0trR2dBdW92eGszUzJTU3FhTGx6d3lGbnVYNHFteFhEUjc2T2hzUnNtMm53N2JGQmI0a0V4dUZLdlRzcFJTYUVQT0lSZ0pWMGtlV2drOGVaQW9sNkpSNk5IWHF2SElSbkxSUnZkeW52OTllazlkVndsWlJfa09HTlNUNTFibGQ2TnFncW1zZFZFN1Y0cmM?oc=5",
         "published_at": "2026-11-27T17:02:38+00:00",
-        "age_minutes": 39.7,
+        "age_minutes": 41.7,
         "matched_terms": [
           "etf"
         ],
@@ -608,7 +622,7 @@
         "domain": "24/7 Wall St.",
         "url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxNd2sxOHJ0Skd6Rmg5S09hUThrT2wxckh3MnR4SW5DRUl3My1EcUdnTTlIOVN6dmRYS29MSEREZlQ0WXlrTjhDRWJ3TDFYeU9lMjhWUFViOUNvRENNaUlNWFotZ1RKWVl5aklnNEQ1UWc0UFROMThWbWpLenJmS0tkejJ1MVZUbjdQM2tLQl95WTNULUFFLVYwWHA4eHRvVGZ2d0lIR3RqanBjQkFXUEVNaUFUWml1cldUWjBEWEdKVXZkbUd2NVhmbWxEUQ?oc=5",
         "published_at": "2026-11-27T17:02:00+00:00",
-        "age_minutes": 40.3,
+        "age_minutes": 42.3,
         "matched_terms": [
           "etf"
         ],
@@ -619,7 +633,7 @@
         "domain": "Crypto Briefing",
         "url": "https://news.google.com/rss/articles/CBMiekFVX3lxTE1MaXk0YW9RSElhZ2Q5V1lDbGhiWHQxX21aSnZQYWx6cW8zWTUtS3RIN3FYdi1DNVdySGRrb1JSVExZYnFUSDZZWF9SRDd4T3FkQURtcy13eFRqLU5NUUxyREdFVlVmZDNlUTYxX2stZ0psQllYV0F2VXVB?oc=5",
         "published_at": "2026-11-27T16:16:56+00:00",
-        "age_minutes": 85.4,
+        "age_minutes": 87.4,
         "matched_terms": [
           "sec"
         ],
@@ -630,7 +644,7 @@
         "domain": "BigGo Finance",
         "url": "https://news.google.com/rss/articles/CBMidkFVX3lxTE9paFBJc2pOM0kxdUxIZW0xR1ZHS3Z2NUNJYkJkNm5sY2ZRUHlha1dfM2dzTG9YYVVZbnFXSDkzemJVYlJrVGtpdkkya25TSDVrbkZZUk9oMGxlejNWLU9hSVZtcVNMTi0yWk50MFU1V05jVXEwc2c?oc=5",
         "published_at": "2026-11-27T16:05:00+00:00",
-        "age_minutes": 97.3,
+        "age_minutes": 99.3,
         "matched_terms": [
           "liquidation",
           "etf"
@@ -642,7 +656,7 @@
         "domain": "Crypto Briefing",
         "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOQVpiUC0yUVRFaUpQR3BQbzJMVEZSM3BmR0tvZG9zS1hXR05FZzZWLXhLblFCT0oxeWotcE4xLUhMQ0ZnZ1FlcnRYUmxJaEttaWJKaE01Mk1DUlFJYlJJMzZRbG1zM0RkOW1MR2hoclFlYlo4aURIRUs5VEZUNWFlT20zMWtWVnBsclVIa2c1dTAwc2cySk9iYklWOU5VZ1RxZlpIaHJB?oc=5",
         "published_at": "2026-11-27T15:46:44+00:00",
-        "age_minutes": 115.6,
+        "age_minutes": 117.6,
         "matched_terms": [
           "etf"
         ],
@@ -653,7 +667,7 @@
         "domain": "BigGo Finance",
         "url": "https://news.google.com/rss/articles/CBMidkFVX3lxTE93OTFkR0Uwemkwc2ZEaTgtQVdieEswN0laYURLSWtWLWlKTzY5WDFZbDhTempWQ3hlRmtHRm9jd0I3c29sTVNicjRXQXpIQkpidV9mVEpSU1ZmU01sVUxTZC1xNU9yS203d0JuZFAtcjVlQThDYUE?oc=5",
         "published_at": "2026-11-27T15:35:00+00:00",
-        "age_minutes": 127.3,
+        "age_minutes": 129.3,
         "matched_terms": [
           "etf"
         ],
@@ -664,7 +678,7 @@
         "domain": "Crypto News",
         "url": "https://news.google.com/rss/articles/CBMia0FVX3lxTFBuR1JNRnVtbmhqNTNNclhKdmU1VXNsTEJDa2U3R1M3VGdwbEhOVjN1TTdOY25PRVgtU2FfZ2toMmFoNXFCRnA5RkJYWFBCc2h3bTdZUnYyMm5WUzh1Qlk3M0RFcGE2OVRydktj?oc=5",
         "published_at": "2026-11-27T15:29:53+00:00",
-        "age_minutes": 132.4,
+        "age_minutes": 134.5,
         "matched_terms": [
           "etf"
         ],
@@ -675,7 +689,7 @@
         "domain": "Coinpaper",
         "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxObGpYUHltaXBMTzJkOFdXWUllM2xCSVJrWmdaU1g4SmRKTEJObkxmbllYUW9qZU5sQ1NiQWJqLWRsbUVPOGZORjRPUU5ORTlLSDZfZHlacmlraUJDSUVGSTdXWlNJQ1JKU2owbFlVOF8wY0M2S1hrRmotQmpScnB5U0dybHVPNUd5QXE3TkYzdmtuaWhIaFJtV25TaUJpMUVQazYxNWJaYw?oc=5",
         "published_at": "2026-11-27T15:25:42+00:00",
-        "age_minutes": 136.6,
+        "age_minutes": 138.6,
         "matched_terms": [
           "etf"
         ],
@@ -686,7 +700,7 @@
         "domain": "Yahoo Finance",
         "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxQZHhMQlhyVHNFTGFRRHNBQUtSRENFeDJDdDBfaGFOd0k3WmI4ZEtZc2VwRmNEcHFqT2pLMzc5RW1NYUdPbUo4WnRJM1hyMVdpVXZMMzBKUTJ3WDk2azhLMkdKSHQ4ZWlIMDgzVVY5a1pNbEZ4VDItazhpS3hPSEdTRmxZVUVUVE1tYzgyVnZJWHRXWTA1UFVwSmF3LVBiQQ?oc=5",
         "published_at": "2026-11-27T15:15:24+00:00",
-        "age_minutes": 146.9,
+        "age_minutes": 148.9,
         "matched_terms": [
           "etf",
           "bitcoin reserve"
@@ -698,7 +712,7 @@
         "domain": "Bitcoin Magazine",
         "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxNaGVhSTBZRE00VWk2dEozU2kyb2RXMTFYWFBIU1dpcTRkb2Jkc1F5YVF1d293SjBWU1N0Z3ZsTEFoanRhU01IYkxPamtoXzdUS2xrVkJBZWViUmVXaXkxNVdMQlM4WUxVNnBybGcxekNaQXRTa09CdkctdE9sdVB4MVJhRkVCQTZQRUQ0dEVib1ZaT3lobDJEdmFOM3JHRUk5ZkVZbXdPT0trRDJZWC02SVAtRQ?oc=5",
         "published_at": "2026-11-27T14:45:09+00:00",
-        "age_minutes": 177.2,
+        "age_minutes": 179.2,
         "matched_terms": [
           "fed",
           "inflation",
@@ -711,7 +725,7 @@
         "domain": "TradingView",
         "url": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxPbV81M2J1Yk54QTJTRV9WRzF4OVh4Z0RhWVI3U3RJaTFKSUlLNHJjaHhsNGxHSG1LaEFxV25PMFVnOERoUmF2bm55Q0dXajlfYlV2TThCQzM3T2ZGZ21adDRRdDl2cUdvek1vOUVuVjdxNWxqTW5NUGVHUXNYbnZBc2Q0cVA1ZXpybFNyTURuODQ1TFVWck5pMWUzSkVmNFZ5Y3hKS0t6UzcyY095ZzU1VVNOd2ZSNGpqMnYyNUNXbnpVQ0dhMHpSdEEyaHYzblJhRUE?oc=5",
         "published_at": "2026-11-27T14:24:52+00:00",
-        "age_minutes": 197.4,
+        "age_minutes": 199.5,
         "matched_terms": [
           "etf"
         ],
@@ -722,7 +736,7 @@
         "domain": "Crypto Briefing",
         "url": "https://news.google.com/rss/articles/CBMigAFBVV95cUxPTWp2bE5Ha0w1N29HejE0RTN3TU9RZFp6U1djOFRLYnl0Y1lXU3FuY0RpVGloRGhHeXZWanZDQVdfM0pueGxIV1ZSVm1qMTh6dXJqcDM3RDNZLUx3bE83Rlpmb3JRSmp5VGNIOHBaT2I3S2pBMk5lT2RkYURnNTdnOQ?oc=5",
         "published_at": "2026-11-27T14:24:52+00:00",
-        "age_minutes": 197.4,
+        "age_minutes": 199.5,
         "matched_terms": [
           "etf"
         ],
@@ -733,7 +747,7 @@
         "domain": "KuCoin",
         "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxNLVRSTEh1bFVNcUkwTFByd2YtbzItMnB6dXdhZkFxejc5ZW95Wk14dkF4M0F3ZVhZbVM4cnpFeGVuTkxVaUJyVU0xaFRsa3BxR2VnUjJHVWRDS0RtOTFoT1hEOWpQTFV3TDhXMXE1UEFFb0RpbmJ0TnhzdUZ3NmdtVUxvVGVLTmZaRnJ6eWNvYkRHcmpuSnRXdmw4QWlwR3A2eXM4?oc=5",
         "published_at": "2026-11-27T14:10:46+00:00",
-        "age_minutes": 211.5,
+        "age_minutes": 213.6,
         "matched_terms": [
           "etf"
         ],
@@ -744,7 +758,7 @@
         "domain": "CCN.com",
         "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxQdUtOTm1BTEVQVkxRYm8tOF95UVdBZnBIejcyb2YwOHRPQWlLTllpRWU5cjBQdEVPTHFyYXdCZUFDa3l0Q1pzOWlWN0dOcmxBYTRucXducThveC12WWFMV3dDbGRHdWdoVlE5R2RKTmVCX3JDSXphNmw3d2c5YkZQMWxVUkkwN1ZYZ1JJcnllSDA?oc=5",
         "published_at": "2026-11-27T14:09:20+00:00",
-        "age_minutes": 213.0,
+        "age_minutes": 215.0,
         "matched_terms": [
           "war",
           "tariff",
@@ -757,7 +771,7 @@
         "domain": "FinanceX Magazine",
         "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxOQXZVLVFURG9MaHA4a2MzXzdETTZGc1BuaG1SdXo4Z1UxM2VIYjdXTWpCQjVXNW5BMXBZbDRhNTBsdzZQNVpXSkR3cWFmM0dVaFgyOFJtcGk3Rmw3a2VfT1VLQ1FkUmsxRTlyZ2pPSmVrb2t6cWh4amROUlplcjBIUVp4SWJTN01QQjVoZ3E0Ym9pc01IQWp5SEpoeWdOUQ?oc=5",
         "published_at": "2026-11-27T13:21:54+00:00",
-        "age_minutes": 260.4,
+        "age_minutes": 262.4,
         "matched_terms": [
           "etf"
         ],
@@ -768,7 +782,7 @@
         "domain": "Crypto Briefing",
         "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE15WW4xc0ZGLVFjSEVkUXJneUVMelJDa0FzU0txNWNnanRTdHc3TVp0RHhma2Zwcm1Ka2dWZGZfTkpmQ2tjZFFXdjVYWnc3aTE2LUd5WWpYcnZOUUQ1UFRMSVNLdXRsMFhQTjl5a2lwclFNY0RMWUtsRTlRWTFyX2M?oc=5",
         "published_at": "2026-11-27T12:25:01+00:00",
-        "age_minutes": 317.3,
+        "age_minutes": 319.3,
         "matched_terms": [
           "trump"
         ],
@@ -783,7 +797,7 @@
     "gdelt_error": "<urlopen error _ssl.c:1001: The handshake operation timed out>",
     "provider_used": "Google News RSS",
     "fresh_high_risk_count": 3,
-    "retrieved_at": "2026-11-27T17:42:18.680169+00:00"
+    "retrieved_at": "2026-11-27T17:44:20.871404+00:00"
   },
   "news_event_veto": null,
   "historical_derivatives_training": {
@@ -1962,7 +1976,7 @@
   "last_candle_time": 1795800900000,
   "data_freshness": {
     "status": "FRESH",
-    "latest_5m_candle_age_minutes": 7.54,
+    "latest_5m_candle_age_minutes": 9.56,
     "latest_5m_candle_time": "2026-11-27T17:35:00+00:00",
     "source_by_timeframe": {
       "5m": "OKX BTC-USDT-SWAP Futures",
@@ -1973,7 +1987,7 @@
     },
     "max_allowed_age_minutes": 15
   },
-  "generated_at": "2026-11-27T17:43:22.069237+00:00",
+  "generated_at": "2026-11-27T17:45:21.601794+00:00",
   "limitations": [
     "When Binance USD-M Futures is unavailable, Kraken BTC/USD spot OHLC is used as a proxy and is not equivalent to BTC/USDT Futures. Funding, open interest, CVD, order book and liquidation remain separate confluence inputs.",
     "Class scores are model scores, not calibrated real-world win probabilities.",
