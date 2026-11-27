@@ -152,16 +152,22 @@ def shadow_classification_metrics(records):
     evaluated = [item for item in records if item.get("classification_status") == "EVALUATED"]
     correct = sum(bool(item.get("classification_correct")) for item in evaluated)
     by_class = {}
+    class_counts = {}
     for side in ("SHORT", "WAIT", "LONG"):
         subset = [item for item in evaluated if item.get("actual_class") == side]
+        class_counts[side] = len(subset)
         by_class[side] = {
             "actual_samples": len(subset),
             "recall_pct": round(sum(bool(x.get("classification_correct")) for x in subset) / len(subset) * 100.0, 2) if subset else None
         }
+    accuracy = round(correct / len(evaluated) * 100.0, 2) if evaluated else None
+    baseline = round(max(class_counts.values(), default=0) / len(evaluated) * 100.0, 2) if evaluated else None
     return {
         "evaluated": len(evaluated),
         "correct": correct,
-        "accuracy_pct": round(correct / len(evaluated) * 100.0, 2) if evaluated else None,
+        "accuracy_pct": accuracy,
+        "majority_class_baseline_pct": baseline,
+        "beats_majority_baseline": accuracy is not None and baseline is not None and accuracy > baseline,
         "class_recall": by_class,
         "note": "Includes LONG, SHORT and WAIT forecasts. Labels use the same 15m volatility-adaptive neutral band as the AI training target."
     }
@@ -303,6 +309,8 @@ def run():
             "evaluated_forecasts": shadow_classification["evaluated"],
             "classification_accuracy_pct": shadow_classification["accuracy_pct"],
             "classification_correct": shadow_classification["correct"],
+            "majority_class_baseline_pct": shadow_classification["majority_class_baseline_pct"],
+            "beats_majority_baseline": shadow_classification["beats_majority_baseline"],
             "class_recall": shadow_classification["class_recall"],
             "pending_forecasts": shadow_pending,
             "abstentions": shadow_abstained,
