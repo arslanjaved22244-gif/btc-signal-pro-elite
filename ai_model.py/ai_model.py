@@ -1427,13 +1427,21 @@ def update_prediction_feedback(data, result, path="prediction_feedback.json"):
         realized_return = actual_price / start_price - 1.0
         threshold = float(record.get("threshold_pct", MOVE_THRESHOLD))
         actual_class = 2 if realized_return > threshold else 0 if realized_return < -threshold else 1
+        approved = record.get("approved_signal", "WAIT")
+        directional_return = (
+            realized_return if approved == "LONG" else
+            -realized_return if approved == "SHORT" else None
+        )
         record.update({
             "status": "EVALUATED",
             "actual_class": CLASSES[actual_class],
             "actual_return_pct": round(realized_return * 100.0, 5),
             "actual_close": actual_price,
             "evaluated_at_candle_time": candle_times[target_index],
-            "correct": record.get("predicted_class") == CLASSES[actual_class]
+            "correct": record.get("predicted_class") == CLASSES[actual_class],
+            "approved_trade_return_gross_pct": round(directional_return * 100.0, 5)
+                if directional_return is not None else None,
+            "approved_trade_won": directional_return > 0 if directional_return is not None else None
         })
 
     prediction_time = latest_time
@@ -1528,11 +1536,36 @@ def update_prediction_feedback(data, result, path="prediction_feedback.json"):
             macro_f1 = sum(class_f1) / len(CLASSES) * 100.0
         else:
             accuracy, macro_f1 = None, None
+        directional_records = [
+            item for item in evaluated
+            if item.get("approved_signal") in ("LONG", "SHORT")
+            and item.get("approved_trade_return_gross_pct") is not None
+        ]
+        directional_records.sort(key=lambda item: int(item.get("prediction_time", 0)))
+        trade_returns = [float(item["approved_trade_return_gross_pct"]) for item in directional_records]
+        equity = 1.0
+        peak = 1.0
+        max_drawdown = 0.0
+        for trade_return in trade_returns:
+            equity *= max(0.0, 1.0 + trade_return / 100.0)
+            peak = max(peak, equity)
+            if peak > 0:
+                max_drawdown = max(max_drawdown, (peak-equity)/peak*100.0)
         summary[model_name] = {
             "evaluated_predictions": len(evaluated),
             "pending_predictions": pending,
             "realized_accuracy_pct": round(accuracy, 2) if accuracy is not None else None,
             "realized_macro_f1_pct": round(macro_f1, 2) if macro_f1 is not None else None,
+            "approved_directional_trades": len(directional_records),
+            "gross_win_rate_pct": round(
+                sum(1 for value in trade_returns if value > 0)/len(trade_returns)*100.0, 2
+            ) if trade_returns else None,
+            "gross_average_trade_return_pct": round(sum(trade_returns)/len(trade_returns), 5)
+                if trade_returns else None,
+            "gross_compounded_return_pct": round((equity-1.0)*100.0, 4)
+                if trade_returns else None,
+            "gross_max_drawdown_pct": round(max_drawdown, 4) if trade_returns else None,
+            "performance_note": "Directional returns are gross, before fees, funding, spread and slippage.",
             "status": "COLLECTING LIVE OUTCOMES" if len(evaluated) < 30 else "LIVE FEEDBACK SAMPLE"
         }
 
