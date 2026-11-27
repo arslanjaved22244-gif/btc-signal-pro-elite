@@ -103,6 +103,44 @@ class PaperTraderTests(unittest.TestCase):
         self.assertEqual(len(result["shadow_forecasts"]), 0)
         self.assertFalse(result["shadow_evaluation"]["latest_model_fresh"])
 
+    def test_cross_venue_futures_are_accepted_only_within_basis_and_time_tolerance(self):
+        now_ms = int(datetime.now(timezone.utc).timestamp() * 1000)
+        ai = {
+            "data_source": "OKX BTC-USDT-SWAP Futures public OHLC candles",
+            "data_source_by_timeframe": {"5m": "OKX BTC-USDT-SWAP Futures"},
+            "symbol": "BTC/USDT", "last_price": 60000,
+            "last_candle_time": now_ms
+        }
+        market = {
+            "exchange": "Bitget", "market_type": "BITGET_USDT_FUTURES",
+            "symbol": "BTCUSDT", "data_quality": {"futures_only": True}
+        }
+        aligned = PAPER.assess_venue_alignment(ai, market, 60050, now_ms + 300000)
+        self.assertTrue(aligned["compatible"])
+        self.assertEqual(aligned["type"], "CROSS_VENUE_FUTURES")
+
+    def test_cross_venue_shadow_scoring_blocks_large_basis_or_stale_candles(self):
+        now_ms = int(datetime.now(timezone.utc).timestamp() * 1000)
+        ai = {
+            "data_source": "OKX BTC-USDT-SWAP Futures public OHLC candles",
+            "symbol": "BTC/USDT", "last_price": 60000,
+            "last_candle_time": now_ms - 30 * 60 * 1000
+        }
+        market = {
+            "exchange": "Bitget", "market_type": "BITGET_USDT_FUTURES",
+            "symbol": "BTCUSDT", "data_quality": {"futures_only": True}
+        }
+        divergent = PAPER.assess_venue_alignment(ai, market, 60300, now_ms)
+        stale = PAPER.assess_venue_alignment(ai, market, 60010, now_ms)
+        self.assertFalse(divergent["compatible"])
+        self.assertFalse(stale["compatible"])
+
+    def test_spot_model_cannot_be_shadow_scored_against_futures(self):
+        ai = {"data_source": "Binance BTCUSDT Spot public candles", "symbol": "BTC/USDT"}
+        market = {"exchange": "Bitget", "data_quality": {"futures_only": True}}
+        result = PAPER.assess_venue_alignment(ai, market, 60000, 1700000000000)
+        self.assertFalse(result["compatible"])
+
     def test_wait_is_recorded_as_abstention_not_trade(self):
         self.write_inputs(self.candles([100, 100, 100]), "WAIT")
         result = PAPER.run()
