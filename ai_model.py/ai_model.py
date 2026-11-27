@@ -638,7 +638,7 @@ def advanced_regime(data):
 
 def advanced_horizon_models(data, prepared):
     base=data["5m"]; output={}
-    for horizon,label in ((3,"15m"),(6,"30m"),(12,"60m")):
+    for horizon,label in ((3,"15m"),(6,"30m"),(12,"60m"),(48,"4h")):
         rows,labels=[],[]; start=max(200,len(base)-2600)
         for i in range(start,len(base)-horizon):
             x=combined_features(data,i,prepared)
@@ -654,7 +654,7 @@ def advanced_horizon_models(data, prepared):
         test_rows,test_labels=rows[split:],labels[split:]
         if len(train_rows)<200 or len(test_rows)<30:
             output[label]={"signal":"WAIT","status":"INSUFFICIENT VALIDATION","samples":len(rows)}; continue
-        model=train_model(train_rows,train_labels,epochs=75,learning_rate=0.02,l2=0.015)
+        model=train_model(train_rows,train_labels,epochs=65,learning_rate=0.02,l2=0.015)
         probs_test=[predict(model,x) for x in test_rows]
         pred=[max(range(3),key=lambda k:p[k]) for p in probs_test]
         metrics=classification_metrics(test_labels,pred)
@@ -669,6 +669,92 @@ def advanced_horizon_models(data, prepared):
             "validation_samples":len(test_rows),
             "status":"VALIDATED HOLDOUT" if signal!="WAIT" else "WEAK EDGE — WAIT"}
     return output
+
+
+def advanced_tree_ensemble(data, prepared):
+    """Chronological Random Forest + gradient boosting + XGBoost ensemble."""
+    try:
+        import numpy as np
+        from sklearn.ensemble import RandomForestClassifier, HistGradientBoostingClassifier
+    except Exception as exc:
+        return {"status":"DEPENDENCY ERROR","detail":str(exc),"forecasts":{}}
+    try:
+        from xgboost import XGBClassifier
+        xgb_available=True
+    except Exception:
+        XGBClassifier=None
+        xgb_available=False
+    base=data["5m"]; output={}
+    for horizon,label in ((3,"15m"),(6,"30m"),(12,"60m"),(48,"4h")):
+        rows,labels=[],[]; start=max(200,len(base)-2400)
+        for i in range(start,len(base)-horizon):
+            x=combined_features(data,i,prepared)
+            if x is None: continue
+            move=base[i+horizon]["close"]/base[i]["close"]-1.0
+            vol=candle_atr(base,i,14)/base[i]["close"]
+            threshold=max(0.00035,vol*0.20*math.sqrt(horizon/3.0))
+            rows.append(x); labels.append(2 if move>threshold else 0 if move< -threshold else 1)
+        if len(rows)<300:
+            output[label]={"signal":"WAIT","status":"INSUFFICIENT DATA","samples":len(rows)}
+            continue
+        split=int(len(rows)*0.80); purge=max(3,horizon)
+        x_train=np.asarray(rows[:split-purge],dtype=float)
+        y_train=np.asarray(labels[:split-purge],dtype=int)
+        x_test=np.asarray(rows[split:],dtype=float)
+        y_test=np.asarray(labels[split:],dtype=int)
+        if len(x_train)<200 or len(x_test)<30:
+            output[label]={"signal":"WAIT","status":"INSUFFICIENT VALIDATION","samples":len(rows)}
+            continue
+        models={
+            "random_forest":RandomForestClassifier(n_estimators=100,max_depth=8,min_samples_leaf=12,
+                class_weight="balanced_subsample",n_jobs=2,random_state=42),
+            "gradient_boosting":HistGradientBoostingClassifier(max_iter=100,learning_rate=0.06,
+                max_leaf_nodes=15,l2_regularization=1.0,random_state=42)
+        }
+        if xgb_available:
+            models["xgboost"]=XGBClassifier(n_estimators=100,max_depth=3,learning_rate=0.04,
+                subsample=0.85,colsample_bytree=0.85,min_child_weight=8,
+                objective="multi:softprob",num_class=3,eval_metric="mlogloss",
+                n_jobs=2,random_state=42,verbosity=0)
+        all_probs=[]; model_metrics={}
+        for name,estimator in models.items():
+            try:
+                estimator.fit(x_train,y_train)
+                raw=estimator.predict_proba(x_test)
+                classes=list(estimator.classes_)
+                mapped=[[float(row[classes.index(k)]) if k in classes else 0.0 for k in range(3)] for row in raw]
+                model_pred=[max(range(3),key=lambda k:p[k]) for p in mapped]
+                metric=classification_metrics(y_test.tolist(),model_pred)
+                latest_x=np.asarray([combined_features(data,len(base)-1,prepared)],dtype=float)
+                latest_raw=estimator.predict_proba(latest_x)[0]
+                latest_probs=[float(latest_raw[classes.index(k)]) if k in classes else 0.0 for k in range(3)]
+                total=sum(latest_probs) or 1.0
+                latest_probs=[p/total for p in latest_probs]
+                all_probs.append(latest_probs)
+                model_metrics[name]={"holdout_accuracy":metric["accuracy"],"macro_f1":metric["macro_f1"]}
+            except Exception as exc:
+                model_metrics[name]={"error":str(exc)[:180]}
+        if not all_probs:
+            output[label]={"signal":"WAIT","status":"ALL TREE MODELS FAILED","models":model_metrics}
+            continue
+        probs=[sum(p[k] for p in all_probs)/len(all_probs) for k in range(3)]
+        ranked=sorted(probs,reverse=True); margin=ranked[0]-ranked[1]
+        candidate=CLASSES[max(range(3),key=lambda k:probs[k])]
+        avg_accuracy=sum(v["holdout_accuracy"] for v in model_metrics.values() if "holdout_accuracy" in v)/max(1,sum(1 for v in model_metrics.values() if "holdout_accuracy" in v))
+        avg_f1=sum(v["macro_f1"] for v in model_metrics.values() if "macro_f1" in v)/max(1,sum(1 for v in model_metrics.values() if "macro_f1" in v))
+        signal=candidate if candidate!="WAIT" and avg_accuracy>=38.0 and avg_f1>=25.0 and margin>=0.08 else "WAIT"
+        output[label]={"signal":signal,"raw_model_class":candidate,
+            "scores":{name:round(probs[k]*100,2) for k,name in enumerate(CLASSES)},
+            "confidence_margin":round(margin*100,2),"holdout_accuracy":round(avg_accuracy,2),
+            "macro_f1":round(avg_f1,2),"training_samples":len(x_train),"validation_samples":len(x_test),
+            "models":model_metrics,"model_count":len(all_probs),
+            "status":"VALIDATED TREE ENSEMBLE" if signal!="WAIT" else "WEAK EDGE — WAIT"}
+    return {"status":"READY" if output else "NO FORECASTS",
+            "algorithms":["Random Forest","Histogram Gradient Boosting"]+(["XGBoost"] if xgb_available else []),
+            "forecasts":output,
+            "validation":"chronological holdout with horizon purge; scores are not calibrated win probabilities"}
+
+
 
 def main():
     print("BTC Signal Pro Elite - Advanced ML starting...")
@@ -693,6 +779,7 @@ def main():
     scores = predict_ensemble(final_model, latest)
     regime_analysis = advanced_regime(data)
     horizon_forecasts = advanced_horizon_models(data, prepared)
+    tree_ensemble = advanced_tree_ensemble(data, prepared)
     best = max(range(3), key=lambda k: scores[k])
     ordered = sorted(scores, reverse=True)
     margin = ordered[0] - ordered[1]
@@ -722,7 +809,7 @@ def main():
         "wait_probability_threshold": final_wait_threshold,
         "ensemble_configuration": {"models": ["full_history_logistic", "recent_regime_logistic", "nearest_centroid", "decision_stumps"], "weights": {"full_history_logistic": 0.35, "recent_regime_logistic": 0.20, "nearest_centroid": 0.20, "decision_stumps": 0.25}, "recent_training_window": final_model["recent_window"]},
         "walk_forward_metrics": validation,
-        "advanced_intelligence": {"market_regime": regime_analysis, "multi_horizon_forecasts": horizon_forecasts, "method": "chronological holdout horizon models + volatility regime + 20-candle liquidity sweep detector"},
+        "advanced_intelligence": {"market_regime": regime_analysis, "multi_horizon_forecasts": horizon_forecasts, "tree_ensemble": tree_ensemble, "method": "four-horizon chronological ML + Random Forest + gradient boosting + XGBoost (when installed) + volatility regime + liquidity sweep detector"},
         "walk_forward_folds": folds,
         "training_samples": len(rows),
         "label_distribution": {name: labels.count(i) for i, name in enumerate(CLASSES)},
