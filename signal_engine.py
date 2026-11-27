@@ -194,8 +194,13 @@ def run():
         signal = "WAIT"
         warnings.append("High-risk news lock active; entries blocked until the event lock expires.")
     elif not news.get("available"):
-        signal = "WAIT"
-        warnings.append("News monitor unavailable; fail-closed safety lock forces WAIT until monitoring recovers.")
+        # Missing headlines are not proof of an active event. Keep the signal
+        # conservative by demanding stronger independent price/flow confluence.
+        if signal != "WAIT" and (confidence < 55 or margin < 3.5):
+            signal = "WAIT"
+            warnings.append("News monitor unavailable and confluence is not strong enough for the elevated safety threshold; WAIT.")
+        else:
+            warnings.append("News monitor unavailable; directional signal allowed only with elevated confluence. Check breaking news manually before entry.")
     price = analyses.get("5m", {}).get("price")
     atr_value = analyses.get("5m", {}).get("atr14")
 
