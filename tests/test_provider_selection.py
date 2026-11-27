@@ -6,7 +6,7 @@ import market_data
 
 def snapshot(provider, score, valid=True):
     feeds = {
-        name: {"ok": index < score, "data": []}
+        name: {"ok": index < score, "data": ({"sample": 1} if index < score else [])}
         for index, name in enumerate((
             "mark_price_funding", "open_interest_current",
             "open_interest_history_5m", "taker_flow_5m",
