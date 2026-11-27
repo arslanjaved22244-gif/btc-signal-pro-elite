@@ -190,6 +190,21 @@ def main():
 
 
 
+def normalize_bybit_account_ratio(rows):
+    """Normalize Bybit long/short account positioning without calling it taker flow."""
+    normalized = []
+    for row in rows or []:
+        long_ratio = float(row.get("buyRatio", 0) or 0)
+        short_ratio = float(row.get("sellRatio", 0) or 0)
+        normalized.append({
+            "long_short_account_ratio": long_ratio / short_ratio if short_ratio > 0 else None,
+            "long_account_ratio": long_ratio,
+            "short_account_ratio": short_ratio,
+            "timestamp": row.get("timestamp")
+        })
+    return normalized
+
+
 def bybit_request(path, params=None, timeout=15):
     query = urllib.parse.urlencode(params or {})
     url = "https://api.bybit.com" + path + (("?" + query) if query else "")
@@ -283,14 +298,9 @@ def collect_bybit():
     account_ratio = bybit_feed(
         "/v5/market/account-ratio",{"category":"linear","symbol":SYMBOL,"period":"5min","limit":"30"})
     if account_ratio["ok"]:
-        account_ratio["data"] = [
-            {"long_short_account_ratio": (
-                float(x.get("buyRatio", 0) or 0) / float(x.get("sellRatio", 1) or 1)
-                if float(x.get("sellRatio", 0) or 0) > 0 else None
-             ), "long_account_ratio": x.get("buyRatio"),
-             "short_account_ratio": x.get("sellRatio"), "timestamp": x.get("timestamp")}
-            for x in account_ratio["data"].get("list", [])
-        ]
+        account_ratio["data"] = normalize_bybit_account_ratio(
+            account_ratio["data"].get("list", [])
+        )
     result["feeds"]["account_position_ratio_5m"] = account_ratio
     result["feeds"]["taker_flow_5m"] = {
         "ok": False,
