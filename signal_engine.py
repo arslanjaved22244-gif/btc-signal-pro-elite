@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""Hybrid BTC Futures confluence engine. Signal-only; never places orders."""
+"""Hybrid BTC Futures confluence engine. Signal-only; never places orders.
+Institutional intelligence quality gate is mandatory for directional authorization."""
 import json
 import math
 from datetime import datetime, timezone
