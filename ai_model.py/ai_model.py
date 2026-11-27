@@ -830,12 +830,31 @@ def advanced_regime(data):
     elif bear and slope< -0.001: regime="BEAR TREND"
     elif abs(slope)<0.0015: regime="RANGE / CHOP"
     else: regime="TRANSITION"
-    prior=c[-21:-1]; hi=max(x["high"] for x in prior); lo=min(x["low"] for x in prior); last=c[-1]
-    sweep="NONE"
-    if last["high"]>hi and last["close"]<hi: sweep="BEARISH HIGH-SIDE LIQUIDITY SWEEP"
-    elif last["low"]<lo and last["close"]>lo: sweep="BULLISH LOW-SIDE LIQUIDITY SWEEP"
+    prior=c[-21:-1]; hi=max(x["high"] for x in prior); lo=min(x["low"] for x in prior)
+    sweep="NONE"; sweep_detail=None
+    # Scan recent completed 5m candles instead of only the latest bar, so a
+    # sweep is not immediately forgotten when a few candles pass.
+    for offset in range(1, min(9, len(c)-20)):
+        last=c[-offset]
+        preceding=c[-offset-20:-offset]
+        if len(preceding)<20: continue
+        prior_hi=max(x["high"] for x in preceding)
+        prior_lo=min(x["low"] for x in preceding)
+        if last["high"]>prior_hi and last["close"]<prior_hi:
+            sweep="BEARISH HIGH-SIDE LIQUIDITY SWEEP"
+            sweep_detail={"direction":"BEARISH","level":round(prior_hi,2),
+                          "wick_extreme":round(last["high"],2),"close":round(last["close"],2),
+                          "candle_time":int(last.get("time",0)),"bars_ago":offset-1}
+            break
+        if last["low"]<prior_lo and last["close"]>prior_lo:
+            sweep="BULLISH LOW-SIDE LIQUIDITY SWEEP"
+            sweep_detail={"direction":"BULLISH","level":round(prior_lo,2),
+                          "wick_extreme":round(last["low"],2),"close":round(last["close"],2),
+                          "candle_time":int(last.get("time",0)),"bars_ago":offset-1}
+            break
     return {"regime":regime,"atr_ratio":round(ratio,3),"trend_slope_pct":round(slope*100,4),
-            "liquidity_sweep":sweep,"range_high":round(hi,2),"range_low":round(lo,2),
+            "liquidity_sweep":sweep,"liquidity_sweep_detail":sweep_detail,
+            "range_high":round(hi,2),"range_low":round(lo,2),
             "explanation":"Volatility expansion" if regime=="HIGH VOLATILITY" else
             "EMA structure and slope" if regime in ("BULL TREND","BEAR TREND") else
             "Low directional separation" if regime=="RANGE / CHOP" else "Trend transition"}
