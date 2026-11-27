@@ -19,7 +19,7 @@ on:
       - "telegram_alerts.py"
       - ".github/workflows/market-data.yml"
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "*/15 * * * *"
 permissions:
   contents: write
 concurrency:
