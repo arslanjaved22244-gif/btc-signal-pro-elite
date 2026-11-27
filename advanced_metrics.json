@@ -1,10 +1,137 @@
 {
-  "generated_at": "2026-11-27T12:24:16.835853+00:00",
-  "timeframe_indicators": {},
+  "generated_at": "2026-11-27T13:36:39.997467+00:00",
+  "timeframe_indicators": {
+    "5m": {
+      "available": true,
+      "ema50": 61565.74,
+      "ema200": 61355.99,
+      "rsi14": 36.93,
+      "macd": {
+        "macd": -58.5832,
+        "signal": -43.152,
+        "histogram": -15.4311,
+        "bullish": false,
+        "cross_up": false,
+        "cross_down": false
+      },
+      "structure": {
+        "trend": "RANGE",
+        "event": "BEARISH_BOS",
+        "last_swing_high": 61621.7,
+        "last_swing_low": 61404.6,
+        "note": "Confirmed pivots use candles on both sides; most recent pivot is delayed by the confirmation window."
+      },
+      "volatility_atr14": 114.93,
+      "atr_pct": 0.1873
+    },
+    "15m": {
+      "available": true,
+      "ema50": 61452.97,
+      "ema200": 60749.46,
+      "rsi14": 41.5,
+      "macd": {
+        "macd": -10.618,
+        "signal": 24.1746,
+        "histogram": -34.7927,
+        "bullish": false,
+        "cross_up": false,
+        "cross_down": false
+      },
+      "structure": {
+        "trend": "DOWNTREND",
+        "event": "NONE",
+        "last_swing_high": 61809.0,
+        "last_swing_low": 61400.0,
+        "note": "Confirmed pivots use candles on both sides; most recent pivot is delayed by the confirmation window."
+      },
+      "volatility_atr14": 157.79,
+      "atr_pct": 0.2569
+    },
+    "1h": {
+      "available": true,
+      "ema50": 60786.42,
+      "ema200": 61048.45,
+      "rsi14": 65.64,
+      "macd": {
+        "macd": 325.5551,
+        "signal": 308.1624,
+        "histogram": 17.3927,
+        "bullish": true,
+        "cross_up": false,
+        "cross_down": false
+      },
+      "structure": {
+        "trend": "UPTREND",
+        "event": "NONE",
+        "last_swing_high": 62199.2,
+        "last_swing_low": 60360.0,
+        "note": "Confirmed pivots use candles on both sides; most recent pivot is delayed by the confirmation window."
+      },
+      "volatility_atr14": 415.3,
+      "atr_pct": 0.6741
+    },
+    "4h": {
+      "available": true,
+      "ema50": 61370.29,
+      "ema200": 68867.04,
+      "rsi14": 59.53,
+      "macd": {
+        "macd": 174.4577,
+        "signal": -82.3387,
+        "histogram": 256.7963,
+        "bullish": true,
+        "cross_up": false,
+        "cross_down": false
+      },
+      "structure": {
+        "trend": "RANGE",
+        "event": "BULLISH_BOS",
+        "last_swing_high": 61620.0,
+        "last_swing_low": 59886.8,
+        "note": "Confirmed pivots use candles on both sides; most recent pivot is delayed by the confirmation window."
+      },
+      "volatility_atr14": 1029.21,
+      "atr_pct": 1.67
+    },
+    "1d": {
+      "available": true,
+      "ema50": 71595.32,
+      "ema200": 73547.76,
+      "rsi14": 32.07,
+      "macd": {
+        "macd": -4670.0784,
+        "signal": -4496.9901,
+        "histogram": -173.0883,
+        "bullish": false,
+        "cross_up": false,
+        "cross_down": false
+      },
+      "structure": {
+        "trend": "DOWNTREND",
+        "event": "NONE",
+        "last_swing_high": 64570.0,
+        "last_swing_low": 55100.0,
+        "note": "Confirmed pivots use candles on both sides; most recent pivot is delayed by the confirmation window."
+      },
+      "volatility_atr14": 3467.12,
+      "atr_pct": 5.7215
+    }
+  },
   "backtest_5m": {
-    "status": "INSUFFICIENT_DATA",
-    "candles": 0,
-    "minimum": 300
+    "status": "COMPLETED",
+    "method": "Chronological 60/20/20 split; reported trades only in final 20% holdout",
+    "total_candles": 599,
+    "test_candles": 240,
+    "test_start_time": 1795714500000,
+    "trades": 13,
+    "win_rate_pct": 23.08,
+    "net_return_pct": -2.54,
+    "profit_factor": 0.095,
+    "max_drawdown_pct": 2.54,
+    "fee_per_side_pct": 0.05,
+    "slippage_per_side_pct": 0.02,
+    "round_trip_cost_pct": 0.13999999999999999,
+    "warning": "Illustrative OHLCV simulation; funding, partial fills, liquidation and intrabar stop execution are not modeled."
   },
   "risk_10x": {
     "status": "WAIT_OR_EQUITY_REQUIRED",
