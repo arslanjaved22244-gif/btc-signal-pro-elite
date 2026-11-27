@@ -43,6 +43,17 @@ class ProviderSelectionTests(unittest.TestCase):
             result = market_data.collect()
         self.assertEqual(result["exchange"], "Binance")
 
+    def test_cross_venue_open_interest_does_not_count_as_primary_coverage(self):
+        payload = snapshot("Bitget", 6)
+        payload["feeds"]["open_interest_history_5m"]["venue"] = "OKX BTC-USDT-SWAP (cross-venue Futures context)"
+        payload["feeds"]["open_interest_history_5m"]["note"] = "Historical OI is sourced from OKX perpetuals, not the primary Bitget execution venue."
+        self.assertEqual(market_data.derivatives_feed_score(payload), 5)
+
+    def test_empty_feed_does_not_count_as_available(self):
+        payload = snapshot("Binance", 6)
+        payload["feeds"]["order_book"]["data"] = {}
+        self.assertEqual(market_data.derivatives_feed_score(payload), 5)
+
     def test_no_fresh_complete_futures_snapshot_fails_closed(self):
         with patch.object(market_data, "collect_binance", return_value=snapshot("Binance", 6, False)), \
              patch.object(market_data, "collect_bybit", return_value=snapshot("Bybit", 6, False)), \
