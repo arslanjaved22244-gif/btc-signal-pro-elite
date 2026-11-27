@@ -284,6 +284,7 @@ button{background:#f5b942;color:#111;border:0;padding:12px 18px;border-radius:8p
 <div class="metric"><span>Walk-forward validation gate</span><b id="advValidationGate">WAIT / NOT TESTED</b></div>
 <div class="metric"><span>Validation accuracy / macro F1</span><b id="advValidationScores">--</b></div>
 <div class="metric"><span>Majority baseline</span><b id="advBaseline">--</b></div>
+<div class="metric"><span>AI direction diagnostics (raw → actionable)</span><b id="advDecisionDiagnostics">Waiting for next AI run</b></div>
 <div class="metric"><span>Regime-specific validation</span><b id="advRegimeMetrics">Collecting</b></div>
 <div class="metric"><span>Liquidity sweep detector</span><b id="advSweep">--</b></div>
 <div class="metric"><span>Regime explanation</span><b id="advRegimeWhy">Waiting for analysis</b></div>
@@ -1535,6 +1536,14 @@ async function loadAdvancedIntelligence(force=false){
   setText("advValidationGate",gate.passed===true?"PASSED":gate.passed===false?"FAILED — WAIT ONLY":"NOT AVAILABLE");
   setText("advValidationScores",(vm.accuracy??"--")+"% accuracy • "+(vm.macro_f1??"--")+"% macro F1");
   setText("advBaseline",vm.majority_class_baseline_pct==null?"--":vm.majority_class_baseline_pct+"% • model must beat this");
+  const dd=vm.decision_diagnostics||{};
+  const rawCounts=dd.raw_argmax_counts||{},actionCounts=dd.actionable_counts||{};
+  const diagText=dd.raw_argmax_counts
+   ? ("Raw S/L/W: "+(rawCounts.SHORT||0)+"/"+(rawCounts.LONG||0)+"/"+(rawCounts.WAIT||0)
+     +" → Active: "+(actionCounts.SHORT||0)+"/"+(actionCounts.LONG||0)+"/"+(actionCounts.WAIT||0)
+     +" • Blocked W/conf/margin: "+(dd.blocked_by_wait_probability||0)+"/"+(dd.blocked_by_direction_confidence||0)+"/"+(dd.blocked_by_confidence_margin||0))
+   : "Waiting for next AI run";
+  setText("advDecisionDiagnostics",diagText);
   const rb=vm.regime_breakdown||{};
   setText("advRegimeMetrics",Object.keys(rb).length?Object.entries(rb).map(([k,v])=>k.replaceAll("_"," ")+": "+v.accuracy+"% / F1 "+v.macro_f1).join(" | "):"No regime sample yet");
   const r=a.market_regime||{};
