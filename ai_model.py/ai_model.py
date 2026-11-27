@@ -4,6 +4,10 @@ BTC Signal Pro Elite - Advanced Multi-Timeframe ML Engine.
 Public exchange OHLCV only; no API keys and no orders are placed.
 """
 import bisect
+import csv
+import io
+import zipfile
+import calendar
 import json
 import math
 import time
@@ -20,38 +24,51 @@ CLASSES = ("SHORT", "WAIT", "LONG")
 
 
 def get_binance_data(interval):
-    # Public Binance USD-M Futures endpoint; no API key is required.
-    # Page backward to build a larger history than Kraken's 720-candle limit.
+    """Load historical Binance USD-M Futures monthly kline archives only."""
+    now = datetime.now(timezone.utc)
+    months = {"5m": 2, "15m": 3, "1h": 4, "4h": 8, "1d": 15}[interval]
     candles_by_time = {}
-    end_time = None
-    for _ in range(3):
-        query = f"symbol=BTCUSDT&interval={interval}&limit=1000"
-        if end_time is not None:
-            query += f"&endTime={end_time}"
-        url = "https://fapi.binance.com/fapi/v1/klines?" + query
-        request = urllib.request.Request(
-            url, headers={"User-Agent": "BTC-Signal-Pro-Elite/3.0"}
+    year, month = now.year, now.month
+    for _ in range(months):
+        last_day = calendar.monthrange(year, month)[1]
+        month_tag = f"{year}-{month:02d}"
+        url = (
+            "https://data.binance.vision/data/futures/um/monthly/klines/"
+            f"BTCUSDT/{interval}/BTCUSDT-{interval}-{month_tag}.zip"
         )
-        with urllib.request.urlopen(request, timeout=30) as response:
-            rows = json.loads(response.read().decode("utf-8"))
-        if not isinstance(rows, list) or not rows:
-            break
-        for row in rows:
-            candles_by_time[int(row[0])] = {
-                "time": int(row[0]), "open": float(row[1]),
-                "high": float(row[2]), "low": float(row[3]),
-                "close": float(row[4]), "volume": float(row[5])
-            }
-        oldest = min(int(row[0]) for row in rows)
-        if len(rows) < 1000 or oldest <= 0:
-            break
-        end_time = oldest - 1
+        request = urllib.request.Request(
+            url, headers={"User-Agent": "BTC-Signal-Pro-Elite/4.3"}
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=45) as response:
+                archive = zipfile.ZipFile(io.BytesIO(response.read()))
+            with archive.open(archive.namelist()[0]) as csv_file:
+                reader = csv.reader(io.TextIOWrapper(csv_file, encoding="utf-8"))
+                for row in reader:
+                    if not row or not row[0].isdigit():
+                        continue
+                    timestamp = int(row[0])
+                    close_time = int(row[6]) if len(row) > 6 else timestamp
+                    if close_time >= int(now.timestamp() * 1000):
+                        continue
+                    candles_by_time[timestamp] = {
+                        "time": timestamp, "open": float(row[1]),
+                        "high": float(row[2]), "low": float(row[3]),
+                        "close": float(row[4]), "volume": float(row[5])
+                    }
+        except Exception as exc:
+            # The current month's archive may not yet be published; older months
+            # are still required to reach the minimum training history.
+            print(f"Futures archive unavailable for {month_tag}: {exc}")
+        month -= 1
+        if month == 0:
+            month, year = 12, year - 1
     candles = [candles_by_time[t] for t in sorted(candles_by_time)]
-    candles = candles[:-1]  # discard the currently forming candle
     if len(candles) < 210:
-        raise ValueError(f"Not enough completed Binance {interval} candles: {len(candles)}")
+        raise ValueError(
+            f"Insufficient Binance USD-M Futures archive candles for {interval}: {len(candles)}"
+        )
     return candles
-
 
 def get_binance_spot_data(interval):
     # Public Binance Spot klines are a fallback when Futures is region-blocked.
