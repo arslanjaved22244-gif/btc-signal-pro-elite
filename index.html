@@ -253,6 +253,22 @@ button{background:#f5b942;color:#111;border:0;padding:12px 18px;border-radius:8p
 <p class="note" id="nextMoveNote">UP/DOWN scores are model outputs, not calibrated probabilities. WAIT is shown when the model is weak or validation accuracy is poor. This forecast cannot know the future and does not place orders.</p>
 <button onclick="loadNextMoveAI()">UPDATE AI FORECAST</button>
 </div>
+
+<div class="card" id="advancedAiCard">
+<h3>Advanced AI Intelligence Engine</h3>
+<div class="note">Server-trained multi-horizon models, market-regime classification and liquidity-sweep pattern detection. Updates from the latest validated AI run.</div>
+<div class="scoregrid">
+<div class="scoretile">15-minute forecast<b id="adv15">WAIT</b><small id="adv15Meta">Awaiting model</small></div>
+<div class="scoretile">30-minute forecast<b id="adv30">WAIT</b><small id="adv30Meta">Awaiting model</small></div>
+<div class="scoretile">60-minute forecast<b id="adv60">WAIT</b><small id="adv60Meta">Awaiting model</small></div>
+<div class="scoretile">Market regime<b id="advRegime">--</b><small id="advVolatility">Volatility: --</small></div>
+</div>
+<div class="metric"><span>Liquidity sweep detector</span><b id="advSweep">--</b></div>
+<div class="metric"><span>Regime explanation</span><b id="advRegimeWhy">Waiting for analysis</b></div>
+<div class="metric"><span>Model update</span><b id="advUpdated">Waiting...</b></div>
+<p class="note" id="advAiNote">Forecast scores are model outputs, not guaranteed probabilities. WAIT is retained when validation edge is weak.</p>
+<button onclick="loadAdvancedIntelligence(true)">REFRESH ADVANCED AI</button>
+</div>
 <div class="card">
 <h3>Experimental ML Forecast</h3>
 <div class="note">Browser-trained logistic regression using historical Binance 15M candles. Experimental estimate, not guaranteed prediction.</div>
@@ -1341,6 +1357,31 @@ async function loadNextMoveAI(){
  }finally{nextMoveBusy=false;}
 }
 
+
+let advancedAiLastLoad=0,advancedAiBusy=false;
+async function loadAdvancedIntelligence(force=false){
+ if(advancedAiBusy||(!force&&Date.now()-advancedAiLastLoad<5*60000))return;
+ advancedAiBusy=true;
+ try{
+  const response=await fetch("./ai_result.json?ts="+Date.now(),{cache:"no-store"});
+  if(!response.ok)throw Error("AI result HTTP "+response.status);
+  const data=await response.json(),a=data.advanced_intelligence;
+  if(!a)throw Error("Advanced AI model output not published yet");
+  for(const [h,id] of [["15m","adv15"],["30m","adv30"],["60m","adv60"]]){
+   const x=a.multi_horizon_forecasts?.[h]||{},el=$(id),side=x.signal||"WAIT";
+   setText(id,side);if(el)el.className=side==="LONG"?"green":side==="SHORT"?"red":"yellow";
+   setText(id+"Meta",x.holdout_accuracy!=null?"Holdout "+x.holdout_accuracy+"% • n="+(x.validation_samples||0):x.status||"Not ready");
+  }
+  const r=a.market_regime||{};
+  setText("advRegime",r.regime||"--");setText("advVolatility","ATR ratio: "+(r.atr_ratio??"--"));
+  setText("advSweep",r.liquidity_sweep||"NONE");setText("advRegimeWhy",r.explanation||"--");
+  setText("advUpdated",data.generated_at?new Date(data.generated_at).toLocaleString():"--");
+  setText("advAiNote","Method: "+(a.method||"Advanced AI")+". Scores are not calibrated win probabilities.");
+  advancedAiLastLoad=Date.now();
+ }catch(e){setText("advAiNote","Advanced AI data unavailable: "+e.message+".");}
+ finally{advancedAiBusy=false;}
+}
+
 function sigmoid(z){return 1/(1+Math.exp(-Math.max(-30,Math.min(30,z))))}
 function mlFeatures(cs){
  const close=cs.map(x=>x.c),volumes=cs.map(x=>x.v);
@@ -1443,6 +1484,7 @@ renderLiveCVD();
 engine();
 if(Date.now()-mlLastRun>15*60000)loadML();
 if(Date.now()-nextMoveLastRun>5*60000)loadNextMoveAI();
+if(Date.now()-advancedAiLastLoad>5*60000)loadAdvancedIntelligence();
 setText("status","Data updated • "+new Date().toLocaleTimeString());
 
 }catch(e){
