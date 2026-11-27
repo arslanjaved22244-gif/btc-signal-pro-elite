@@ -121,7 +121,7 @@ button{background:#f5b942;color:#111;border:0;padding:12px 18px;border-radius:8p
 <div class="card">
 <h3>Open Interest</h3>
 <div class="price" id="oi">Loading...</div>
-<p id="oiChange">Waiting for next reading</p>
+<p id="oiChange">Waiting for Binance 5-minute history</p>
 </div>
 
 <div class="card">
@@ -576,15 +576,28 @@ async function loadOI(){
 let d=await get("/fapi/v1/openInterest?symbol=BTCUSDT");
 let n=+d.openInterest;
 setText("oi",fmt(n)+" BTC");
-if(prevOI!==null){
-let ch=(n-prevOI)/prevOI*100;
-M.oiChange=ch;
-setText("oiChange","Since previous app reading: "+(ch>=0?"+":"")+ch.toFixed(3)+"%");
-}else{
-setText("oiChange","Baseline reading; change available next refresh");
-}
-prevOI=n;
 M.oi=n;
+M.oiChange=null;
+try{
+let hist=await get("/futures/data/openInterestHist?symbol=BTCUSDT&period=5m&limit=2");
+if(Array.isArray(hist)&&hist.length>=2){
+let prev=hist[hist.length-2],last=hist[hist.length-1];
+let t0=+prev.timestamp,t1=+last.timestamp;
+let gap=t1-t0,age=Date.now()-t1;
+let a=+prev.sumOpenInterest,b=+last.sumOpenInterest;
+if(a>0&&b>0&&gap>=4*60000&&gap<=10*60000&&age>=-60000&&age<=10*60000){
+let ch=(b-a)/a*100;
+M.oiChange=ch;
+setText("oiChange","5M Binance OI change: "+(ch>=0?"+":"")+ch.toFixed(3)+"% • historical data");
+}else{
+setText("oiChange","5M OI history stale or incomplete — excluded from signal scoring");
+}
+}else{
+setText("oiChange","5M OI history unavailable — excluded from signal scoring");
+}
+}catch(e){
+setText("oiChange","5M OI history unavailable — excluded from signal scoring");
+}
 }
 
 async function loadFunding(){
@@ -1034,7 +1047,7 @@ if(a.sweep.includes("BULLISH"))add("B",2,"Bullish liquidity sweep detected");
 else if(a.sweep.includes("BEARISH"))add("S",2,"Bearish liquidity sweep detected");
 
 /* OI positioning */
-if(M.oiChange!==undefined){
+if(Number.isFinite(M.oiChange)){
 if(M.oiChange>.05&&M.buy>55){
 add("B",1,"OI rising with buyer flow");
 }else if(M.oiChange>.05&&M.buy<45){
@@ -1090,12 +1103,12 @@ risks.push("Live CVD and price movement do not show strong agreement");
 
 setText("flowReaction",flow);
 
-let oiText=M.oiChange===undefined?"Baseline":
+let oiText=!Number.isFinite(M.oiChange)?"5M DATA UNAVAILABLE":
 M.oiChange>.05?"RISING":
 M.oiChange<-.05?"FALLING":"FLAT";
 
 setText("oiInterpretation",oiText+
-(M.oiChange===undefined?"":" ("+(M.oiChange>0?"+":"")+M.oiChange.toFixed(3)+"%)"));
+(!Number.isFinite(M.oiChange)?"":" ("+(M.oiChange>0?"+":"")+M.oiChange.toFixed(3)+"%)"));
 
 let trap="LOW / NOT IDENTIFIED";
 if(
