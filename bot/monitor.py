@@ -16,11 +16,24 @@ def save_json(path,obj):
  with open(path,"w",encoding="utf-8") as f:json.dump(obj,f,indent=2)
 def api(path,params):return get_json(BASE+path+"?"+urllib.parse.urlencode(params))
 def news_scan():
- # Google News covers global headlines; Trump's Truth is an independent archive RSS
- # of public @realDonaldTrump Truth Social posts (not an official platform API).
- terms=["bitcoin","crypto","tariff","war","iran","israel","sanction","federal reserve","fed","fomc","hack","sec","exchange","etf","attack","oil","energy","inflation","interest rate","china","russia","ukraine","nato","military","treasury","dollar","trade deal","export","ban","embargo"]
- queries=["Bitcoin OR crypto Trump tariff war Iran Israel sanctions Fed FOMC hack SEC","Trump statement markets Bitcoin crypto"]
+ # Public RSS sources are context feeds, not verified breaking-news wires.
+ # Only high-impact catalysts should activate the 30-minute safety lock.
+ crypto_terms=["bitcoin","btc","crypto","cryptocurrency","digital asset"]
+ crypto_event_terms=["hack","exploit","breach","insolvency","bankruptcy","exchange outage",
+  "withdrawals suspended","sec lawsuit","sec sues","sec approves","sec rejects",
+  "spot bitcoin etf approval","bitcoin etf approved","bitcoin etf rejected",
+  "crypto ban","crypto crackdown","stablecoin depeg","major liquidation"]
+ macro_event_terms=["fed rate decision","fomc","emergency rate","rate hike","rate cut",
+  "hotter-than-expected inflation","cpi report","pce inflation","jobs report",
+  "tariff","sanction","military strike","airstrike","invasion","declares war",
+  "nuclear threat","emergency sanctions","capital controls","banking crisis",
+  "market halt","trading halt","government shutdown"]
+ queries=["Bitcoin OR crypto hack exploit exchange outage SEC ETF approval tariff sanctions Fed FOMC war","Trump statement tariff sanctions war Fed markets Bitcoin crypto"]
  hits=[]; current=now()
+ def high_impact(body):
+  body=body.lower()
+  has_crypto=any(term in body for term in crypto_terms)
+  return any(term in body for term in macro_event_terms) or (has_crypto and any(term in body for term in crypto_event_terms))
  for query in queries:
   url="https://news.google.com/rss/search?q="+urllib.parse.quote(query)+"&hl=en-US&gl=US&ceid=US:en"
   try:
@@ -31,10 +44,10 @@ def news_scan():
     try:dt=parsedate_to_datetime(pub).astimezone(timezone.utc)
     except Exception:continue
     age=(current-dt).total_seconds()/60
-    if -2<=age<=90 and any(t in title.lower() for t in terms):
+    if -2<=age<=30 and high_impact(title):
      hits.append({"title":title,"published":dt.isoformat(),"age_minutes":round(age,1),"source":"Google News RSS","url":item.findtext("link") or ""})
   except Exception as exc:print("Google News warning:",str(exc)[:160])
- # Third-party archive says it checks @realDonaldTrump posts every few minutes.
+ # Third-party archive of public @realDonaldTrump posts; not an official API.
  try:
   req=urllib.request.Request("https://www.trumpstruth.org/feed",headers={"User-Agent":"Mozilla/5.0 BTC-Signal-Pro-Elite","Accept":"application/rss+xml, application/xml, text/xml"})
   with urllib.request.urlopen(req,timeout=15) as r:root=ET.fromstring(r.read())
@@ -45,10 +58,7 @@ def news_scan():
    try:dt=parsedate_to_datetime(pub).astimezone(timezone.utc)
    except Exception:continue
    age=(current-dt).total_seconds()/60
-   body=(title+" "+desc).lower()
-   # Only posts plausibly relevant to market/geopolitical risk trigger a pause.
-   risk_terms=["bitcoin","crypto","cryptocurrency","tariff","trade","china","russia","ukraine","iran","israel","war","military","oil","energy","sanction","federal reserve","fed","interest rate","inflation","dollar","treasury","sec","bank","tax","export","embargo","attack","nuclear","venezuela"]
-   if -2<=age<=90 and any(t in body for t in risk_terms):
+   if -2<=age<=30 and high_impact(title+" "+desc):
     hits.append({"title":title[:280],"published":dt.isoformat(),"age_minutes":round(age,1),"source":"Trump's Truth archive RSS (third-party)","url":item.findtext("link") or ""})
  except Exception as exc:print("Trump Truth archive warning:",str(exc)[:160])
  unique={(x["source"],x["title"]):x for x in hits}
