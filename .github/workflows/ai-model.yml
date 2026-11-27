@@ -15,7 +15,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: btc-signal-publish
+  group: btc-signal-ai
   cancel-in-progress: false
 
 jobs:
