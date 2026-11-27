@@ -4,12 +4,12 @@
   "source": "OKX public Futures 5m candles",
   "horizon_minutes": 15,
   "estimated_round_trip_cost_pct": 0.14,
-  "updated_at": "2026-11-27T18:50:39.176582+00:00",
+  "updated_at": "2026-11-27T18:57:04.144745+00:00",
   "current_signal": "WAIT",
   "current_signal_reason": null,
   "closed_trades": 0,
   "pending_trades": 0,
-  "wait_abstentions": 9,
+  "wait_abstentions": 10,
   "wins": 0,
   "losses": 0,
   "win_rate_pct": null,
@@ -19,7 +19,7 @@
     "mode": "NON_ACTIONABLE_RAW_MODEL_FORECASTS",
     "closed_forecasts": 5,
     "pending_forecasts": 1,
-    "abstentions": 0,
+    "abstentions": 1,
     "wins": 0,
     "losses": 5,
     "directional_accuracy_pct": 20.0,
@@ -27,7 +27,7 @@
     "average_net_return_pct": -0.19101,
     "net_return_pct_compounded": -0.9515,
     "validation_gate_passed_now": false,
-    "latest_model_timestamp": "2026-11-27T18:44:53.114367+00:00",
+    "latest_model_timestamp": "2026-11-27T18:55:56.081579+00:00",
     "latest_model_fresh": true,
     "note": "Research-only forecast tracking. Each fresh model generation is counted once; stale or repeated AI snapshots are skipped. Forecasts never authorize trades."
   },
@@ -131,6 +131,17 @@
       "exit": null,
       "gross_return_pct": null,
       "net_return_pct": null
+    },
+    {
+      "entry_candle_time": 1795805400000,
+      "recorded_at": "2026-11-27T18:57:04.144523+00:00",
+      "exchange": "OKX",
+      "side": "WAIT",
+      "entry": 59880.1,
+      "status": "ABSTAINED",
+      "exit": null,
+      "gross_return_pct": null,
+      "net_return_pct": null
     }
   ],
   "shadow_forecasts": [
@@ -228,6 +239,19 @@
       "actionable": false,
       "validation_gate_passed": false,
       "model_version": "4.3-profitability-gated",
+      "note": "Shadow-only raw ML forecast. Not a trading signal; validation gate may have failed."
+    },
+    {
+      "entry_candle_time": 1795805400000,
+      "model_generated_at": "2026-11-27T18:55:56.081579+00:00",
+      "recorded_at": "2026-11-27T18:57:04.144550+00:00",
+      "exchange": "OKX",
+      "side": "WAIT",
+      "entry": 59880.1,
+      "status": "ABSTAINED",
+      "actionable": false,
+      "validation_gate_passed": false,
+      "model_version": "4.4-validation-consistent",
       "note": "Shadow-only raw ML forecast. Not a trading signal; validation gate may have failed."
     }
   ]
