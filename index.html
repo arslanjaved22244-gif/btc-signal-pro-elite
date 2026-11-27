@@ -346,6 +346,9 @@ button{background:#f5b942;color:#111;border:0;padding:12px 18px;border-radius:8p
 </div>
 <div class="metric"><span>Pending / WAIT abstentions</span><b id="paperPending">-- / --</b></div>
 <div class="metric"><span>Paper tracker updated</span><b id="paperUpdated">--</b></div>
+<div class="metric"><span>Shadow AI forecasts closed / pending</span><b id="shadowCount">-- / --</b></div>
+<div class="metric"><span>Shadow AI directional accuracy</span><b id="shadowAccuracy">Collecting...</b></div>
+<div class="metric"><span>Shadow AI average net return</span><b id="shadowAverage">--</b></div>
 <p class="note" id="paperNote">Waiting for the first paper-trading snapshot.</p>
 </div>
 <div class="card" id="exchangeCompareCard">
@@ -1632,7 +1635,11 @@ async function loadPaperTrading(force=false){
   setText("paperDD",d.max_drawdown_pct==null?"--":Number(d.max_drawdown_pct).toFixed(2)+"%");
   setText("paperPending",(d.pending_trades||0)+" / "+(d.wait_abstentions||0));
   setText("paperUpdated",d.updated_at?new Date(d.updated_at).toLocaleString():"--");
-  setText("paperNote",(d.source||"")+". "+(d.limitations||""));
+  const sh=d.shadow_evaluation||{};
+  setText("shadowCount",(sh.closed_forecasts||0)+" / "+(sh.pending_forecasts||0));
+  setText("shadowAccuracy",sh.directional_accuracy_pct==null?"Collecting...":Number(sh.directional_accuracy_pct).toFixed(1)+"%");
+  setText("shadowAverage",sh.average_net_return_pct==null?"--":Number(sh.average_net_return_pct).toFixed(3)+"%");
+  setText("paperNote",(d.source||"")+". "+(d.limitations||"")+" Shadow AI is non-actionable and can include forecasts blocked by the validation gate.");
   paperLastLoad=Date.now();
  }catch(e){setText("paperNote","Tracker initializing: "+e.message);}
  finally{paperBusy=false;}
