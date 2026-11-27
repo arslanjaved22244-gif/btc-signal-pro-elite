@@ -416,27 +416,72 @@ def predict(model, row):
     ])
 
 
+
+def train_centroid(rows, labels):
+    means, scales = fit_scaler(rows)
+    sums = [[0.0] * len(means) for _ in CLASSES]
+    counts = [0] * len(CLASSES)
+    for row, label in zip(rows, labels):
+        counts[label] += 1
+        for j, value in enumerate(row): sums[label][j] += (value-means[j])/scales[j]
+    centers = [[v/max(1,counts[k]) for v in sums[k]] for k in range(3)]
+    return {"means":means,"scales":scales,"centers":centers}
+
+def predict_centroid(model, row):
+    x=[(v-model["means"][j])/model["scales"][j] for j,v in enumerate(row)]
+    distances=[sum((a-b)**2 for a,b in zip(x,c))/len(x) for c in model["centers"]]
+    return softmax([-d/0.08 for d in distances])
+
+def train_stumps(rows, labels, max_stumps=48):
+    means,scales=fit_scaler(rows)
+    x=[[(v-means[j])/scales[j] for j,v in enumerate(row)] for row in rows]
+    n,p=len(x),len(x[0]); majority=max(labels.count(k) for k in range(3))/n
+    candidates=[]
+    def leaf(indices):
+        counts=[1.0,1.0,1.0]
+        for i in indices: counts[labels[i]]+=1.0
+        total=sum(counts)
+        return [v/total for v in counts]
+    for j in range(p):
+        col=sorted(row[j] for row in x)
+        for q in (0.25,0.5,0.75):
+            threshold=col[min(n-1,int((n-1)*q))]
+            left=[i for i,row in enumerate(x) if row[j]<=threshold]
+            right=[i for i,row in enumerate(x) if row[j]>threshold]
+            if len(left)<12 or len(right)<12: continue
+            lp,rp=leaf(left),leaf(right)
+            correct=sum(1 for i in left if labels[i]==max(range(3),key=lambda k:lp[k]))
+            correct+=sum(1 for i in right if labels[i]==max(range(3),key=lambda k:rp[k]))
+            score=correct/n
+            if score>majority+0.005: candidates.append((score,j,threshold,lp,rp))
+    candidates.sort(key=lambda z:z[0],reverse=True)
+    chosen=candidates[:max_stumps]
+    if not chosen: raise ValueError("Decision-stump model found no useful splits")
+    return {"means":means,"scales":scales,"stumps":[{"feature":j,"threshold":t,"left":lp,"right":rp,"weight":max(0.005,score-majority)} for score,j,t,lp,rp in chosen]}
+
+def predict_stumps(model,row):
+    x=[(v-model["means"][j])/model["scales"][j] for j,v in enumerate(row)]
+    totals=[0.0,0.0,0.0]; weight_sum=0.0
+    for stump in model["stumps"]:
+        w=stump["weight"]; side=stump["left"] if x[stump["feature"]]<=stump["threshold"] else stump["right"]
+        for k in range(3): totals[k]+=w*side[k]
+        weight_sum+=w
+    return [v/max(weight_sum,1e-9) for v in totals]
+
 def train_ensemble(rows, labels):
-    # Blend a long-history model with a recent-regime specialist.
-    full_model = train_model(rows, labels)
-    recent_window = min(3000, len(rows))
-    recent_model = train_model(rows[-recent_window:], labels[-recent_window:])
-    return {
-        "full_history": full_model,
-        "recent_regime": recent_model,
-        "weights": (0.65, 0.35),
-        "recent_window": recent_window
-    }
+    full_model=train_model(rows,labels)
+    recent_window=min(3000,len(rows))
+    recent_model=train_model(rows[-recent_window:],labels[-recent_window:])
+    centroid_model=train_centroid(rows,labels)
+    stump_model=train_stumps(rows,labels)
+    return {"full_history":full_model,"recent_regime":recent_model,"centroid":centroid_model,"stumps":stump_model,"recent_window":recent_window}
 
-
-def predict_ensemble(ensemble, row):
-    full_probs = predict(ensemble["full_history"], row)
-    recent_probs = predict(ensemble["recent_regime"], row)
-    full_weight, recent_weight = ensemble["weights"]
-    return [
-        full_weight * full_probs[k] + recent_weight * recent_probs[k]
-        for k in range(len(CLASSES))
-    ]
+def predict_ensemble(ensemble,row):
+    a=predict(ensemble["full_history"],row)
+    b=predict(ensemble["recent_regime"],row)
+    c=predict_centroid(ensemble["centroid"],row)
+    d=predict_stumps(ensemble["stumps"],row)
+    return [0.35*a[k]+0.20*b[k]+0.20*c[k]+0.25*d[k] for k in range(3)]
 
 
 def classification_metrics(actual, predicted):
@@ -544,43 +589,9 @@ def main():
     data = {}
     source = "Binance USD-M Futures public klines"
     symbol = "BTC/USDT"
-    try:
-        for tf in INTERVALS:
-            print(f"Loading Binance Futures {tf} candles...")
-            data[tf] = get_binance_data(tf)
-    except Exception as futures_exc:
-        print(f"Binance Futures unavailable ({futures_exc}); trying Binance Spot.")
-        data = {}
-        try:
-            for tf in INTERVALS:
-                print(f"Loading Binance Spot {tf} candles...")
-                data[tf] = get_binance_spot_data(tf)
-            source = "Binance Spot public klines (fallback)"
-            symbol = "BTC/USDT"
-        except Exception as spot_exc:
-            print(f"Binance Spot unavailable ({spot_exc}); trying Coinbase Exchange.")
-            data = {}
-            try:
-                print("Loading Coinbase Exchange 5m history...")
-                data["5m"] = get_coinbase_data(300, 9000)
-                print("Loading Coinbase Exchange 15m history...")
-                data["15m"] = get_coinbase_data(900, 3000)
-                print("Loading Coinbase Exchange 1h history for 1h and 4h...")
-                hourly = get_coinbase_data(3600, 3000)
-                data["1h"] = hourly
-                data["4h"] = aggregate_four_hour(hourly)
-                print("Loading Coinbase Exchange 1d history...")
-                data["1d"] = get_coinbase_data(86400, 400)
-                source = "Coinbase Exchange public candles (fallback)"
-                symbol = "BTC/USD"
-            except Exception as coinbase_exc:
-                print(f"Coinbase unavailable ({coinbase_exc}); switching all timeframes to Kraken Spot.")
-                data = {}
-                source = "Kraken Spot public OHLC (fallback)"
-                symbol = "BTC/USD"
-                for tf, minutes in INTERVALS.items():
-                    print(f"Loading Kraken Spot {tf} candles...")
-                    data[tf] = get_kraken_data(minutes)
+    for tf in INTERVALS:
+        print(f"Loading Binance USD-M Futures {tf} candles...")
+        data[tf] = get_binance_data(tf)
     prepared = {tf: precompute_candle_features(candles) for tf, candles in data.items()}
     rows, labels = build_dataset(data, prepared)
     if len(rows) < 250:
@@ -601,8 +612,8 @@ def main():
     signal = CLASSES[calibrated_class] if calibrated_class == 1 or (scores[calibrated_class] >= 0.48 and margin >= 0.10) else "WAIT"
     result = {
         "system": "BTC Signal Pro Elite Advanced ML",
-        "model": "Temporal Ensemble (full-history + recent-regime logistic experts)",
-        "model_version": "3.8-temporal-ensemble-regime-specialist",
+        "model": "Four-model vote: full-history logistic, recent-regime logistic, nearest-centroid and decision-stump ensemble",
+        "model_version": "4.0-four-model-futures-only-voting",
         "data_source": source,
         "symbol": symbol,
         "base_interval": "5m",
@@ -612,7 +623,7 @@ def main():
         "confidence_score": round(scores[best] * 100, 2),
         "confidence_margin": round(margin * 100, 2),
         "wait_probability_threshold": final_wait_threshold,
-        "ensemble_configuration": {"full_history_weight": 0.65, "recent_regime_weight": 0.35, "recent_training_window": final_model["recent_window"]},
+        "ensemble_configuration": {"models": ["full_history_logistic", "recent_regime_logistic", "nearest_centroid", "decision_stumps"], "weights": {"full_history_logistic": 0.35, "recent_regime_logistic": 0.20, "nearest_centroid": 0.20, "decision_stumps": 0.25}, "recent_training_window": final_model["recent_window"]},
         "walk_forward_metrics": validation,
         "walk_forward_folds": folds,
         "training_samples": len(rows),
@@ -625,7 +636,7 @@ def main():
         "last_candle_time": data["5m"][-1]["time"],
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "limitations": [
-            "Uses one consistent OHLCV source across all timeframes. Source fallback order is Binance USD-M Futures, Binance Spot, Coinbase Exchange, then Kraken Spot. Coinbase 4h candles are aggregated from 1h candles. Coinbase 5m history is expanded to 9000 candles. Spot sources are not Futures data; CVD, open interest, funding, order book and liquidation feeds are not model features yet.",
+            "Training is strictly Binance USD-M Futures OHLCV. If Futures endpoints fail, training fails closed and never substitutes Spot data. CVD, open interest, funding, order book and liquidation remain separate confluence inputs.",
             "Class scores are model scores, not calibrated real-world win probabilities.",
             "Walk-forward metrics are historical diagnostics, not guarantees of future performance."
         ]
