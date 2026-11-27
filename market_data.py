@@ -779,53 +779,132 @@ def collect_bitget():
     return result
 
 
+def derivatives_feed_score(payload):
+    """Count independently available derivatives feeds; candles remain mandatory."""
+    feeds = payload.get("feeds", {})
+    required = (
+        "mark_price_funding",
+        "open_interest_current",
+        "open_interest_history_5m",
+        "taker_flow_5m",
+        "order_book",
+        "recent_agg_trades",
+    )
+    def independently_verified(feed):
+        if not isinstance(feed, dict) or feed.get("ok") is not True:
+            return False
+        # A feed borrowed from another exchange is useful context, but it must
+        # not count as coverage for the selected venue's own derivatives set.
+        venue = str(feed.get("venue", "")).lower()
+        note = str(feed.get("note", "")).lower()
+        if "cross-venue" in venue or "cross venue" in venue:
+            return False
+        if "cross-venue" in note or "cross venue" in note:
+            return False
+        def has_meaningful_value(value):
+            if value is None:
+                return False
+            if isinstance(value, str):
+                return bool(value.strip())
+            if isinstance(value, dict):
+                return any(has_meaningful_value(item) for item in value.values())
+            if isinstance(value, (list, tuple)):
+                return any(has_meaningful_value(item) for item in value)
+            if isinstance(value, (int, float, bool)):
+                return True
+            return False
+
+        return has_meaningful_value(feed.get("data"))
+
+    return sum(1 for name in required if independently_verified(feeds.get(name)))
+
+
+def _valid_core_snapshot(payload):
+    quality = payload.get("data_quality", {})
+    return bool(
+        quality.get("core_timeframes_ok")
+        and quality.get("five_minute_data_fresh")
+    )
+
+
 def collect():
-    primary=collect_binance()
-    if primary.get("data_quality",{}).get("core_timeframes_ok") and primary.get("data_quality",{}).get("five_minute_data_fresh"):
-        return primary
+    """Choose the freshest valid Futures venue with the strongest derivatives coverage.
 
-    failures=list(primary.get("data_quality",{}).get("warnings",[]))
-    bybit=None
-    try:
-        bybit=collect_bybit()
-        if bybit.get("data_quality",{}).get("core_timeframes_ok") and bybit.get("data_quality",{}).get("five_minute_data_fresh"):
-            bybit["fallback_from"]="Binance USD-M Futures"
-            bybit["prior_source_failures"]=failures
-            return bybit
-        bybit_errors={k:v.get("error") for k,v in bybit.get("timeframes",{}).items() if v.get("error")}
-        failures.append("Bybit fallback incomplete: "+str(bybit_errors))
-    except Exception as exc:
-        failures.append("Bybit linear Futures fallback failed: "+str(exc))
+    Binance remains first preference when coverage is equal. A healthy candle feed
+    alone no longer prevents trying another venue for missing funding/OI/flow data.
+    Spot data is never used and every selected venue remains explicitly labelled.
+    """
+    providers = (
+        ("Binance USD-M Futures", collect_binance),
+        ("Bybit linear Futures", collect_bybit),
+        ("Bitget USDT-FUTURES", collect_bitget),
+        ("OKX BTC-USDT-SWAP", collect_okx),
+    )
+    candidates = []
+    failures = []
+    attempts = {}
 
-    bitget=None
-    try:
-        bitget=collect_bitget()
-        if bitget.get("data_quality",{}).get("core_timeframes_ok") and bitget.get("data_quality",{}).get("five_minute_data_fresh"):
-            bitget["fallback_from"]="Binance USD-M Futures and Bybit linear Futures"
-            bitget["prior_source_failures"]=failures
-            return bitget
-        bitget_errors={k:v.get("error") for k,v in bitget.get("timeframes",{}).items() if v.get("error")}
-        failures.append("Bitget fallback incomplete: "+str(bitget_errors))
-    except Exception as exc:
-        failures.append("Bitget USDT-FUTURES fallback failed: "+str(exc))
+    for rank, (name, collector) in enumerate(providers):
+        try:
+            payload = collector()
+            valid = _valid_core_snapshot(payload)
+            score = derivatives_feed_score(payload) if valid else 0
+            attempts[name] = {
+                "attempted": True,
+                "core_timeframes_ok": bool(payload.get("data_quality", {}).get("core_timeframes_ok")),
+                "five_minute_data_fresh": bool(payload.get("data_quality", {}).get("five_minute_data_fresh")),
+                "derivatives_feeds_available": score,
+                "valid": valid,
+            }
+            if valid:
+                candidates.append((score, -rank, name, payload))
+            else:
+                quality = payload.get("data_quality", {})
+                failures.extend(quality.get("warnings", []))
+        except Exception as exc:
+            attempts[name] = {"attempted": True, "valid": False, "error": str(exc)[:240]}
+            failures.append(name + " collection failed: " + str(exc)[:240])
 
-    try:
-        okx=collect_okx()
-        if okx.get("data_quality",{}).get("core_timeframes_ok") and okx.get("data_quality",{}).get("five_minute_data_fresh"):
-            okx["fallback_from"]="Binance USD-M Futures, Bybit linear Futures and Bitget USDT-FUTURES"
-            okx["prior_source_failures"]=failures
-            return okx
-        okx_errors={k:v.get("error") for k,v in okx.get("timeframes",{}).items() if v.get("error")}
-        failures.append("OKX fallback incomplete: "+str(okx_errors))
-    except Exception as exc:
-        failures.append("OKX BTC-USDT-SWAP fallback failed: "+str(exc))
+    if candidates:
+        # Higher derivatives coverage wins; provider order breaks ties in favour
+        # of Binance, then Bybit, Bitget and OKX.
+        score, _, selected_name, selected = max(candidates, key=lambda item: (item[0], item[1]))
+        selected["provider_selection"] = {
+            "policy": "highest verified derivatives-feed coverage; Binance preferred on ties",
+            "selected_provider": selected_name,
+            "derivatives_feeds_available": score,
+            "derivatives_feeds_total": 6,
+            "provider_attempts": attempts,
+        }
+        selected["data_quality"]["derivatives_confluence_status"] = (
+            "AVAILABLE" if score == 6 else "PARTIAL"
+        )
+        if score < 6:
+            selected["data_quality"].setdefault("warnings", []).append(
+                f"Only {score}/6 derivatives feeds available across the selected provider; unavailable fields remain explicitly missing."
+            )
+        if selected_name != providers[0][0]:
+            selected["fallback_from"] = "Binance USD-M Futures (and any higher-priority unavailable providers)"
+            selected["prior_source_failures"] = failures[-20:]
+            selected["data_quality"].setdefault("warnings", []).append(
+                "Selected a separate exchange Futures perpetual because it supplied better verified derivatives coverage; confirm execution venue price and liquidity."
+            )
+        return selected
 
-    primary["data_quality"]["warnings"]=failures
-    primary["fallback_attempts"]={
-        "bybit":{"attempted":True,"core_timeframes_ok":bool(bybit and bybit.get("data_quality",{}).get("core_timeframes_ok"))},
-        "bitget":{"attempted":True,"core_timeframes_ok":bool(bitget and bitget.get("data_quality",{}).get("core_timeframes_ok"))},
-        "okx":{"attempted":True,"core_timeframes_ok":False}
+    primary = collect_binance()
+    primary.setdefault("data_quality", {}).setdefault("warnings", []).extend(failures[-20:])
+    primary["provider_selection"] = {
+        "policy": "no Spot fallback; core completed Futures candles and freshness required",
+        "selected_provider": None,
+        "derivatives_feeds_available": derivatives_feed_score(primary),
+        "derivatives_feeds_total": 6,
+        "provider_attempts": attempts,
     }
+    primary["data_quality"]["status"] = "DEGRADED"
+    primary["data_quality"]["core_timeframes_ok"] = False
+    primary["data_quality"]["warnings"].append(
+        "No provider supplied all five fresh Futures candle timeframes; downstream signal must remain WAIT."
+    )
     return primary
 
 
