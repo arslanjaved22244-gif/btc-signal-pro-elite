@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """24/7 signal-only runner: periodic derivatives/news monitor + persistent liquidation WS + dashboard."""
 import json, os, subprocess, sys, threading, time
+from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from datetime import datetime, timezone
 from pathlib import Path
 import websocket
@@ -24,7 +25,8 @@ def save_liquidations():
     long_usd = sum(x["notional_usdt"] for x in snapshot if x["side"] == "SELL")
     short_usd = sum(x["notional_usdt"] for x in snapshot if x["side"] == "BUY")
     data = {
-        "available": connected, "connected": connected, "continuous": True,
+        "available": connected, "connected": connected, "continuous": bool(connected),
+        "status": "CONNECTED" if connected else "DISCONNECTED",
         "source": "Binance USD-M forceOrder WebSocket",
         "generated_at": utc(), "last_message_at": last_message,
         "event_count": len(snapshot),
@@ -85,11 +87,38 @@ def liquidation_worker():
         time.sleep(5)
 
 def dashboard_server():
-    port = str(int(os.environ.get("PORT", "8080")))
-    proc = subprocess.Popen([sys.executable, "-m", "http.server", port, "--bind", "0.0.0.0"],
-                            cwd=ROOT, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
-    print("Dashboard HTTP server PID:", proc.pid, flush=True)
-    proc.wait()
+    class Handler(SimpleHTTPRequestHandler):
+        def do_GET(self):
+            if self.path == "/healthz":
+                with lock:
+                    connected = status["connected"]
+                    last_message = status["last_message"]
+                    last_error = status["last_error"]
+                body = json.dumps({
+                    "service": "BTC Signal Pro Elite live runner",
+                    "process_alive": True,
+                    "liquidation_websocket_connected": connected,
+                    "continuous": connected,
+                    "last_message_at": last_message,
+                    "last_error": last_error,
+                    "checked_at": utc()
+                }).encode("utf-8")
+                self.send_response(200 if connected else 503)
+                self.send_header("Content-Type", "application/json")
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+                return
+            return super().do_GET()
+
+        def log_message(self, fmt, *args):
+            print("HTTP:", fmt % args, flush=True)
+
+    port = int(os.environ.get("PORT", "8080"))
+    server = ThreadingHTTPServer(("0.0.0.0", port), Handler)
+    os.chdir(ROOT)
+    print("Dashboard and /healthz listening on", port, flush=True)
+    server.serve_forever()
 
 def monitor_worker():
     while True:
