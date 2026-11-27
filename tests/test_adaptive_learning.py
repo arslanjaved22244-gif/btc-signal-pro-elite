@@ -132,5 +132,35 @@ class AdaptiveLearningTests(unittest.TestCase):
         self.assertGreater(volatile_threshold, quiet_threshold)
 
 
+    def test_validation_gate_blocks_negative_net_backtest_even_when_accuracy_passes(self):
+        validation = {
+            "accuracy": 67.07, "macro_f1": 35.30,
+            "majority_class_baseline_pct": 66.47,
+            "cost_aware_backtest": {
+                "trades": 15, "average_net_trade_return_pct": -0.15386,
+                "estimated_net_win_rate_pct": 40.0
+            }
+        }
+        passed, report = MODEL.evaluate_validation_gate(validation, True)
+        self.assertFalse(passed)
+        self.assertFalse(report["checks"]["minimum_backtest_trades_passed"])
+        self.assertFalse(report["checks"]["positive_average_net_return_passed"])
+        self.assertFalse(report["checks"]["net_win_rate_passed"])
+
+    def test_validation_gate_requires_futures_and_profitable_sample(self):
+        validation = {
+            "accuracy": 68.0, "macro_f1": 36.0,
+            "majority_class_baseline_pct": 65.0,
+            "cost_aware_backtest": {
+                "trades": 35, "average_net_trade_return_pct": 0.025,
+                "estimated_net_win_rate_pct": 54.0
+            }
+        }
+        passed, report = MODEL.evaluate_validation_gate(validation, True)
+        self.assertTrue(passed)
+        self.assertTrue(all(report["checks"].values()))
+        self.assertFalse(MODEL.evaluate_validation_gate(validation, False)[0])
+
+
 if __name__ == "__main__":
     unittest.main()
