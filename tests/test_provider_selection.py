@@ -54,6 +54,16 @@ class ProviderSelectionTests(unittest.TestCase):
         payload["feeds"]["order_book"]["data"] = {}
         self.assertEqual(market_data.derivatives_feed_score(payload), 5)
 
+    def test_null_valued_payload_does_not_count_as_available(self):
+        payload = snapshot("Binance", 6)
+        payload["feeds"]["open_interest_current"]["data"] = {"openInterest": None}
+        self.assertEqual(market_data.derivatives_feed_score(payload), 5)
+
+    def test_nested_empty_orderbook_does_not_count_as_available(self):
+        payload = snapshot("Binance", 6)
+        payload["feeds"]["order_book"]["data"] = {"bids": [], "asks": []}
+        self.assertEqual(market_data.derivatives_feed_score(payload), 5)
+
     def test_no_fresh_complete_futures_snapshot_fails_closed(self):
         with patch.object(market_data, "collect_binance", return_value=snapshot("Binance", 6, False)), \
              patch.object(market_data, "collect_bybit", return_value=snapshot("Bybit", 6, False)), \
