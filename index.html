@@ -276,15 +276,6 @@ button{background:#f5b942;color:#111;border:0;padding:12px 18px;border-radius:8p
 <p class="note" id="riskWarning">Enter entry and stop prices. Fees, slippage and funding are excluded. Leverage changes margin, not planned dollar risk.</p>
 </div>
 <div class="card">
-<h3>Manual News / Volatility Safety Pause</h3>
-<p class="note">This iPhone-only page cannot reliably monitor breaking news or public posts while closed. Activate this after major economic, geopolitical or breaking news to block signals for at least 30 minutes.</p>
-<button onclick="activateNewsPause()">PAUSE SIGNALS 30 MIN</button>
-<button onclick="clearNewsPause()">CLEAR PAUSE</button>
-<div class="metric"><span>Signal safety status</span><b id="newsPauseStatus">NO MANUAL PAUSE</b></div>
-<div class="metric"><span>Pause remaining</span><b id="newsPauseTimer">0 min</b></div>
-</div>
-
-<div class="card">
 <h3>Risk Management</h3>
 <p>Maximum leverage: 10x • Manual trading only.</p>
 <p>Always use a stop loss. Leverage magnifies losses.</p>
@@ -1158,7 +1149,6 @@ a.vr>=.8&&
 cvdReady;
 
 let side=dataReady&&enough?scoreSide:"WAIT";
-if(newsPauseUntil>Date.now())side="WAIT";
 
 let conf=Math.round(Math.min(
 90,
@@ -1272,8 +1262,7 @@ renderHistory();
 
 
 /* Experimental browser-side ML forecast, backtest and risk tools */
-let mlLastRun=0, newsPauseUntil=0;
-try{newsPauseUntil=Number(localStorage.getItem("btc_signal_pro_news_pause_until"))||0;}catch(e){}
+let mlLastRun=0;
 function sigmoid(z){return 1/(1+Math.exp(-Math.max(-30,Math.min(30,z))))}
 function mlFeatures(cs){
  const close=cs.map(x=>x.c),volumes=cs.map(x=>x.v);
@@ -1354,10 +1343,6 @@ function calcRisk(){
  setText("riskWarning",notional>cap*lev?"WARNING: Position exceeds selected leverage capacity. Reduce size.":"Leverage capped at 10x. Loss estimate excludes fees, slippage and funding.");
 }
 ["riskCapital","riskPct","riskEntry","riskStop","riskLev"].forEach(id=>$(id).addEventListener("input",calcRisk));
-function activateNewsPause(){newsPauseUntil=Date.now()+1800000;try{localStorage.setItem("btc_signal_pro_news_pause_until",String(newsPauseUntil));}catch(e){}renderNewsPause();setText("status","Manual safety pause activated for 30 minutes.");}
-function clearNewsPause(){newsPauseUntil=0;try{localStorage.removeItem("btc_signal_pro_news_pause_until");}catch(e){}renderNewsPause();}
-function renderNewsPause(){const left=Math.max(0,newsPauseUntil-Date.now());setText("newsPauseStatus",left>0?"SIGNALS BLOCKED":"NO MANUAL PAUSE");setText("newsPauseTimer",Math.ceil(left/60000)+" min");if(!left){newsPauseUntil=0;try{localStorage.removeItem("btc_signal_pro_news_pause_until");}catch(e){}}}
-
 async function refreshAll(){
 if(busy)return;
 busy=true;
@@ -1378,7 +1363,6 @@ detectAbsorption();
 heatmap();
 renderLiveCVD();
 engine();
-renderNewsPause();
 if(Date.now()-mlLastRun>15*60000)loadML();
 setText("status","Data updated • "+new Date().toLocaleTimeString());
 
@@ -1401,7 +1385,6 @@ setInterval(refreshAll,30000);
 setInterval(renderLiq,10000);
 setInterval(renderWhales,5000);
 setInterval(renderLiveCVD,5000);
-setInterval(renderNewsPause,10000);
 calcRisk();
 
 document.addEventListener("visibilitychange",()=>{
