@@ -1,7 +1,7 @@
 {
   "system": "BTC Signal Pro Elite Hybrid Confluence Engine",
   "version": "4.1-hybrid-futures-confluence",
-  "generated_at": "2026-11-27T02:22:57.821579+00:00",
+  "generated_at": "2026-11-27T03:28:04.311635+00:00",
   "symbol": "BTCUSDT",
   "market_type": "BINANCE_USDM_FUTURES",
   "signal": "WAIT",
@@ -75,7 +75,7 @@
     ]
   },
   "news_guard": {
-    "generated_at": "2026-11-27T02:22:45.694355+00:00",
+    "generated_at": "2026-11-27T03:27:52.505266+00:00",
     "source": "Google News RSS public fallback",
     "available": true,
     "block": false,
