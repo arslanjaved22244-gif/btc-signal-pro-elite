@@ -1409,7 +1409,7 @@ def lstm_walk_forward_validate(rows, labels, sequence_length=24, folds=2):
     except Exception as exc:
         return {"status": "DEPENDENCY ERROR", "detail": str(exc)[:180]}
 
-    if len(rows) != len(labels) or len(rows) < sequence_length + 500:
+    if len(rows) != len(labels) or len(rows) < sequence_length + 400:
         return {"status": "INSUFFICIENT HISTORY", "samples": len(rows)}
 
     sequences = np.asarray([
@@ -1506,10 +1506,9 @@ def lstm_walk_forward_validate(rows, labels, sequence_length=24, folds=2):
         if not actual_all:
             return {"status":"INSUFFICIENT VALID WALK-FORWARD FOLDS","folds":[]}
         aggregate=classification_metrics(actual_all,predicted_all)
-        aggregate["majority_baseline_pct"]=round(
-            sum(sum(1 for a in fold["per_class"] if False) for fold in []) ,2
-        ) if False else round(
-            sum(max(sum(1 for v in actual_all if v==k)/len(actual_all)*100 for k in range(3))),2
+        aggregate["majority_baseline_pct"] = round(
+            max(sum(1 for value in actual_all if value == class_id)
+                for class_id in range(3)) / len(actual_all) * 100.0, 2
         )
         return {
             "status":"EVALUATION ONLY — NOT USED FOR SIGNAL APPROVAL",
