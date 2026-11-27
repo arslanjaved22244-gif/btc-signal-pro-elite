@@ -227,7 +227,7 @@ def get_okx_data(interval):
     # Expand public history so walk-forward validation has enough genuinely
     # out-of-sample opportunities; keep slower timeframes sufficiently deep
     # for EMA-200 and regime context without requesting excessive daily bars.
-    pages = {"5m": 20, "15m": 16, "1h": 12, "4h": 10, "1d": 8}[interval]
+    pages = {"5m": 40, "15m": 24, "1h": 16, "4h": 12, "1d": 8}[interval]
     for _ in range(pages):
         params = {"instId": "BTC-USDT-SWAP", "bar": bar, "limit": "300"}
         if cursor is not None:
