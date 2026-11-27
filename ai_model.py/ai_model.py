@@ -1129,54 +1129,66 @@ def update_prediction_feedback(data, result, path="prediction_feedback.json"):
 
     prediction_time = latest_time
     origin_index = len(candles) - 1
-    target_time = prediction_time + FUTURE_CANDLES * INTERVALS["5m"] * 60_000
-    threshold_pct = adaptive_move_threshold(candles, origin_index, FUTURE_CANDLES)
     models = {}
     scores = result.get("class_scores", {})
     if scores:
         models["primary_ensemble"] = {
             "class": max(CLASSES, key=lambda name: float(scores.get(name, 0.0))),
-            "scores": scores,
-            "approved_signal": result.get("signal", "WAIT")
+            "scores": scores, "approved_signal": result.get("signal", "WAIT"),
+            "horizon_candles": FUTURE_CANDLES
         }
+
     intelligence = result.get("advanced_intelligence", {})
     temporal = intelligence.get("temporal_sequence_model", {})
     if temporal.get("raw_model_class") in CLASSES:
-        models["temporal_sequence"] = {
-            "class": temporal["raw_model_class"],
-            "scores": temporal.get("scores", {}),
-            "approved_signal": temporal.get("signal", "WAIT")
+        models["temporal_sequence_15m"] = {
+            "class": temporal["raw_model_class"], "scores": temporal.get("scores", {}),
+            "approved_signal": temporal.get("signal", "WAIT"), "horizon_candles": 3
         }
-    tree = intelligence.get("tree_ensemble", {}).get("forecasts", {}).get("15m", {})
-    if tree.get("raw_model_class") in CLASSES:
-        models["tree_ensemble_15m"] = {
-            "class": tree["raw_model_class"],
-            "scores": tree.get("scores", {}),
-            "approved_signal": tree.get("signal", "WAIT")
-        }
+
+    horizon_steps = {"15m": 3, "30m": 6, "60m": 12, "1h": 12, "4h": 48}
+    for family, forecasts in (
+        ("temporal_sequence", intelligence.get("temporal_sequence_horizons", {}).get("forecasts", {})),
+        ("classic_horizon", intelligence.get("multi_horizon_forecasts", {})),
+        ("tree_ensemble", intelligence.get("tree_ensemble", {}).get("forecasts", {}))
+    ):
+        for horizon_name, forecast in forecasts.items():
+            if not isinstance(forecast, dict) or forecast.get("raw_model_class") not in CLASSES:
+                continue
+            horizon_candles = horizon_steps.get(horizon_name)
+            if not horizon_candles:
+                continue
+            model_name = f"{family}_{horizon_name}"
+            models[model_name] = {
+                "class": forecast["raw_model_class"],
+                "scores": forecast.get("scores", {}),
+                "approved_signal": forecast.get("signal", "WAIT"),
+                "horizon_candles": horizon_candles
+            }
 
     known = {item.get("id") for item in records}
     for model_name, prediction in models.items():
+        horizon_candles = int(prediction["horizon_candles"])
+        target_time = prediction_time + horizon_candles * INTERVALS["5m"] * 60_000
+        threshold_pct = adaptive_move_threshold(candles, origin_index, horizon_candles)
         record_id = f"{model_name}:{prediction_time}:{target_time}"
         if record_id in known:
             continue
         records.append({
-            "id": record_id,
-            "model": model_name,
-            "prediction_time": prediction_time,
-            "target_time": target_time,
-            "horizon_minutes": 15,
+            "id": record_id, "model": model_name,
+            "prediction_time": prediction_time, "target_time": target_time,
+            "horizon_minutes": horizon_candles * 5,
             "reference_price": candles[-1]["close"],
             "threshold_pct": threshold_pct,
             "predicted_class": prediction["class"],
             "approved_signal": prediction["approved_signal"],
-            "scores": prediction["scores"],
-            "status": "PENDING"
+            "scores": prediction["scores"], "status": "PENDING"
         })
 
     records = sorted(records, key=lambda item: int(item.get("prediction_time", 0)))[-1000:]
     summary = {}
-    for model_name in ("primary_ensemble", "temporal_sequence", "tree_ensemble_15m"):
+    model_names = sorted({item.get("model", "unknown") for item in records})
+    for model_name in model_names:
         evaluated = [item for item in records
                      if item.get("model") == model_name and item.get("status") == "EVALUATED"]
         pending = sum(1 for item in records
@@ -1212,14 +1224,14 @@ def update_prediction_feedback(data, result, path="prediction_feedback.json"):
     ledger = {
         "version": 1,
         "last_updated": datetime.now(timezone.utc).isoformat(),
-        "scoring_rule": "15m realized return classified using the prediction-time ATR neutral threshold",
+        "scoring_rule": "Each forecast is scored at its own horizon using a prediction-time ATR-scaled neutral threshold",
         "predictions": records
     }
     with open(path, "w", encoding="utf-8") as handle:
         json.dump(ledger, handle, indent=2)
     return {
         "status": "ACTIVE",
-        "method": "matured forecast vs subsequent closed 5m candle",
+        "method": "multi-horizon forecasts scored against subsequent closed 5m candles",
         "history_retained": len(records),
         "models": summary,
         "note": "Live outcomes are tracked for evaluation; this does not silently retrain or alter model weights."
