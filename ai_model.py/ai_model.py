@@ -858,9 +858,30 @@ def main():
     data = {}
     source = "Binance USD-M Futures public klines"
     symbol = "BTC/USDT"
+    data_source_by_tf = {}
     for tf in INTERVALS:
         print(f"Loading latest Binance USD-M Futures {tf} candles...")
-        data[tf] = get_binance_data(tf)
+        try:
+            data[tf] = get_binance_data(tf)
+            data_source_by_tf[tf] = "Binance USD-M Futures"
+        except Exception as futures_error:
+            print(f"Binance Futures unavailable for {tf}: {futures_error}")
+            interval_minutes = INTERVALS[tf]
+            print(f"Trying Kraken public BTC/USD {interval_minutes}m candles...")
+            try:
+                data[tf] = get_kraken_data(interval_minutes)
+                data_source_by_tf[tf] = "Kraken BTC/USD"
+            except Exception as fallback_error:
+                raise RuntimeError(
+                    f"No fresh market data for {tf}. Binance Futures: {futures_error}; "
+                    f"Kraken fallback: {fallback_error}"
+                ) from fallback_error
+    used_sources = sorted(set(data_source_by_tf.values()))
+    source = " + ".join(used_sources) + " public OHLC candles"
+    if len(used_sources) > 1:
+        print(f"Mixed market data sources by timeframe: {data_source_by_tf}")
+    else:
+        print(f"Market data source: {source}")
     latest_candle_time = data["5m"][-1]["time"]
     data_age_minutes = round((datetime.now(timezone.utc).timestamp() * 1000 - latest_candle_time) / 60000, 2)
     if data_age_minutes > 15:
