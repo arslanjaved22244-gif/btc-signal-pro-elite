@@ -322,6 +322,29 @@ def feed_health(market, news, liquidation, comparison, now=None):
         # Exchange APIs differ in ascending/descending order; use the newest timestamp.
         if ages:
             oi_stamp = round(min(ages), 2)
+    # Some regional exchange fallbacks expose a current OI snapshot but not
+    # historical OI rows. Count it only when the parent market snapshot itself
+    # is timestamped and fresh; never describe this as an OI history series.
+    oi_current = feeds.get("open_interest_current", {})
+    oi_current_ok = (
+        oi_stamp is None and oi_current.get("ok") is True
+        and isinstance(oi_current.get("data"), dict)
+        and oi_current.get("data")
+        and generated_age is not None and 0 <= generated_age <= 15
+    )
+    oi_ok = (bool(oi.get("ok")) and bool(oi_rows) and oi_stamp is not None and oi_stamp <= 15) or oi_current_ok
+    oi_detail = (
+        f"historical OI latest row age {oi_stamp}m" if oi_stamp is not None
+        else "current OI snapshot; historical series unavailable" if oi_current_ok
+        else "timestamp unavailable"
+    )
+    derived = market.get("derived", {})
+    has_visible_depth = (
+        derived.get("visible_depth_bid_notional_usdt") is not None
+        and derived.get("visible_depth_ask_notional_usdt") is not None
+        and generated_age is not None and 0 <= generated_age <= 2
+    )
+    order_book_ok = feeds.get("order_book", {}).get("ok") is True or has_visible_depth
     taker = feeds.get("taker_flow_5m", {})
     taker_rows = taker.get("data", []) if taker.get("ok") else []
     news_age = _age_minutes(news.get("generated_at"), now)
@@ -335,14 +358,15 @@ def feed_health(market, news, liquidation, comparison, now=None):
          f"candle age {five_age}s" if five_age is not None else "age unavailable"),
         ("all_five_timeframes", core, "5m / 15m / 1h / 4h / 1d"),
         ("funding_snapshot", bool(feeds.get("mark_price_funding", {}).get("ok")), "public mark-price/funding endpoint"),
-        ("open_interest_history", bool(oi.get("ok")) and bool(oi_rows) and oi_stamp is not None and oi_stamp <= 15,
-         f"latest OI row age {oi_stamp}m" if oi_stamp is not None else "timestamp unavailable"),
+        ("open_interest_data", oi_ok, oi_detail),
         ("executed_taker_flow", bool(taker.get("ok")) and isinstance(taker_rows, list) and bool(taker_rows),
          "exchange taker buy/sell volume feed; not account positioning"),
         ("rolling_cvd", market.get("derived", {}).get("cvd_base") is not None and int(market.get("derived", {}).get("trade_count", 0) or 0) > 0,
          "latest aggregate trades only; not exchange-wide historical CVD"),
-        ("order_book_depth", bool(feeds.get("order_book", {}).get("ok")),
-         "visible public depth snapshot"),
+        ("order_book_depth", order_book_ok,
+         "visible public depth snapshot" if feeds.get("order_book", {}).get("ok") else
+         f"derived top-20 depth snapshot; market age {generated_age}m" if has_visible_depth else
+         "depth snapshot unavailable or stale"),
         ("fresh_news_scan", news.get("available") is True and news_age is not None and news_age <= 15,
          f"news snapshot age {news_age}m" if news_age is not None else "timestamp unavailable"),
         ("trump_public_post_archive", any("trump" in str(x).lower() for x in trump_sources),
