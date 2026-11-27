@@ -135,13 +135,15 @@ def collect_binance():
     # Order-book imbalance from visible top-100 levels, not full-market depth.
     book = result["feeds"]["order_book"]
     if book["ok"] and isinstance(book["data"], dict):
-        bids = sum(float(level[1]) for level in book["data"].get("bids", []))
-        asks = sum(float(level[1]) for level in book["data"].get("asks", []))
-        total = bids + asks
-        result["derived"]["visible_depth_bid_base"] = round(bids, 8)
-        result["derived"]["visible_depth_ask_base"] = round(asks, 8)
-        result["derived"]["order_book_imbalance"] = round((bids - asks) / total, 6) if total else None
-        result["derived"]["order_book_note"] = "Top-100 visible levels only; order book can change rapidly."
+        bids = book["data"].get("bids", [])
+        asks = book["data"].get("asks", [])
+        bid_notional = sum(float(level[0]) * float(level[1]) for level in bids[:20])
+        ask_notional = sum(float(level[0]) * float(level[1]) for level in asks[:20])
+        result["derived"]["visible_depth_bid_notional_usdt"] = round(bid_notional, 2)
+        result["derived"]["visible_depth_ask_notional_usdt"] = round(ask_notional, 2)
+        result["derived"]["order_book_imbalance"] = normalized_order_book_imbalance(bids, asks, depth=20)
+        result["derived"]["order_book_imbalance_method"] = "Top-20 visible levels; quote-notional (price × quantity); (bid-ask)/(bid+ask)"
+        result["derived"]["order_book_note"] = "Top-20 visible quote-notional depth; rapidly changing snapshot, not full-market liquidity."
 
     # Public REST does not provide a dependable historical liquidation tape.
     # Do not fabricate liquidation totals from unrelated endpoints.
@@ -540,6 +542,14 @@ def collect_okx():
     result["data_quality"]["warnings"].append("OKX BTC-USDT-SWAP is a separate exchange perpetual reference; confirm execution venue price and liquidity.")
     return result
 
+
+
+def normalized_order_book_imbalance(bids, asks, depth=20):
+    """Quote-notional imbalance over the first N visible price levels."""
+    bid_notional = sum(float(level[0]) * float(level[1]) for level in bids[:depth])
+    ask_notional = sum(float(level[0]) * float(level[1]) for level in asks[:depth])
+    total = bid_notional + ask_notional
+    return round((bid_notional - ask_notional) / total, 6) if total else None
 
 
 def collect():
