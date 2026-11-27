@@ -1,7 +1,7 @@
 {
   "system": "BTC Signal Pro Elite Hybrid Confluence Engine",
   "version": "4.1-hybrid-futures-confluence",
-  "generated_at": "2026-11-27T01:41:32.584991+00:00",
+  "generated_at": "2026-11-27T01:44:40.087800+00:00",
   "symbol": "BTCUSDT",
   "market_type": "BINANCE_USDM_FUTURES",
   "signal": "WAIT",
@@ -60,20 +60,22 @@
     "futures_only": true,
     "status": "DEGRADED",
     "warnings": [
-      "One or more Futures candle timeframes failed.",
-      "5m Futures candle data is stale.",
-      "mark_price_funding feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
-      "open_interest_current feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
-      "open_interest_history_5m feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
-      "taker_flow_5m feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
-      "order_book feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
-      "recent_agg_trades feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
-      "funding_history feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
-      "Liquidation feed is not connected yet."
+      "One or more Bybit linear Futures candle timeframes failed.",
+      "5m Bybit linear Futures candle data is stale.",
+      "mark_price_funding feed unavailable: HTTP Error 403: Forbidden",
+      "open_interest_current feed unavailable: HTTP Error 403: Forbidden",
+      "open_interest_history_5m feed unavailable: HTTP Error 403: Forbidden",
+      "taker_flow_5m feed unavailable: HTTP Error 403: Forbidden",
+      "order_book feed unavailable: HTTP Error 403: Forbidden",
+      "recent_agg_trades feed unavailable: HTTP Error 403: Forbidden",
+      "funding_history feed unavailable: HTTP Error 403: Forbidden",
+      "Using Bybit linear USDT perpetual reference data because Binance API returned empty HTTP 202 responses. Verify Binance execution price independently.",
+      "Liquidation monitor remains Binance-only and is not treated as Bybit liquidation coverage.",
+      "Bybit fallback also failed core data checks; Binance diagnostics retained below."
     ]
   },
   "news_guard": {
-    "generated_at": "2026-11-27T01:40:33.820102+00:00",
+    "generated_at": "2026-11-27T01:43:44.878306+00:00",
     "source": "Google News RSS public fallback",
     "available": true,
     "block": false,
@@ -88,16 +90,18 @@
     "range_spike": false
   },
   "warnings": [
-    "One or more Futures candle timeframes failed.",
-    "5m Futures candle data is stale.",
-    "mark_price_funding feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
-    "open_interest_current feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
-    "open_interest_history_5m feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
-    "taker_flow_5m feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
-    "order_book feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
-    "recent_agg_trades feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
-    "funding_history feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
-    "Liquidation feed is not connected yet."
+    "One or more Bybit linear Futures candle timeframes failed.",
+    "5m Bybit linear Futures candle data is stale.",
+    "mark_price_funding feed unavailable: HTTP Error 403: Forbidden",
+    "open_interest_current feed unavailable: HTTP Error 403: Forbidden",
+    "open_interest_history_5m feed unavailable: HTTP Error 403: Forbidden",
+    "taker_flow_5m feed unavailable: HTTP Error 403: Forbidden",
+    "order_book feed unavailable: HTTP Error 403: Forbidden",
+    "recent_agg_trades feed unavailable: HTTP Error 403: Forbidden",
+    "funding_history feed unavailable: HTTP Error 403: Forbidden",
+    "Using Bybit linear USDT perpetual reference data because Binance API returned empty HTTP 202 responses. Verify Binance execution price independently.",
+    "Liquidation monitor remains Binance-only and is not treated as Bybit liquidation coverage.",
+    "Bybit fallback also failed core data checks; Binance diagnostics retained below."
   ],
   "execution": "MANUAL_ONLY_NO_ORDERS"
 }
