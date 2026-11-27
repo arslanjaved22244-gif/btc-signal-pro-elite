@@ -1,14 +1,14 @@
 {
-  "price": 61734.5,
+  "price": 61749.2,
   "funding_rate": -1.62498395841e-05,
   "funding_percent": -0.00162498395841,
-  "open_interest": 3217778.560000011,
+  "open_interest": 3217731.930000011,
   "oi_change_5m_pct": 0.14742963174039814,
   "oi_history": [
     {
       "timestamp": "1795779300000",
       "oi_contracts": "3217584.86000001163",
-      "oi_coin": "32142.448300000112",
+      "oi_coin": "32175.8486000001163",
       "oi_usd": "1985359256.50524717610542"
     },
     {
@@ -18,34 +18,27 @@
       "oi_usd": "1982436557.58890681779616"
     }
   ],
-  "orderbook_imbalance": 0.3203942337846951,
-  "cvd_proxy": -0.6582820066763836,
-  "taker_buy_ratio": 0.17085899666180818,
+  "orderbook_imbalance": 0.4314843031517927,
+  "cvd_proxy": 0.5374833623425811,
+  "taker_buy_ratio": 0.7687416811712906,
   "large_trades": [],
   "data_source": "OKX public BTC-USDT-SWAP perpetual API",
-  "as_of": "2026-11-27T11:39:37.127366+00:00",
+  "as_of": "2026-11-27T11:40:15.193954+00:00",
   "oi_note": "OKX public 5-minute open-interest history when available",
   "oi_change_source": "OKX 5-minute OI history",
   "signal": "WAIT",
   "reason": "News safety pause active (minimum 30 minutes)",
   "news_pause_active": true,
-  "pause_until": "2026-11-27T12:09:38.173743+00:00",
+  "pause_until": "2026-11-27T12:10:16.242984+00:00",
   "news_alerts": [
-    {
-      "title": "Rep. Maxine Waters Vows to Stop \"Trump's Crypto Corruption\" in New Congress - CoinCodex",
-      "published": "2026-11-27T10:40:00+00:00",
-      "age_minutes": 59.6,
-      "source": "Google News RSS",
-      "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxQR1ZrZ1Y2M1pmcE1UaXc1M3RTV0lwTXhRRnZRSi1GdUZXb1E4WlhRZ01qSHFBN19CQnkwVzM0ZjhGaHl4VE5XS2lhNEN6RkZ3YmRwVWJ4OG9PZnZfWUJRaVRTM1pMZXlmQ3BSQjJBYnd4dTc2X0RxcUwwUnFCTEw5S3dtaUJKdlhHZ25zcms5RTdicEdhUDJkdkxxQzVjRG1UTDNmUlRNZlZZZVRU?oc=5"
-    },
     {
       "title": "We support Iraqi Prime Minister Ali al-Zaidi\u2019s efforts to assert state authority throughout Iraq, stop the smuggling of Iraqi oil, end corruption, and bring all weapons under the exclusive control of the state.We support Prime Minister al-Zaidi\u2019s efforts to build a united, prospe",
       "published": "2026-11-27T10:23:58+00:00",
-      "age_minutes": 75.7,
+      "age_minutes": 76.3,
       "source": "Trump's Truth archive RSS (third-party)",
       "url": "https://www.trumpstruth.org/statuses/43750"
     }
   ],
-  "updated_at": "2026-11-27T11:39:38.173743+00:00",
+  "updated_at": "2026-11-27T11:40:16.242984+00:00",
   "safety_note": "Signal-only; manual trading only. Large trades are trade-size alerts, not verified whale identities. Trump social posts are monitored through a third-party archive RSS, not an official API."
 }
