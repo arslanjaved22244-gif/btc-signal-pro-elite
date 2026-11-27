@@ -100,6 +100,58 @@ def feed_data(market, key):
     return feed.get("data") if feed.get("ok") else None
 
 
+MAX_MODEL_MARKET_BASIS_PCT = 0.25
+MAX_MODEL_CANDLE_SKEW_MINUTES = 15
+
+
+def validate_model_market_alignment(model, market):
+    """Require fresh, price-aligned perpetual Futures before using cross-venue ML."""
+    model_source = str(model.get("data_source", ""))
+    model_tf_source = str(model.get("data_source_by_timeframe", {}).get("5m", ""))
+    source_text = (model_source + " " + model_tf_source).lower()
+    market_exchange = str(market.get("exchange", ""))
+    market_text = (market_exchange + " " + str(market.get("market_type", ""))).lower()
+    model_is_futures = "futures" in source_text and "spot" not in source_text
+    market_is_futures = market.get("data_quality", {}).get("futures_only") is True
+    if not model_is_futures or not market_is_futures:
+        return {"passed": False, "type": "BLOCKED",
+                "reason": "Both model and live market must be verified perpetual Futures."}
+    if market_exchange and market_exchange.lower() in source_text:
+        return {"passed": True, "type": "SAME_VENUE",
+                "basis_pct": 0.0, "candle_skew_minutes": 0.0,
+                "reason": "Model and live market identify the same Futures venue."}
+    ai_symbol = str(model.get("symbol", "BTC/USDT")).upper().replace("/", "").replace("-", "")
+    market_symbol = str(market.get("symbol", "BTCUSDT")).upper().replace("/", "").replace("-", "")
+    if "BTC" not in ai_symbol or "USDT" not in ai_symbol or "BTC" not in market_symbol or "USDT" not in market_symbol:
+        return {"passed": False, "type": "BLOCKED",
+                "reason": "Cross-venue model alignment is restricted to BTC/USDT perpetual Futures."}
+    rows = market.get("timeframes", {}).get("5m", {}).get("candles", [])
+    try:
+        market_price = float(rows[-1]["close"])
+        model_price = float(model.get("last_price"))
+        market_time = int(rows[-1]["time"])
+        model_time = int(model.get("last_candle_time"))
+        if min(market_price, model_price, market_time, model_time) <= 0:
+            raise ValueError("invalid alignment inputs")
+        basis_pct = abs(model_price / market_price - 1.0) * 100.0
+        skew_minutes = abs(model_time - market_time) / 60000.0
+    except (IndexError, KeyError, TypeError, ValueError):
+        return {"passed": False, "type": "BLOCKED",
+                "reason": "Cross-venue model alignment requires valid current prices and candle timestamps."}
+    passed = basis_pct <= MAX_MODEL_MARKET_BASIS_PCT and skew_minutes <= MAX_MODEL_CANDLE_SKEW_MINUTES
+    return {
+        "passed": passed,
+        "type": "CROSS_VENUE_FUTURES" if passed else "BLOCKED",
+        "model_venue": model_source, "market_venue": market_exchange or market_text[:80],
+        "basis_pct": round(basis_pct, 5),
+        "candle_skew_minutes": round(skew_minutes, 2),
+        "max_basis_pct": MAX_MODEL_MARKET_BASIS_PCT,
+        "max_candle_skew_minutes": MAX_MODEL_CANDLE_SKEW_MINUTES,
+        "reason": ("Cross-venue perpetual prices and candle timestamps are aligned."
+                   if passed else "Cross-venue price basis or candle-time skew exceeds safety tolerance.")
+    }
+
+
 def detect_recent_liquidity_sweep(market):
     """Detect a confirmed wick-and-reclaim on recent closed 15m Futures candles."""
     item = market.get("timeframes", {}).get("15m", {})
@@ -245,9 +297,15 @@ def run():
     model_source = str(model.get("data_source", ""))
     model_source_is_futures = "Futures" in model_source and "Spot" not in model_source
     model_validation_passed = model.get("validation_gate", {}).get("passed") is True
-    # A Futures data source alone is not enough: the global chronological
-    # walk-forward gate must also pass before the model can authorize a trade.
-    model_is_futures = model_source_is_futures and model_validation_passed
+    # Same-venue Futures are compared directly; cross-venue model outputs must
+    # also pass strict price-basis and candle-time alignment checks.
+    model_market_alignment = validate_model_market_alignment(model, market)
+    model_is_futures = (
+        model_source_is_futures and model_validation_passed
+        and model_market_alignment.get("passed") is True
+    )
+    if model_source_is_futures and not model_market_alignment.get("passed"):
+        warnings.append("Cross-venue AI authorization blocked: " + str(model_market_alignment.get("reason", "market alignment failed")))
     model_scores = model.get("class_scores", {})
     ml_bias = "WAIT"
     if model_is_futures:
@@ -359,7 +417,8 @@ def run():
         "ml_context": {"model_version": model.get("model_version"),
                        "data_source": model_source, "source_is_futures": model_source_is_futures,
                        "validation_passed": model_validation_passed,
-                       "futures_source": model_is_futures, "signal": ml_bias},
+                       "futures_source": model_is_futures, "market_alignment": model_market_alignment,
+                       "signal": ml_bias},
         "risk_levels": risk,
         "data_quality": quality,
         "news_guard": news,
