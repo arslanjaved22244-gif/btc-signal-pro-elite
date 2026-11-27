@@ -265,6 +265,47 @@
       "range_low": 61353.3,
       "explanation": "Low directional separation"
     },
+    "multi_timeframe_trend_alignment": {
+      "alignment": "PARTIAL BEARISH ALIGNMENT",
+      "alignment_score": -0.2,
+      "bullish_timeframes": 0,
+      "bearish_timeframes": 1,
+      "mixed_timeframes": 4,
+      "timeframes_checked": 5,
+      "by_timeframe": {
+        "5m": {
+          "trend": "MIXED",
+          "ema20_slope_pct": -0.0323,
+          "close_vs_ema200_pct": 0.344,
+          "samples": 720
+        },
+        "15m": {
+          "trend": "MIXED",
+          "ema20_slope_pct": -0.0133,
+          "close_vs_ema200_pct": 1.2801,
+          "samples": 720
+        },
+        "1h": {
+          "trend": "MIXED",
+          "ema20_slope_pct": 0.4515,
+          "close_vs_ema200_pct": 0.3683,
+          "samples": 720
+        },
+        "4h": {
+          "trend": "MIXED",
+          "ema20_slope_pct": 0.6685,
+          "close_vs_ema200_pct": -10.5091,
+          "samples": 720
+        },
+        "1d": {
+          "trend": "BEARISH",
+          "ema20_slope_pct": -4.5592,
+          "close_vs_ema200_pct": -18.8342,
+          "samples": 720
+        }
+      },
+      "note": "EMA alignment is contextual confirmation, not a standalone entry signal."
+    },
     "multi_horizon_forecasts": {
       "15m": {
         "signal": "WAIT",
@@ -1010,7 +1051,7 @@
   "last_candle_time": 1795782300000,
   "data_freshness": {
     "status": "FRESH",
-    "latest_5m_candle_age_minutes": 8.75,
+    "latest_5m_candle_age_minutes": 10.16,
     "latest_5m_candle_time": "2026-11-27T12:25:00+00:00",
     "source_by_timeframe": {
       "5m": "Kraken BTC/USD",
@@ -1021,7 +1062,7 @@
     },
     "max_allowed_age_minutes": 15
   },
-  "generated_at": "2026-11-27T12:33:58.104408+00:00",
+  "generated_at": "2026-11-27T12:35:31.215336+00:00",
   "limitations": [
     "When Binance USD-M Futures is unavailable, Kraken BTC/USD spot OHLC is used as a proxy and is not equivalent to BTC/USDT Futures. Funding, open interest, CVD, order book and liquidation remain separate confluence inputs.",
     "Class scores are model scores, not calibrated real-world win probabilities.",
