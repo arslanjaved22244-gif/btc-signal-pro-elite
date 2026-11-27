@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - "bot/monitor.py"
+      - "liquidation_monitor.py"
       - ".github/workflows/btc-monitor.yml"
   schedule:
     - cron: "*/5 * * * *"
