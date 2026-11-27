@@ -1,18 +1,18 @@
 {
   "source": "OKX BTC-USDT-SWAP public ticker; same-exchange reference and evaluation; directional close comparison only",
-  "updated_at": "2026-11-27T18:37:46.129312+00:00",
+  "updated_at": "2026-11-27T18:40:18.695061+00:00",
   "model_generated_at": "2026-11-27T18:32:28.288675+00:00",
-  "current_price": 59805.8,
+  "current_price": 59817.3,
   "stats": {
     "15m": {
-      "evaluated": 7,
+      "evaluated": 8,
       "directional_calls": 1,
       "correct": 1,
       "directional_accuracy_pct": 100.0,
       "raw_directional_calls": 0,
       "raw_correct": 0,
       "raw_directional_accuracy_pct": null,
-      "wait_abstentions": 6,
+      "wait_abstentions": 7,
       "excluded_legacy_source_mismatch": 4
     },
     "30m": {
@@ -793,11 +793,11 @@
       "model_source": "OKX BTC-USDT-SWAP Futures public OHLC candles",
       "reference_price": 59839.8,
       "reference_exchange": "OKX BTC-USDT-SWAP",
-      "outcome": null,
-      "evaluated_at": null,
-      "realized_change_pct": null,
+      "outcome": "ABSTAINED",
+      "evaluated_at": "2026-11-27T18:40:18.695061+00:00",
+      "realized_change_pct": -0.03777,
       "correct": null,
-      "raw_correct": null,
+      "raw_correct": false,
       "validation_status": "VALIDATED TREE ENSEMBLE"
     },
     {
