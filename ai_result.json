@@ -369,6 +369,14 @@
         "status": "WEAK EDGE \u2014 WAIT"
       }
     },
+    "multi_horizon_consensus": {
+      "validated_directional_forecasts": {},
+      "opposite_horizons_to_primary": [],
+      "opposite_horizon_count": 0,
+      "veto_threshold": 2,
+      "veto_reason": null,
+      "note": "Only horizons passing their own validation gate are counted; this is a conflict filter, not a guarantee."
+    },
     "tree_ensemble": {
       "status": "READY",
       "algorithms": [
@@ -1052,7 +1060,7 @@
   "last_candle_time": 1795782600000,
   "data_freshness": {
     "status": "FRESH",
-    "latest_5m_candle_age_minutes": 7.43,
+    "latest_5m_candle_age_minutes": 8.51,
     "latest_5m_candle_time": "2026-11-27T12:30:00+00:00",
     "source_by_timeframe": {
       "5m": "Kraken BTC/USD",
@@ -1063,7 +1071,7 @@
     },
     "max_allowed_age_minutes": 15
   },
-  "generated_at": "2026-11-27T12:37:47.019042+00:00",
+  "generated_at": "2026-11-27T12:38:47.746668+00:00",
   "limitations": [
     "When Binance USD-M Futures is unavailable, Kraken BTC/USD spot OHLC is used as a proxy and is not equivalent to BTC/USDT Futures. Funding, open interest, CVD, order book and liquidation remain separate confluence inputs.",
     "Class scores are model scores, not calibrated real-world win probabilities.",
