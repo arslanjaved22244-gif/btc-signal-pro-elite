@@ -277,6 +277,87 @@ def scenario_forecasts(market, regime):
     return output
 
 
+
+def _parse_utc(value):
+    try:
+        parsed = datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+        return parsed.replace(tzinfo=timezone.utc) if parsed.tzinfo is None else parsed.astimezone(timezone.utc)
+    except (TypeError, ValueError):
+        return None
+
+
+def _age_minutes(value, now):
+    stamp = _parse_utc(value)
+    if stamp is None:
+        return None
+    age = (now - stamp).total_seconds() / 60
+    return round(age, 2) if age >= -1 else None
+
+
+def feed_health(market, news, liquidation, comparison, now=None):
+    """Eleven-point source audit. Availability is never presented as proof of accuracy."""
+    now = now or datetime.now(timezone.utc)
+    tf = market.get("timeframes", {})
+    feeds = market.get("feeds", {})
+    generated_age = _age_minutes(market.get("generated_at"), now)
+    five = tf.get("5m", {})
+    five_age = five.get("age_seconds")
+    core = all(tf.get(name, {}).get("ok") is True for name in ("5m", "15m", "1h", "4h", "1d"))
+    oi = feeds.get("open_interest_history_5m", {})
+    oi_rows = oi.get("data", []) if oi.get("ok") else []
+    oi_stamp = None
+    if isinstance(oi_rows, list) and oi_rows:
+        last = oi_rows[-1]
+        raw_stamp = last.get("timestamp") if isinstance(last, dict) else None
+        try:
+            raw_stamp = int(raw_stamp)
+            if raw_stamp < 10_000_000_000:
+                raw_stamp *= 1000
+            oi_age = (now.timestamp() * 1000 - raw_stamp) / 60000
+            oi_stamp = round(oi_age, 2) if -1 <= oi_age <= 1e6 else None
+        except (TypeError, ValueError):
+            pass
+    taker = feeds.get("taker_flow_5m", {})
+    taker_rows = taker.get("data", []) if taker.get("ok") else []
+    news_age = _age_minutes(news.get("generated_at"), now)
+    compare_age = _age_minutes(comparison.get("generated_at"), now)
+    venues = comparison.get("venues", {})
+    venue_count = sum(1 for item in venues.values() if isinstance(item, dict) and item.get("available") is True)
+    last_liq_age = _age_minutes(liquidation.get("last_message_at"), now)
+    trump_sources = news.get("sources", [])
+    checks = [
+        ("5m_futures_candles", bool(five.get("ok")) and isinstance(five_age, (int, float)) and five_age <= 600,
+         f"candle age {five_age}s" if five_age is not None else "age unavailable"),
+        ("all_five_timeframes", core, "5m / 15m / 1h / 4h / 1d"),
+        ("funding_snapshot", bool(feeds.get("mark_price_funding", {}).get("ok")), "public mark-price/funding endpoint"),
+        ("open_interest_history", bool(oi.get("ok")) and bool(oi_rows) and oi_stamp is not None and oi_stamp <= 15,
+         f"latest OI row age {oi_stamp}m" if oi_stamp is not None else "timestamp unavailable"),
+        ("executed_taker_flow", bool(taker.get("ok")) and isinstance(taker_rows, list) and bool(taker_rows),
+         "exchange taker buy/sell volume feed; not account positioning"),
+        ("rolling_cvd", market.get("derived", {}).get("cvd_base") is not None and int(market.get("derived", {}).get("trade_count", 0) or 0) > 0,
+         "latest aggregate trades only; not exchange-wide historical CVD"),
+        ("order_book_depth", bool(feeds.get("order_book", {}).get("ok")),
+         "visible public depth snapshot"),
+        ("fresh_news_scan", news.get("available") is True and news_age is not None and news_age <= 15,
+         f"news snapshot age {news_age}m" if news_age is not None else "timestamp unavailable"),
+        ("trump_public_post_archive", any("trump" in str(x).lower() for x in trump_sources),
+         "unofficial third-party RSS archive; may lag or omit posts"),
+        ("cross_exchange_perpetuals", venue_count >= 2 and compare_age is not None and compare_age <= 15,
+         f"{venue_count} venues available; snapshot age {compare_age}m" if compare_age is not None else f"{venue_count} venues; timestamp unavailable"),
+        ("continuous_liquidation_stream", liquidation.get("continuous") is True and liquidation.get("connected") is True and last_liq_age is not None and last_liq_age <= 2,
+         f"last WebSocket event/message age {last_liq_age}m" if last_liq_age is not None else "not connected / no recent message")
+    ]
+    items = [{"name": name, "passed": bool(passed), "detail": detail} for name, passed, detail in checks]
+    return {
+        "status": "ALL_AVAILABLE" if all(x["passed"] for x in items) else "PARTIAL",
+        "passed": sum(x["passed"] for x in items),
+        "total": len(items),
+        "items": items,
+        "market_snapshot_age_minutes": generated_age,
+        "note": "A feed marked unavailable is not guessed or replaced. This audit reports source presence and freshness, not signal accuracy. GitHub Actions sampled liquidation data does not count as a continuous stream."
+    }
+
+
 def quality_gate(ai, paper, metrics):
     validation = ai.get("validation_gate", {})
     walk = ai.get("walk_forward_metrics", {})
@@ -303,6 +384,9 @@ def quality_gate(ai, paper, metrics):
 def build():
     market, ai, paper, metrics, signal = (load(p) for p in
         (MARKET_FILE, AI_FILE, PAPER_FILE, METRICS_FILE, SIGNAL_FILE))
+    news = load("event_guard.json")
+    liquidation = load("liquidation_data.json")
+    comparison = load("exchange_comparison.json")
     regime = market_regime(market)
     return {
         "system": "BTC Signal Pro Elite Institutional Intelligence",
@@ -315,6 +399,7 @@ def build():
         "macro_correlations": macro_correlations(),
         "next_move_scenarios": scenario_forecasts(market, regime),
         "signal_quality_gate": quality_gate(ai, paper, metrics),
+        "feed_health": feed_health(market, news, liquidation, comparison),
         "execution": "MANUAL_ONLY_NO_ORDERS",
         "disclaimer": "Public-data research context only. Scenarios are not calibrated probabilities; unavailable feeds are explicitly marked."
     }
