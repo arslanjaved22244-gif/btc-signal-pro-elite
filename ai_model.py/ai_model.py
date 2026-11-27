@@ -817,6 +817,77 @@ def advanced_horizon_models(data, prepared):
     return output
 
 
+
+def temporal_sequence_forecast(rows, labels, sequence_length=12):
+    """Train a neural model on ordered windows of the previous 12 five-minute feature vectors."""
+    try:
+        import numpy as np
+        from sklearn.pipeline import make_pipeline
+        from sklearn.preprocessing import StandardScaler
+        from sklearn.neural_network import MLPClassifier
+    except Exception as exc:
+        return {"signal": "WAIT", "status": "DEPENDENCY ERROR", "detail": str(exc)[:200]}
+    if len(rows) != len(labels) or len(rows) < sequence_length + 350:
+        return {"signal": "WAIT", "status": "INSUFFICIENT SEQUENCE HISTORY",
+                "samples": len(rows), "sequence_length": sequence_length}
+    sequences, sequence_labels = [], []
+    for end in range(sequence_length - 1, len(rows)):
+        window = rows[end - sequence_length + 1:end + 1]
+        sequences.append([value for timestep in window for value in timestep])
+        sequence_labels.append(labels[end])
+    split = int(len(sequences) * 0.80)
+    purge = sequence_length + FUTURE_CANDLES
+    train_end = split - purge
+    x_train = np.asarray(sequences[:train_end], dtype=float)
+    y_train = np.asarray(sequence_labels[:train_end], dtype=int)
+    x_test = np.asarray(sequences[split:], dtype=float)
+    y_test = np.asarray(sequence_labels[split:], dtype=int)
+    if len(x_train) < 250 or len(x_test) < 40 or len(set(y_train.tolist())) < 2:
+        return {"signal": "WAIT", "status": "INSUFFICIENT PURGED HOLDOUT",
+                "training_samples": len(x_train), "validation_samples": len(x_test)}
+    network = make_pipeline(
+        StandardScaler(),
+        MLPClassifier(hidden_layer_sizes=(96, 48, 24), activation="relu",
+                      solver="adam", alpha=0.02, batch_size=64,
+                      learning_rate_init=0.0007, max_iter=100,
+                      early_stopping=False, shuffle=False, random_state=42)
+    )
+    try:
+        network.fit(x_train, y_train)
+        raw = network.predict_proba(x_test)
+        fitted_classes = list(network[-1].classes_)
+        mapped = [[float(row[fitted_classes.index(k)]) if k in fitted_classes else 0.0
+                   for k in range(len(CLASSES))] for row in raw]
+        predictions = [max(range(3), key=lambda k: probs[k]) for probs in mapped]
+        metrics = classification_metrics(y_test.tolist(), predictions)
+        majority = max(sequence_labels[split:].count(k) / max(1, len(y_test)) * 100.0
+                       for k in range(len(CLASSES)))
+        latest_raw = network.predict_proba(np.asarray([sequences[-1]], dtype=float))[0]
+        latest_probs = [float(latest_raw[fitted_classes.index(k)]) if k in fitted_classes else 0.0
+                        for k in range(3)]
+        total = sum(latest_probs) or 1.0
+        latest_probs = [value / total for value in latest_probs]
+        ranked = sorted(latest_probs, reverse=True)
+        margin = ranked[0] - ranked[1]
+        candidate = CLASSES[max(range(3), key=lambda k: latest_probs[k])]
+        passed = (metrics["accuracy"] >= 38.0 and metrics["accuracy"] > majority
+                  and metrics["macro_f1"] >= 30.0 and margin >= 0.10
+                  and candidate != "WAIT")
+        return {
+            "signal": candidate if passed else "WAIT", "raw_model_class": candidate,
+            "scores": {name: round(latest_probs[k] * 100, 2) for k, name in enumerate(CLASSES)},
+            "confidence_margin": round(margin * 100, 2),
+            "holdout_accuracy": metrics["accuracy"], "macro_f1": metrics["macro_f1"],
+            "majority_baseline_pct": round(majority, 2),
+            "training_samples": len(x_train), "validation_samples": len(x_test),
+            "sequence_length": sequence_length,
+            "input_order": "12 consecutive 5m feature vectors; oldest to newest",
+            "architecture": "StandardScaler + MLP 96-48-24 (ReLU)",
+            "status": "VALIDATED TEMPORAL MODEL" if passed else "WEAK EDGE — WAIT"
+        }
+    except Exception as exc:
+        return {"signal": "WAIT", "status": "TRAINING ERROR", "detail": str(exc)[:240]}
+
 def advanced_tree_ensemble(data, prepared):
     """Chronological Random Forest + gradient boosting + XGBoost ensemble."""
     try:
@@ -957,6 +1028,7 @@ def main():
     scores = predict_ensemble(final_model, latest)
     regime_analysis = advanced_regime(data)
     horizon_forecasts = advanced_horizon_models(data, prepared)
+    temporal_model = temporal_sequence_forecast(rows, labels, sequence_length=12)
     tree_ensemble = advanced_tree_ensemble(data, prepared)
     tree_blend_applied = False
     tree_primary = tree_ensemble.get("forecasts", {}).get("15m", {})
@@ -988,6 +1060,10 @@ def main():
     elif signal == "SHORT" and trend_alignment["bullish_timeframes"] >= 3 and trend_alignment["bullish_timeframes"] > trend_alignment["bearish_timeframes"]:
         signal = "WAIT"
         alignment_veto = "SHORT blocked: at least 3 timeframes have bullish EMA structure."
+    temporal_veto = None
+    if signal in ("LONG", "SHORT") and temporal_model.get("signal") in ("LONG", "SHORT") and temporal_model["signal"] != signal:
+        signal = "WAIT"
+        temporal_veto = "Primary signal conflicts with the independently validated temporal neural model."
     valid_horizon_signals = {
         timeframe: forecast.get("signal")
         for timeframe, forecast in horizon_forecasts.items()
@@ -1039,7 +1115,7 @@ def main():
         "ensemble_configuration": {"models": ["full_history_logistic", "recent_regime_logistic", "nearest_centroid", "decision_stumps"], "weights": {"full_history_logistic": 0.35, "recent_regime_logistic": 0.20, "nearest_centroid": 0.20, "decision_stumps": 0.25}, "recent_training_window": final_model["recent_window"]},
         "walk_forward_metrics": validation,
         "validation_gate": {"passed": validation_gate, "minimum_accuracy_pct": 38.0, "minimum_macro_f1_pct": 30.0, "must_beat_majority_baseline": True, "decision": "directional signals allowed" if validation_gate else "WAIT only — historical validation too weak"},
-        "advanced_intelligence": {"market_regime": regime_analysis, "multi_timeframe_trend_alignment": trend_alignment, "alignment_veto": alignment_veto, "multi_horizon_forecasts": horizon_forecasts, "multi_horizon_consensus": horizon_consensus, "tree_ensemble": tree_ensemble, "tree_blend_applied_to_primary_signal": tree_blend_applied, "method": "four-horizon chronological ML + Random Forest + gradient boosting + neural MLP + XGBoost (when installed) + volatility regime + liquidity sweep detector"},
+        "advanced_intelligence": {"market_regime": regime_analysis, "multi_timeframe_trend_alignment": trend_alignment, "alignment_veto": alignment_veto, "multi_horizon_forecasts": horizon_forecasts, "multi_horizon_consensus": horizon_consensus, "temporal_sequence_model": temporal_model, "temporal_model_veto": temporal_veto, "tree_ensemble": tree_ensemble, "tree_blend_applied_to_primary_signal": tree_blend_applied, "method": "ordered 12-candle temporal neural network + four-horizon chronological ML + Random Forest + gradient boosting + neural MLP + XGBoost (when installed) + volatility regime + liquidity sweep detector"},
         "walk_forward_folds": folds,
         "training_samples": len(rows),
         "label_distribution": {name: labels.count(i) for i, name in enumerate(CLASSES)},
