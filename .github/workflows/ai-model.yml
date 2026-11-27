@@ -7,14 +7,14 @@ on:
       - "ai_model.py/**"
       - ".github/workflows/ai-model.yml"
   schedule:
-    - cron: "*/30 * * * *"
+    - cron: "*/5 * * * *"
 
 permissions:
   contents: write
 
 concurrency:
   group: btc-signal-publish
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   train-ai:
@@ -28,6 +28,14 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+
+      - name: Cache Python packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: btc-ai-pip-${{ runner.os }}-py311-v1
+          restore-keys: |
+            btc-ai-pip-${{ runner.os }}-py311-
 
       - name: Install advanced ML libraries
         run: |
