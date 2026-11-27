@@ -2992,7 +2992,7 @@ def main():
     result = {
         "system": "BTC Signal Pro Elite Advanced ML",
         "model": "Four-model vote: full-history logistic, recent-regime logistic, nearest-centroid and decision-stump ensemble",
-        "model_version": "4.2-cost-aware-labels",
+        "model_version": "4.3-profitability-gated",
         "data_source": source,
         "data_source_by_timeframe": data_source_by_tf,
         "symbol": "BTC/USD" if any("Spot" in item for item in used_sources) else symbol,
@@ -3024,7 +3024,7 @@ def main():
         "neutral_threshold_pct": MOVE_THRESHOLD * 100,
         "labeling_method": "volatility-adaptive ATR neutral band",
         "label_threshold": {
-            "formula": "max(0.035%, 20% of trailing 14-candle ATR as a fraction of price)",
+            "formula": "max(0.18%, 20% of trailing 14-candle ATR as a fraction of price)",
             "horizon_candles": FUTURE_CANDLES,
             "lookahead_free": True
         },
