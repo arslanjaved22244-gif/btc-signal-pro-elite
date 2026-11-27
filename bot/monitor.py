@@ -105,6 +105,69 @@ def market_data():
    errors.append(name+": "+str(exc)[:180])
  raise RuntimeError("All derivatives feeds unavailable: "+" | ".join(errors))
 
+def update_prediction_performance():
+ """Log AI forecasts and score directional outcomes against Binance USD-M prices."""
+ path="prediction_performance.json"
+ try:
+  with open(path,encoding="utf-8") as f: data=json.load(f)
+ except Exception: data={"source":"Binance USD-M Futures ticker","records":[],"updated_at":None}
+ records=data.get("records",[])
+ try:
+  ai=get_json("https://fapi.binance.com/fapi/v1/ticker/price?symbol=BTCUSDT")
+  price=float(ai["price"])
+  ai_result=get_json("https://raw.githubusercontent.com/arslanjaved22244-gif/btc-signal-pro-elite/main/ai_result.json") if False else None
+  req=urllib.request.Request("https://raw.githubusercontent.com/arslanjaved22244-gif/btc-signal-pro-elite/main/ai_result.json",headers={"User-Agent":"BTC-Signal-Pro-Elite/5.0"})
+  with urllib.request.urlopen(req,timeout=15) as r: model=json.loads(r.read().decode())
+ except Exception as exc:
+  data["last_error"]=str(exc)[:180]
+  data["updated_at"]=now().isoformat()
+  save_json(path,data)
+  return
+ generated=model.get("generated_at")
+ if generated and not any(x.get("model_generated_at")==generated for x in records):
+  forecasts=model.get("advanced_intelligence",{}).get("tree_ensemble",{}).get("forecasts",{})
+  if not forecasts: forecasts=model.get("advanced_intelligence",{}).get("multi_horizon_forecasts",{})
+  for horizon,mins in (("15m",15),("30m",30),("60m",60),("4h",240)):
+   fc=forecasts.get(horizon,{})
+   direction=fc.get("signal","WAIT")
+   if direction not in ("LONG","SHORT","WAIT"): direction="WAIT"
+   records.append({"model_generated_at":generated,"logged_at":now().isoformat(),"horizon":horizon,
+    "horizon_minutes":mins,"direction":direction,"reference_price":price,"outcome":None,
+    "evaluated_at":None,"realized_change_pct":None,"correct":None,
+    "validation_status":fc.get("status","unknown")})
+ # Score only after each forecast horizon has elapsed. Directional hit rate excludes WAIT calls.
+ current=now()
+ for item in records:
+  if item.get("outcome") is not None: continue
+  try: due=datetime.fromisoformat(item["logged_at"])+timedelta(minutes=int(item["horizon_minutes"]))
+  except Exception: continue
+  if current<due: continue
+  try:
+   req=urllib.request.Request("https://fapi.binance.com/fapi/v1/ticker/price?symbol=BTCUSDT",headers={"User-Agent":"BTC-Signal-Pro-Elite/5.0"})
+   with urllib.request.urlopen(req,timeout=12) as r: end_price=float(json.loads(r.read().decode())["price"])
+   start=float(item["reference_price"]); change=(end_price-start)/start*100 if start else 0
+   item["realized_change_pct"]=round(change,5);item["evaluated_at"]=current.isoformat()
+   if item["direction"]=="LONG": item["correct"]=change>0;item["outcome"]="UP" if change>0 else "DOWN_OR_FLAT"
+   elif item["direction"]=="SHORT": item["correct"]=change<0;item["outcome"]="DOWN" if change<0 else "UP_OR_FLAT"
+   else: item["correct"]=None;item["outcome"]="ABSTAINED"
+  except Exception as exc:
+   item["evaluation_error"]=str(exc)[:120]
+ # Keep a bounded history; calculate hit rate only over evaluated directional calls.
+ records=records[-500:]
+ stats={}
+ for horizon in ("15m","30m","60m","4h"):
+  group=[x for x in records if x.get("horizon")==horizon and x.get("outcome") is not None]
+  directional=[x for x in group if x.get("direction") in ("LONG","SHORT") and isinstance(x.get("correct"),bool)]
+  wins=sum(1 for x in directional if x["correct"])
+  stats[horizon]={"evaluated":len(group),"directional_calls":len(directional),"correct":wins,
+   "directional_accuracy_pct":round(100*wins/len(directional),2) if directional else None,
+   "wait_abstentions":sum(1 for x in group if x.get("direction")=="WAIT")}
+ data={"source":"Binance USD-M Futures public ticker; directional close comparison only",
+  "updated_at":current.isoformat(),"model_generated_at":generated,"current_price":price,
+  "stats":stats,"records":records,
+  "limitations":"Not a trade P&L, win-rate guarantee, or stop/target simulation. LONG/SHORT accuracy is directional only; WAIT is counted as abstention."}
+ save_json(path,data)
+
 def score_signal(m,paused):
  funding=m["funding_rate"];oi=m["oi_change_5m_pct"];book=m["orderbook_imbalance"];cvd=m["cvd_proxy"];taker=m["taker_buy_ratio"]
  long_crowded=funding>0.0005 and oi is not None and oi>0.5;short_crowded=funding< -0.0005 and oi is not None and oi>0.5
@@ -113,7 +176,7 @@ def score_signal(m,paused):
  if cvd< -0.08 and taker<0.47 and book< -0.03 and not short_crowded:return "SHORT","Negative taker flow, CVD and order-book imbalance"
  return "WAIT","Derivatives flow is mixed or squeeze/crowding filters are active"
 def main():
- state=load_state();m=market_data();news=news_scan();current=now();pause_until=state.get("pause_until")
+ state=load_state();m=market_data();news=news_scan();update_prediction_performance();current=now();pause_until=state.get("pause_until")
  if news:
   try:old=datetime.fromisoformat(pause_until) if pause_until else current
   except Exception:old=current
