@@ -115,6 +115,16 @@ def run():
     # blocks live signals. These records are research-only and never authorize trades.
     ai_source = str(ai.get("data_source", ""))
     ai_tf_source = str(ai.get("data_source_by_timeframe", {}).get("5m", ""))
+    ai_generated_at = str(ai.get("generated_at", ""))
+    ai_is_fresh = False
+    try:
+        parsed_ai_time = datetime.fromisoformat(ai_generated_at.replace("Z", "+00:00"))
+        if parsed_ai_time.tzinfo is None:
+            parsed_ai_time = parsed_ai_time.replace(tzinfo=timezone.utc)
+        age_seconds = (datetime.now(timezone.utc) - parsed_ai_time.astimezone(timezone.utc)).total_seconds()
+        ai_is_fresh = -60 <= age_seconds <= 600
+    except (TypeError, ValueError):
+        pass
     same_venue = (source.lower() in ai_source.lower()) or (source.lower() in ai_tf_source.lower())
     model_scores = ai.get("class_scores", {})
     directional_scores = {
@@ -125,9 +135,15 @@ def run():
     wait_score = float(model_scores.get("WAIT", 0) or 0)
     if not same_venue or not ai_source or "Futures" not in ai_source or max(directional_scores.values(), default=0) <= wait_score:
         raw_side = "WAIT"
-    if not any(x.get("entry_candle_time") == stamp for x in shadow):
+    # Do not score the same model output repeatedly on successive market snapshots.
+    # Only record a fresh, timestamped model generation once.
+    already_recorded_model = bool(ai_generated_at) and any(
+        x.get("model_generated_at") == ai_generated_at for x in shadow
+    )
+    if ai_is_fresh and not already_recorded_model and not any(x.get("entry_candle_time") == stamp for x in shadow):
         shadow.append({
             "entry_candle_time": stamp,
+            "model_generated_at": ai_generated_at,
             "recorded_at": datetime.now(timezone.utc).isoformat(),
             "exchange": source, "side": raw_side, "entry": price,
             "status": "PENDING" if raw_side in ("LONG", "SHORT") else "ABSTAINED",
@@ -170,7 +186,9 @@ def run():
             "average_net_return_pct": shadow_stats["average_net_return_pct"],
             "net_return_pct_compounded": shadow_stats["net_return_pct_compounded"],
             "validation_gate_passed_now": ai.get("validation_gate", {}).get("passed") is True,
-            "note": "Research-only forecast tracking. Includes model directions blocked by validation; never treat as an entry signal."
+            "latest_model_timestamp": ai_generated_at or None,
+            "latest_model_fresh": ai_is_fresh,
+            "note": "Research-only forecast tracking. Each fresh model generation is counted once; stale or repeated AI snapshots are skipped. Forecasts never authorize trades."
         },
         "limitations": "15m fixed-close simulation only. Estimated 0.14% round-trip costs; no stop/target, funding, liquidation, intrabar fills or live order execution. Shadow forecasts are non-actionable. Historical results are not predictive.",
         "records": records,
