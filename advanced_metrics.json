@@ -1,15 +1,15 @@
 {
-  "generated_at": "2026-11-27T21:43:33.123647+00:00",
+  "generated_at": "2026-11-27T21:52:59.284912+00:00",
   "timeframe_indicators": {
     "5m": {
       "available": true,
-      "ema50": 59885.29,
-      "ema200": 60492.75,
-      "rsi14": 51.98,
+      "ema50": 59877.9,
+      "ema200": 60478.44,
+      "rsi14": 45.87,
       "macd": {
-        "macd": -13.2106,
-        "signal": -20.2436,
-        "histogram": 7.033,
+        "macd": -13.6166,
+        "signal": -17.6487,
+        "histogram": 4.0321,
         "bullish": true,
         "cross_up": false,
         "cross_down": false
@@ -18,21 +18,21 @@
         "trend": "RANGE",
         "event": "NONE",
         "last_swing_high": 59856.3,
-        "last_swing_low": 59694.1,
+        "last_swing_low": 59759.4,
         "note": "Confirmed pivots use candles on both sides; most recent pivot is delayed by the confirmation window."
       },
-      "volatility_atr14": 68.04,
-      "atr_pct": 0.1137
+      "volatility_atr14": 66.98,
+      "atr_pct": 0.112
     },
     "15m": {
       "available": true,
-      "ema50": 60372.89,
-      "ema200": 60591.17,
-      "rsi14": 41.0,
+      "ema50": 60350.54,
+      "ema200": 60583.8,
+      "rsi14": 40.99,
       "macd": {
-        "macd": -197.0045,
-        "signal": -247.0557,
-        "histogram": 50.0512,
+        "macd": -185.5959,
+        "signal": -234.7637,
+        "histogram": 49.1679,
         "bullish": true,
         "cross_up": false,
         "cross_down": false
@@ -44,8 +44,8 @@
         "last_swing_low": 59679.9,
         "note": "Confirmed pivots use candles on both sides; most recent pivot is delayed by the confirmation window."
       },
-      "volatility_atr14": 136.63,
-      "atr_pct": 0.2285
+      "volatility_atr14": 129.14,
+      "atr_pct": 0.2159
     },
     "1h": {
       "available": true,
@@ -122,12 +122,12 @@
     "method": "Chronological 60/20/20 split; reported trades only in final 20% holdout",
     "total_candles": 599,
     "test_candles": 240,
-    "test_start_time": 1795743300000,
-    "trades": 11,
-    "win_rate_pct": 9.09,
-    "net_return_pct": -2.89,
-    "profit_factor": 0.025,
-    "max_drawdown_pct": 2.89,
+    "test_start_time": 1795743900000,
+    "trades": 10,
+    "win_rate_pct": 10.0,
+    "net_return_pct": -2.76,
+    "profit_factor": 0.026,
+    "max_drawdown_pct": 2.83,
     "fee_per_side_pct": 0.05,
     "slippage_per_side_pct": 0.02,
     "round_trip_cost_pct": 0.13999999999999999,
