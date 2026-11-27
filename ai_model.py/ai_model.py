@@ -441,13 +441,23 @@ def combined_features(data, base_index, prepared):
 
 
 def adaptive_move_threshold(candles, index, horizon_candles=FUTURE_CANDLES):
-    """Scale the neutral band to recent realized volatility; use past candles only."""
+    """Use a cost-aware neutral band; only label moves large enough to matter.
+
+    The 15m backtest assumes 0.14% round-trip fees + slippage. A 0.035%
+    directional label can therefore be counted as a correct forecast while
+    being structurally untradeable after costs. Keep a small 0.04% buffer
+    above that estimate, then widen the band further in volatile conditions.
+    The calculation uses only candles available at the forecast timestamp.
+    """
     price = candles[index]["close"]
     if price <= 0:
-        return MOVE_THRESHOLD
+        return 0.0018
     atr_pct = candle_atr(candles, index, 14) / price
     horizon_scale = math.sqrt(max(1, horizon_candles) / FUTURE_CANDLES)
-    return max(0.00035, atr_pct * 0.20 * horizon_scale)
+    estimated_round_trip_cost = 0.0014
+    minimum_edge_buffer = 0.0004
+    volatility_band = atr_pct * 0.20 * horizon_scale
+    return max(estimated_round_trip_cost + minimum_edge_buffer, volatility_band)
 
 
 def build_dataset(data, prepared, include_forward_returns=False):
@@ -2962,7 +2972,7 @@ def main():
     result = {
         "system": "BTC Signal Pro Elite Advanced ML",
         "model": "Four-model vote: full-history logistic, recent-regime logistic, nearest-centroid and decision-stump ensemble",
-        "model_version": "4.1-volatility-adaptive-labels",
+        "model_version": "4.2-cost-aware-labels",
         "data_source": source,
         "data_source_by_timeframe": data_source_by_tf,
         "symbol": "BTC/USD" if any("Spot" in item for item in used_sources) else symbol,
