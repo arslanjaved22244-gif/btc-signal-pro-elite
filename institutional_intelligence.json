@@ -1,7 +1,7 @@
 {
   "system": "BTC Signal Pro Elite Institutional Intelligence",
   "version": "1.0-six-upgrades",
-  "generated_at": "2026-11-27T23:26:12.087805+00:00",
+  "generated_at": "2026-11-27T23:28:41.432461+00:00",
   "market_regime": {
     "status": "AVAILABLE",
     "regime": "BEAR_TREND",
@@ -30,14 +30,14 @@
     "status": "AVAILABLE",
     "venue": "Deribit public BTC options",
     "put_call_open_interest_ratio": 0.811,
-    "call_open_interest": 190587.8,
-    "put_open_interest": 154571.0,
+    "call_open_interest": 190585.8,
+    "put_open_interest": 154560.9,
     "call_volume_24h": 13711.9,
     "put_volume_24h": 15234.0,
-    "average_call_mark_iv_pct": 54.72,
-    "average_put_mark_iv_pct": 54.72,
+    "average_call_mark_iv_pct": 54.71,
+    "average_put_mark_iv_pct": 54.71,
     "approx_max_pain_strike": 68000.0,
-    "btc_index_price": 59752.08,
+    "btc_index_price": 59774.29,
     "instruments_sampled": 960,
     "note": "Aggregated listed BTC options snapshot; max-pain is an approximation across returned instruments, not a price target."
   },
@@ -168,7 +168,7 @@
       {
         "name": "5m_futures_candles",
         "passed": true,
-        "detail": "candle age 39s"
+        "detail": "candle age 189s"
       },
       {
         "name": "all_five_timeframes",
@@ -183,7 +183,7 @@
       {
         "name": "open_interest_data",
         "passed": true,
-        "detail": "historical OI latest row age 1.22m"
+        "detail": "historical OI latest row age 3.71m"
       },
       {
         "name": "executed_taker_flow",
@@ -213,7 +213,7 @@
       {
         "name": "cross_exchange_perpetuals",
         "passed": true,
-        "detail": "2 venues available; snapshot age 0.04m"
+        "detail": "2 venues available; snapshot age 0.05m"
       },
       {
         "name": "continuous_liquidation_stream",
