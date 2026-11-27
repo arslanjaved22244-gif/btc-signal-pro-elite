@@ -187,9 +187,6 @@ def main():
         print("WARNING: Core Binance USD-M Futures data unavailable. Downstream engine must publish WAIT; no Spot fallback is permitted.")
 
 
-if __name__ == "__main__":
-    main()
-
 
 def bybit_request(path, params=None, timeout=15):
     query = urllib.parse.urlencode(params or {})
@@ -357,3 +354,7 @@ def collect():
     except Exception as exc:
         primary["data_quality"]["warnings"].append("Bybit linear Futures fallback failed: "+str(exc))
         return primary
+
+
+if __name__ == "__main__":
+    main()
