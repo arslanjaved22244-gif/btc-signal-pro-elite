@@ -4,96 +4,12 @@
   "symbol": "BTCUSDT",
   "market_type": "BITGET_USDT_FUTURES",
   "exchange": "Bitget",
-  "generated_at": "2026-11-27T21:54:33.224271+00:00",
+  "generated_at": "2026-11-27T22:27:30.165176+00:00",
   "source": "https://api.bitget.com/api/v2/mix/market (USDT-FUTURES)",
   "timeframes": {
     "5m": {
       "ok": true,
       "candles": [
-        {
-          "time": 1795635900000,
-          "open": 59904.4,
-          "high": 59965.0,
-          "low": 59854.8,
-          "close": 59955.7,
-          "volume": 133.8794,
-          "quote_volume": 8020105.49278,
-          "trades": 0,
-          "taker_buy_base": null,
-          "taker_buy_quote": null
-        },
-        {
-          "time": 1795636200000,
-          "open": 59955.7,
-          "high": 60058.4,
-          "low": 59831.2,
-          "close": 60058.4,
-          "volume": 272.6605,
-          "quote_volume": 16330684.55581,
-          "trades": 0,
-          "taker_buy_base": null,
-          "taker_buy_quote": null
-        },
-        {
-          "time": 1795636500000,
-          "open": 60058.4,
-          "high": 60088.7,
-          "low": 59832.8,
-          "close": 59858.8,
-          "volume": 74.2676,
-          "quote_volume": 4455726.00098,
-          "trades": 0,
-          "taker_buy_base": null,
-          "taker_buy_quote": null
-        },
-        {
-          "time": 1795636800000,
-          "open": 59858.8,
-          "high": 59996.4,
-          "low": 59854.4,
-          "close": 59905.1,
-          "volume": 76.8224,
-          "quote_volume": 4605049.47246,
-          "trades": 0,
-          "taker_buy_base": null,
-          "taker_buy_quote": null
-        },
-        {
-          "time": 1795637100000,
-          "open": 59905.1,
-          "high": 59996.7,
-          "low": 59856.3,
-          "close": 59936.3,
-          "volume": 38.9241,
-          "quote_volume": 2331969.22344,
-          "trades": 0,
-          "taker_buy_base": null,
-          "taker_buy_quote": null
-        },
-        {
-          "time": 1795637400000,
-          "open": 59936.3,
-          "high": 60073.0,
-          "low": 59894.4,
-          "close": 59996.7,
-          "volume": 51.9204,
-          "quote_volume": 3114243.66911,
-          "trades": 0,
-          "taker_buy_base": null,
-          "taker_buy_quote": null
-        },
-        {
-          "time": 1795637700000,
-          "open": 59996.7,
-          "high": 60099.0,
-          "low": 59972.7,
-          "close": 60019.0,
-          "volume": 35.4243,
-          "quote_volume": 2127144.55855,
-          "trades": 0,
-          "taker_buy_base": null,
-          "taker_buy_quote": null
-        },
         {
           "time": 1795638000000,
           "open": 60019.0,
@@ -2411,6 +2327,18 @@
           "taker_buy_quote": null
         },
         {
+          "time": 1795695900000,
+          "open": 60592.3,
+          "high": 60657.1,
+          "low": 60592.0,
+          "close": 60616.8,
+          "volume": 43.5153,
+          "quote_volume": 2637612.11212,
+          "trades": 0,
+          "taker_buy_base": null,
+          "taker_buy_quote": null
+        },
+        {
           "time": 1795696200000,
           "open": 60616.8,
           "high": 60659.7,
@@ -2478,18 +2406,6 @@
           "close": 60793.0,
           "volume": 59.6897,
           "quote_volume": 3631795.43451,
-          "trades": 0,
-          "taker_buy_base": null,
-          "taker_buy_quote": null
-        },
-        {
-          "time": 1795698000000,
-          "open": 60793.0,
-          "high": 60812.1,
-          "low": 60756.8,
-          "close": 60782.6,
-          "volume": 62.832,
-          "quote_volume": 3819298.3833,
           "trades": 0,
           "taker_buy_base": null,
           "taker_buy_quote": null
@@ -4811,6 +4727,18 @@
           "taker_buy_quote": null
         },
         {
+          "time": 1795756200000,
+          "open": 61714.4,
+          "high": 61730.0,
+          "low": 61610.0,
+          "close": 61613.9,
+          "volume": 150.9242,
+          "quote_volume": 9308141.12318,
+          "trades": 0,
+          "taker_buy_base": null,
+          "taker_buy_quote": null
+        },
+        {
           "time": 1795756500000,
           "open": 61613.9,
           "high": 61688.3,
@@ -4878,18 +4806,6 @@
           "close": 61720.9,
           "volume": 98.3356,
           "quote_volume": 6067926.25214,
-          "trades": 0,
-          "taker_buy_base": null,
-          "taker_buy_quote": null
-        },
-        {
-          "time": 1795758300000,
-          "open": 61720.9,
-          "high": 61780.1,
-          "low": 61719.0,
-          "close": 61721.4,
-          "volume": 62.4636,
-          "quote_volume": 3857190.60615,
           "trades": 0,
           "taker_buy_base": null,
           "taker_buy_quote": null
@@ -7197,38 +7113,98 @@
           "trades": 0,
           "taker_buy_base": null,
           "taker_buy_quote": null
+        },
+        {
+          "time": 1795816200000,
+          "open": 59775.9,
+          "high": 59799.9,
+          "low": 59742.4,
+          "close": 59799.4,
+          "volume": 15.7397,
+          "quote_volume": 940635.45757,
+          "trades": 0,
+          "taker_buy_base": null,
+          "taker_buy_quote": null
+        },
+        {
+          "time": 1795816500000,
+          "open": 59799.4,
+          "high": 59820.0,
+          "low": 59770.2,
+          "close": 59770.2,
+          "volume": 19.7538,
+          "quote_volume": 1181093.12843,
+          "trades": 0,
+          "taker_buy_base": null,
+          "taker_buy_quote": null
+        },
+        {
+          "time": 1795816800000,
+          "open": 59770.2,
+          "high": 59770.2,
+          "low": 59660.0,
+          "close": 59735.2,
+          "volume": 58.4629,
+          "quote_volume": 3490400.76362,
+          "trades": 0,
+          "taker_buy_base": null,
+          "taker_buy_quote": null
+        },
+        {
+          "time": 1795817100000,
+          "open": 59735.2,
+          "high": 59778.8,
+          "low": 59683.8,
+          "close": 59708.5,
+          "volume": 71.4568,
+          "quote_volume": 4266959.36734,
+          "trades": 0,
+          "taker_buy_base": null,
+          "taker_buy_quote": null
+        },
+        {
+          "time": 1795817400000,
+          "open": 59708.5,
+          "high": 59723.9,
+          "low": 59555.0,
+          "close": 59652.6,
+          "volume": 159.7335,
+          "quote_volume": 9524663.76788,
+          "trades": 0,
+          "taker_buy_base": null,
+          "taker_buy_quote": null
+        },
+        {
+          "time": 1795817700000,
+          "open": 59652.6,
+          "high": 59699.7,
+          "low": 59629.5,
+          "close": 59663.9,
+          "volume": 30.5438,
+          "quote_volume": 1822386.2899,
+          "trades": 0,
+          "taker_buy_base": null,
+          "taker_buy_quote": null
+        },
+        {
+          "time": 1795818000000,
+          "open": 59663.9,
+          "high": 59738.5,
+          "low": 59663.9,
+          "close": 59673.4,
+          "volume": 25.2604,
+          "quote_volume": 1508046.42102,
+          "trades": 0,
+          "taker_buy_base": null,
+          "taker_buy_quote": null
         }
       ],
-      "last_closed_candle_time": 1795815900000,
-      "age_seconds": 273
+      "last_closed_candle_time": 1795818000000,
+      "age_seconds": 150
     },
     "15m": {
       "ok": true,
       "candles": [
-        {
-          "time": 1795275000000,
-          "open": 59953.1,
-          "high": 60119.5,
-          "low": 59737.1,
-          "close": 60097.6,
-          "volume": 981.9995,
-          "quote_volume": 58793969.02712,
-          "trades": 0,
-          "taker_buy_base": null,
-          "taker_buy_quote": null
-        },
-        {
-          "time": 1795275900000,
-          "open": 60097.6,
-          "high": 60165.7,
-          "low": 59806.0,
-          "close": 59899.3,
-          "volume": 444.773,
-          "quote_volume": 26675227.07556,
-          "trades": 0,
-          "taker_buy_base": null,
-          "taker_buy_quote": null
-        },
         {
           "time": 1795276800000,
           "open": 59899.3,
@@ -9606,6 +9582,18 @@
           "taker_buy_quote": null
         },
         {
+          "time": 1795455000000,
+          "open": 61707.7,
+          "high": 61796.7,
+          "low": 61268.4,
+          "close": 61400.0,
+          "volume": 1820.2442,
+          "quote_volume": 111974908.3227,
+          "trades": 0,
+          "taker_buy_base": null,
+          "taker_buy_quote": null
+        },
+        {
           "time": 1795455900000,
           "open": 61400.0,
           "high": 61826.4,
@@ -9613,18 +9601,6 @@
           "close": 61637.9,
           "volume": 1085.0277,
           "quote_volume": 66771356.73391,
-          "trades": 0,
-          "taker_buy_base": null,
-          "taker_buy_quote": null
-        },
-        {
-          "time": 1795456800000,
-          "open": 61637.9,
-          "high": 61736.7,
-          "low": 61463.9,
-          "close": 61557.1,
-          "volume": 331.0834,
-          "quote_volume": 20391210.79714,
           "trades": 0,
           "taker_buy_base": null,
           "taker_buy_quote": null
@@ -12006,6 +11982,18 @@
           "taker_buy_quote": null
         },
         {
+          "time": 1795635900000,
+          "open": 59904.4,
+          "high": 60088.7,
+          "low": 59831.2,
+          "close": 59858.8,
+          "volume": 480.8075,
+          "quote_volume": 28806516.04957,
+          "trades": 0,
+          "taker_buy_base": null,
+          "taker_buy_quote": null
+        },
+        {
           "time": 1795636800000,
           "open": 59858.8,
           "high": 60073.0,
@@ -12013,18 +12001,6 @@
           "close": 59996.7,
           "volume": 167.6669,
           "quote_volume": 10051262.36501,
-          "trades": 0,
-          "taker_buy_base": null,
-          "taker_buy_quote": null
-        },
-        {
-          "time": 1795637700000,
-          "open": 59996.7,
-          "high": 60099.0,
-          "low": 59880.5,
-          "close": 59922.7,
-          "volume": 89.159,
-          "quote_volume": 5350524.92026,
           "trades": 0,
           "taker_buy_base": null,
           "taker_buy_quote": null
@@ -14392,26 +14368,38 @@
           "trades": 0,
           "taker_buy_base": null,
           "taker_buy_quote": null
-        }
-      ],
-      "last_closed_candle_time": 1795815000000,
-      "age_seconds": 574
-    },
-    "1h": {
-      "ok": true,
-      "candles": [
+        },
         {
-          "time": 1793649600000,
-          "open": 77082.2,
-          "high": 77213.5,
-          "low": 76710.0,
-          "close": 76783.3,
-          "volume": 1291.8563,
-          "quote_volume": 99450673.20509,
+          "time": 1795815900000,
+          "open": 59802.9,
+          "high": 59820.0,
+          "low": 59742.4,
+          "close": 59770.2,
+          "volume": 62.1948,
+          "quote_volume": 3717942.54213,
           "trades": 0,
           "taker_buy_base": null,
           "taker_buy_quote": null
         },
+        {
+          "time": 1795816800000,
+          "open": 59770.2,
+          "high": 59778.8,
+          "low": 59555.0,
+          "close": 59652.6,
+          "volume": 289.6532,
+          "quote_volume": 17282023.89884,
+          "trades": 0,
+          "taker_buy_base": null,
+          "taker_buy_quote": null
+        }
+      ],
+      "last_closed_candle_time": 1795816800000,
+      "age_seconds": 751
+    },
+    "1h": {
+      "ok": true,
+      "candles": [
         {
           "time": 1793653200000,
           "open": 76783.3,
@@ -16801,13 +16789,13 @@
           "taker_buy_quote": null
         },
         {
-          "time": 1794373200000,
-          "open": 73703.9,
-          "high": 73938.0,
-          "low": 73650.1,
-          "close": 73899.1,
-          "volume": 744.7385,
-          "quote_volume": 54954822.20206,
+          "time": 1794369600000,
+          "open": 73740.1,
+          "high": 73863.9,
+          "low": 73445.5,
+          "close": 73703.9,
+          "volume": 785.4117,
+          "quote_volume": 57878749.0612,
           "trades": 0,
           "taker_buy_base": null,
           "taker_buy_quote": null
@@ -19201,13 +19189,13 @@
           "taker_buy_quote": null
         },
         {
-          "time": 1795096800000,
-          "open": 64005.8,
-          "high": 64027.6,
-          "low": 63425.0,
-          "close": 63520.4,
-          "volume": 2355.9606,
-          "quote_volume": 150274045.77127,
+          "time": 1795093200000,
+          "open": 63849.9,
+          "high": 64051.0,
+          "low": 63637.3,
+          "close": 64005.8,
+          "volume": 1063.7919,
+          "quote_volume": 67882884.56712,
           "trades": 0,
           "taker_buy_base": null,
           "taker_buy_quote": null
@@ -21587,10 +21575,22 @@
           "trades": 0,
           "taker_buy_base": null,
           "taker_buy_quote": null
+        },
+        {
+          "time": 1795813200000,
+          "open": 59774.4,
+          "high": 59856.3,
+          "low": 59742.4,
+          "close": 59770.2,
+          "volume": 402.9503,
+          "quote_volume": 24099765.92935,
+          "trades": 0,
+          "taker_buy_base": null,
+          "taker_buy_quote": null
         }
       ],
-      "last_closed_candle_time": 1795809600000,
-      "age_seconds": 3275
+      "last_closed_candle_time": 1795813200000,
+      "age_seconds": 1652
     },
     "4h": {
       "ok": true,
@@ -28785,7 +28785,7 @@
         }
       ],
       "last_closed_candle_time": 1795795200000,
-      "age_seconds": 6875
+      "age_seconds": 8852
     },
     "1d": {
       "ok": true,
@@ -32020,61 +32020,29 @@
         }
       ],
       "last_closed_candle_time": 1795708800000,
-      "age_seconds": 21276
+      "age_seconds": 23253
     }
   },
   "feeds": {
     "mark_price_funding": {
       "ok": true,
       "data": {
-        "lastPrice": "59791.6",
-        "markPrice": "59791.6",
-        "lastFundingRate": "0.000056"
+        "lastPrice": "59709.6",
+        "markPrice": "59709.6",
+        "lastFundingRate": "0.000058"
       },
-      "latency_ms": 194
+      "latency_ms": 213
     },
     "open_interest_current": {
       "ok": true,
       "data": {
-        "openInterest": "37551.982500000098"
+        "openInterest": "37498.496500000099"
       },
-      "latency_ms": 185
+      "latency_ms": 211
     },
     "open_interest_history_5m": {
       "ok": true,
       "data": [
-        {
-          "sumOpenInterest": "1921719922.5769285071348",
-          "timestamp": "1795807200000"
-        },
-        {
-          "sumOpenInterest": "1921919589.21906799560914",
-          "timestamp": "1795807500000"
-        },
-        {
-          "sumOpenInterest": "1923450279.47288865657784",
-          "timestamp": "1795807800000"
-        },
-        {
-          "sumOpenInterest": "1922035793.1984086871312",
-          "timestamp": "1795808100000"
-        },
-        {
-          "sumOpenInterest": "1922467377.27712872311306",
-          "timestamp": "1795808400000"
-        },
-        {
-          "sumOpenInterest": "1928008069.57120924687497",
-          "timestamp": "1795808700000"
-        },
-        {
-          "sumOpenInterest": "1931963719.0082094090488",
-          "timestamp": "1795809000000"
-        },
-        {
-          "sumOpenInterest": "1934786455.98532992183431",
-          "timestamp": "1795809300000"
-        },
         {
           "sumOpenInterest": "1936157420.41548983723568",
           "timestamp": "1795809600000"
@@ -32160,11 +32128,43 @@
           "timestamp": "1795815600000"
         },
         {
-          "sumOpenInterest": "1937015470.50856964535288",
+          "sumOpenInterest": "1936797654.10860961921342",
           "timestamp": "1795815900000"
+        },
+        {
+          "sumOpenInterest": "1937188209.34658990259848",
+          "timestamp": "1795816200000"
+        },
+        {
+          "sumOpenInterest": "1935354182.15686001397075",
+          "timestamp": "1795816500000"
+        },
+        {
+          "sumOpenInterest": "1927998859.57835964405325",
+          "timestamp": "1795816800000"
+        },
+        {
+          "sumOpenInterest": "1925898203.65995929104716",
+          "timestamp": "1795817100000"
+        },
+        {
+          "sumOpenInterest": "1918560694.9409689207846",
+          "timestamp": "1795817400000"
+        },
+        {
+          "sumOpenInterest": "1916025519.53824903216064",
+          "timestamp": "1795817700000"
+        },
+        {
+          "sumOpenInterest": "1918311905.26364903060144",
+          "timestamp": "1795818000000"
+        },
+        {
+          "sumOpenInterest": "1916461896.896008910224",
+          "timestamp": "1795818300000"
         }
       ],
-      "latency_ms": 252,
+      "latency_ms": 263,
       "venue": "OKX BTC-USDT-SWAP (cross-venue Futures context)",
       "note": "Historical OI is sourced from OKX perpetuals, not the primary Bitget execution venue."
     },
@@ -32172,9 +32172,9 @@
       "ok": true,
       "data": [
         {
-          "buySellRatio": 8.612416107382542,
-          "buyVol": 1.5398999999999987,
-          "sellVol": 0.17880000000000001
+          "buySellRatio": 5.351851851851851,
+          "buyVol": 0.5202000000000001,
+          "sellVol": 0.09720000000000004
         }
       ]
     },
@@ -32184,619 +32184,619 @@
         {
           "q": 0.0001,
           "m": false,
-          "price": "59791.6",
-          "time": "1795816477054"
-        },
-        {
-          "q": 0.0055,
-          "m": false,
-          "price": "59791.6",
-          "time": "1795816477001"
+          "price": "59709.6",
+          "time": "1795818451925"
         },
         {
           "q": 0.0001,
           "m": false,
-          "price": "59791.6",
-          "time": "1795816473756"
+          "price": "59709.6",
+          "time": "1795818446858"
         },
         {
-          "q": 0.0001,
-          "m": true,
-          "price": "59791.5",
-          "time": "1795816472193"
+          "q": 0.0115,
+          "m": false,
+          "price": "59709.6",
+          "time": "1795818446716"
+        },
+        {
+          "q": 0.0397,
+          "m": false,
+          "price": "59709.6",
+          "time": "1795818446716"
+        },
+        {
+          "q": 0.0002,
+          "m": false,
+          "price": "59709.6",
+          "time": "1795818446504"
+        },
+        {
+          "q": 0.0335,
+          "m": false,
+          "price": "59709.6",
+          "time": "1795818444685"
+        },
+        {
+          "q": 0.0002,
+          "m": false,
+          "price": "59709.5",
+          "time": "1795818444642"
+        },
+        {
+          "q": 0.0002,
+          "m": false,
+          "price": "59709.4",
+          "time": "1795818444642"
+        },
+        {
+          "q": 0.005,
+          "m": false,
+          "price": "59709.1",
+          "time": "1795818444642"
+        },
+        {
+          "q": 0.0002,
+          "m": false,
+          "price": "59709.0",
+          "time": "1795818444642"
+        },
+        {
+          "q": 0.0002,
+          "m": false,
+          "price": "59708.9",
+          "time": "1795818444642"
         },
         {
           "q": 0.0001,
           "m": false,
-          "price": "59791.6",
-          "time": "1795816472185"
-        },
-        {
-          "q": 0.0001,
-          "m": true,
-          "price": "59791.5",
-          "time": "1795816472121"
+          "price": "59708.9",
+          "time": "1795818444642"
         },
         {
           "q": 0.0001,
           "m": false,
-          "price": "59790.0",
-          "time": "1795816471143"
+          "price": "59708.8",
+          "time": "1795818444642"
+        },
+        {
+          "q": 0.0002,
+          "m": false,
+          "price": "59708.3",
+          "time": "1795818444642"
+        },
+        {
+          "q": 0.0002,
+          "m": false,
+          "price": "59708.2",
+          "time": "1795818444642"
+        },
+        {
+          "q": 0.0002,
+          "m": false,
+          "price": "59708.1",
+          "time": "1795818444642"
+        },
+        {
+          "q": 0.0001,
+          "m": false,
+          "price": "59707.3",
+          "time": "1795818444642"
+        },
+        {
+          "q": 0.0002,
+          "m": false,
+          "price": "59706.6",
+          "time": "1795818444629"
+        },
+        {
+          "q": 0.0002,
+          "m": false,
+          "price": "59706.4",
+          "time": "1795818444604"
+        },
+        {
+          "q": 0.0001,
+          "m": false,
+          "price": "59706.4",
+          "time": "1795818444604"
+        },
+        {
+          "q": 0.0001,
+          "m": false,
+          "price": "59706.0",
+          "time": "1795818444604"
+        },
+        {
+          "q": 0.0083,
+          "m": false,
+          "price": "59705.7",
+          "time": "1795818444604"
+        },
+        {
+          "q": 0.0001,
+          "m": false,
+          "price": "59705.7",
+          "time": "1795818444604"
         },
         {
           "q": 0.0003,
           "m": false,
-          "price": "59786.1",
-          "time": "1795816471143"
+          "price": "59705.2",
+          "time": "1795818444603"
+        },
+        {
+          "q": 0.0001,
+          "m": false,
+          "price": "59705.2",
+          "time": "1795818444603"
+        },
+        {
+          "q": 0.0001,
+          "m": false,
+          "price": "59705.2",
+          "time": "1795818444603"
+        },
+        {
+          "q": 0.0001,
+          "m": false,
+          "price": "59704.6",
+          "time": "1795818444601"
         },
         {
           "q": 0.0002,
           "m": false,
-          "price": "59786.1",
-          "time": "1795816471140"
+          "price": "59704.6",
+          "time": "1795818444601"
+        },
+        {
+          "q": 0.0152,
+          "m": false,
+          "price": "59703.5",
+          "time": "1795818444601"
         },
         {
           "q": 0.0002,
           "m": false,
-          "price": "59786.1",
-          "time": "1795816469184"
+          "price": "59703.4",
+          "time": "1795818444601"
+        },
+        {
+          "q": 0.0002,
+          "m": false,
+          "price": "59703.1",
+          "time": "1795818444601"
+        },
+        {
+          "q": 0.0001,
+          "m": false,
+          "price": "59703.0",
+          "time": "1795818444601"
+        },
+        {
+          "q": 0.0001,
+          "m": false,
+          "price": "59700.5",
+          "time": "1795818444600"
+        },
+        {
+          "q": 0.0001,
+          "m": false,
+          "price": "59700.4",
+          "time": "1795818444600"
         },
         {
           "q": 0.0047,
           "m": false,
-          "price": "59786.1",
-          "time": "1795816468363"
+          "price": "59700.3",
+          "time": "1795818444600"
         },
         {
-          "q": 0.0001,
+          "q": 0.0088,
           "m": false,
-          "price": "59785.7",
-          "time": "1795816467066"
+          "price": "59700.3",
+          "time": "1795818444600"
         },
         {
-          "q": 0.0419,
+          "q": 0.0493,
           "m": false,
-          "price": "59780.0",
-          "time": "1795816467064"
+          "price": "59700.3",
+          "time": "1795818444600"
         },
         {
-          "q": 0.0336,
+          "q": 0.039,
           "m": false,
-          "price": "59780.0",
-          "time": "1795816467064"
+          "price": "59700.3",
+          "time": "1795818444600"
         },
         {
-          "q": 0.0005,
+          "q": 0.068,
           "m": false,
-          "price": "59780.0",
-          "time": "1795816467064"
+          "price": "59700.3",
+          "time": "1795818444599"
         },
         {
-          "q": 0.257,
+          "q": 0.0176,
           "m": false,
-          "price": "59780.0",
-          "time": "1795816467064"
-        },
-        {
-          "q": 0.2911,
-          "m": false,
-          "price": "59780.0",
-          "time": "1795816467064"
-        },
-        {
-          "q": 0.0378,
-          "m": false,
-          "price": "59780.0",
-          "time": "1795816467064"
-        },
-        {
-          "q": 0.0142,
-          "m": false,
-          "price": "59780.0",
-          "time": "1795816467063"
-        },
-        {
-          "q": 0.0375,
-          "m": false,
-          "price": "59780.0",
-          "time": "1795816467063"
-        },
-        {
-          "q": 0.0912,
-          "m": false,
-          "price": "59780.0",
-          "time": "1795816467063"
-        },
-        {
-          "q": 0.0002,
-          "m": true,
-          "price": "59779.9",
-          "time": "1795816466392"
-        },
-        {
-          "q": 0.0089,
-          "m": false,
-          "price": "59780.0",
-          "time": "1795816462205"
-        },
-        {
-          "q": 0.0068,
-          "m": false,
-          "price": "59780.0",
-          "time": "1795816462179"
-        },
-        {
-          "q": 0.0005,
-          "m": false,
-          "price": "59780.0",
-          "time": "1795816459492"
-        },
-        {
-          "q": 0.0151,
-          "m": false,
-          "price": "59780.0",
-          "time": "1795816459492"
-        },
-        {
-          "q": 0.0043,
-          "m": false,
-          "price": "59780.0",
-          "time": "1795816459285"
-        },
-        {
-          "q": 0.0002,
-          "m": false,
-          "price": "59780.0",
-          "time": "1795816453507"
+          "price": "59700.3",
+          "time": "1795818444599"
         },
         {
           "q": 0.0407,
           "m": false,
-          "price": "59780.0",
-          "time": "1795816450999"
+          "price": "59700.3",
+          "time": "1795818444599"
+        },
+        {
+          "q": 0.0034,
+          "m": false,
+          "price": "59700.3",
+          "time": "1795818444599"
+        },
+        {
+          "q": 0.0325,
+          "m": false,
+          "price": "59700.3",
+          "time": "1795818444599"
+        },
+        {
+          "q": 0.0513,
+          "m": false,
+          "price": "59700.3",
+          "time": "1795818444599"
+        },
+        {
+          "q": 0.001,
+          "m": false,
+          "price": "59700.3",
+          "time": "1795818444599"
+        },
+        {
+          "q": 0.008,
+          "m": false,
+          "price": "59700.3",
+          "time": "1795818444599"
+        },
+        {
+          "q": 0.048,
+          "m": false,
+          "price": "59700.3",
+          "time": "1795818444599"
+        },
+        {
+          "q": 0.0278,
+          "m": false,
+          "price": "59700.3",
+          "time": "1795818444599"
         },
         {
           "q": 0.0001,
           "m": false,
-          "price": "59780.0",
-          "time": "1795816445759"
+          "price": "59700.3",
+          "time": "1795818444599"
         },
         {
-          "q": 0.0032,
+          "q": 0.0012,
           "m": false,
-          "price": "59780.0",
-          "time": "1795816445757"
+          "price": "59700.3",
+          "time": "1795818444599"
+        },
+        {
+          "q": 0.0001,
+          "m": true,
+          "price": "59700.2",
+          "time": "1795818441794"
+        },
+        {
+          "q": 0.0001,
+          "m": true,
+          "price": "59700.2",
+          "time": "1795818436735"
         },
         {
           "q": 0.0001,
           "m": false,
-          "price": "59780.0",
-          "time": "1795816445754"
+          "price": "59700.3",
+          "time": "1795818431673"
+        },
+        {
+          "q": 0.0028,
+          "m": true,
+          "price": "59700.2",
+          "time": "1795818429413"
+        },
+        {
+          "q": 0.0009,
+          "m": false,
+          "price": "59700.3",
+          "time": "1795818429042"
         },
         {
           "q": 0.0001,
           "m": false,
-          "price": "59780.0",
-          "time": "1795816445710"
-        },
-        {
-          "q": 0.0123,
-          "m": false,
-          "price": "59777.8",
-          "time": "1795816445667"
+          "price": "59700.3",
+          "time": "1795818429042"
         },
         {
           "q": 0.0002,
-          "m": false,
-          "price": "59777.8",
-          "time": "1795816445667"
-        },
-        {
-          "q": 0.0002,
-          "m": false,
-          "price": "59777.8",
-          "time": "1795816444352"
-        },
-        {
-          "q": 0.0001,
           "m": true,
-          "price": "59777.7",
-          "time": "1795816442155"
+          "price": "59700.5",
+          "time": "1795818428962"
         },
         {
-          "q": 0.0001,
-          "m": false,
-          "price": "59777.8",
-          "time": "1795816442132"
-        },
-        {
-          "q": 0.0021,
-          "m": false,
-          "price": "59777.8",
-          "time": "1795816440810"
-        },
-        {
-          "q": 0.0008,
-          "m": false,
-          "price": "59777.8",
-          "time": "1795816437643"
-        },
-        {
-          "q": 0.0001,
-          "m": false,
-          "price": "59777.8",
-          "time": "1795816435083"
-        },
-        {
-          "q": 0.0221,
-          "m": false,
-          "price": "59777.8",
-          "time": "1795816433708"
-        },
-        {
-          "q": 0.0002,
-          "m": false,
-          "price": "59777.8",
-          "time": "1795816413404"
-        },
-        {
-          "q": 0.0001,
+          "q": 0.0083,
           "m": true,
-          "price": "59777.7",
-          "time": "1795816412104"
+          "price": "59700.7",
+          "time": "1795818428962"
         },
         {
-          "q": 0.0001,
-          "m": false,
-          "price": "59777.8",
-          "time": "1795816412050"
-        },
-        {
-          "q": 0.0017,
-          "m": false,
-          "price": "59777.8",
-          "time": "1795816407485"
-        },
-        {
-          "q": 0.0004,
+          "q": 0.005,
           "m": true,
-          "price": "59777.7",
-          "time": "1795816400762"
+          "price": "59700.7",
+          "time": "1795818428879"
         },
         {
-          "q": 0.0015,
+          "q": 0.0019,
           "m": true,
-          "price": "59777.7",
-          "time": "1795816400635"
+          "price": "59700.7",
+          "time": "1795818428842"
+        },
+        {
+          "q": 0.0005,
+          "m": true,
+          "price": "59700.7",
+          "time": "1795818428831"
+        },
+        {
+          "q": 0.002,
+          "m": true,
+          "price": "59700.7",
+          "time": "1795818428831"
+        },
+        {
+          "q": 0.0019,
+          "m": true,
+          "price": "59700.7",
+          "time": "1795818428831"
         },
         {
           "q": 0.0016,
           "m": true,
-          "price": "59777.7",
-          "time": "1795816397165"
+          "price": "59700.7",
+          "time": "1795818428831"
         },
         {
-          "q": 0.0001,
-          "m": false,
-          "price": "59777.8",
-          "time": "1795816391390"
-        },
-        {
-          "q": 0.0002,
-          "m": false,
-          "price": "59777.8",
-          "time": "1795816390553"
-        },
-        {
-          "q": 0.0302,
-          "m": false,
-          "price": "59777.8",
-          "time": "1795816389604"
-        },
-        {
-          "q": 0.0654,
-          "m": false,
-          "price": "59777.8",
-          "time": "1795816389604"
-        },
-        {
-          "q": 0.0592,
-          "m": false,
-          "price": "59777.8",
-          "time": "1795816389604"
-        },
-        {
-          "q": 0.035,
-          "m": false,
-          "price": "59777.8",
-          "time": "1795816389604"
-        },
-        {
-          "q": 0.0451,
-          "m": false,
-          "price": "59777.8",
-          "time": "1795816389604"
-        },
-        {
-          "q": 0.0127,
-          "m": false,
-          "price": "59777.8",
-          "time": "1795816389604"
+          "q": 0.0005,
+          "m": true,
+          "price": "59700.7",
+          "time": "1795818428831"
         },
         {
           "q": 0.0004,
-          "m": false,
-          "price": "59777.8",
-          "time": "1795816386645"
-        },
-        {
-          "q": 0.0002,
-          "m": false,
-          "price": "59777.8",
-          "time": "1795816382005"
-        },
-        {
-          "q": 0.0001,
           "m": true,
-          "price": "59777.7",
-          "time": "1795816381926"
+          "price": "59700.7",
+          "time": "1795818428830"
         },
         {
-          "q": 0.0001,
-          "m": false,
-          "price": "59777.8",
-          "time": "1795816381919"
-        },
-        {
-          "q": 0.0002,
-          "m": false,
-          "price": "59774.3",
-          "time": "1795816381116"
-        },
-        {
-          "q": 0.0074,
+          "q": 0.0008,
           "m": true,
-          "price": "59774.1",
-          "time": "1795816378511"
-        },
-        {
-          "q": 0.0001,
-          "m": true,
-          "price": "59775.1",
-          "time": "1795816372995"
-        },
-        {
-          "q": 0.0002,
-          "m": true,
-          "price": "59775.2",
-          "time": "1795816372995"
-        },
-        {
-          "q": 0.0001,
-          "m": false,
-          "price": "59779.3",
-          "time": "1795816372741"
-        },
-        {
-          "q": 0.0002,
-          "m": false,
-          "price": "59779.3",
-          "time": "1795816372741"
-        },
-        {
-          "q": 0.0002,
-          "m": false,
-          "price": "59779.1",
-          "time": "1795816372741"
-        },
-        {
-          "q": 0.0002,
-          "m": false,
-          "price": "59775.0",
-          "time": "1795816372741"
-        },
-        {
-          "q": 0.0001,
-          "m": false,
-          "price": "59774.2",
-          "time": "1795816372741"
-        },
-        {
-          "q": 0.0003,
-          "m": false,
-          "price": "59774.2",
-          "time": "1795816372741"
-        },
-        {
-          "q": 0.0007,
-          "m": false,
-          "price": "59774.2",
-          "time": "1795816372741"
-        },
-        {
-          "q": 0.0003,
-          "m": false,
-          "price": "59774.2",
-          "time": "1795816372741"
-        },
-        {
-          "q": 0.0001,
-          "m": false,
-          "price": "59774.2",
-          "time": "1795816372741"
-        },
-        {
-          "q": 0.0003,
-          "m": false,
-          "price": "59774.2",
-          "time": "1795816372741"
-        },
-        {
-          "q": 0.0002,
-          "m": false,
-          "price": "59772.3",
-          "time": "1795816372739"
-        },
-        {
-          "q": 0.0251,
-          "m": false,
-          "price": "59772.3",
-          "time": "1795816372739"
-        },
-        {
-          "q": 0.0107,
-          "m": false,
-          "price": "59772.3",
-          "time": "1795816372739"
-        },
-        {
-          "q": 0.0014,
-          "m": true,
-          "price": "59772.2",
-          "time": "1795816371998"
-        },
-        {
-          "q": 0.0264,
-          "m": true,
-          "price": "59772.2",
-          "time": "1795816370351"
-        },
-        {
-          "q": 0.0172,
-          "m": false,
-          "price": "59772.3",
-          "time": "1795816369491"
-        },
-        {
-          "q": 0.0339,
-          "m": true,
-          "price": "59772.2",
-          "time": "1795816369056"
-        },
-        {
-          "q": 0.0045,
-          "m": false,
-          "price": "59772.3",
-          "time": "1795816367346"
-        },
-        {
-          "q": 0.0007,
-          "m": true,
-          "price": "59772.2",
-          "time": "1795816366565"
-        },
-        {
-          "q": 0.1129,
-          "m": false,
-          "price": "59772.3",
-          "time": "1795816364377"
-        },
-        {
-          "q": 0.0836,
-          "m": false,
-          "price": "59772.3",
-          "time": "1795816364377"
-        },
-        {
-          "q": 0.0836,
-          "m": false,
-          "price": "59772.3",
-          "time": "1795816364377"
-        },
-        {
-          "q": 0.0046,
-          "m": false,
-          "price": "59772.3",
-          "time": "1795816364377"
-        },
-        {
-          "q": 0.0014,
-          "m": true,
-          "price": "59772.2",
-          "time": "1795816361787"
-        },
-        {
-          "q": 0.0002,
-          "m": false,
-          "price": "59772.3",
-          "time": "1795816355402"
-        },
-        {
-          "q": 0.0099,
-          "m": false,
-          "price": "59772.3",
-          "time": "1795816354909"
-        },
-        {
-          "q": 0.0634,
-          "m": true,
-          "price": "59772.2",
-          "time": "1795816354905"
-        },
-        {
-          "q": 0.035,
-          "m": true,
-          "price": "59772.2",
-          "time": "1795816354905"
-        },
-        {
-          "q": 0.0015,
-          "m": true,
-          "price": "59772.2",
-          "time": "1795816354905"
-        },
-        {
-          "q": 0.0003,
-          "m": true,
-          "price": "59772.2",
-          "time": "1795816354518"
-        },
-        {
-          "q": 0.0003,
-          "m": true,
-          "price": "59772.2",
-          "time": "1795816354398"
-        },
-        {
-          "q": 0.0007,
-          "m": true,
-          "price": "59772.2",
-          "time": "1795816354398"
-        },
-        {
-          "q": 0.0002,
-          "m": true,
-          "price": "59772.2",
-          "time": "1795816354397"
+          "price": "59700.7",
+          "time": "1795818428830"
         },
         {
           "q": 0.001,
           "m": true,
-          "price": "59772.2",
-          "time": "1795816354397"
+          "price": "59700.7",
+          "time": "1795818428830"
         },
         {
-          "q": 0.0007,
+          "q": 0.0001,
           "m": true,
-          "price": "59772.2",
-          "time": "1795816354397"
+          "price": "59700.7",
+          "time": "1795818428830"
+        },
+        {
+          "q": 0.0002,
+          "m": true,
+          "price": "59700.7",
+          "time": "1795818428830"
+        },
+        {
+          "q": 0.0002,
+          "m": true,
+          "price": "59700.7",
+          "time": "1795818428830"
+        },
+        {
+          "q": 0.0002,
+          "m": true,
+          "price": "59701.4",
+          "time": "1795818428829"
+        },
+        {
+          "q": 0.0006,
+          "m": true,
+          "price": "59702.3",
+          "time": "1795818428824"
+        },
+        {
+          "q": 0.0002,
+          "m": true,
+          "price": "59702.3",
+          "time": "1795818428824"
+        },
+        {
+          "q": 0.001,
+          "m": true,
+          "price": "59702.3",
+          "time": "1795818428823"
+        },
+        {
+          "q": 0.001,
+          "m": true,
+          "price": "59702.3",
+          "time": "1795818428823"
+        },
+        {
+          "q": 0.001,
+          "m": true,
+          "price": "59702.3",
+          "time": "1795818428823"
+        },
+        {
+          "q": 0.0001,
+          "m": true,
+          "price": "59702.3",
+          "time": "1795818428823"
+        },
+        {
+          "q": 0.0002,
+          "m": true,
+          "price": "59702.4",
+          "time": "1795818428823"
+        },
+        {
+          "q": 0.0001,
+          "m": true,
+          "price": "59703.1",
+          "time": "1795818428823"
+        },
+        {
+          "q": 0.0001,
+          "m": true,
+          "price": "59704.6",
+          "time": "1795818428821"
+        },
+        {
+          "q": 0.0083,
+          "m": true,
+          "price": "59704.6",
+          "time": "1795818428821"
+        },
+        {
+          "q": 0.0083,
+          "m": true,
+          "price": "59704.6",
+          "time": "1795818428821"
+        },
+        {
+          "q": 0.0001,
+          "m": false,
+          "price": "59704.7",
+          "time": "1795818426612"
+        },
+        {
+          "q": 0.0001,
+          "m": true,
+          "price": "59704.6",
+          "time": "1795818426112"
+        },
+        {
+          "q": 0.0001,
+          "m": false,
+          "price": "59704.7",
+          "time": "1795818426107"
+        },
+        {
+          "q": 0.005,
+          "m": true,
+          "price": "59704.6",
+          "time": "1795818424496"
+        },
+        {
+          "q": 0.0001,
+          "m": true,
+          "price": "59706.1",
+          "time": "1795818424451"
+        },
+        {
+          "q": 0.0002,
+          "m": true,
+          "price": "59706.4",
+          "time": "1795818424451"
+        },
+        {
+          "q": 0.0001,
+          "m": true,
+          "price": "59706.7",
+          "time": "1795818424450"
+        },
+        {
+          "q": 0.0001,
+          "m": true,
+          "price": "59707.4",
+          "time": "1795818424448"
+        },
+        {
+          "q": 0.0083,
+          "m": true,
+          "price": "59707.5",
+          "time": "1795818424448"
+        },
+        {
+          "q": 0.0083,
+          "m": true,
+          "price": "59707.5",
+          "time": "1795818424448"
+        },
+        {
+          "q": 0.0001,
+          "m": true,
+          "price": "59707.7",
+          "time": "1795818424444"
+        },
+        {
+          "q": 0.0002,
+          "m": true,
+          "price": "59707.7",
+          "time": "1795818424444"
+        },
+        {
+          "q": 0.0002,
+          "m": true,
+          "price": "59708.4",
+          "time": "1795818424444"
+        },
+        {
+          "q": 0.0002,
+          "m": true,
+          "price": "59710.0",
+          "time": "1795818424444"
+        },
+        {
+          "q": 0.0001,
+          "m": true,
+          "price": "59711.0",
+          "time": "1795818424444"
+        },
+        {
+          "q": 0.0003,
+          "m": true,
+          "price": "59712.2",
+          "time": "1795818424443"
+        },
+        {
+          "q": 0.0252,
+          "m": true,
+          "price": "59712.2",
+          "time": "1795818424443"
         }
       ],
-      "latency_ms": 187
+      "latency_ms": 224
     },
     "funding_history": {
       "ok": true,
       "data": [
         {
           "symbol": "BTCUSDT",
-          "fundingRate": "0.000056",
+          "fundingRate": "0.000058",
           "fundingRateInterval": "8",
           "nextUpdate": "1795824000000",
           "minFundingRate": "-0.003",
           "maxFundingRate": "0.003"
         }
       ],
-      "latency_ms": 193
+      "latency_ms": 194
     },
     "liquidations": {
       "ok": false,
@@ -32814,13 +32814,13 @@
     ]
   },
   "derived": {
-    "visible_depth_bid_notional_usdt": 421382.6,
-    "visible_depth_ask_notional_usdt": 653500.35,
-    "order_book_imbalance": -0.215947,
+    "visible_depth_bid_notional_usdt": 126228.43,
+    "visible_depth_ask_notional_usdt": 493696.74,
+    "order_book_imbalance": -0.592762,
     "order_book_imbalance_method": "Top-20 visible levels; quote-notional (price \u00d7 quantity); (bid-ask)/(bid+ask)",
-    "cvd_base": 1.3611,
-    "aggressive_buy_base": 1.5399,
-    "aggressive_sell_base": 0.1788,
+    "cvd_base": 0.423,
+    "aggressive_buy_base": 0.5202,
+    "aggressive_sell_base": 0.0972,
     "trade_count": 100
   },
   "fallback_from": "Binance USD-M Futures and Bybit linear Futures",

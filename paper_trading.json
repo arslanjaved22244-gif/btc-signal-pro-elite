@@ -4,12 +4,12 @@
   "source": "Bitget public Futures 5m candles",
   "horizon_minutes": 15,
   "estimated_round_trip_cost_pct": 0.14,
-  "updated_at": "2026-11-27T21:55:02.778425+00:00",
+  "updated_at": "2026-11-27T22:28:01.059648+00:00",
   "current_signal": "WAIT",
   "current_signal_reason": null,
   "closed_trades": 0,
   "pending_trades": 0,
-  "wait_abstentions": 28,
+  "wait_abstentions": 29,
   "wins": 0,
   "losses": 0,
   "win_rate_pct": null,
@@ -17,24 +17,44 @@
   "max_drawdown_pct": 0.0,
   "shadow_evaluation": {
     "mode": "NON_ACTIONABLE_RAW_MODEL_FORECASTS",
-    "closed_forecasts": 6,
+    "closed_forecasts": 8,
+    "evaluated_forecasts": 8,
+    "classification_accuracy_pct": 87.5,
+    "classification_correct": 7,
+    "majority_class_baseline_pct": 87.5,
+    "beats_majority_baseline": false,
+    "class_recall": {
+      "SHORT": {
+        "actual_samples": 1,
+        "recall_pct": 0.0
+      },
+      "WAIT": {
+        "actual_samples": 7,
+        "recall_pct": 100.0
+      },
+      "LONG": {
+        "actual_samples": 0,
+        "recall_pct": null
+      }
+    },
     "pending_forecasts": 0,
-    "abstentions": 9,
+    "abstentions": 10,
     "wins": 1,
     "losses": 5,
     "directional_accuracy_pct": 33.33,
+    "classification_note": "Includes LONG, SHORT and WAIT forecasts. Labels use the same 15m volatility-adaptive neutral band as the AI training target.",
     "net_win_rate_pct": 16.67,
     "average_net_return_pct": -0.15159,
     "net_return_pct_compounded": -0.9064,
     "validation_gate_passed_now": false,
-    "latest_model_timestamp": "2026-11-27T21:42:19.999587+00:00",
-    "latest_model_fresh": false,
+    "latest_model_timestamp": "2026-11-27T22:18:16.542003+00:00",
+    "latest_model_fresh": true,
     "latest_venue_alignment": {
       "compatible": true,
       "type": "CROSS_VENUE_FUTURES",
       "ai_venue": "OKX BTC-USDT-SWAP Futures",
       "market_venue": "Bitget",
-      "basis_pct": 0.02744,
+      "basis_pct": 0.06318,
       "candle_skew_minutes": 15.0,
       "max_basis_pct": 0.25,
       "max_candle_skew_minutes": 15,
@@ -351,6 +371,17 @@
       "exit": null,
       "gross_return_pct": null,
       "net_return_pct": null
+    },
+    {
+      "entry_candle_time": 1795818000000,
+      "recorded_at": "2026-11-27T22:28:00.135265+00:00",
+      "exchange": "Bitget",
+      "side": "WAIT",
+      "entry": 59673.4,
+      "status": "ABSTAINED",
+      "exit": null,
+      "gross_return_pct": null,
+      "net_return_pct": null
     }
   ],
   "shadow_forecasts": [
@@ -478,7 +509,13 @@
       "actionable": false,
       "validation_gate_passed": false,
       "model_version": "4.5-expanded-futures-history",
-      "note": "Shadow-only raw ML forecast. Not a trading signal; validation gate may have failed."
+      "note": "Shadow-only raw ML forecast. Not a trading signal; validation gate may have failed.",
+      "classification_status": "EVALUATED",
+      "actual_class": "WAIT",
+      "classification_correct": true,
+      "realized_move_pct": 0.08758,
+      "label_threshold_pct": 0.18,
+      "classification_exit_candle_time": 1795808400000
     },
     {
       "entry_candle_time": 1795808400000,
@@ -491,7 +528,13 @@
       "actionable": false,
       "validation_gate_passed": false,
       "model_version": "4.5-expanded-futures-history",
-      "note": "Shadow-only raw ML forecast. Not a trading signal; validation gate may have failed."
+      "note": "Shadow-only raw ML forecast. Not a trading signal; validation gate may have failed.",
+      "classification_status": "EVALUATED",
+      "actual_class": "SHORT",
+      "classification_correct": false,
+      "realized_move_pct": -0.18667,
+      "label_threshold_pct": 0.18,
+      "classification_exit_candle_time": 1795809300000
     },
     {
       "entry_candle_time": 1795809900000,
@@ -504,7 +547,13 @@
       "actionable": false,
       "validation_gate_passed": false,
       "model_version": "4.5-expanded-futures-history",
-      "note": "Shadow-only raw ML forecast. Not a trading signal; validation gate may have failed."
+      "note": "Shadow-only raw ML forecast. Not a trading signal; validation gate may have failed.",
+      "classification_status": "EVALUATED",
+      "actual_class": "WAIT",
+      "classification_correct": true,
+      "realized_move_pct": -0.09999,
+      "label_threshold_pct": 0.18,
+      "classification_exit_candle_time": 1795810800000
     },
     {
       "entry_candle_time": 1795810800000,
@@ -517,7 +566,13 @@
       "actionable": false,
       "validation_gate_passed": false,
       "model_version": "4.5-expanded-futures-history",
-      "note": "Shadow-only raw ML forecast. Not a trading signal; validation gate may have failed."
+      "note": "Shadow-only raw ML forecast. Not a trading signal; validation gate may have failed.",
+      "classification_status": "EVALUATED",
+      "actual_class": "WAIT",
+      "classification_correct": true,
+      "realized_move_pct": -0.04168,
+      "label_threshold_pct": 0.18,
+      "classification_exit_candle_time": 1795811700000
     },
     {
       "entry_candle_time": 1795812000000,
@@ -542,7 +597,13 @@
         "max_candle_skew_minutes": 15,
         "reason": "Cross-venue BTC perpetual prices and candle times are within safety tolerances."
       },
-      "note": "Shadow-only raw ML forecast. Not a trading signal; validation gate may have failed. Cross-venue records are accepted only when both perpetual Futures feeds pass price-basis and candle-time checks."
+      "note": "Shadow-only raw ML forecast. Not a trading signal; validation gate may have failed. Cross-venue records are accepted only when both perpetual Futures feeds pass price-basis and candle-time checks.",
+      "classification_status": "EVALUATED",
+      "actual_class": "WAIT",
+      "classification_correct": true,
+      "realized_move_pct": -0.04582,
+      "label_threshold_pct": 0.18,
+      "classification_exit_candle_time": 1795812900000
     },
     {
       "entry_candle_time": 1795812600000,
@@ -567,7 +628,13 @@
         "max_candle_skew_minutes": 15,
         "reason": "Same-venue or cross-venue BTC perpetual prices and 5m candle times are aligned."
       },
-      "note": "Shadow-only raw ML forecast. Not a trading signal; validation gate may have failed. Cross-venue records are accepted only when both perpetual Futures feeds pass price-basis and candle-time checks."
+      "note": "Shadow-only raw ML forecast. Not a trading signal; validation gate may have failed. Cross-venue records are accepted only when both perpetual Futures feeds pass price-basis and candle-time checks.",
+      "classification_status": "EVALUATED",
+      "actual_class": "WAIT",
+      "classification_correct": true,
+      "realized_move_pct": 0.06661,
+      "label_threshold_pct": 0.18,
+      "classification_exit_candle_time": 1795813500000
     },
     {
       "entry_candle_time": 1795814400000,
@@ -592,7 +659,13 @@
         "max_candle_skew_minutes": 15,
         "reason": "Same-venue or cross-venue BTC perpetual prices and 5m candle times are aligned."
       },
-      "note": "Shadow-only raw ML forecast. Not a trading signal; validation gate may have failed. Cross-venue records are accepted only when both perpetual Futures feeds pass price-basis and candle-time checks."
+      "note": "Shadow-only raw ML forecast. Not a trading signal; validation gate may have failed. Cross-venue records are accepted only when both perpetual Futures feeds pass price-basis and candle-time checks.",
+      "classification_status": "EVALUATED",
+      "actual_class": "WAIT",
+      "classification_correct": true,
+      "realized_move_pct": 0.03678,
+      "label_threshold_pct": 0.18,
+      "classification_exit_candle_time": 1795815300000
     },
     {
       "entry_candle_time": 1795815300000,
@@ -613,6 +686,37 @@
         "market_venue": "Bitget",
         "basis_pct": 0.13052,
         "candle_skew_minutes": 5.0,
+        "max_basis_pct": 0.25,
+        "max_candle_skew_minutes": 15,
+        "reason": "Same-venue or cross-venue BTC perpetual prices and 5m candle times are aligned."
+      },
+      "note": "Shadow-only raw ML forecast. Not a trading signal; validation gate may have failed. Cross-venue records are accepted only when both perpetual Futures feeds pass price-basis and candle-time checks.",
+      "classification_status": "EVALUATED",
+      "actual_class": "WAIT",
+      "classification_correct": true,
+      "realized_move_pct": -0.06384,
+      "label_threshold_pct": 0.18,
+      "classification_exit_candle_time": 1795816200000
+    },
+    {
+      "entry_candle_time": 1795818000000,
+      "model_generated_at": "2026-11-27T22:18:16.542003+00:00",
+      "recorded_at": "2026-11-27T22:28:00.135311+00:00",
+      "exchange": "Bitget",
+      "side": "WAIT",
+      "entry": 59673.4,
+      "status": "ABSTAINED",
+      "actionable": false,
+      "validation_gate_passed": false,
+      "model_version": "4.6-causal-market-context",
+      "model_source": "OKX BTC-USDT-SWAP Futures public OHLC candles",
+      "venue_alignment": {
+        "compatible": true,
+        "type": "CROSS_VENUE_FUTURES",
+        "ai_venue": "OKX BTC-USDT-SWAP Futures",
+        "market_venue": "Bitget",
+        "basis_pct": 0.06318,
+        "candle_skew_minutes": 15.0,
         "max_basis_pct": 0.25,
         "max_candle_skew_minutes": 15,
         "reason": "Same-venue or cross-venue BTC perpetual prices and 5m candle times are aligned."

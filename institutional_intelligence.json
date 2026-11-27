@@ -1,13 +1,13 @@
 {
   "system": "BTC Signal Pro Elite Institutional Intelligence",
   "version": "1.0-six-upgrades",
-  "generated_at": "2026-11-27T21:55:02.914115+00:00",
+  "generated_at": "2026-11-27T22:28:01.162939+00:00",
   "market_regime": {
     "status": "AVAILABLE",
     "regime": "BEAR_TREND",
-    "ema50_200_spread_pct": -1.1882,
-    "ema50_slope_6h_pct": -0.2966,
-    "atr_pct": 0.2159,
+    "ema50_200_spread_pct": -1.216,
+    "ema50_slope_6h_pct": -0.305,
+    "atr_pct": 0.2201,
     "source_timeframe": "1h trend + 15m volatility",
     "note": "Rule-based regime classification, not a forecast."
   },
@@ -17,10 +17,10 @@
     "poc": 60503.07,
     "value_area_high": 61274.99,
     "value_area_low": 59010.69,
-    "vwap": 60017.07,
-    "last_price": 59802.9,
+    "vwap": 60008.71,
+    "last_price": 59652.6,
     "price_vs_vwap": "BELOW",
-    "total_sampled_volume": 207654.8823,
+    "total_sampled_volume": 207475.0517,
     "note": "Estimated profile from candle volume, not exchange tick-level volume-at-price."
   },
   "liquidity_structure": {
@@ -29,15 +29,15 @@
   "options": {
     "status": "AVAILABLE",
     "venue": "Deribit public BTC options",
-    "put_call_open_interest_ratio": 0.804,
-    "call_open_interest": 189348.2,
-    "put_open_interest": 152236.1,
-    "call_volume_24h": 13915.5,
-    "put_volume_24h": 15395.1,
-    "average_call_mark_iv_pct": 54.76,
-    "average_put_mark_iv_pct": 54.76,
+    "put_call_open_interest_ratio": 0.8042,
+    "call_open_interest": 189383.1,
+    "put_open_interest": 152304.2,
+    "call_volume_24h": 13695.1,
+    "put_volume_24h": 15410.9,
+    "average_call_mark_iv_pct": 54.94,
+    "average_put_mark_iv_pct": 54.94,
     "approx_max_pain_strike": 68000.0,
-    "btc_index_price": 59768.01,
+    "btc_index_price": 59680.99,
     "instruments_sampled": 960,
     "note": "Aggregated listed BTC options snapshot; max-pain is an approximation across returned instruments, not a price target."
   },
@@ -51,13 +51,13 @@
         "status": "AVAILABLE"
       },
       "DXY": {
-        "correlation": -0.485,
-        "samples": 204,
+        "correlation": -0.419,
+        "samples": 203,
         "status": "AVAILABLE"
       },
       "GOLD": {
-        "correlation": 0.698,
-        "samples": 196,
+        "correlation": 0.684,
+        "samples": 195,
         "status": "AVAILABLE"
       }
     },
@@ -67,30 +67,30 @@
     "15m": {
       "status": "RESEARCH_ONLY",
       "scenario": "SHORT_BIAS",
-      "directional_score": -4.16,
-      "recent_momentum_pct": 0.0202,
-      "ema_spread_bps": -1.43,
-      "atr_pct": 0.112,
+      "directional_score": -7.21,
+      "recent_momentum_pct": -0.0588,
+      "ema_spread_bps": -6.82,
+      "atr_pct": 0.1177,
       "regime": "BEAR_TREND",
       "note": "Heuristic scenario, not a calibrated probability or an entry signal."
     },
     "30m": {
       "status": "RESEARCH_ONLY",
       "scenario": "SHORT_BIAS",
-      "directional_score": -4.48,
-      "recent_momentum_pct": -0.1108,
-      "ema_spread_bps": -1.43,
-      "atr_pct": 0.112,
+      "directional_score": -7.59,
+      "recent_momentum_pct": -0.2107,
+      "ema_spread_bps": -6.82,
+      "atr_pct": 0.1177,
       "regime": "BEAR_TREND",
       "note": "Heuristic scenario, not a calibrated probability or an entry signal."
     },
     "1h": {
       "status": "RESEARCH_ONLY",
       "scenario": "SHORT_BIAS",
-      "directional_score": -29.76,
-      "recent_momentum_pct": 0.0018,
-      "ema_spread_bps": -20.75,
-      "atr_pct": 0.2159,
+      "directional_score": -30.16,
+      "recent_momentum_pct": -0.2855,
+      "ema_spread_bps": -20.87,
+      "atr_pct": 0.2201,
       "regime": "BEAR_TREND",
       "note": "Heuristic scenario, not a calibrated probability or an entry signal."
     }
@@ -103,14 +103,62 @@
       "model_beats_majority_baseline": false,
       "macro_f1_at_least_30": true,
       "shadow_sample_at_least_30": false,
+      "shadow_beats_majority_baseline": false,
       "shadow_validation_passed": false,
       "cost_aware_backtest_completed": true,
       "cost_aware_backtest_positive": false
     },
     "passed_checks": 2,
-    "total_checks": 7,
-    "policy": "Directional signals remain blocked until AI validation beats the majority baseline, macro-F1 is >=30, shadow sample >=30 and passes its validation, and a >=300-candle cost-aware holdout backtest is positive.",
+    "total_checks": 8,
+    "policy": "Directional signals remain blocked until AI validation beats the majority baseline, macro-F1 is >=30, shadow sample >=30, beats its own majority-class baseline and passes its validation, and a >=300-candle cost-aware holdout backtest is positive.",
     "note": "This is a conservative evidence gate, not proof of future profitability."
+  },
+  "shadow_evaluation": {
+    "mode": "NON_ACTIONABLE_RAW_MODEL_FORECASTS",
+    "closed_forecasts": 8,
+    "evaluated_forecasts": 8,
+    "classification_accuracy_pct": 87.5,
+    "classification_correct": 7,
+    "majority_class_baseline_pct": 87.5,
+    "beats_majority_baseline": false,
+    "class_recall": {
+      "SHORT": {
+        "actual_samples": 1,
+        "recall_pct": 0.0
+      },
+      "WAIT": {
+        "actual_samples": 7,
+        "recall_pct": 100.0
+      },
+      "LONG": {
+        "actual_samples": 0,
+        "recall_pct": null
+      }
+    },
+    "pending_forecasts": 0,
+    "abstentions": 10,
+    "wins": 1,
+    "losses": 5,
+    "directional_accuracy_pct": 33.33,
+    "classification_note": "Includes LONG, SHORT and WAIT forecasts. Labels use the same 15m volatility-adaptive neutral band as the AI training target.",
+    "net_win_rate_pct": 16.67,
+    "average_net_return_pct": -0.15159,
+    "net_return_pct_compounded": -0.9064,
+    "validation_gate_passed_now": false,
+    "latest_model_timestamp": "2026-11-27T22:18:16.542003+00:00",
+    "latest_model_fresh": true,
+    "latest_venue_alignment": {
+      "compatible": true,
+      "type": "CROSS_VENUE_FUTURES",
+      "ai_venue": "OKX BTC-USDT-SWAP Futures",
+      "market_venue": "Bitget",
+      "basis_pct": 0.06318,
+      "candle_skew_minutes": 15.0,
+      "max_basis_pct": 0.25,
+      "max_candle_skew_minutes": 15,
+      "reason": "Same-venue or cross-venue BTC perpetual prices and 5m candle times are aligned."
+    },
+    "note": "Research-only forecast tracking. Each fresh model generation is counted once; same-venue Futures or cross-venue Futures with <=0.25% price basis and <=15-minute candle skew may be scored. Spot, stale, mismatched or unaligned feeds are abstentions. Forecasts never authorize trades."
   },
   "feed_health": {
     "status": "PARTIAL",
@@ -120,7 +168,7 @@
       {
         "name": "5m_futures_candles",
         "passed": true,
-        "detail": "candle age 273s"
+        "detail": "candle age 150s"
       },
       {
         "name": "all_five_timeframes",
@@ -135,7 +183,7 @@
       {
         "name": "open_interest_data",
         "passed": true,
-        "detail": "historical OI latest row age 10.06m"
+        "detail": "historical OI latest row age 3.03m"
       },
       {
         "name": "executed_taker_flow",
@@ -150,12 +198,12 @@
       {
         "name": "order_book_depth",
         "passed": true,
-        "detail": "derived top-20 depth snapshot; market age 0.5m"
+        "detail": "derived top-20 depth snapshot; market age 0.53m"
       },
       {
         "name": "fresh_news_scan",
         "passed": true,
-        "detail": "news snapshot age 0.43m"
+        "detail": "news snapshot age 0.44m"
       },
       {
         "name": "trump_public_post_archive",
@@ -173,7 +221,7 @@
         "detail": "not connected / no recent message"
       }
     ],
-    "market_snapshot_age_minutes": 0.5,
+    "market_snapshot_age_minutes": 0.53,
     "note": "A feed marked unavailable is not guessed or replaced. This audit reports source presence and freshness, not signal accuracy. GitHub Actions sampled liquidation data does not count as a continuous stream."
   },
   "execution": "MANUAL_ONLY_NO_ORDERS",

@@ -1,7 +1,7 @@
 {
   "system": "BTC Signal Pro Elite Hybrid Confluence Engine",
   "version": "4.3-hybrid-sweep-validated-futures",
-  "generated_at": "2026-11-27T21:55:03.570356+00:00",
+  "generated_at": "2026-11-27T22:28:01.961622+00:00",
   "symbol": "BTCUSDT",
   "market_type": "BITGET_USDT_FUTURES",
   "market_exchange": "Bitget",
@@ -14,9 +14,9 @@
     "status": "NO_CLEAR_EARLY_SETUP",
     "momentum_scores": {
       "LONG": 0.0,
-      "SHORT": 2.0
+      "SHORT": 3.0
     },
-    "momentum_margin": 2.0,
+    "momentum_margin": 3.0,
     "note": "Early setup is a watchlist hint only, not an entry signal. Confirm the main signal and manual risk levels before any trade."
   },
   "confidence_score": 71.74,
@@ -28,50 +28,50 @@
     "5m": {
       "available": true,
       "bias": "BEARISH",
-      "momentum_bias": "NEUTRAL",
-      "price": 59775.9,
-      "ema50": 59877.9,
-      "ema200": 60478.44,
-      "rsi14": 45.87,
-      "atr14": 66.98,
+      "momentum_bias": "BEARISH",
+      "price": 59673.4,
+      "ema50": 59837.12,
+      "ema200": 60426.65,
+      "rsi14": 38.3,
+      "atr14": 70.23,
       "macd": {
-        "line": -13.61659,
-        "signal": -17.64872,
-        "histogram": 4.03213
+        "line": -38.37109,
+        "signal": -26.3317,
+        "histogram": -12.0394
       },
-      "age_seconds": 273
+      "age_seconds": 150
     },
     "15m": {
       "available": true,
       "bias": "BEARISH",
       "momentum_bias": "NEUTRAL",
-      "price": 59802.9,
-      "ema50": 60350.54,
-      "ema200": 60583.8,
-      "rsi14": 40.99,
-      "atr14": 129.14,
+      "price": 59652.6,
+      "ema50": 60301.3,
+      "ema200": 60565.87,
+      "rsi14": 36.54,
+      "atr14": 131.31,
       "macd": {
-        "line": -185.59586,
-        "signal": -234.76372,
-        "histogram": 49.16786
+        "line": -177.89696,
+        "signal": -214.17232,
+        "histogram": 36.27536
       },
-      "age_seconds": 574
+      "age_seconds": 751
     },
     "1h": {
       "available": true,
       "bias": "BEARISH",
       "momentum_bias": "BEARISH",
-      "price": 59774.4,
-      "ema50": 60567.56,
-      "ema200": 61295.86,
-      "rsi14": 36.77,
-      "atr14": 592.96,
+      "price": 59770.2,
+      "ema50": 60536.29,
+      "ema200": 61281.45,
+      "rsi14": 36.72,
+      "atr14": 570.94,
       "macd": {
-        "line": -262.39051,
-        "signal": -63.10656,
-        "histogram": -199.28395
+        "line": -287.80588,
+        "signal": -108.04643,
+        "histogram": -179.75945
       },
-      "age_seconds": 3275
+      "age_seconds": 1652
     },
     "4h": {
       "available": true,
@@ -87,7 +87,7 @@
         "signal": -28.7509,
         "histogram": 62.50666
       },
-      "age_seconds": 6875
+      "age_seconds": 8852
     },
     "1d": {
       "available": true,
@@ -103,7 +103,7 @@
         "signal": -4502.26763,
         "histogram": -20.97644
       },
-      "age_seconds": 21276
+      "age_seconds": 23253
     }
   },
   "liquidity_sweep": {
@@ -111,16 +111,16 @@
     "status": "NO_CONFIRMED_SWEEP"
   },
   "order_flow": {
-    "cvd_base": 1.3611,
-    "order_book_imbalance": -0.215947,
+    "cvd_base": 0.423,
+    "order_book_imbalance": -0.592762,
     "order_book_imbalance_method": "Top-20 visible levels; quote-notional (price \u00d7 quantity); (bid-ask)/(bid+ask)",
-    "funding_rate_pct": 0.0056,
+    "funding_rate_pct": 0.0058,
     "funding_crowding": "NEUTRAL",
-    "open_interest_change_30m_pct": null,
+    "open_interest_change_30m_pct": 0.0228,
     "taker_buy_sell_ratio": null
   },
   "ml_context": {
-    "model_version": "4.5-expanded-futures-history",
+    "model_version": "4.6-causal-market-context",
     "data_source": "OKX BTC-USDT-SWAP Futures public OHLC candles",
     "source_is_futures": true,
     "validation_passed": false,
@@ -130,7 +130,7 @@
       "type": "CROSS_VENUE_FUTURES",
       "model_venue": "OKX BTC-USDT-SWAP Futures",
       "market_venue": "Bitget",
-      "basis_pct": 0.02744,
+      "basis_pct": 0.06318,
       "candle_skew_minutes": 15.0,
       "max_basis_pct": 0.25,
       "max_candle_skew_minutes": 15,
@@ -139,7 +139,7 @@
     "signal": "WAIT"
   },
   "risk_levels": {
-    "entry_reference": 59775.9,
+    "entry_reference": 59673.4,
     "stop_loss": null,
     "take_profit_1": null,
     "take_profit_2": null,
@@ -156,7 +156,7 @@
     ]
   },
   "news_guard": {
-    "generated_at": "2026-11-27T21:54:37.719043+00:00",
+    "generated_at": "2026-11-27T22:27:35.256255+00:00",
     "source": "Google News RSS public fallback + Trump's Truth independent archive (unofficial)",
     "available": true,
     "block": false,
@@ -170,7 +170,7 @@
   },
   "volatility_guard": {
     "blocked": false,
-    "atr_5m_pct": 0.1121,
+    "atr_5m_pct": 0.1177,
     "atr_threshold_pct": 0.45,
     "range_spike": false
   },
@@ -182,13 +182,14 @@
       "model_beats_majority_baseline": false,
       "macro_f1_at_least_30": true,
       "shadow_sample_at_least_30": false,
+      "shadow_beats_majority_baseline": false,
       "shadow_validation_passed": false,
       "cost_aware_backtest_completed": true,
       "cost_aware_backtest_positive": false
     },
     "passed_checks": 2,
-    "total_checks": 7,
-    "policy": "Directional signals remain blocked until AI validation beats the majority baseline, macro-F1 is >=30, shadow sample >=30 and passes its validation, and a >=300-candle cost-aware holdout backtest is positive.",
+    "total_checks": 8,
+    "policy": "Directional signals remain blocked until AI validation beats the majority baseline, macro-F1 is >=30, shadow sample >=30, beats its own majority-class baseline and passes its validation, and a >=300-candle cost-aware holdout backtest is positive.",
     "note": "This is a conservative evidence gate, not proof of future profitability."
   },
   "warnings": [
