@@ -338,6 +338,136 @@ def collect_bybit():
     return result
 
 
+
+def okx_request(path, params=None, timeout=15):
+    query = urllib.parse.urlencode(params or {})
+    url = "https://www.okx.com" + path + (("?" + query) if query else "")
+    req = urllib.request.Request(url, headers={"User-Agent":"BTC-Signal-Pro-Elite/5.1","Accept":"application/json"})
+    with urllib.request.urlopen(req, timeout=timeout) as response:
+        raw=response.read()
+    if not raw.strip():
+        raise ValueError("Empty response from OKX public API")
+    payload=json.loads(raw.decode("utf-8"))
+    if payload.get("code")!="0":
+        raise RuntimeError("OKX API error: "+str(payload.get("code"))+" "+str(payload.get("msg")))
+    return payload.get("data",[])
+
+
+def okx_feed(path, params=None):
+    started=time.time()
+    try:
+        return {"ok":True,"data":okx_request(path,params),
+                "latency_ms":round((time.time()-started)*1000)}
+    except Exception as exc:
+        return {"ok":False,"error":str(exc),
+                "latency_ms":round((time.time()-started)*1000)}
+
+
+def okx_candles(interval, limit=300):
+    bar={"5m":"5m","15m":"15m","1h":"1H","4h":"4H","1d":"1D"}[interval]
+    raw=okx_request("/api/v5/market/history-candles",{
+        "instId":"BTC-USDT-SWAP","bar":bar,"limit":str(limit)})
+    rows=[]
+    now_ms=int(time.time()*1000)
+    for r in reversed(raw):
+        if len(r)<9 or str(r[8])!="1":
+            continue
+        rows.append({"time":int(r[0]),"open":float(r[1]),"high":float(r[2]),
+            "low":float(r[3]),"close":float(r[4]),"volume":float(r[5]),
+            "quote_volume":float(r[7]),"trades":0,
+            "taker_buy_base":None,"taker_buy_quote":None})
+    if len(rows)<50:
+        raise ValueError("Insufficient completed OKX BTC-USDT-SWAP candles")
+    return rows
+
+
+def collect_okx():
+    generated=datetime.now(timezone.utc).isoformat()
+    result={"system":"BTC Signal Pro Elite Futures Data Engine",
+        "version":"5.2-okx-swap-fallback","symbol":"BTC-USDT-SWAP",
+        "market_type":"OKX_BTC_USDT_SWAP","exchange":"OKX",
+        "generated_at":generated,
+        "source":"https://www.okx.com/api/v5/market (BTC-USDT-SWAP perpetual)",
+        "timeframes":{},"feeds":{},"data_quality":{}}
+    durations={"5m":300000,"15m":900000,"1h":3600000,"4h":14400000,"1d":86400000}
+    for tf in TIMEFRAMES:
+        try:
+            rows=okx_candles(tf)
+            result["timeframes"][tf]={"ok":True,"candles":rows,
+                "last_closed_candle_time":rows[-1]["time"],
+                "age_seconds":max(0,int((time.time()*1000-rows[-1]["time"]-durations[tf])/1000))}
+        except Exception as exc:
+            result["timeframes"][tf]={"ok":False,"error":str(exc)}
+
+    ticker=okx_feed("/api/v5/market/ticker",{"instId":"BTC-USDT-SWAP"})
+    if ticker["ok"]:
+        t=ticker["data"][0] if ticker["data"] else {}
+        ticker["data"]={"lastPrice":t.get("last"),"markPrice":t.get("last")}
+    result["feeds"]["mark_price_funding"]=ticker
+
+    funding=okx_feed("/api/v5/public/funding-rate",{"instId":"BTC-USDT-SWAP"})
+    if funding["ok"]:
+        x=funding["data"][0] if funding["data"] else {}
+        result["feeds"]["mark_price_funding"]["data"]["lastFundingRate"]=x.get("fundingRate")
+        result["feeds"]["mark_price_funding"]["data"]["nextFundingTime"]=x.get("nextFundingTime")
+
+    oi=okx_feed("/api/v5/public/open-interest",{"instType":"SWAP","instId":"BTC-USDT-SWAP"})
+    if oi["ok"]:
+        x=oi["data"][0] if oi["data"] else {}
+        result["feeds"]["open_interest_current"]={"ok":True,"data":{"openInterest":x.get("oi"),"openInterestCurrency":x.get("oiCcy")}}
+    else:
+        result["feeds"]["open_interest_current"]=oi
+    result["feeds"]["open_interest_history_5m"]={"ok":False,"error":"OKX public OI history not configured in this fallback."}
+    result["feeds"]["taker_flow_5m"]={"ok":False,"error":"OKX taker buy/sell ratio not configured in this fallback."}
+
+    book=okx_feed("/api/v5/market/books",{"instId":"BTC-USDT-SWAP","sz":"50"})
+    if book["ok"]:
+        x=book["data"][0] if book["data"] else {}
+        book["data"]={"bids":x.get("bids",[]),"asks":x.get("asks",[])}
+    result["feeds"]["order_book"]=book
+
+    trades=okx_feed("/api/v5/market/trades",{"instId":"BTC-USDT-SWAP","limit":"500"})
+    if trades["ok"]:
+        trades["data"]=[{"q":x.get("sz",0),"m":x.get("side")=="sell",
+            "price":x.get("px"),"time":x.get("ts")} for x in trades["data"]]
+    result["feeds"]["recent_agg_trades"]=trades
+    result["feeds"]["funding_history"]=okx_feed("/api/v5/public/funding-rate-history",{"instId":"BTC-USDT-SWAP","limit":"10"})
+
+    if trades["ok"]:
+        buys=sells=0.0
+        for x in trades["data"]:
+            q=float(x.get("q",0) or 0)
+            if x.get("m"): sells+=q
+            else: buys+=q
+        result["derived"]={"cvd_base":round(buys-sells,8),
+            "aggressive_buy_base":round(buys,8),"aggressive_sell_base":round(sells,8),
+            "trade_count":len(trades["data"]),
+            "cvd_note":"Rolling snapshot from latest OKX swap trades."}
+    else:
+        result["derived"]={"cvd_base":None,"note":"OKX trade feed unavailable."}
+    if book["ok"]:
+        bids=sum(float(x[1]) for x in book["data"].get("bids",[]))
+        asks=sum(float(x[1]) for x in book["data"].get("asks",[]))
+        total=bids+asks
+        result["derived"].update({"visible_depth_bid_base":round(bids,8),
+            "visible_depth_ask_base":round(asks,8),
+            "order_book_imbalance":round((bids-asks)/total,6) if total else None})
+
+    result["feeds"]["liquidations"]={"ok":False,"status":"not_collected",
+        "reason":"No OKX liquidation stream is connected; Binance liquidation sample is not reused."}
+    core=all(result["timeframes"].get(tf,{}).get("ok") for tf in TIMEFRAMES)
+    fresh=result["timeframes"].get("5m",{}).get("age_seconds",999999)<=600
+    result["data_quality"]={"core_timeframes_ok":core,"five_minute_data_fresh":fresh,
+        "futures_only":True,"status":"HEALTHY" if core and fresh else "DEGRADED","warnings":[]}
+    if not core: result["data_quality"]["warnings"].append("One or more OKX BTC-USDT-SWAP candle timeframes failed.")
+    if not fresh: result["data_quality"]["warnings"].append("OKX 5m Futures candle data is stale.")
+    for key,feed in result["feeds"].items():
+        if key not in ("liquidations",) and not feed.get("ok"):
+            result["data_quality"]["warnings"].append(key+" feed unavailable: "+feed.get("error","not configured"))
+    result["data_quality"]["warnings"].append("OKX BTC-USDT-SWAP is a separate exchange perpetual reference; confirm execution venue price and liquidity.")
+    return result
+
+
 def collect():
     primary=collect_binance()
     if primary.get("data_quality",{}).get("core_timeframes_ok") and primary.get("data_quality",{}).get("five_minute_data_fresh"):
@@ -361,8 +491,28 @@ def collect():
             "timeframe_errors": {k:v.get("error") for k,v in fallback.get("timeframes",{}).items() if v.get("error")}
         }
         return primary
+        try:
+            okx=collect_okx()
+            if okx.get("data_quality",{}).get("core_timeframes_ok") and okx.get("data_quality",{}).get("five_minute_data_fresh"):
+                okx["fallback_from"]="Binance USD-M Futures and Bybit linear Futures"
+                okx["prior_source_failures"]=primary.get("data_quality",{}).get("warnings",[])
+                return okx
+            errors=[v.get("error") for v in okx.get("timeframes",{}).values() if v.get("error")]
+            primary["data_quality"]["warnings"].append("OKX fallback did not provide complete fresh candles: "+("; ".join(errors[:3]) if errors else "core timeframes incomplete"))
+            primary["fallback_attempts"]={"bybit":"blocked or incomplete","okx":{"core_timeframes_ok":False,"timeframe_errors":{k:v.get("error") for k,v in okx.get("timeframes",{}).items() if v.get("error")}}}
+            return primary
+        except Exception as okx_exc:
+            primary["data_quality"]["warnings"].append("OKX BTC-USDT-SWAP fallback failed: "+str(okx_exc))
+            return primary
     except Exception as exc:
         primary["data_quality"]["warnings"].append("Bybit linear Futures fallback failed: "+str(exc))
+        try:
+            okx=collect_okx()
+            if okx.get("data_quality",{}).get("core_timeframes_ok") and okx.get("data_quality",{}).get("five_minute_data_fresh"):
+                okx["fallback_from"]="Binance USD-M Futures and Bybit linear Futures"
+                return okx
+        except Exception as okx_exc:
+            primary["data_quality"]["warnings"].append("OKX BTC-USDT-SWAP fallback failed: "+str(okx_exc))
         return primary
 
 
