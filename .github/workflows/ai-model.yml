@@ -41,7 +41,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           cp ai_result.json /tmp/ai_result_candidate.json
           cp prediction_feedback.json /tmp/prediction_feedback_candidate.json
-          git checkout -- ai_result.json
+          git checkout -- ai_result.json prediction_feedback.json
           git pull --rebase origin main
           python - <<'PY'
           import json
