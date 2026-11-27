@@ -75,7 +75,7 @@ class FeedHealthTests(unittest.TestCase):
             self.market, self.news, self.liquidation, self.comparison, now=self.now
         )
         states = {item["name"]: item["passed"] for item in result["items"]}
-        self.assertTrue(states["open_interest_history"])
+        self.assertTrue(states["open_interest_data"])
 
     def test_current_oi_snapshot_counts_but_is_not_called_history(self):
         self.market["feeds"]["open_interest_history_5m"] = {
@@ -125,7 +125,7 @@ class FeedHealthTests(unittest.TestCase):
             self.market, self.news, self.liquidation, self.comparison, now=self.now
         )
         states = {item["name"]: item["passed"] for item in result["items"]}
-        self.assertFalse(states["open_interest_history"])
+        self.assertFalse(states["open_interest_data"])
 
 
 if __name__ == "__main__":
