@@ -429,6 +429,7 @@ def build():
         "macro_correlations": macro_correlations(),
         "next_move_scenarios": scenario_forecasts(market, regime),
         "signal_quality_gate": quality_gate(ai, paper, metrics),
+        "shadow_evaluation": paper.get("shadow_evaluation", {}),
         "feed_health": feed_health(market, news, liquidation, comparison),
         "execution": "MANUAL_ONLY_NO_ORDERS",
         "disclaimer": "Public-data research context only. Scenarios are not calibrated probabilities; unavailable feeds are explicitly marked."
