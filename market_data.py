@@ -453,20 +453,21 @@ def collect_okx():
             oi_hist={"ok":False,"error":"OKX returned fewer than two 5m open-interest history points."}
     result["feeds"]["open_interest_history_5m"]=oi_hist
 
+    # OKX Rubik taker-volume uses instType=CONTRACTS (not SWAP).
+    # Public response rows are [timestamp, sell volume, buy volume].
     taker=okx_feed("/api/v5/rubik/stat/taker-volume",{
-        "ccy":"BTC","instType":"SWAP","period":"5m"})
+        "ccy":"BTC","instType":"CONTRACTS","period":"5m"})
     if taker["ok"]:
         normalized=[]
         for point in taker["data"]:
-            # OKX Rubik taker-volume rows: [ts, sellVol, buyVol, sellCcyVol, buyCcyVol].
             if isinstance(point, dict):
                 timestamp=point.get("ts")
-                buy=float(point.get("buyCcyVol",point.get("buyVol",0)) or 0)
-                sell=float(point.get("sellCcyVol",point.get("sellVol",0)) or 0)
+                sell=float(point.get("sellVol",0) or 0)
+                buy=float(point.get("buyVol",0) or 0)
             elif isinstance(point, (list, tuple)) and len(point)>=3:
                 timestamp=point[0]
-                sell=float(point[3] if len(point)>4 and point[3] else point[1] or 0)
-                buy=float(point[4] if len(point)>4 and point[4] else point[2] or 0)
+                sell=float(point[1] or 0)
+                buy=float(point[2] or 0)
             else:
                 continue
             normalized.append({"buySellRatio":buy/sell if sell>0 else None,
