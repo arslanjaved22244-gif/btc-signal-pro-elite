@@ -9,8 +9,10 @@ on:
       - "signal_engine.py"
       - "paper_trader.py"
       - ".github/workflows/ai-model.yml"
+  # Model training is compute-heavy and must not compete with the 5-minute live monitor.
+  # Run once daily; use workflow_dispatch for an on-demand validation run.
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "17 2 * * *"
 
 permissions:
   contents: write
