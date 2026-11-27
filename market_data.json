@@ -3,65 +3,65 @@
   "version": "4.0-market-data-foundation",
   "symbol": "BTCUSDT",
   "market_type": "BINANCE_USDM_FUTURES",
-  "generated_at": "2026-11-27T01:38:43.700895+00:00",
+  "generated_at": "2026-11-27T01:40:08.215516+00:00",
   "source": "https://fapi.binance.com",
   "timeframes": {
     "5m": {
       "ok": false,
-      "error": "Expecting value: line 1 column 1 (char 0)"
+      "error": "Empty response from https://fapi4.binance.com (HTTP 202)"
     },
     "15m": {
       "ok": false,
-      "error": "Expecting value: line 1 column 1 (char 0)"
+      "error": "Empty response from https://fapi4.binance.com (HTTP 202)"
     },
     "1h": {
       "ok": false,
-      "error": "Expecting value: line 1 column 1 (char 0)"
+      "error": "Empty response from https://fapi4.binance.com (HTTP 202)"
     },
     "4h": {
       "ok": false,
-      "error": "Expecting value: line 1 column 1 (char 0)"
+      "error": "Empty response from https://fapi4.binance.com (HTTP 202)"
     },
     "1d": {
       "ok": false,
-      "error": "Expecting value: line 1 column 1 (char 0)"
+      "error": "Empty response from https://fapi4.binance.com (HTTP 202)"
     }
   },
   "feeds": {
     "mark_price_funding": {
       "ok": false,
-      "error": "Expecting value: line 1 column 1 (char 0)",
-      "latency_ms": 1364
+      "error": "Empty response from https://fapi4.binance.com (HTTP 202)",
+      "latency_ms": 2141
     },
     "open_interest_current": {
       "ok": false,
-      "error": "Expecting value: line 1 column 1 (char 0)",
-      "latency_ms": 1358
+      "error": "Empty response from https://fapi4.binance.com (HTTP 202)",
+      "latency_ms": 2118
     },
     "open_interest_history_5m": {
       "ok": false,
-      "error": "Expecting value: line 1 column 1 (char 0)",
-      "latency_ms": 1354
+      "error": "Empty response from https://fapi4.binance.com (HTTP 202)",
+      "latency_ms": 2104
     },
     "taker_flow_5m": {
       "ok": false,
-      "error": "Expecting value: line 1 column 1 (char 0)",
-      "latency_ms": 1357
+      "error": "Empty response from https://fapi4.binance.com (HTTP 202)",
+      "latency_ms": 2102
     },
     "order_book": {
       "ok": false,
-      "error": "Expecting value: line 1 column 1 (char 0)",
-      "latency_ms": 1362
+      "error": "Empty response from https://fapi4.binance.com (HTTP 202)",
+      "latency_ms": 2042
     },
     "recent_agg_trades": {
       "ok": false,
-      "error": "Expecting value: line 1 column 1 (char 0)",
-      "latency_ms": 1371
+      "error": "Empty response from https://fapi4.binance.com (HTTP 202)",
+      "latency_ms": 2088
     },
     "funding_history": {
       "ok": false,
-      "error": "Expecting value: line 1 column 1 (char 0)",
-      "latency_ms": 1356
+      "error": "Empty response from https://fapi4.binance.com (HTTP 202)",
+      "latency_ms": 2010
     },
     "liquidations": {
       "ok": false,
@@ -77,13 +77,13 @@
     "warnings": [
       "One or more Futures candle timeframes failed.",
       "5m Futures candle data is stale.",
-      "mark_price_funding feed unavailable: Expecting value: line 1 column 1 (char 0)",
-      "open_interest_current feed unavailable: Expecting value: line 1 column 1 (char 0)",
-      "open_interest_history_5m feed unavailable: Expecting value: line 1 column 1 (char 0)",
-      "taker_flow_5m feed unavailable: Expecting value: line 1 column 1 (char 0)",
-      "order_book feed unavailable: Expecting value: line 1 column 1 (char 0)",
-      "recent_agg_trades feed unavailable: Expecting value: line 1 column 1 (char 0)",
-      "funding_history feed unavailable: Expecting value: line 1 column 1 (char 0)",
+      "mark_price_funding feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
+      "open_interest_current feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
+      "open_interest_history_5m feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
+      "taker_flow_5m feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
+      "order_book feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
+      "recent_agg_trades feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
+      "funding_history feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
       "Liquidation feed is not connected yet."
     ]
   },
