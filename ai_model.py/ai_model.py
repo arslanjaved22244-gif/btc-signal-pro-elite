@@ -603,6 +603,73 @@ def walk_forward_validate(rows, labels):
     return classification_metrics(actual_all, predicted_all), fold_results
 
 
+
+def candle_atr(candles, index, period=14):
+    start=max(1,index-period+1); trs=[]
+    for j in range(start,index+1):
+        c,prev=candles[j],candles[j-1]["close"]
+        trs.append(max(c["high"]-c["low"],abs(c["high"]-prev),abs(c["low"]-prev)))
+    return sum(trs)/len(trs) if trs else 0.0
+
+def advanced_regime(data):
+    c=data["5m"]; closes=[x["close"] for x in c]
+    e20=ema(closes,20); e50=ema(closes,50); e200=ema(closes,200)
+    atr_now=candle_atr(c,len(c)-1,14)
+    av=[candle_atr(c,i,14) for i in range(max(20,len(c)-120),len(c))]
+    atr_base=sum(av)/len(av) if av else atr_now
+    slope=e20[-1]/e50[-1]-1.0 if e50[-1] else 0.0
+    bull=closes[-1]>e50[-1]>e200[-1]
+    bear=closes[-1]<e50[-1]<e200[-1]
+    ratio=atr_now/atr_base if atr_base else 1.0
+    if ratio>1.45: regime="HIGH VOLATILITY"
+    elif bull and slope>0.001: regime="BULL TREND"
+    elif bear and slope< -0.001: regime="BEAR TREND"
+    elif abs(slope)<0.0015: regime="RANGE / CHOP"
+    else: regime="TRANSITION"
+    prior=c[-21:-1]; hi=max(x["high"] for x in prior); lo=min(x["low"] for x in prior); last=c[-1]
+    sweep="NONE"
+    if last["high"]>hi and last["close"]<hi: sweep="BEARISH HIGH-SIDE LIQUIDITY SWEEP"
+    elif last["low"]<lo and last["close"]>lo: sweep="BULLISH LOW-SIDE LIQUIDITY SWEEP"
+    return {"regime":regime,"atr_ratio":round(ratio,3),"trend_slope_pct":round(slope*100,4),
+            "liquidity_sweep":sweep,"range_high":round(hi,2),"range_low":round(lo,2),
+            "explanation":"Volatility expansion" if regime=="HIGH VOLATILITY" else
+            "EMA structure and slope" if regime in ("BULL TREND","BEAR TREND") else
+            "Low directional separation" if regime=="RANGE / CHOP" else "Trend transition"}
+
+def advanced_horizon_models(data, prepared):
+    base=data["5m"]; output={}
+    for horizon,label in ((3,"15m"),(6,"30m"),(12,"60m")):
+        rows,labels=[],[]; start=max(200,len(base)-2600)
+        for i in range(start,len(base)-horizon):
+            x=combined_features(data,i,prepared)
+            if x is None: continue
+            move=base[i+horizon]["close"]/base[i]["close"]-1.0
+            vol=candle_atr(base,i,14)/base[i]["close"]
+            threshold=max(0.00035,vol*0.20*math.sqrt(horizon/3.0))
+            labels.append(2 if move>threshold else 0 if move< -threshold else 1); rows.append(x)
+        if len(rows)<300:
+            output[label]={"signal":"WAIT","status":"INSUFFICIENT DATA","samples":len(rows)}; continue
+        split=int(len(rows)*0.80); purge=max(3,horizon)
+        train_rows,train_labels=rows[:max(0,split-purge)],labels[:max(0,split-purge)]
+        test_rows,test_labels=rows[split:],labels[split:]
+        if len(train_rows)<200 or len(test_rows)<30:
+            output[label]={"signal":"WAIT","status":"INSUFFICIENT VALIDATION","samples":len(rows)}; continue
+        model=train_model(train_rows,train_labels,epochs=75,learning_rate=0.02,l2=0.015)
+        probs_test=[predict(model,x) for x in test_rows]
+        pred=[max(range(3),key=lambda k:p[k]) for p in probs_test]
+        metrics=classification_metrics(test_labels,pred)
+        latest=combined_features(data,len(base)-1,prepared); probs=predict(model,latest)
+        ranked=sorted(probs,reverse=True); margin=ranked[0]-ranked[1]
+        candidate=CLASSES[max(range(3),key=lambda k:probs[k])]
+        signal=candidate if candidate!="WAIT" and metrics["accuracy"]>=38.0 and margin>=0.10 else "WAIT"
+        output[label]={"signal":signal,"raw_model_class":candidate,
+            "scores":{name:round(probs[k]*100,2) for k,name in enumerate(CLASSES)},
+            "confidence_margin":round(margin*100,2),"holdout_accuracy":metrics["accuracy"],
+            "macro_f1":metrics["macro_f1"],"training_samples":len(train_rows),
+            "validation_samples":len(test_rows),
+            "status":"VALIDATED HOLDOUT" if signal!="WAIT" else "WEAK EDGE — WAIT"}
+    return output
+
 def main():
     print("BTC Signal Pro Elite - Advanced ML starting...")
     data = {}
@@ -624,6 +691,8 @@ def main():
     if latest is None:
         raise ValueError("Could not build latest multi-timeframe features.")
     scores = predict_ensemble(final_model, latest)
+    regime_analysis = advanced_regime(data)
+    horizon_forecasts = advanced_horizon_models(data, prepared)
     best = max(range(3), key=lambda k: scores[k])
     ordered = sorted(scores, reverse=True)
     margin = ordered[0] - ordered[1]
@@ -653,6 +722,7 @@ def main():
         "wait_probability_threshold": final_wait_threshold,
         "ensemble_configuration": {"models": ["full_history_logistic", "recent_regime_logistic", "nearest_centroid", "decision_stumps"], "weights": {"full_history_logistic": 0.35, "recent_regime_logistic": 0.20, "nearest_centroid": 0.20, "decision_stumps": 0.25}, "recent_training_window": final_model["recent_window"]},
         "walk_forward_metrics": validation,
+        "advanced_intelligence": {"market_regime": regime_analysis, "multi_horizon_forecasts": horizon_forecasts, "method": "chronological holdout horizon models + volatility regime + 20-candle liquidity sweep detector"},
         "walk_forward_folds": folds,
         "training_samples": len(rows),
         "label_distribution": {name: labels.count(i) for i, name in enumerate(CLASSES)},
