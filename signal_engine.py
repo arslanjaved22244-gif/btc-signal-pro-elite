@@ -173,7 +173,13 @@ def run():
     elif signal != "WAIT" and not model_is_futures:
         warnings.append("ML model uses a non-Futures or unknown source; it is not used as confirmation.")
 
-    if news.get("block"):\n        signal = "WAIT"\n        warnings.append("High-risk news detected in the last 30 minutes; entries blocked.")\n    elif not news.get("available"):\n        warnings.append("News monitor unavailable; verify major headlines manually before any trade.")\n\n    price = analyses.get("5m", {}).get("price")
+    if news.get("block"):
+        signal = "WAIT"
+        warnings.append("High-risk news detected in the last 30 minutes; entries blocked.")
+    elif not news.get("available"):
+        warnings.append("News monitor unavailable; verify major headlines manually before any trade.")
+
+    price = analyses.get("5m", {}).get("price")
     atr_value = analyses.get("5m", {}).get("atr14")
     risk = {"entry_reference": price, "stop_loss": None, "take_profit_1": None,
             "take_profit_2": None, "risk_reward": "1:1.5 and 1:2.5", "method": "1.5x 5m ATR stop"}
