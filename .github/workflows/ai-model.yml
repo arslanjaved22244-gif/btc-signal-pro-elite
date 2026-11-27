@@ -16,7 +16,8 @@ permissions:
   contents: write
 
 concurrency:
-  group: btc-signal-ai
+  # All scheduled publishers share one lock because they commit generated JSON to main.
+  group: btc-signal-main-publisher
   cancel-in-progress: false
 
 jobs:

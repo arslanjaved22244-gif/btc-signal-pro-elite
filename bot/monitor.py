@@ -18,7 +18,7 @@ def api(path,params):return get_json(BASE+path+"?"+urllib.parse.urlencode(params
 def news_scan():
  # Google News covers global headlines; Trump's Truth is an independent archive RSS
  # of public @realDonaldTrump Truth Social posts (not an official platform API).
- terms=["bitcoin","crypto","trump","tariff","war","iran","israel","sanction","federal reserve","fed","fomc","hack","sec","exchange","etf","attack","oil","energy","inflation","interest rate","china","russia","ukraine","nato","military","treasury","dollar","trade deal","export","ban","embargo"]
+ terms=["bitcoin","crypto","tariff","war","iran","israel","sanction","federal reserve","fed","fomc","hack","sec","exchange","etf","attack","oil","energy","inflation","interest rate","china","russia","ukraine","nato","military","treasury","dollar","trade deal","export","ban","embargo"]
  queries=["Bitcoin OR crypto Trump tariff war Iran Israel sanctions Fed FOMC hack SEC","Trump statement markets Bitcoin crypto"]
  hits=[]; current=now()
  for query in queries:
