@@ -350,7 +350,7 @@ def run():
     if quality_gate.get("passed") is not True:
         if signal in ("LONG", "SHORT"):
             signal = "WAIT"
-        warnings.append("Institutional quality gate not passed: directional entries remain disabled until AI baseline, macro-F1, 30+ shadow forecasts and positive 300+ candle cost-aware backtest all pass.")
+        warnings.append("Institutional quality gate blocked: directional entries remain disabled until AI baseline, macro-F1, 30+ shadow forecasts and positive 300+ candle cost-aware backtest all pass.")
 
     # A separate early-setup readout makes developing direction visible without
     # mislabeling a weak setup as an actionable LONG/SHORT entry.
