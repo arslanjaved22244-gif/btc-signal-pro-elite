@@ -85,8 +85,10 @@ def liquidation_worker():
         time.sleep(5)
 
 def dashboard_server():
-    os.chdir(ROOT)
-    os.execv(sys.executable, [sys.executable, "-m", "http.server", "8080", "--bind", "0.0.0.0"])
+    proc = subprocess.Popen([sys.executable, "-m", "http.server", "8080", "--bind", "0.0.0.0"],
+                            cwd=ROOT, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
+    print("Dashboard HTTP server PID:", proc.pid, flush=True)
+    proc.wait()
 
 def monitor_worker():
     while True:
