@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-27T18:33:41.394073+00:00",
+  "generated_at": "2026-11-27T18:36:01.920515+00:00",
   "symbol": "BTCUSDT perpetual contracts only",
   "reference": "OKX BTC-USDT-SWAP",
   "venues": {
@@ -13,7 +13,7 @@
     },
     "OKX BTC-USDT-SWAP": {
       "available": true,
-      "price": 59862.8,
+      "price": 59815.7,
       "endpoint": "https://www.okx.com/api/v5/market/ticker?instId=BTC-USDT-SWAP",
       "fallback_errors": [],
       "difference_usdt": 0.0,
