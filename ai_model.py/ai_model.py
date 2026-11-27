@@ -10,6 +10,8 @@ import zipfile
 import calendar
 import json
 import math
+import email.utils
+import xml.etree.ElementTree as ET
 import time
 import urllib.request
 import urllib.parse
@@ -394,9 +396,9 @@ def adaptive_move_threshold(candles, index, horizon_candles=FUTURE_CANDLES):
     return max(0.00035, atr_pct * 0.20 * horizon_scale)
 
 
-def build_dataset(data, prepared):
+def build_dataset(data, prepared, include_forward_returns=False):
     candles = data["5m"]
-    rows, labels = [], []
+    rows, labels, forward_returns = [], [], []
     for i in range(200, len(candles) - FUTURE_CANDLES):
         features = combined_features(data, i, prepared)
         if features is None:
@@ -406,6 +408,9 @@ def build_dataset(data, prepared):
         label = 2 if move > threshold else 0 if move < -threshold else 1
         rows.append(features)
         labels.append(label)
+        forward_returns.append(move)
+    if include_forward_returns:
+        return rows, labels, forward_returns
     return rows, labels
 
 
@@ -631,8 +636,11 @@ def tune_wait_threshold(rows, labels):
     return best_threshold
 
 
-def walk_forward_validate(rows, labels):
+def walk_forward_validate(rows, labels, forward_returns=None, round_trip_cost_pct=0.14):
     n = len(rows)
+    if forward_returns is not None and len(forward_returns) != n:
+        raise ValueError("Forward-return vector must align exactly with feature rows.")
+    backtest_trades = []
     test_size = n // 6
     if test_size < 25:
         raise ValueError("Not enough samples for three walk-forward test windows.")
@@ -650,11 +658,25 @@ def walk_forward_validate(rows, labels):
         model = train_ensemble(rows[:train_end], train_labels)
         fold_actual, fold_predicted, fold_regimes = [], [], []
         majority_label = max(range(len(CLASSES)), key=lambda k: train_labels.count(k))
-        for row, actual in zip(rows[test_start:test_end], labels[test_start:test_end]):
+        next_entry_index = test_start
+        for row_index in range(test_start, test_end):
+            row, actual = rows[row_index], labels[row_index]
             probs = predict_ensemble(model, row)
+            predicted = predict_with_wait_threshold(probs, wait_threshold)
             fold_actual.append(actual)
-            fold_predicted.append(predict_with_wait_threshold(probs, wait_threshold))
+            fold_predicted.append(predicted)
             fold_regimes.append(classify_feature_regime(row))
+            # Non-overlapping 15m trades; each position is held for exactly 3 closed 5m candles.
+            if forward_returns is not None and predicted in (0, 2) and row_index >= next_entry_index:
+                side = 1.0 if predicted == 2 else -1.0
+                gross_pct = float(forward_returns[row_index]) * side * 100.0
+                net_pct = gross_pct - round_trip_cost_pct
+                backtest_trades.append({
+                    "fold": fold + 1, "row_index": row_index,
+                    "side": CLASSES[predicted], "gross_return_pct": gross_pct,
+                    "estimated_net_return_pct": net_pct
+                })
+                next_entry_index = row_index + FUTURE_CANDLES
         fold_metrics = classification_metrics(fold_actual, fold_predicted)
         fold_baseline = sum(1 for actual in fold_actual if actual == majority_label)
         baseline_correct += fold_baseline
@@ -694,6 +716,37 @@ def walk_forward_validate(rows, labels):
                 [actual_all[i] for i in indices],
                 [predicted_all[i] for i in indices]
             )
+    if forward_returns is not None:
+        net_values = [item["estimated_net_return_pct"] for item in backtest_trades]
+        equity = 1.0
+        peak = 1.0
+        max_drawdown = 0.0
+        for value in net_values:
+            equity *= max(0.0, 1.0 + value / 100.0)
+            peak = max(peak, equity)
+            if peak > 0:
+                max_drawdown = max(max_drawdown, (peak-equity)/peak*100.0)
+        aggregate["cost_aware_backtest"] = {
+            "status": "OUT-OF-SAMPLE — NON-OVERLAPPING 15M HOLDS",
+            "trades": len(backtest_trades),
+            "round_trip_cost_assumption_pct": round_trip_cost_pct,
+            "cost_assumption": "0.05% taker fee + 0.02% slippage per side; funding excluded",
+            "gross_win_rate_pct": round(
+                sum(1 for item in backtest_trades if item["gross_return_pct"] > 0) /
+                len(backtest_trades) * 100.0, 2
+            ) if backtest_trades else None,
+            "estimated_net_win_rate_pct": round(
+                sum(1 for value in net_values if value > 0) /
+                len(net_values) * 100.0, 2
+            ) if net_values else None,
+            "average_net_trade_return_pct": round(sum(net_values)/len(net_values), 5)
+                if net_values else None,
+            "compounded_net_return_pct": round((equity-1.0)*100.0, 4)
+                if net_values else None,
+            "net_max_drawdown_pct": round(max_drawdown, 4) if net_values else None,
+            "trade_sample": backtest_trades[-20:],
+            "warning": "Illustrative costs only; real spread, funding, fills and exchange fees may differ."
+        }
     return aggregate, fold_results
 
 
@@ -1973,68 +2026,119 @@ def update_prediction_feedback(data, result, path="prediction_feedback.json"):
 
 def fetch_macro_news_risk():
     """
-    Free GDELT news scan for BTC-relevant macro/geopolitical headlines.
-    This is a headline risk filter, not a sentiment model or direct social-post feed.
+    Multi-provider public headline risk scan. GDELT first, Google News RSS fallback.
+    This is a WAIT-only risk filter, not a sentiment or price-direction model.
     """
     result = {
-        "status": "UNAVAILABLE", "provider": "GDELT DOC public API",
+        "status": "UNAVAILABLE", "providers_attempted": [],
         "lookback_minutes": 60, "high_risk": False, "block_minutes": 30,
         "articles_checked": 0, "matched_events": [],
         "limitations": [
-            "News headlines only; not direct Trump/social-media post ingestion.",
-            "GDELT coverage and publication timestamps can be delayed or incomplete.",
-            "News risk is a WAIT veto, never a directional trading signal."
+            "Headlines only; not a direct feed of Trump's social-media posts.",
+            "Public news indexing can be delayed, incomplete or duplicated.",
+            "A clear scan does not prove that no market-moving event exists."
         ]
     }
-    query = '(bitcoin OR BTC OR cryptocurrency OR crypto) AND (Trump OR tariff OR "Federal Reserve" OR Fed OR war OR missile OR attack OR sanctions OR hack OR exploit OR liquidation OR SEC OR regulation OR inflation OR CPI OR ETF)'
-    params = urllib.parse.urlencode({
-        "query": query, "mode": "ArtList", "format": "json",
-        "sort": "DateDesc", "maxrecords": 50, "timespan": "60min"
-    })
-    url = "https://api.gdeltproject.org/api/v2/doc/doc?" + params
+    impact_terms = (
+        "war", "missile", "attack", "sanction", "tariff", "trump",
+        "federal reserve", "fed", "rate hike", "rate cut", "inflation",
+        "cpi", "hack", "exploit", "liquidation", "sec", "ban", "lawsuit",
+        "etf", "crypto reserve", "bitcoin reserve", "china", "iran"
+    )
+
+    def add_article(title, domain, url, published_at, provider):
+        title = str(title or "").strip()
+        if not title:
+            return
+        lower = title.lower()
+        hits = [term for term in impact_terms if term in lower]
+        if not hits:
+            return
+        age = max(0.0, (datetime.now(timezone.utc)-published_at).total_seconds()/60.0) if published_at else None
+        result["matched_events"].append({
+            "title": title[:240], "domain": domain, "url": url,
+            "published_at": published_at.isoformat() if published_at else None,
+            "age_minutes": round(age, 1) if age is not None else None,
+            "matched_terms": hits[:6], "provider": provider
+        })
+
+    # Provider 1: GDELT structured news index.
+    gdelt_query = '(bitcoin OR BTC OR cryptocurrency OR crypto) AND (Trump OR tariff OR "Federal Reserve" OR Fed OR war OR missile OR attack OR sanctions OR hack OR exploit OR liquidation OR SEC OR regulation OR inflation OR CPI OR ETF)'
     try:
+        result["providers_attempted"].append("GDELT DOC")
+        params = urllib.parse.urlencode({
+            "query": gdelt_query, "mode": "ArtList", "format": "json",
+            "sort": "DateDesc", "maxrecords": 50, "timespan": "60min"
+        })
         request = urllib.request.Request(
-            url, headers={"User-Agent": "BTC-Signal-Pro-Elite/6.0"}
+            "https://api.gdeltproject.org/api/v2/doc/doc?" + params,
+            headers={"User-Agent": "BTC-Signal-Pro-Elite/6.1"}
         )
-        with urllib.request.urlopen(request, timeout=10) as response:
+        with urllib.request.urlopen(request, timeout=7) as response:
             payload = json.loads(response.read().decode("utf-8"))
         articles = payload.get("articles", []) if isinstance(payload, dict) else []
-        result["articles_checked"] = len(articles)
-        high_impact = (
-            "war", "missile", "attack", "sanction", "tariff", "trump",
-            "federal reserve", "fed", "rate hike", "rate cut", "inflation",
-            "cpi", "hack", "exploit", "liquidation", "sec", "ban", "lawsuit"
-        )
+        result["articles_checked"] += len(articles)
         for article in articles:
-            title = str(article.get("title", "")).strip()
-            lower = title.lower()
-            hits = [term for term in high_impact if term in lower]
-            if not hits:
-                continue
-            seen = str(article.get("seendate", ""))
-            age_minutes = None
+            published = None
             try:
-                published = datetime.strptime(seen, "%Y%m%dT%H%M%SZ").replace(tzinfo=timezone.utc)
-                age_minutes = max(0.0, (datetime.now(timezone.utc)-published).total_seconds()/60.0)
+                published = datetime.strptime(str(article.get("seendate","")), "%Y%m%dT%H%M%SZ").replace(tzinfo=timezone.utc)
             except Exception:
                 pass
-            result["matched_events"].append({
-                "title": title[:240], "domain": article.get("domain"),
-                "url": article.get("url"), "seen_time": seen,
-                "age_minutes": round(age_minutes, 1) if age_minutes is not None else None,
-                "matched_terms": hits[:6]
+            add_article(article.get("title"), article.get("domain"), article.get("url"), published, "GDELT")
+        result["provider_used"] = "GDELT DOC"
+    except Exception as gdelt_error:
+        result["gdelt_error"] = str(gdelt_error)[:160]
+
+    # Provider 2: Google News RSS fallback, including Trump + macro/geopolitical queries.
+    if not result.get("provider_used"):
+        try:
+            result["providers_attempted"].append("Google News RSS")
+            rss_query = '(Bitcoin OR BTC OR crypto) (Trump OR tariff OR "Federal Reserve" OR war OR sanctions OR hack OR liquidation OR SEC OR inflation OR ETF)'
+            rss_url = "https://news.google.com/rss/search?" + urllib.parse.urlencode({
+                "q": rss_query, "hl": "en-US", "gl": "US", "ceid": "US:en"
             })
-        fresh = [item for item in result["matched_events"]
-                 if item.get("age_minutes") is not None and item["age_minutes"] <= 30]
-        result["high_risk"] = bool(fresh)
-        result["fresh_high_risk_count"] = len(fresh)
-        result["status"] = "HIGH_RISK_EVENT" if fresh else "CLEAR"
-        result["retrieved_at"] = datetime.now(timezone.utc).isoformat()
-        return result
-    except Exception as exc:
-        result["status"] = "UNAVAILABLE"
-        result["error"] = str(exc)[:220]
-        return result
+            request = urllib.request.Request(
+                rss_url, headers={"User-Agent": "Mozilla/5.0 BTC-Signal-Pro-Elite/6.1"}
+            )
+            with urllib.request.urlopen(request, timeout=8) as response:
+                root = ET.fromstring(response.read())
+            items = root.findall(".//item")
+            result["articles_checked"] += len(items)
+            for item in items:
+                published = None
+                try:
+                    published = email.utils.parsedate_to_datetime(item.findtext("pubDate"))
+                    if published.tzinfo is None:
+                        published = published.replace(tzinfo=timezone.utc)
+                    else:
+                        published = published.astimezone(timezone.utc)
+                except Exception:
+                    pass
+                source_node = item.find("source")
+                add_article(
+                    item.findtext("title"),
+                    source_node.text if source_node is not None else "Google News",
+                    item.findtext("link"), published, "Google News RSS"
+                )
+            result["provider_used"] = "Google News RSS"
+        except Exception as rss_error:
+            result["rss_error"] = str(rss_error)[:160]
+
+    fresh = [item for item in result["matched_events"]
+             if item.get("age_minutes") is not None and item["age_minutes"] <= 30]
+    result["matched_events"] = sorted(
+        result["matched_events"],
+        key=lambda item: item.get("age_minutes") if item.get("age_minutes") is not None else 99999
+    )[:20]
+    result["high_risk"] = bool(fresh)
+    result["fresh_high_risk_count"] = len(fresh)
+    result["status"] = (
+        "HIGH_RISK_EVENT" if fresh else
+        "CLEAR" if result.get("provider_used") else "UNAVAILABLE"
+    )
+    result["retrieved_at"] = datetime.now(timezone.utc).isoformat()
+    return result
+
 
 
 def apply_feedback_risk_gate(signal, feedback):
@@ -2333,7 +2437,7 @@ def main():
     if data_age_minutes > 15:
         raise ValueError(f"STALE DATA BLOCK: 5m model input is {data_age_minutes} minutes old")
     prepared = {tf: precompute_candle_features(candles) for tf, candles in data.items()}
-    rows, labels = build_dataset(data, prepared)
+    rows, labels, primary_forward_returns = build_dataset(data, prepared, include_forward_returns=True)
     lstm_rows, lstm_labels, historical_derivatives = build_lstm_derivatives_dataset(data, prepared)
     print("Historical derivatives LSTM dataset:", historical_derivatives.get("status"), historical_derivatives.get("samples"))
     tradeflow_rows, tradeflow_labels, historical_tradeflow = build_lstm_tradeflow_dataset(
@@ -2342,7 +2446,7 @@ def main():
     print("Historical taker-flow LSTM dataset:", historical_tradeflow.get("status"), historical_tradeflow.get("samples"))
     if len(rows) < 250:
         raise ValueError(f"Not enough aligned multi-timeframe samples: {len(rows)}")
-    validation, folds = walk_forward_validate(rows, labels)
+    validation, folds = walk_forward_validate(rows, labels, primary_forward_returns)
     final_wait_threshold = tune_wait_threshold(rows, labels)
     final_model = train_ensemble(rows, labels)
     class_counts = [max(1, labels.count(k)) for k in range(len(CLASSES))]
