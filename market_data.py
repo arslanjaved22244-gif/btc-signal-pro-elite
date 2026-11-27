@@ -437,8 +437,17 @@ def collect_okx():
     if oi_hist["ok"]:
         normalized=[]
         for point in oi_hist["data"]:
-            value=point.get("oi",point.get("oiCcy",0))
-            normalized.append({"sumOpenInterest":value,"timestamp":point.get("ts")})
+            # OKX Rubik endpoints commonly return positional arrays:
+            # [ts, oi contracts, oi coin, oi USD], but some responses use objects.
+            if isinstance(point, dict):
+                value=point.get("oiUsd",point.get("oi",point.get("oiCcy",0)))
+                timestamp=point.get("ts")
+            elif isinstance(point, (list, tuple)) and len(point)>=4:
+                value=point[3] or point[2] or point[1]
+                timestamp=point[0]
+            else:
+                continue
+            normalized.append({"sumOpenInterest":value,"timestamp":timestamp})
         oi_hist["data"]=list(reversed(normalized))
         if len(oi_hist["data"])<2:
             oi_hist={"ok":False,"error":"OKX returned fewer than two 5m open-interest history points."}
@@ -449,10 +458,19 @@ def collect_okx():
     if taker["ok"]:
         normalized=[]
         for point in taker["data"]:
-            buy=float(point.get("buyVol",0) or 0)
-            sell=float(point.get("sellVol",0) or 0)
+            # OKX Rubik taker-volume rows: [ts, sellVol, buyVol, sellCcyVol, buyCcyVol].
+            if isinstance(point, dict):
+                timestamp=point.get("ts")
+                buy=float(point.get("buyCcyVol",point.get("buyVol",0)) or 0)
+                sell=float(point.get("sellCcyVol",point.get("sellVol",0)) or 0)
+            elif isinstance(point, (list, tuple)) and len(point)>=3:
+                timestamp=point[0]
+                sell=float(point[3] if len(point)>4 and point[3] else point[1] or 0)
+                buy=float(point[4] if len(point)>4 and point[4] else point[2] or 0)
+            else:
+                continue
             normalized.append({"buySellRatio":buy/sell if sell>0 else None,
-                "buyVol":buy,"sellVol":sell,"timestamp":point.get("ts")})
+                "buyVol":buy,"sellVol":sell,"timestamp":timestamp})
         taker["data"]=list(reversed(normalized))
         if not taker["data"]:
             taker={"ok":False,"error":"OKX returned no 5m taker-volume points."}
@@ -499,12 +517,15 @@ def collect_okx():
         "futures_only":True,"status":"HEALTHY" if core and fresh else "DEGRADED","warnings":[]}
     if not core: result["data_quality"]["warnings"].append("One or more OKX BTC-USDT-SWAP candle timeframes failed.")
     if not fresh: result["data_quality"]["warnings"].append("OKX 5m Futures candle data is stale.")
-    critical_ok=all(result["feeds"].get(k,{}).get("ok") for k in
+    # Completed, fresh Futures candles are the mandatory baseline. Derivatives
+    # feeds are optional confluence: missing OI/taker history must be disclosed,
+    # but must not silently veto every signal when price data is healthy.
+    derivatives_ok=all(result["feeds"].get(k,{}).get("ok") for k in
         ("mark_price_funding","open_interest_current","open_interest_history_5m",
          "taker_flow_5m","order_book","recent_agg_trades"))
-    if not critical_ok:
-        result["data_quality"]["status"]="DEGRADED"
-        result["data_quality"]["warnings"].append("One or more critical Futures confluence feeds are unavailable; directional signals must remain WAIT.")
+    result["data_quality"]["derivatives_confluence_status"]="AVAILABLE" if derivatives_ok else "PARTIAL"
+    if not derivatives_ok:
+        result["data_quality"]["warnings"].append("Some derivatives confluence feeds are unavailable; signals rely more heavily on verified multi-timeframe Futures candles and available flow data.")
     for key,feed in result["feeds"].items():
         if key not in ("liquidations",) and not feed.get("ok"):
             result["data_quality"]["warnings"].append(key+" feed unavailable: "+feed.get("error","not configured"))
