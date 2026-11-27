@@ -2786,6 +2786,31 @@ def fetch_futures_microstructure():
 
 
 
+def evaluate_validation_gate(validation, futures_source_gate):
+    """Require out-of-sample profitability evidence before allowing directional calls."""
+    backtest = validation.get("cost_aware_backtest") or {}
+    trades = int(backtest.get("trades") or 0)
+    average_net = backtest.get("average_net_trade_return_pct")
+    net_win_rate = backtest.get("estimated_net_win_rate_pct")
+    checks = {
+        "futures_source_passed": bool(futures_source_gate),
+        "accuracy_passed": validation.get("accuracy", 0) >= 38.0,
+        "macro_f1_passed": validation.get("macro_f1", 0) >= 30.0,
+        "majority_baseline_passed": validation.get("accuracy", 0) > validation.get("majority_class_baseline_pct", 100),
+        "minimum_backtest_trades_passed": trades >= 30,
+        "positive_average_net_return_passed": isinstance(average_net, (int, float)) and average_net > 0,
+        "net_win_rate_passed": isinstance(net_win_rate, (int, float)) and net_win_rate >= 50.0,
+    }
+    return all(checks.values()), {
+        "checks": checks,
+        "backtest_trade_count": trades,
+        "minimum_backtest_trades": 30,
+        "average_net_trade_return_pct": average_net,
+        "estimated_net_win_rate_pct": net_win_rate,
+        "decision": "directional signals allowed" if all(checks.values()) else "WAIT only — profitability evidence insufficient",
+    }
+
+
 def main():
     print("BTC Signal Pro Elite - Advanced ML starting...")
     futures_microstructure = fetch_futures_microstructure()
@@ -2903,12 +2928,7 @@ def main():
     calibrated_class = predict_with_wait_threshold(scores, final_wait_threshold)
     # Never publish a BTC/USDT Futures directional call from Spot-proxy training data.
     futures_source_gate = "Futures" in str(source) and "Spot" not in str(source)
-    validation_gate = (
-        futures_source_gate
-        and validation.get("accuracy", 0) >= 38.0
-        and validation.get("macro_f1", 0) >= 30.0
-        and validation.get("accuracy", 0) > validation.get("majority_class_baseline_pct", 100)
-    )
+    validation_gate, validation_gate_report = evaluate_validation_gate(validation, futures_source_gate)
     signal = (
         CLASSES[calibrated_class]
         if validation_gate and calibrated_class == 1
@@ -2989,7 +3009,7 @@ def main():
         "ensemble_configuration": {"models": ["full_history_logistic", "recent_regime_logistic", "nearest_centroid", "decision_stumps"], "weights": adaptive_weights, "recent_training_window": final_model["recent_window"]},
         "adaptive_learning": adaptive_learning,
         "walk_forward_metrics": validation,
-        "validation_gate": {"passed": validation_gate, "futures_source_required": True, "futures_source_passed": futures_source_gate, "minimum_accuracy_pct": 38.0, "minimum_macro_f1_pct": 30.0, "must_beat_majority_baseline": True, "decision": "directional signals allowed" if validation_gate else ("WAIT only — training source is not verified perpetual Futures" if not futures_source_gate else "WAIT only — historical validation too weak")},
+        "validation_gate": {"passed": validation_gate, "futures_source_required": True, "minimum_accuracy_pct": 38.0, "minimum_macro_f1_pct": 30.0, "must_beat_majority_baseline": True, "profitability_evidence_required": True, **validation_gate_report},
         "futures_microstructure": futures_microstructure,
         "macro_news_risk": macro_news_risk,
         "news_event_veto": news_event_veto,
