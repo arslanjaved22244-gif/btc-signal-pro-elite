@@ -439,10 +439,10 @@
       "bybit_ticker: HTTP Error 403: Forbidden",
       "bybit_orderbook: HTTP Error 403: Forbidden"
     ],
-    "retrieved_at": "2026-11-27T13:28:06.679209+00:00"
+    "retrieved_at": "2026-11-27T13:29:45.182179+00:00"
   },
   "macro_news_risk": {
-    "status": "UNAVAILABLE",
+    "status": "CLEAR",
     "providers_attempted": [
       "GDELT DOC",
       "Google News RSS"
@@ -450,17 +450,240 @@
     "lookback_minutes": 60,
     "high_risk": false,
     "block_minutes": 30,
-    "articles_checked": 0,
-    "matched_events": [],
+    "articles_checked": 100,
+    "matched_events": [
+      {
+        "title": "Kalshi traders bet on how many presidential actions Trump will sign this week - Crypto Briefing",
+        "domain": "Crypto Briefing",
+        "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE15WW4xc0ZGLVFjSEVkUXJneUVMelJDa0FzU0txNWNnanRTdHc3TVp0RHhma2Zwcm1Ka2dWZGZfTkpmQ2tjZFFXdjVYWnc3aTE2LUd5WWpYcnZOUUQ1UFRMSVNLdXRsMFhQTjl5a2lwclFNY0RMWUtsRTlRWTFyX2M?oc=5",
+        "published_at": "2026-11-27T12:25:01+00:00",
+        "age_minutes": 64.9,
+        "matched_terms": [
+          "trump"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "Trump floats possible US government stake in Nvidia after leadership crisis ends - Crypto Briefing",
+        "domain": "Crypto Briefing",
+        "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE95VHNLcVhVVjlsdVNUUjQ2eVhqUDZrNk9sM2ZBTzB4RFJiSm5DWENaZ3ZoZHRzUWxJUjU2bG4wUGw3bTExZ1Q4bmZLeWxQMFVvb0wyTFdXejNHVUV2U2RaaTBhOHVCTXUwRGhpUw?oc=5",
+        "published_at": "2026-11-27T12:11:57+00:00",
+        "age_minutes": 77.9,
+        "matched_terms": [
+          "trump"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "Crypto Market Outlook, 27 November 2026: Bitcoin Holds $61K After a Record ETF Outflow Month - Howl.Link",
+        "domain": "Howl.Link",
+        "url": "https://news.google.com/rss/articles/CBMiO0FVX3lxTE1NREUtZy1JMjZ3MFA1VmwwVDhmN3dNVk94U0c0S3V5djUwQmlRanhsM2tKMmVYZ1pDSXBZ?oc=5",
+        "published_at": "2026-11-27T12:03:57+00:00",
+        "age_minutes": 85.9,
+        "matched_terms": [
+          "etf"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "Harbor Capital launches Anthropic AI Lab Ecosystem ETF, with Bitcoin miners among top holdings - Crypto Briefing",
+        "domain": "Crypto Briefing",
+        "url": "https://news.google.com/rss/articles/CBMiekFVX3lxTFBTal8zSmR2dVdnSy1jQS1oRk5zNWhqeUJOdDdPRUZNSXV6OXZQbnVVWUU3UnB3WWJKYWNKOGc5VHR1UjgybHd3U1U0VFNoa0RUUzdDNVA1TlpDSGQ1RlFiQnNRQVpiTlFBVHA4Q0hKdV9LT1FCanNqWTFB?oc=5",
+        "published_at": "2026-11-27T11:25:47+00:00",
+        "age_minutes": 124.1,
+        "matched_terms": [
+          "etf"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "BIT Asset Management Introduces Switzerland's First Spot Bitcoin ETF on SIX Swiss Exchange - lincolnjournal.com",
+        "domain": "lincolnjournal.com",
+        "url": "https://news.google.com/rss/articles/CBMiqAJBVV95cUxOU3F0aG92RU1qUm42LUIwYVVrYWdrVmVjZTZCTVRjWjVXSmZqR0NNdWZIVmw5bVI2dWpkOC16WTIyRlFTSWRseTI0bWl5ZHhLT292NFVHRHI4RkZTQk1KeFJNeWlmVkxHUGw3ZHhzc081c29vLUdnbVdfamdfalFGUHpZVmJPMWM1WUZzTmswbXZMaU1uSTg5WlF3Wk9GZmVHOEVVX1hJV2JtZ2d0VUtGZWtRMUVLTnNUVlFlNjN2Sm8wRjNva0diUWI5a2F5d3FSOUVpbGdJT0otdEVEcDJWM3dsdlhpa2t2NnZsdGhjRmdwWFRSZi1FTE8yaGVEeFQ2Z3F1eEJXaUxndTFhOTM5TVlndEplSnJaX2JDZmJfY0FQakxTRlgyUA?oc=5",
+        "published_at": "2026-11-27T11:23:31+00:00",
+        "age_minutes": 126.4,
+        "matched_terms": [
+          "etf"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "BIT Asset Management Introduces Switzerland's First Spot Bitcoin ETF on SIX Swiss Exchange - GlobeNewswire",
+        "domain": "GlobeNewswire",
+        "url": "https://news.google.com/rss/articles/CBMi9AFBVV95cUxNZ0lzVWNnenozRjhadWhVZUE1bWhMODRJXzJwWEtIdWRiV3VSUmRsZ2JQT1FIZ04tQnZXS2w2VTRtMzc0NUotQXI0Qm1BU04zMWU0d0xYaHU1bHpfY2RMelRNelEzdmRiQUtxU19LTmJET3FVYnpMNnZYVnFDZUxfTmVYNXE2MkFjaXB5SVc4UWVJcW84VE5KMmgyN0t2SFZaUnVKaER3RUZJSllsSjhrMkMzaGFvR2FmZWtIVG1WbG5BQ2tqS0tBcWM5TXFNcTBiY0VwbmMtUnU1dDdJVmM3b3JrLXZWZlVwSFdjdi1TbU1IaFIz?oc=5",
+        "published_at": "2026-11-27T11:23:31+00:00",
+        "age_minutes": 126.4,
+        "matched_terms": [
+          "etf"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "Swiss Bitcoin ETF Debuts: 'Bitcoin Wasn't the Problem,' BIT CEO - Cryptonews",
+        "domain": "Cryptonews",
+        "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE1kdlpaVE9zVG93cVBzeXpKTkdsMzlVV3JPb1BvcnpoVldxa3JWZXJfZzUzUlgwWGw1UnRPclpzWGdDYXJ2T0RiQjhtbEV5UDhWczk1c2NPdmdhbjQ2Wk9ScFF3OG1OVFR0eEN5UTJuMjVzUQ?oc=5",
+        "published_at": "2026-11-27T10:15:48+00:00",
+        "age_minutes": 194.1,
+        "matched_terms": [
+          "etf"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "Binance Lifts Withdrawal Suspension From $6.3 Billion Hack, Says Recovery Is Complete - unchainedcrypto.com",
+        "domain": "unchainedcrypto.com",
+        "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxQaHg3SUlLT3VQcWo5bkdMN1F3bldCZVU1ZzNhUUw1bWFqYlVkU252OHJVSkd5Tm9naEMtQkMtMzkta04wQ1JGZTR1R3l1LVJJNTVsMW04VTJ3bzBuSms0SXlmSzFhQktLcURGLUgwU0g4Zm1PNElIN2pGSmxSRktWM0phWmY4MS1SbmNPMTRrSEpHOHlwUktXT08zdmdQRmMxSW9PZTZqQ1dzcjdlNllnY093?oc=5",
+        "published_at": "2026-11-27T10:15:00+00:00",
+        "age_minutes": 194.9,
+        "matched_terms": [
+          "hack"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "Bitcoin ETF Outflows vs AI ETF Inflows: Where Is Crypto Liquidity Going? - KuCoin",
+        "domain": "KuCoin",
+        "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxNeGFNV292a3N4NmRsNUpHZ2lKN1A0Y2Q2MGNxWElkTVZSVXBiQVpaLUJGeUFRemNzSmh5WlBkc3RfUVFGcXhjWVczNjVRYVdtLTRxdXphNkdkc2NMaDJfWFZrcGVqS0p5NzVyNmVLaUlad2R6cDBoS3ZpN3F0RlVtZG1NU1I4NXlGUnRjT0x3NGJPOG9ZVTdDOTJMVkZEWGc?oc=5",
+        "published_at": "2026-11-27T10:06:00+00:00",
+        "age_minutes": 203.9,
+        "matched_terms": [
+          "etf"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "Binance hack: US seeks to recover over USD 1 billion in crypto assets - https://internationalfinance.com/",
+        "domain": "https://internationalfinance.com/",
+        "url": "https://news.google.com/rss/articles/CBMisAFBVV95cUxPZEVCTHdXNzJ2aGItYnNhMzg2NHJZM21EbTQyeTFWcWd0QjIyMmx1S3R6YmtYdGkxUUVSd0dkNThfbFVyVnh4RzNoTVNnNVZZbmhaYXUxd0pHSER1UWswR3lEUWxYWlIwWTBqR0ZCcGZ0TC0zZ2F1ZWpmcVk0c2hxZGw2NFBidEtHZFQ2cWFUa0lQeEc5RUppbTBfaWVpdGl0LTBmZGdyWDBNcXJvWlhrdQ?oc=5",
+        "published_at": "2026-11-27T08:44:38+00:00",
+        "age_minutes": 285.2,
+        "matched_terms": [
+          "hack"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "Switzerland Has Launched Its First Spot Bitcoin ETF - Incrypted",
+        "domain": "Incrypted",
+        "url": "https://news.google.com/rss/articles/CBMigwFBVV95cUxPLUp3OW9kMkYwSndKak5ZcWd0a04zUlpRLVoxdU54NnpoYUZua2xrSWJjZkRZTS0wZzYwN2lzUGxjcnA1QjRmOWpUdkVVeDV1aW83ZC1DNmJHMEdvQ3hiZmlEZG0xSVV2UUlxOTFnT1RSaUY3djhqOEoxN1l4RkV3LXkyYw?oc=5",
+        "published_at": "2026-11-27T08:14:49+00:00",
+        "age_minutes": 315.1,
+        "matched_terms": [
+          "etf"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "BIT AM Lists Switzerland\u2019s First Spot Bitcoin ETF - Markets Media",
+        "domain": "Markets Media",
+        "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxNUHFpTlVWTVFyQVpLOUVoSHFmZVVJci1RNFRvQkRsQ1dDZDdjc1NnaFlKdFZFNVBNclRvUWxnRzJWRTYzYmdET3VmTDNYRVpvdUVIM0RUVS1YRWhkSUp4ZEE1ZkdKdFJ3LWhtMy1YREk4RXRqRi1kV2hpTk04R19TZVpYTXA?oc=5",
+        "published_at": "2026-11-27T07:57:20+00:00",
+        "age_minutes": 332.5,
+        "matched_terms": [
+          "etf"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "What Binance\u2019s BlackRock Bitcoin ETF token can do as collateral - Crypto News",
+        "domain": "Crypto News",
+        "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxNT3hGQlJtSmR5UDhlMGFiNmlIZzZ1VVdwMExRUDBzV0pSN1pTUUtNVjdQVk1qb3JXa1JfeWFuc2xHbFdCQXBtaG9FX0h4aUZtb1hkbFNPdDFLcnM5UHFsdUc0OWExUFdnbnVoMllhMklYSmlkdHZWSFFIRV8zS2UxWGM2ZDBiV2xDNzRn?oc=5",
+        "published_at": "2026-11-27T07:08:00+00:00",
+        "age_minutes": 381.9,
+        "matched_terms": [
+          "etf"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "Japan\u2019s JPCrypto-ISAC partners with SEAL to strengthen crypto hack detection, incident response - Crypto News",
+        "domain": "Crypto News",
+        "url": "https://news.google.com/rss/articles/CBMia0FVX3lxTE5hZ0J1Vzl3dEU4ckxQVjAzSE1jUXdkYlNBbkZlcFdEQkFFN0o3TXVnNXc5cVFZRDdBdkMzc2s0cFJjZUg3cEMxd2lVN2gzVThkN3dFbVlhc2VEZUwwci1ibDkwQTdrRC1wY2Rr?oc=5",
+        "published_at": "2026-11-27T06:58:00+00:00",
+        "age_minutes": 391.9,
+        "matched_terms": [
+          "hack"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "EU Proposes Crypto Restrictions on Kyrgyzstan Over Russia Sanctions - Coinpedia",
+        "domain": "Coinpedia",
+        "url": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxNZnNFUmV5NUd6MVhZN1drUE82ckoydGlSR0hqZW96S3h6M2JWNEJocUNicGNnVGx2ZC1kNHRQY0w2ekNQYUUzZEU4SWt5d25LWHVsRVg1dDlXcG0yUGdrZ05saE45Y1pteW85dERaRmswdHlXbmdONlUwUVRxSGNoZ0VNSktSMHB2ckN0WmJLVFlEcG10Z1RiZGVIYk1CNG52cmIxNjNHNzVzcU3SAecBQVVfeXFMUEZQNWRwbFRGMFc0dV8yVXg0aDFjdWRxbjd4MEc4VDVJYTdIWGFqM0FwdTZWWGJGUUpNYmZiVEpobmRXbFJ0bU9NamRfNHFaY21uRHFHdWl5Sy1HVW11YlZ4NHNiZ0N5S1FoMVJnd0hhY1Z4S0JDOW1Qa25QZlZZUVJibGZlcjQ0YUU4MnBDTnFBb0dWNFZ4dnVkeEY5RUlIRFAzeEdaLXhGLWFUb3pBOE4xVEVvRGtpQUc5Q09fc3B0U3JlNENOaXgtUWhBVHFwbXlYT1NtekR5V0VqTGN6cjNDbWR4MldB?oc=5",
+        "published_at": "2026-11-27T06:02:00+00:00",
+        "age_minutes": 447.9,
+        "matched_terms": [
+          "sanction"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "Billionaire Paul Tudor Jones Doubled His Bitcoin ETF Stake. It Is Still 83% Below Its Peak - CEOWORLD magazine",
+        "domain": "CEOWORLD magazine",
+        "url": "https://news.google.com/rss/articles/CBMie0FVX3lxTE05VnMtQlZ0S25EaEQ0LXhTSTlOMFMxVnlqNThQMXRGNzFYQ2syYVFxM0FWekFPUDBZVU54aUxlZ2JTYTRocUdSX3hoWjhCclY2Y1Y0UU41X25XdUN2WlRWbjhXaUpBN2ZlZ1JqWEtzblU1bWswU2Z2eUFuaw?oc=5",
+        "published_at": "2026-11-27T05:35:15+00:00",
+        "age_minutes": 474.6,
+        "matched_terms": [
+          "etf"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "Fed faces AI, inflation challenges amid rate hike considerations - Crypto Briefing",
+        "domain": "Crypto Briefing",
+        "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxNMXJzbE5DY2xaRU1YZ0d1UFJKRnBqVzZlcTZJNDBKdFpEeWdlbkE2TVF1R3ZMaGZXdWFQV1Z6SXBoRTZuMmU5ZklyaTBha0NRTnBsYXJzNDNHQW40ek5mOGZOVjI3dlhJOE8xZ190ak0xV19SWVo3TmNFWEJ4cUtIR1FMaTJJeDAtd1YxaFVEUm9zOEZRM0E?oc=5",
+        "published_at": "2026-11-27T05:33:34+00:00",
+        "age_minutes": 476.3,
+        "matched_terms": [
+          "fed",
+          "rate hike",
+          "inflation"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "Binance Lifts Withdrawal Suspension After Record $6.3 Billion Hack, but USDC Withdrawals Stay Paused - Benzinga",
+        "domain": "Benzinga",
+        "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxOcU5nMXdHa3dHNldEXzJWazhiVXEyS2RVT1UxaGh6ZVI0d0VHZjIxdm5PcUJHV3VrQlV3R3ByV01iWWxFUEJfdUVZYjJaNEhLUGNTZEI3b0hQbEpoaXV2dENuTGs2VnQyeTIybUZPa2RSLVVYU2VoeVNscjRBc3FCMHZ5MFVlTDMtSnBDY21ITUREeHUya3ZzRUV2QjJWOG1VYUhLT3k0Tm4?oc=5",
+        "published_at": "2026-11-27T05:24:46+00:00",
+        "age_minutes": 485.1,
+        "matched_terms": [
+          "hack"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "Binance says customer withdrawals are fully restored, four weeks after the $6.3 billion hack - CoinDesk",
+        "domain": "CoinDesk",
+        "url": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxOMWJEQmVLZ1AwWHRLQldDZlBSZUlULUpjV2lubmltWHc1WlZ3dnQzUnRUSzhMemh5OGkzckF5bzRIUXMyOXNhM3VoaFVkUHF5SXRiYlNTaWdaRXpKcGdrQ2lwbFA5LXRLT2VUOWhXcFYxcXQ5a0RDVzRoQ0RmQzgxSTlBa2xTNC1adi1zdEdBMFpJdlZ4RVhoekVxak5PTThTdmNUUUhkLUI4V2F2andyYVpFRjg1ZEhBSXctSVQ3alJKQnRmU0R6Zw?oc=5",
+        "published_at": "2026-11-27T04:45:00+00:00",
+        "age_minutes": 524.9,
+        "matched_terms": [
+          "hack"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "Binance restores withdrawals after $6.3b crypto hack recovery - Tech in Asia",
+        "domain": "Tech in Asia",
+        "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxOcWVOUmtlWkxVdUpIZVJ2ZEttSU9zTW42dmNSejJ4bE5EMmdPYU5nU1ZiOTlGQlFObFJKMUNqUUdBdmtIVkx5NEJjaF9LOUdwWGxWZFFBRHdlTUxKMWRGcWVLSEJqZ3VPaUhwZGctTEdiWEJlRVdTUEpBeWF2dmU4QzF5VEoyZWhlTWoxaENuNENSRTBmSU5F?oc=5",
+        "published_at": "2026-11-27T02:27:00+00:00",
+        "age_minutes": 662.9,
+        "matched_terms": [
+          "hack"
+        ],
+        "provider": "Google News RSS"
+      }
+    ],
     "limitations": [
       "Headlines only; not a direct feed of Trump's social-media posts.",
       "Public news indexing can be delayed, incomplete or duplicated.",
       "A clear scan does not prove that no market-moving event exists."
     ],
     "gdelt_error": "<urlopen error _ssl.c:1001: The handshake operation timed out>",
-    "rss_error": "HTTP Error 503: Service Unavailable",
+    "provider_used": "Google News RSS",
     "fresh_high_risk_count": 0,
-    "retrieved_at": "2026-11-27T13:28:20.014063+00:00"
+    "retrieved_at": "2026-11-27T13:29:52.767741+00:00"
   },
   "news_event_veto": null,
   "historical_derivatives_training": {
@@ -1584,7 +1807,7 @@
   "last_candle_time": 1795785600000,
   "data_freshness": {
     "status": "FRESH",
-    "latest_5m_candle_age_minutes": 8.47,
+    "latest_5m_candle_age_minutes": 10.04,
     "latest_5m_candle_time": "2026-11-27T13:20:00+00:00",
     "source_by_timeframe": {
       "5m": "Kraken BTC/USD",
@@ -1595,7 +1818,7 @@
     },
     "max_allowed_age_minutes": 15
   },
-  "generated_at": "2026-11-27T13:28:57.160220+00:00",
+  "generated_at": "2026-11-27T13:30:45.810421+00:00",
   "limitations": [
     "When Binance USD-M Futures is unavailable, Kraken BTC/USD spot OHLC is used as a proxy and is not equivalent to BTC/USDT Futures. Funding, open interest, CVD, order book and liquidation remain separate confluence inputs.",
     "Class scores are model scores, not calibrated real-world win probabilities.",
