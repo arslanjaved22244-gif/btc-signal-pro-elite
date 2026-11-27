@@ -1,73 +1,72 @@
 {
   "system": "BTC Signal Pro Elite Futures Data Engine",
-  "version": "5.0-bybit-linear-futures-fallback",
+  "version": "4.0-market-data-foundation",
   "symbol": "BTCUSDT",
-  "market_type": "BYBIT_LINEAR_USDT_PERPETUAL",
-  "exchange": "Bybit",
-  "generated_at": "2026-11-27T01:45:19.786193+00:00",
-  "source": "https://api.bybit.com/v5/market (linear USDT perpetual)",
+  "market_type": "BINANCE_USDM_FUTURES",
+  "generated_at": "2026-11-27T01:45:45.878364+00:00",
+  "source": "https://fapi.binance.com",
   "timeframes": {
     "5m": {
       "ok": false,
-      "error": "HTTP Error 403: Forbidden"
+      "error": "Empty response from https://fapi4.binance.com (HTTP 202)"
     },
     "15m": {
       "ok": false,
-      "error": "HTTP Error 403: Forbidden"
+      "error": "Empty response from https://fapi4.binance.com (HTTP 202)"
     },
     "1h": {
       "ok": false,
-      "error": "HTTP Error 403: Forbidden"
+      "error": "Empty response from https://fapi4.binance.com (HTTP 202)"
     },
     "4h": {
       "ok": false,
-      "error": "HTTP Error 403: Forbidden"
+      "error": "Empty response from https://fapi4.binance.com (HTTP 202)"
     },
     "1d": {
       "ok": false,
-      "error": "HTTP Error 403: Forbidden"
+      "error": "Empty response from https://fapi4.binance.com (HTTP 202)"
     }
   },
   "feeds": {
     "mark_price_funding": {
       "ok": false,
-      "error": "HTTP Error 403: Forbidden",
-      "latency_ms": 10
+      "error": "Empty response from https://fapi4.binance.com (HTTP 202)",
+      "latency_ms": 1471
     },
     "open_interest_current": {
       "ok": false,
-      "error": "HTTP Error 403: Forbidden",
-      "latency_ms": 9
+      "error": "Empty response from https://fapi4.binance.com (HTTP 202)",
+      "latency_ms": 1434
     },
     "open_interest_history_5m": {
       "ok": false,
-      "error": "HTTP Error 403: Forbidden",
-      "latency_ms": 9
+      "error": "Empty response from https://fapi4.binance.com (HTTP 202)",
+      "latency_ms": 1406
     },
     "taker_flow_5m": {
       "ok": false,
-      "error": "HTTP Error 403: Forbidden",
-      "latency_ms": 9
+      "error": "Empty response from https://fapi4.binance.com (HTTP 202)",
+      "latency_ms": 1432
     },
     "order_book": {
       "ok": false,
-      "error": "HTTP Error 403: Forbidden",
-      "latency_ms": 10
+      "error": "Empty response from https://fapi4.binance.com (HTTP 202)",
+      "latency_ms": 1409
     },
     "recent_agg_trades": {
       "ok": false,
-      "error": "HTTP Error 403: Forbidden",
-      "latency_ms": 10
+      "error": "Empty response from https://fapi4.binance.com (HTTP 202)",
+      "latency_ms": 1417
     },
     "funding_history": {
       "ok": false,
-      "error": "HTTP Error 403: Forbidden",
-      "latency_ms": 9
+      "error": "Empty response from https://fapi4.binance.com (HTTP 202)",
+      "latency_ms": 1419
     },
     "liquidations": {
       "ok": false,
       "status": "not_collected",
-      "reason": "The existing Binance force-order WebSocket is not a Bybit liquidation feed; no cross-exchange substitution is made."
+      "reason": "No dependable public historical liquidation REST feed is used. A live force-order WebSocket collector is a separate service."
     }
   },
   "data_quality": {
@@ -76,34 +75,34 @@
     "futures_only": true,
     "status": "DEGRADED",
     "warnings": [
-      "One or more Bybit linear Futures candle timeframes failed.",
-      "5m Bybit linear Futures candle data is stale.",
-      "mark_price_funding feed unavailable: HTTP Error 403: Forbidden",
-      "open_interest_current feed unavailable: HTTP Error 403: Forbidden",
-      "open_interest_history_5m feed unavailable: HTTP Error 403: Forbidden",
-      "taker_flow_5m feed unavailable: HTTP Error 403: Forbidden",
-      "order_book feed unavailable: HTTP Error 403: Forbidden",
-      "recent_agg_trades feed unavailable: HTTP Error 403: Forbidden",
-      "funding_history feed unavailable: HTTP Error 403: Forbidden",
-      "Using Bybit linear USDT perpetual reference data because Binance API returned empty HTTP 202 responses. Verify Binance execution price independently.",
-      "Liquidation monitor remains Binance-only and is not treated as Bybit liquidation coverage.",
-      "Bybit fallback also failed core data checks; Binance diagnostics retained below."
+      "One or more Futures candle timeframes failed.",
+      "5m Futures candle data is stale.",
+      "mark_price_funding feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
+      "open_interest_current feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
+      "open_interest_history_5m feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
+      "taker_flow_5m feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
+      "order_book feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
+      "recent_agg_trades feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
+      "funding_history feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
+      "Liquidation feed is not connected yet.",
+      "Bybit fallback did not provide complete fresh Futures candles: HTTP Error 403: Forbidden; HTTP Error 403: Forbidden; HTTP Error 403: Forbidden"
     ]
   },
   "derived": {
     "cvd_base": null,
-    "note": "CVD unavailable because Bybit recent trades failed."
+    "note": "CVD unavailable because aggregate-trade data failed."
   },
-  "binance_failure_summary": [
-    "One or more Futures candle timeframes failed.",
-    "5m Futures candle data is stale.",
-    "mark_price_funding feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
-    "open_interest_current feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
-    "open_interest_history_5m feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
-    "taker_flow_5m feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
-    "order_book feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
-    "recent_agg_trades feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
-    "funding_history feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
-    "Liquidation feed is not connected yet."
-  ]
+  "fallback_attempt": {
+    "exchange": "Bybit",
+    "market_type": "BYBIT_LINEAR_USDT_PERPETUAL",
+    "core_timeframes_ok": false,
+    "five_minute_data_fresh": false,
+    "timeframe_errors": {
+      "5m": "HTTP Error 403: Forbidden",
+      "15m": "HTTP Error 403: Forbidden",
+      "1h": "HTTP Error 403: Forbidden",
+      "4h": "HTTP Error 403: Forbidden",
+      "1d": "HTTP Error 403: Forbidden"
+    }
+  }
 }
