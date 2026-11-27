@@ -45,11 +45,11 @@ button{background:#f5b942;color:#111;border:0;padding:12px 18px;border-radius:8p
 <div class="card">
 <small>LIVE BTC/USDT PRICE</small>
 <div class="price" id="price">Loading...</div>
-<small id="updated">Connecting...</small><p class="note">Price refresh: 5 seconds in this browser. AI, Futures snapshots and paper-trading results update on the GitHub Actions schedule (about every 5 minutes; scheduling can be delayed).</p>
+<small id="updated">Connecting...</small><p class="note">Browser price refresh: 5 seconds when this page is open. Published Futures snapshots update on a best-effort 15-minute GitHub Actions schedule; AI training runs separately and may be delayed.</p>
 </div>
 
 <div class="card">
-<h2>Market Signal</h2>
+<h2>Browser Heuristic — Research Only</h2>
 <div class="price yellow" id="signal">WAIT</div>
 <p id="reason">Collecting market data...</p>
 <div id="signalDetails" class="note"></div>
@@ -71,7 +71,7 @@ button{background:#f5b942;color:#111;border:0;padding:12px 18px;border-radius:8p
 <div id="engineReasons" class="note">Waiting for data.</div>
 <h3>Conflicts / blockers</h3>
 <div id="engineRisks" class="note">Waiting for data.</div>
-<p class="note">Evidence score is not a statistically calibrated win probability. Conflicting or incomplete data should result in WAIT.</p>
+<p class="note">This browser-side rule score is experimental and is NOT an authorized trading signal. It does not enforce the server AI validation / institutional quality gate and may show LONG or SHORT while the server signal remains WAIT. For signal decisions, use the separate Server Hybrid Confluence Signal and only when its safety locks and quality gate explicitly pass. Conflicting or incomplete data should result in WAIT.</p>
 </div>
 
 <div class="card">
