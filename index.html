@@ -286,6 +286,19 @@ button{background:#f5b942;color:#111;border:0;padding:12px 18px;border-radius:8p
 <p class="note" id="derivReason">Waiting for derivatives snapshot.</p>
 <p class="note" id="derivSource">Data source: public perpetual market feed.</p>
 </div>
+<div class="card" id="predictionPerformanceCard">
+<h3>AI Prediction Performance Tracker</h3>
+<div class="note">Tracks each published model forecast against the BTC price after its 15m / 30m / 1h / 4h horizon. Directional accuracy excludes WAIT calls and is not trading P&amp;L.</div>
+<div class="scoregrid">
+<div class="scoretile">15-minute accuracy<b id="perf15">Collecting...</b><small id="perf15Meta">No evaluated forecasts yet</small></div>
+<div class="scoretile">30-minute accuracy<b id="perf30">Collecting...</b><small id="perf30Meta">No evaluated forecasts yet</small></div>
+<div class="scoretile">1-hour accuracy<b id="perf60">Collecting...</b><small id="perf60Meta">No evaluated forecasts yet</small></div>
+<div class="scoretile">4-hour accuracy<b id="perf4h">Collecting...</b><small id="perf4hMeta">No evaluated forecasts yet</small></div>
+</div>
+<div class="metric"><span>Tracker updated</span><b id="perfUpdated">Waiting...</b></div>
+<div class="metric"><span>Recorded forecasts</span><b id="perfRecords">0</b></div>
+<p class="note" id="perfNote">Historical performance will appear after forecast horizons have elapsed. Small samples are not statistically reliable.</p>
+</div>
 <div class="card">
 <h3>Experimental ML Forecast</h3>
 <div class="note">Browser-trained logistic regression using historical Binance 15M candles. Experimental estimate, not guaranteed prediction.</div>
@@ -1404,6 +1417,27 @@ async function loadAdvancedIntelligence(force=false){
  finally{advancedAiBusy=false;}
 }
 
+let performanceLastLoad=0,performanceBusy=false;
+async function loadPredictionPerformance(force=false){
+ if(performanceBusy||(!force&&Date.now()-performanceLastLoad<60000))return;
+ performanceBusy=true;
+ try{
+  const r=await fetch("./prediction_performance.json?ts="+Date.now(),{cache:"no-store"});
+  if(!r.ok)throw Error("Performance history not published yet");
+  const d=await r.json(),stats=d.stats||{};
+  for(const [h,id] of [["15m","perf15"],["30m","perf30"],["60m","perf60"],["4h","perf4h"]]){
+   const x=stats[h]||{},v=x.directional_accuracy_pct;
+   setText(id,v==null?"Collecting...":Number(v).toFixed(1)+"%");
+   setText(id+"Meta",(x.directional_calls||0)+" directional calls • "+(x.correct||0)+" correct • "+(x.wait_abstentions||0)+" WAIT");
+  }
+  setText("perfUpdated",d.updated_at?new Date(d.updated_at).toLocaleString():"--");
+  setText("perfRecords",String((d.records||[]).length));
+  setText("perfNote","Directional close-comparison only; no fees, stop-loss, take-profit or trade P&L. "+(d.source||""));
+  performanceLastLoad=Date.now();
+ }catch(e){setText("perfNote","Tracker starting: "+e.message+". It will populate after the next AI forecast is recorded and its horizon completes.");}
+ finally{performanceBusy=false;}
+}
+
 let derivativesLastLoad=0,derivativesBusy=false;
 async function loadDerivativesIntelligence(force=false){
  if(derivativesBusy||(!force&&Date.now()-derivativesLastLoad<60000))return;
@@ -1547,12 +1581,14 @@ renderWhales();
 renderLiveCVD();
 loadAdvancedIntelligence();
 loadDerivativesIntelligence();
+loadPredictionPerformance();
 connectLiq();
 connectWhales();
 refreshAll();
 
 setInterval(refreshAll,30000);
 setInterval(loadDerivativesIntelligence,60000);
+setInterval(loadPredictionPerformance,60000);
 setInterval(loadAdvancedIntelligence,300000);
 setInterval(renderLiq,10000);
 setInterval(renderWhales,5000);
