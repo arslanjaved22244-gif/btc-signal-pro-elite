@@ -2405,6 +2405,107 @@ def fetch_futures_microstructure():
         except Exception as exc:
             errors.append("bybit_orderbook: " + str(exc)[:120])
 
+    # Third public fallback: Deribit BTC perpetual. These are cross-exchange
+    # context features and are explicitly labeled; never presented as Binance OI/CVD.
+    if len(result["features"]) < 5:
+        def deribit_get(method, params):
+            query = urllib.parse.urlencode(params)
+            request = urllib.request.Request(
+                "https://www.deribit.com/api/v2/public/" + method + "?" + query,
+                headers={"User-Agent": "BTC-Signal-Pro-Elite/6.2"}
+            )
+            with urllib.request.urlopen(request, timeout=9) as response:
+                payload = json.loads(response.read().decode("utf-8"))
+            if payload.get("error"):
+                raise ValueError(str(payload["error"])[:160])
+            return payload.get("result")
+
+        try:
+            if "open_interest" not in result["features"] or "mark_premium" not in result["features"]:
+                summaries = deribit_get("get_book_summary_by_instrument", {
+                    "instrument_name": "BTC-PERPETUAL"
+                }) or []
+                if summaries:
+                    item = summaries[0]
+                    if "open_interest" not in result["features"] and item.get("open_interest") is not None:
+                        result["features"]["open_interest"] = {
+                            "latest_contracts": float(item["open_interest"]),
+                            "direction": "UNAVAILABLE — SINGLE DERIBIT SNAPSHOT",
+                            "samples": 1, "provider": "Deribit BTC perpetual",
+                            "note": "Open-interest level only; no historical change inferred."
+                        }
+                    if "mark_premium" not in result["features"] and item.get("mark_price") and item.get("index_price"):
+                        mark, index = float(item["mark_price"]), float(item["index_price"])
+                        result["features"]["mark_premium"] = {
+                            "mark_price": mark, "index_price": index,
+                            "mark_index_basis_pct": round((mark/index-1.0)*100, 5),
+                            "funding_rate_8h": item.get("funding_8h"),
+                            "provider": "Deribit BTC perpetual"
+                        }
+        except Exception as exc:
+            errors.append("deribit_summary: " + str(exc)[:120])
+        try:
+            if "funding" not in result["features"]:
+                end_ms = int(datetime.now(timezone.utc).timestamp()*1000)
+                history = deribit_get("get_funding_rate_history", {
+                    "instrument_name": "BTC-PERPETUAL",
+                    "start_timestamp": end_ms-24*60*60*1000,
+                    "end_timestamp": end_ms
+                }) or []
+                if history:
+                    last = history[-1]
+                    rate = float(last.get("interest_8h", last.get("interest_1h", 0.0)))
+                    result["features"]["funding"] = {
+                        "latest_rate": rate, "latest_rate_pct": round(rate*100, 5),
+                        "latest_time": int(last.get("timestamp", end_ms)),
+                        "mean_last_12": round(sum(float(x.get("interest_8h", x.get("interest_1h", 0.0))) for x in history[-12:])/min(12,len(history)), 8),
+                        "crowding": "LONGS_PAYING / LONG_CROWDING" if rate > 0.0001 else
+                                    "SHORTS_PAYING / SHORT_CROWDING" if rate < -0.0001 else "NEUTRAL",
+                        "provider": "Deribit BTC perpetual"
+                    }
+        except Exception as exc:
+            errors.append("deribit_funding: " + str(exc)[:120])
+        try:
+            if "taker_flow" not in result["features"]:
+                payload = deribit_get("get_last_trades_by_instrument", {
+                    "instrument_name": "BTC-PERPETUAL", "count": 1000
+                }) or {}
+                trades = payload.get("trades", []) if isinstance(payload, dict) else []
+                buy = sum(float(item.get("amount", 0.0)) for item in trades if item.get("direction") == "buy")
+                sell = sum(float(item.get("amount", 0.0)) for item in trades if item.get("direction") == "sell")
+                total = buy + sell
+                imbalance = (buy-sell)/total if total else 0.0
+                result["features"]["taker_flow"] = {
+                    "buy_amount_contract_units": buy, "sell_amount_contract_units": sell,
+                    "buy_sell_ratio": round(buy/sell, 4) if sell else None,
+                    "buy_imbalance_pct": round(imbalance*100, 2),
+                    "bias": "BUY_DOMINANT" if imbalance > 0.08 else "SELL_DOMINANT" if imbalance < -0.08 else "BALANCED",
+                    "samples": len(trades), "window": "latest 1000 Deribit BTC perpetual trades",
+                    "provider": "Deribit BTC perpetual",
+                    "note": "Cross-exchange contract-amount flow proxy, not Binance BTC spot CVD."
+                }
+        except Exception as exc:
+            errors.append("deribit_taker_flow: " + str(exc)[:120])
+        try:
+            if "orderbook_snapshot" not in result["features"]:
+                book = deribit_get("get_order_book", {
+                    "instrument_name": "BTC-PERPETUAL", "depth": 5
+                }) or {}
+                bids = sum(float(level[1]) for level in book.get("bids", []))
+                asks = sum(float(level[1]) for level in book.get("asks", []))
+                total = bids + asks
+                imbalance = (bids-asks)/total if total else 0.0
+                result["features"]["orderbook_snapshot"] = {
+                    "bid_quantity_contract_units_top5": round(bids, 4),
+                    "ask_quantity_contract_units_top5": round(asks, 4),
+                    "bid_ask_imbalance_pct": round(imbalance*100, 2),
+                    "bias": "BID_HEAVY" if imbalance > 0.12 else "ASK_HEAVY" if imbalance < -0.12 else "BALANCED",
+                    "provider": "Deribit BTC perpetual",
+                    "note": "Cross-exchange snapshot; not Binance order-book depth."
+                }
+        except Exception as exc:
+            errors.append("deribit_orderbook: " + str(exc)[:120])
+
     providers = sorted({
         value.get("provider", "Binance public USD-M")
         for key, value in result["features"].items()
