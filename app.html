@@ -62,7 +62,10 @@ async function refresh(){
   $("buy").textContent=derived.aggressive_buy_base==null?"—":fmt(derived.aggressive_buy_base,4);
   $("sell").textContent=derived.aggressive_sell_base==null?"—":fmt(derived.aggressive_sell_base,4);
   $("imbalance").textContent=derived.order_book_imbalance==null?"—":fmt(derived.order_book_imbalance*100,2)+"%";
-  $("version").textContent=s.version||a.model_version||"—";$("samples").textContent=fmt(a.training_samples,0);\n  $("hybridSignal").textContent=s.signal||"WAIT";$("hybridConfidence").textContent=fmt(s.confidence_score)+"%";\n  const rr=s.risk_levels||{};$("riskLevels").textContent=rr.stop_loss?"SL "+fmt(rr.stop_loss)+" / TP1 "+fmt(rr.take_profit_1)+" / TP2 "+fmt(rr.take_profit_2):"WAIT / unavailable";\n  $("crowding").textContent=s.order_flow?.funding_crowding||"—";$("positioning").textContent="OI "+fmt(s.order_flow?.open_interest_change_30m_pct)+"% / Taker "+fmt(s.order_flow?.taker_buy_sell_ratio);
+  $("version").textContent=s.version||a.model_version||"—";$("samples").textContent=fmt(a.training_samples,0);
+  $("hybridSignal").textContent=s.signal||"WAIT";$("hybridConfidence").textContent=fmt(s.confidence_score)+"%";
+  const rr=s.risk_levels||{};$("riskLevels").textContent=rr.stop_loss?"SL "+fmt(rr.stop_loss)+" / TP1 "+fmt(rr.take_profit_1)+" / TP2 "+fmt(rr.take_profit_2):"WAIT / unavailable";
+  $("crowding").textContent=s.order_flow?.funding_crowding||"—";$("positioning").textContent="OI "+fmt(s.order_flow?.open_interest_change_30m_pct)+"% / Taker "+fmt(s.order_flow?.taker_buy_sell_ratio);
   $("accuracy").textContent=a.walk_forward_metrics?.accuracy==null?"—":a.walk_forward_metrics.accuracy+"%";
   $("f1").textContent=a.walk_forward_metrics?.macro_f1==null?"—":a.walk_forward_metrics.macro_f1+"%";
   $("short").textContent=(a.class_scores?.SHORT??"—")+"%";$("wait").textContent=(a.class_scores?.WAIT??"—")+"%";$("long").textContent=(a.class_scores?.LONG??"—")+"%";
