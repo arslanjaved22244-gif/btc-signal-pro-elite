@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 
 MARKET_FILE = "market_data.json"
 MODEL_FILE = "ai_result.json"
-OUTPUT_FILE = "signal_result.json"
+OUTPUT_FILE = "signal_result.json"\nNEWS_FILE = "event_guard.json"
 TIMEFRAMES = ("5m", "15m", "1h", "4h", "1d")
 
 
@@ -78,7 +78,7 @@ def feed_data(market, key):
 
 
 def run():
-    market, model = load(MARKET_FILE), load(MODEL_FILE)
+    market, model, news = load(MARKET_FILE), load(MODEL_FILE), load(NEWS_FILE)
     quality = market.get("data_quality", {})
     analyses = {tf: timeframe_analysis(market.get("timeframes", {}).get(tf, {})) for tf in TIMEFRAMES}
     warnings = list(quality.get("warnings", []))
@@ -173,7 +173,7 @@ def run():
     elif signal != "WAIT" and not model_is_futures:
         warnings.append("ML model uses a non-Futures or unknown source; it is not used as confirmation.")
 
-    price = analyses.get("5m", {}).get("price")
+    if news.get("block"):\n        signal = "WAIT"\n        warnings.append("High-risk news detected in the last 30 minutes; entries blocked.")\n    elif not news.get("available"):\n        warnings.append("News monitor unavailable; verify major headlines manually before any trade.")\n\n    price = analyses.get("5m", {}).get("price")
     atr_value = analyses.get("5m", {}).get("atr14")
     risk = {"entry_reference": price, "stop_loss": None, "take_profit_1": None,
             "take_profit_2": None, "risk_reward": "1:1.5 and 1:2.5", "method": "1.5x 5m ATR stop"}
