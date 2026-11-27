@@ -2,6 +2,10 @@ name: BTC Signal Pro Elite AI
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - "ai_model.py/**"
+      - ".github/workflows/ai-model.yml"
   schedule:
     - cron: "*/30 * * * *"
 
