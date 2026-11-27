@@ -639,7 +639,7 @@ def advanced_regime(data):
 def advanced_horizon_models(data, prepared):
     base=data["5m"]; output={}
     for horizon,label in ((3,"15m"),(6,"30m"),(12,"60m"),(48,"4h")):
-        rows,labels=[],[]; start=max(200,len(base)-2600)
+        rows,labels=[],[]; start=max(200,len(base)-1400)
         for i in range(start,len(base)-horizon):
             x=combined_features(data,i,prepared)
             if x is None: continue
@@ -654,7 +654,7 @@ def advanced_horizon_models(data, prepared):
         test_rows,test_labels=rows[split:],labels[split:]
         if len(train_rows)<200 or len(test_rows)<30:
             output[label]={"signal":"WAIT","status":"INSUFFICIENT VALIDATION","samples":len(rows)}; continue
-        model=train_model(train_rows,train_labels,epochs=65,learning_rate=0.02,l2=0.015)
+        model=train_model(train_rows,train_labels,epochs=30,learning_rate=0.02,l2=0.015)
         probs_test=[predict(model,x) for x in test_rows]
         pred=[max(range(3),key=lambda k:p[k]) for p in probs_test]
         metrics=classification_metrics(test_labels,pred)
@@ -686,7 +686,7 @@ def advanced_tree_ensemble(data, prepared):
         xgb_available=False
     base=data["5m"]; output={}
     for horizon,label in ((3,"15m"),(6,"30m"),(12,"60m"),(48,"4h")):
-        rows,labels=[],[]; start=max(200,len(base)-2400)
+        rows,labels=[],[]; start=max(200,len(base)-1500)
         for i in range(start,len(base)-horizon):
             x=combined_features(data,i,prepared)
             if x is None: continue
@@ -706,13 +706,13 @@ def advanced_tree_ensemble(data, prepared):
             output[label]={"signal":"WAIT","status":"INSUFFICIENT VALIDATION","samples":len(rows)}
             continue
         models={
-            "random_forest":RandomForestClassifier(n_estimators=100,max_depth=8,min_samples_leaf=12,
+            "random_forest":RandomForestClassifier(n_estimators=60,max_depth=8,min_samples_leaf=12,
                 class_weight="balanced_subsample",n_jobs=2,random_state=42),
             "gradient_boosting":HistGradientBoostingClassifier(max_iter=100,learning_rate=0.06,
                 max_leaf_nodes=15,l2_regularization=1.0,random_state=42)
         }
         if xgb_available:
-            models["xgboost"]=XGBClassifier(n_estimators=100,max_depth=3,learning_rate=0.04,
+            models["xgboost"]=XGBClassifier(n_estimators=60,max_depth=3,learning_rate=0.04,
                 subsample=0.85,colsample_bytree=0.85,min_child_weight=8,
                 objective="multi:softprob",num_class=3,eval_metric="mlogloss",
                 n_jobs=2,random_state=42,verbosity=0)
