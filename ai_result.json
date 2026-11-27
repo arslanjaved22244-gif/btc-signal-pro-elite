@@ -3,7 +3,15 @@
   "model": "Four-model vote: full-history logistic, recent-regime logistic, nearest-centroid and decision-stump ensemble",
   "model_version": "4.1-volatility-adaptive-labels",
   "data_source": "Kraken BTC/USD public OHLC candles",
-  "symbol": "BTC/USDT",
+  "data_source_by_timeframe": {
+    "5m": "Kraken BTC/USD",
+    "15m": "Kraken BTC/USD",
+    "1h": "Kraken BTC/USD",
+    "4h": "Kraken BTC/USD",
+    "1d": "Kraken BTC/USD"
+  },
+  "symbol": "BTC/USD",
+  "quote_asset_note": "Kraken BTC/USD spot is a public-data proxy, not identical to Binance BTC/USDT Futures.",
   "base_interval": "5m",
   "feature_timeframes": [
     "5m",
@@ -1002,14 +1010,20 @@
   "last_candle_time": 1795782300000,
   "data_freshness": {
     "status": "FRESH",
-    "latest_5m_candle_age_minutes": 6.65,
+    "latest_5m_candle_age_minutes": 8.75,
     "latest_5m_candle_time": "2026-11-27T12:25:00+00:00",
-    "source": "Binance USD-M Futures REST klines merged with historical monthly archives",
+    "source_by_timeframe": {
+      "5m": "Kraken BTC/USD",
+      "15m": "Kraken BTC/USD",
+      "1h": "Kraken BTC/USD",
+      "4h": "Kraken BTC/USD",
+      "1d": "Kraken BTC/USD"
+    },
     "max_allowed_age_minutes": 15
   },
-  "generated_at": "2026-11-27T12:31:56.218238+00:00",
+  "generated_at": "2026-11-27T12:33:58.104408+00:00",
   "limitations": [
-    "Training is strictly Binance USD-M Futures OHLCV. If Futures endpoints fail, training fails closed and never substitutes Spot data. CVD, open interest, funding, order book and liquidation remain separate confluence inputs.",
+    "When Binance USD-M Futures is unavailable, Kraken BTC/USD spot OHLC is used as a proxy and is not equivalent to BTC/USDT Futures. Funding, open interest, CVD, order book and liquidation remain separate confluence inputs.",
     "Class scores are model scores, not calibrated real-world win probabilities.",
     "Walk-forward metrics are historical diagnostics, not guarantees of future performance."
   ]
