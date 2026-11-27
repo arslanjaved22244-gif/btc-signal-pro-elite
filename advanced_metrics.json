@@ -1,15 +1,15 @@
 {
-  "generated_at": "2026-11-27T23:29:57.411357+00:00",
+  "generated_at": "2026-11-27T23:31:14.576023+00:00",
   "timeframe_indicators": {
     "5m": {
       "available": true,
-      "ema50": 59810.78,
-      "ema200": 60349.41,
-      "rsi14": 51.75,
+      "ema50": 59811.14,
+      "ema200": 60344.15,
+      "rsi14": 54.64,
       "macd": {
-        "macd": 3.5337,
-        "signal": -7.235,
-        "histogram": 10.7687,
+        "macd": 6.7741,
+        "signal": -4.4332,
+        "histogram": 11.2073,
         "bullish": true,
         "cross_up": false,
         "cross_down": false
@@ -21,18 +21,18 @@
         "last_swing_low": 59545.8,
         "note": "Confirmed pivots use candles on both sides; most recent pivot is delayed by the confirmation window."
       },
-      "volatility_atr14": 78.94,
-      "atr_pct": 0.132
+      "volatility_atr14": 77.19,
+      "atr_pct": 0.129
     },
     "15m": {
       "available": true,
-      "ema50": 60216.99,
-      "ema200": 60484.27,
-      "rsi14": 44.05,
+      "ema50": 60201.42,
+      "ema200": 60485.76,
+      "rsi14": 45.2,
       "macd": {
-        "macd": -140.7576,
-        "signal": -178.7759,
-        "histogram": 38.0183,
+        "macd": -126.619,
+        "signal": -168.3445,
+        "histogram": 41.7255,
         "bullish": true,
         "cross_up": false,
         "cross_down": false
@@ -44,8 +44,8 @@
         "last_swing_low": 59545.8,
         "note": "Confirmed pivots use candles on both sides; most recent pivot is delayed by the confirmation window."
       },
-      "volatility_atr14": 125.31,
-      "atr_pct": 0.2096
+      "volatility_atr14": 119.29,
+      "atr_pct": 0.1994
     },
     "1h": {
       "available": true,
@@ -122,7 +122,7 @@
     "method": "Chronological 60/20/20 split; reported trades only in final 20% holdout",
     "total_candles": 2999,
     "test_candles": 1200,
-    "test_start_time": 1795461900000,
+    "test_start_time": 1795462200000,
     "trades": 65,
     "win_rate_pct": 18.46,
     "net_return_pct": -12.68,

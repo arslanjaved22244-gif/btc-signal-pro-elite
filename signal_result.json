@@ -1,7 +1,7 @@
 {
   "system": "BTC Signal Pro Elite Hybrid Confluence Engine",
   "version": "4.3-hybrid-sweep-validated-futures",
-  "generated_at": "2026-11-27T23:29:58.654255+00:00",
+  "generated_at": "2026-11-27T23:31:15.363712+00:00",
   "symbol": "BTCUSDT",
   "market_type": "OKX_BTC_USDT_SWAP",
   "market_exchange": "OKX",
@@ -13,49 +13,49 @@
     "direction": "WAIT",
     "status": "NO_CLEAR_EARLY_SETUP",
     "momentum_scores": {
-      "LONG": 0.0,
+      "LONG": 1.0,
       "SHORT": 2.0
     },
-    "momentum_margin": 2.0,
+    "momentum_margin": 1.0,
     "note": "Early setup is a watchlist hint only, not an entry signal. Confirm the main signal and manual risk levels before any trade."
   },
   "confidence_score": 65.22,
   "scores": {
-    "LONG": 1.75,
+    "LONG": 0.75,
     "SHORT": 7.5
   },
   "timeframe_analysis": {
     "5m": {
       "available": true,
-      "bias": "BEARISH",
-      "momentum_bias": "NEUTRAL",
-      "price": 59789.8,
-      "ema50": 59810.78,
-      "ema200": 60349.41,
-      "rsi14": 51.75,
-      "atr14": 78.94,
+      "bias": "NEUTRAL",
+      "momentum_bias": "BULLISH",
+      "price": 59820.0,
+      "ema50": 59811.14,
+      "ema200": 60344.15,
+      "rsi14": 54.64,
+      "atr14": 77.19,
       "macd": {
-        "line": 3.53372,
-        "signal": -7.23502,
-        "histogram": 10.76874
+        "line": 6.77412,
+        "signal": -4.43319,
+        "histogram": 11.20731
       },
-      "age_seconds": 267
+      "age_seconds": 42
     },
     "15m": {
       "available": true,
       "bias": "BEARISH",
       "momentum_bias": "NEUTRAL",
-      "price": 59797.0,
-      "ema50": 60216.99,
-      "ema200": 60484.27,
-      "rsi14": 44.05,
-      "atr14": 125.31,
+      "price": 59820.0,
+      "ema50": 60201.42,
+      "ema200": 60485.76,
+      "rsi14": 45.2,
+      "atr14": 119.29,
       "macd": {
-        "line": -140.75758,
-        "signal": -178.77592,
-        "histogram": 38.01833
+        "line": -126.619,
+        "signal": -168.34453,
+        "histogram": 41.72553
       },
-      "age_seconds": 867
+      "age_seconds": 42
     },
     "1h": {
       "available": true,
@@ -71,7 +71,7 @@
         "signal": -149.00652,
         "histogram": -160.73515
       },
-      "age_seconds": 1767
+      "age_seconds": 1842
     },
     "4h": {
       "available": true,
@@ -87,7 +87,7 @@
         "signal": -29.54687,
         "histogram": 61.90847
       },
-      "age_seconds": 12567
+      "age_seconds": 12642
     },
     "1d": {
       "available": true,
@@ -103,7 +103,7 @@
         "signal": -4502.17037,
         "histogram": -20.72115
       },
-      "age_seconds": 26967
+      "age_seconds": 27043
     }
   },
   "liquidity_sweep": {
@@ -111,12 +111,12 @@
     "status": "NO_CONFIRMED_SWEEP"
   },
   "order_flow": {
-    "cvd_base": 196.52,
-    "order_book_imbalance": 0.41459,
+    "cvd_base": -69.58,
+    "order_book_imbalance": 0.271223,
     "order_book_imbalance_method": "Top-20 visible levels; quote-notional (price \u00d7 quantity); (bid-ask)/(bid+ask)",
-    "funding_rate_pct": 0.005203,
+    "funding_rate_pct": 0.005227,
     "funding_crowding": "NEUTRAL",
-    "open_interest_change_30m_pct": 0.0012,
+    "open_interest_change_30m_pct": -0.0016,
     "taker_buy_sell_ratio": 1.0132604456647636
   },
   "ml_context": {
@@ -126,20 +126,20 @@
     "validation_passed": false,
     "futures_source": false,
     "market_alignment": {
-      "passed": true,
-      "type": "SAME_VENUE",
+      "passed": false,
+      "type": "BLOCKED",
       "model_venue": "OKX BTC-USDT-SWAP Futures",
       "market_venue": "OKX",
-      "basis_pct": 0.00268,
-      "candle_skew_minutes": 15.0,
+      "basis_pct": 0.04781,
+      "candle_skew_minutes": 20.0,
       "max_basis_pct": 0.25,
       "max_candle_skew_minutes": 15,
-      "reason": "Same-venue or cross-venue perpetual prices and 5m candle times are aligned."
+      "reason": "Perpetual price basis or 5m candle-time skew exceeds safety tolerance."
     },
     "signal": "WAIT"
   },
   "risk_levels": {
-    "entry_reference": 59789.8,
+    "entry_reference": 59820.0,
     "stop_loss": null,
     "take_profit_1": null,
     "take_profit_2": null,
@@ -159,33 +159,33 @@
     "timeframe_freshness": {
       "5m": {
         "fresh": true,
-        "age_seconds": 267,
+        "age_seconds": 42,
         "max_age_seconds": 600
       },
       "15m": {
         "fresh": true,
-        "age_seconds": 867,
+        "age_seconds": 42,
         "max_age_seconds": 1800
       },
       "1h": {
         "fresh": true,
-        "age_seconds": 1767,
+        "age_seconds": 1842,
         "max_age_seconds": 7200
       },
       "4h": {
         "fresh": true,
-        "age_seconds": 12567,
+        "age_seconds": 12642,
         "max_age_seconds": 28800
       },
       "1d": {
         "fresh": true,
-        "age_seconds": 26967,
+        "age_seconds": 27043,
         "max_age_seconds": 172800
       }
     }
   },
   "news_guard": {
-    "generated_at": "2026-11-27T23:29:29.677333+00:00",
+    "generated_at": "2026-11-27T23:30:44.916431+00:00",
     "source": "Google News RSS public fallback + Trump's Truth independent archive (unofficial)",
     "available": true,
     "block": false,
@@ -199,7 +199,7 @@
   },
   "volatility_guard": {
     "blocked": false,
-    "atr_5m_pct": 0.132,
+    "atr_5m_pct": 0.129,
     "atr_threshold_pct": 0.45,
     "range_spike": false
   },
@@ -224,6 +224,7 @@
   "warnings": [
     "OKX BTC-USDT-SWAP is a separate exchange perpetual reference; confirm execution venue price and liquidity.",
     "Selected a separate exchange Futures perpetual because it supplied better verified derivatives coverage; confirm execution venue price and liquidity.",
+    "Cross-venue AI authorization blocked: Perpetual price basis or 5m candle-time skew exceeds safety tolerance.",
     "Directional entries blocked: AI must use verified perpetual Futures data AND pass the global walk-forward validation gate. Spot, unknown-source or failed-validation ML cannot authorize a Futures trade.",
     "Institutional quality gate blocked: directional entries remain disabled until AI baseline, macro-F1, 30+ shadow forecasts and positive 300+ candle cost-aware backtest all pass."
   ],
