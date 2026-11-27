@@ -468,52 +468,42 @@ def collect_okx():
     return result
 
 
+
 def collect():
     primary=collect_binance()
     if primary.get("data_quality",{}).get("core_timeframes_ok") and primary.get("data_quality",{}).get("five_minute_data_fresh"):
         return primary
+
+    failures=list(primary.get("data_quality",{}).get("warnings",[]))
+    bybit=None
     try:
-        fallback=collect_bybit()
-        if fallback.get("data_quality",{}).get("core_timeframes_ok") and fallback.get("data_quality",{}).get("five_minute_data_fresh"):
-            fallback["fallback_from"]="Binance USD-M Futures"
-            fallback["binance_failure_summary"]=primary.get("data_quality",{}).get("warnings",[])
-            return fallback
-        bybit_errors = [v.get("error") for v in fallback.get("timeframes", {}).values() if v.get("error")]
-        primary["data_quality"]["warnings"].append(
-            "Bybit fallback did not provide complete fresh Futures candles: " +
-            ("; ".join(bybit_errors[:3]) if bybit_errors else "core timeframes incomplete")
-        )
-        primary["fallback_attempt"] = {
-            "exchange": "Bybit",
-            "market_type": "BYBIT_LINEAR_USDT_PERPETUAL",
-            "core_timeframes_ok": False,
-            "five_minute_data_fresh": False,
-            "timeframe_errors": {k:v.get("error") for k,v in fallback.get("timeframes",{}).items() if v.get("error")}
-        }
-        return primary
-        try:
-            okx=collect_okx()
-            if okx.get("data_quality",{}).get("core_timeframes_ok") and okx.get("data_quality",{}).get("five_minute_data_fresh"):
-                okx["fallback_from"]="Binance USD-M Futures and Bybit linear Futures"
-                okx["prior_source_failures"]=primary.get("data_quality",{}).get("warnings",[])
-                return okx
-            errors=[v.get("error") for v in okx.get("timeframes",{}).values() if v.get("error")]
-            primary["data_quality"]["warnings"].append("OKX fallback did not provide complete fresh candles: "+("; ".join(errors[:3]) if errors else "core timeframes incomplete"))
-            primary["fallback_attempts"]={"bybit":"blocked or incomplete","okx":{"core_timeframes_ok":False,"timeframe_errors":{k:v.get("error") for k,v in okx.get("timeframes",{}).items() if v.get("error")}}}
-            return primary
-        except Exception as okx_exc:
-            primary["data_quality"]["warnings"].append("OKX BTC-USDT-SWAP fallback failed: "+str(okx_exc))
-            return primary
+        bybit=collect_bybit()
+        if bybit.get("data_quality",{}).get("core_timeframes_ok") and bybit.get("data_quality",{}).get("five_minute_data_fresh"):
+            bybit["fallback_from"]="Binance USD-M Futures"
+            bybit["prior_source_failures"]=failures
+            return bybit
+        bybit_errors={k:v.get("error") for k,v in bybit.get("timeframes",{}).items() if v.get("error")}
+        failures.append("Bybit fallback incomplete: "+str(bybit_errors))
     except Exception as exc:
-        primary["data_quality"]["warnings"].append("Bybit linear Futures fallback failed: "+str(exc))
-        try:
-            okx=collect_okx()
-            if okx.get("data_quality",{}).get("core_timeframes_ok") and okx.get("data_quality",{}).get("five_minute_data_fresh"):
-                okx["fallback_from"]="Binance USD-M Futures and Bybit linear Futures"
-                return okx
-        except Exception as okx_exc:
-            primary["data_quality"]["warnings"].append("OKX BTC-USDT-SWAP fallback failed: "+str(okx_exc))
-        return primary
+        failures.append("Bybit linear Futures fallback failed: "+str(exc))
+
+    try:
+        okx=collect_okx()
+        if okx.get("data_quality",{}).get("core_timeframes_ok") and okx.get("data_quality",{}).get("five_minute_data_fresh"):
+            okx["fallback_from"]="Binance USD-M Futures and Bybit linear Futures"
+            okx["prior_source_failures"]=failures
+            return okx
+        okx_errors={k:v.get("error") for k,v in okx.get("timeframes",{}).items() if v.get("error")}
+        failures.append("OKX fallback incomplete: "+str(okx_errors))
+    except Exception as exc:
+        failures.append("OKX BTC-USDT-SWAP fallback failed: "+str(exc))
+
+    primary["data_quality"]["warnings"]=failures
+    primary["fallback_attempts"]={
+        "bybit":{"attempted":True,"core_timeframes_ok":bool(bybit and bybit.get("data_quality",{}).get("core_timeframes_ok"))},
+        "okx":{"attempted":True,"core_timeframes_ok":False}
+    }
+    return primary
 
 
 if __name__ == "__main__":
