@@ -64,6 +64,19 @@ class FeedHealthTests(unittest.TestCase):
         self.assertFalse(states["continuous_liquidation_stream"])
         self.assertEqual(result["status"], "PARTIAL")
 
+
+    def test_oi_freshness_uses_newest_timestamp_regardless_of_order(self):
+        now_ms = int(self.now.timestamp() * 1000)
+        self.market["feeds"]["open_interest_history_5m"]["data"] = [
+            {"timestamp": now_ms - 60 * 60 * 1000, "sumOpenInterest": 90},
+            {"timestamp": now_ms, "sumOpenInterest": 100}
+        ]
+        result = INTEL.feed_health(
+            self.market, self.news, self.liquidation, self.comparison, now=self.now
+        )
+        states = {item["name"]: item["passed"] for item in result["items"]}
+        self.assertTrue(states["open_interest_history"])
+
     def test_missing_timestamps_fail_closed(self):
         self.market["feeds"]["open_interest_history_5m"]["data"] = [
             {"sumOpenInterest": 100}
