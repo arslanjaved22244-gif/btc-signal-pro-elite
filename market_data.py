@@ -6,7 +6,8 @@ import urllib.parse
 import urllib.request
 from datetime import datetime, timezone
 
-BASE = "https://fapi.binance.com"
+BASES = ["https://fapi.binance.com", "https://fapi1.binance.com", "https://fapi2.binance.com", "https://fapi3.binance.com", "https://fapi4.binance.com"]
+BASE = BASES[0]
 SYMBOL = "BTCUSDT"
 OUT = "market_data.json"
 TIMEFRAMES = ("5m", "15m", "1h", "4h", "1d")
@@ -14,10 +15,19 @@ TIMEFRAMES = ("5m", "15m", "1h", "4h", "1d")
 
 def request_json(path, params=None, timeout=15):
     query = urllib.parse.urlencode(params or {})
-    url = BASE + path + (("?" + query) if query else "")
-    req = urllib.request.Request(url, headers={"User-Agent": "BTC-Signal-Pro-Elite/4.0"})
-    with urllib.request.urlopen(req, timeout=timeout) as response:
-        return json.loads(response.read().decode("utf-8"))
+    global BASE
+    last_error = None
+    for host in [BASE] + [x for x in BASES if x != BASE]:
+        url = host + path + (("?" + query) if query else "")
+        req = urllib.request.Request(url, headers={"User-Agent": "BTC-Signal-Pro-Elite/4.1"})
+        try:
+            with urllib.request.urlopen(req, timeout=timeout) as response:
+                data = json.loads(response.read().decode("utf-8"))
+                BASE = host
+                return data
+        except Exception as exc:
+            last_error = exc
+    raise last_error
 
 
 def safe_fetch(name, path, params=None):
