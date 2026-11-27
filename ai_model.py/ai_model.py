@@ -12,6 +12,7 @@ import json
 import math
 import time
 import urllib.request
+import urllib.parse
 from datetime import datetime, timezone, timedelta
 
 SYMBOL = "BTC/USDT"
@@ -1917,6 +1918,18 @@ def update_prediction_feedback(data, result, path="prediction_feedback.json"):
             peak = max(peak, equity)
             if peak > 0:
                 max_drawdown = max(max_drawdown, (peak-equity)/peak*100.0)
+        # Illustrative round-trip execution assumptions: 0.05% taker fee per side
+        # and 0.02% slippage per side. Funding is excluded unless separately observed.
+        estimated_round_trip_cost_pct = 0.14
+        net_returns = [value-estimated_round_trip_cost_pct for value in trade_returns]
+        net_equity = 1.0
+        net_peak = 1.0
+        net_max_drawdown = 0.0
+        for net_return in net_returns:
+            net_equity *= max(0.0, 1.0 + net_return/100.0)
+            net_peak = max(net_peak, net_equity)
+            if net_peak > 0:
+                net_max_drawdown = max(net_max_drawdown, (net_peak-net_equity)/net_peak*100.0)
         summary[model_name] = {
             "evaluated_predictions": len(evaluated),
             "pending_predictions": pending,
@@ -1931,7 +1944,12 @@ def update_prediction_feedback(data, result, path="prediction_feedback.json"):
             "gross_compounded_return_pct": round((equity-1.0)*100.0, 4)
                 if trade_returns else None,
             "gross_max_drawdown_pct": round(max_drawdown, 4) if trade_returns else None,
-            "performance_note": "Directional returns are gross, before fees, funding, spread and slippage.",
+            "estimated_round_trip_cost_pct": estimated_round_trip_cost_pct,
+            "net_win_rate_pct": round(sum(1 for value in net_returns if value > 0)/len(net_returns)*100.0, 2) if net_returns else None,
+            "net_average_trade_return_pct": round(sum(net_returns)/len(net_returns), 5) if net_returns else None,
+            "net_compounded_return_pct": round((net_equity-1.0)*100.0, 4) if net_returns else None,
+            "net_max_drawdown_pct": round(net_max_drawdown, 4) if net_returns else None,
+            "performance_note": "Net estimate subtracts 0.05% taker fee and 0.02% slippage per side; funding is excluded and actual execution may differ.",
             "status": "COLLECTING LIVE OUTCOMES" if len(evaluated) < 30 else "LIVE FEEDBACK SAMPLE"
         }
 
@@ -1950,6 +1968,102 @@ def update_prediction_feedback(data, result, path="prediction_feedback.json"):
         "models": summary,
         "note": "Live outcomes are tracked for evaluation; this does not silently retrain or alter model weights."
     }
+
+
+
+def fetch_macro_news_risk():
+    """
+    Free GDELT news scan for BTC-relevant macro/geopolitical headlines.
+    This is a headline risk filter, not a sentiment model or direct social-post feed.
+    """
+    result = {
+        "status": "UNAVAILABLE", "provider": "GDELT DOC public API",
+        "lookback_minutes": 60, "high_risk": False, "block_minutes": 30,
+        "articles_checked": 0, "matched_events": [],
+        "limitations": [
+            "News headlines only; not direct Trump/social-media post ingestion.",
+            "GDELT coverage and publication timestamps can be delayed or incomplete.",
+            "News risk is a WAIT veto, never a directional trading signal."
+        ]
+    }
+    query = '(bitcoin OR BTC OR cryptocurrency OR crypto) AND (Trump OR tariff OR "Federal Reserve" OR Fed OR war OR missile OR attack OR sanctions OR hack OR exploit OR liquidation OR SEC OR regulation OR inflation OR CPI OR ETF)'
+    params = urllib.parse.urlencode({
+        "query": query, "mode": "ArtList", "format": "json",
+        "sort": "DateDesc", "maxrecords": 50, "timespan": "60min"
+    })
+    url = "https://api.gdeltproject.org/api/v2/doc/doc?" + params
+    try:
+        request = urllib.request.Request(
+            url, headers={"User-Agent": "BTC-Signal-Pro-Elite/6.0"}
+        )
+        with urllib.request.urlopen(request, timeout=10) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+        articles = payload.get("articles", []) if isinstance(payload, dict) else []
+        result["articles_checked"] = len(articles)
+        high_impact = (
+            "war", "missile", "attack", "sanction", "tariff", "trump",
+            "federal reserve", "fed", "rate hike", "rate cut", "inflation",
+            "cpi", "hack", "exploit", "liquidation", "sec", "ban", "lawsuit"
+        )
+        for article in articles:
+            title = str(article.get("title", "")).strip()
+            lower = title.lower()
+            hits = [term for term in high_impact if term in lower]
+            if not hits:
+                continue
+            seen = str(article.get("seendate", ""))
+            age_minutes = None
+            try:
+                published = datetime.strptime(seen, "%Y%m%dT%H%M%SZ").replace(tzinfo=timezone.utc)
+                age_minutes = max(0.0, (datetime.now(timezone.utc)-published).total_seconds()/60.0)
+            except Exception:
+                pass
+            result["matched_events"].append({
+                "title": title[:240], "domain": article.get("domain"),
+                "url": article.get("url"), "seen_time": seen,
+                "age_minutes": round(age_minutes, 1) if age_minutes is not None else None,
+                "matched_terms": hits[:6]
+            })
+        fresh = [item for item in result["matched_events"]
+                 if item.get("age_minutes") is not None and item["age_minutes"] <= 30]
+        result["high_risk"] = bool(fresh)
+        result["fresh_high_risk_count"] = len(fresh)
+        result["status"] = "HIGH_RISK_EVENT" if fresh else "CLEAR"
+        result["retrieved_at"] = datetime.now(timezone.utc).isoformat()
+        return result
+    except Exception as exc:
+        result["status"] = "UNAVAILABLE"
+        result["error"] = str(exc)[:220]
+        return result
+
+
+def apply_feedback_risk_gate(signal, feedback):
+    """
+    Conservative adaptive gate based on matured, out-of-sample approved-signal outcomes.
+    It never changes model weights. It waits for 30 completed primary-ensemble trades.
+    """
+    model = feedback.get("models", {}).get("primary_ensemble", {})
+    sample = int(model.get("approved_directional_trades", 0) or 0)
+    avg_net = model.get("net_average_trade_return_pct")
+    win_rate = model.get("net_win_rate_pct")
+    gate = {
+        "status": "COLLECTING OUTCOMES", "minimum_completed_trades": 30,
+        "completed_trades": sample, "net_average_trade_return_pct": avg_net,
+        "net_win_rate_pct": win_rate, "weights_retrained": False,
+        "note": "Feedback changes risk permission only; it does not retrain neural-network weights."
+    }
+    if signal not in ("LONG", "SHORT"):
+        gate["status"] = "NO DIRECTIONAL SIGNAL"
+        return "WAIT", gate
+    if sample < 30 or avg_net is None or win_rate is None:
+        return signal, gate
+    if float(avg_net) <= 0.0 or float(win_rate) < 45.0:
+        gate["status"] = "BLOCKED — WEAK RECENT NET PERFORMANCE"
+        gate["reason"] = "At least 30 matured primary signals exist, but net expectancy or win rate is below the safety floor."
+        return "WAIT", gate
+    gate["status"] = "PASSED"
+    return signal, gate
+
 
 
 def fetch_futures_microstructure():
@@ -2185,6 +2299,8 @@ def main():
     print("BTC Signal Pro Elite - Advanced ML starting...")
     futures_microstructure = fetch_futures_microstructure()
     print("Futures microstructure status:", futures_microstructure.get("status"))
+    macro_news_risk = fetch_macro_news_risk()
+    print("Macro news risk status:", macro_news_risk.get("status"))
     data = {}
     source = "Binance USD-M Futures public klines"
     symbol = "BTC/USDT"
@@ -2322,6 +2438,10 @@ def main():
         "veto_reason": horizon_consensus_veto,
         "note": "Only horizons passing their own validation gate are counted; this is a conflict filter, not a guarantee."
     }
+    news_event_veto = None
+    if signal in ("LONG", "SHORT") and macro_news_risk.get("high_risk"):
+        signal = "WAIT"
+        news_event_veto = "Directional signal blocked for at least 30 minutes due to fresh BTC-relevant macro/geopolitical headlines."
     model_probabilities = {
         "full_history_logistic": predict(final_model["full_history"], latest),
         "recent_regime_logistic": predict(final_model["recent_regime"], latest),
@@ -2350,6 +2470,8 @@ def main():
         "walk_forward_metrics": validation,
         "validation_gate": {"passed": validation_gate, "minimum_accuracy_pct": 38.0, "minimum_macro_f1_pct": 30.0, "must_beat_majority_baseline": True, "decision": "directional signals allowed" if validation_gate else "WAIT only — historical validation too weak"},
         "futures_microstructure": futures_microstructure,
+        "macro_news_risk": macro_news_risk,
+        "news_event_veto": news_event_veto,
         "historical_derivatives_training": historical_derivatives,
         "advanced_intelligence": {"market_regime": regime_analysis, "breakout_squeeze_analysis": breakout_squeeze_analysis, "multi_timeframe_trend_alignment": trend_alignment, "alignment_veto": alignment_veto, "multi_horizon_forecasts": horizon_forecasts, "multi_horizon_consensus": horizon_consensus, "temporal_sequence_model": temporal_model, "lstm_sequence_model": lstm_model, "temporal_sequence_horizons": temporal_horizons, "temporal_model_veto": temporal_veto, "lstm_model_veto": lstm_veto, "tree_ensemble": tree_ensemble, "tree_blend_applied_to_primary_signal": tree_blend_applied, "method": "2-layer recurrent PyTorch LSTM on 24 ordered candles + temporal MLP + four-horizon chronological ML + Random Forest + gradient boosting + neural MLP + XGBoost (when installed) + volatility regime + liquidity sweep detector"},
         "walk_forward_folds": folds,
@@ -2382,6 +2504,13 @@ def main():
         ]
     }
     result["prediction_feedback"] = update_prediction_feedback(data, result)
+    signal_before_feedback_gate = result.get("signal", "WAIT")
+    feedback_signal, feedback_gate = apply_feedback_risk_gate(
+        signal_before_feedback_gate, result["prediction_feedback"]
+    )
+    if feedback_signal != signal_before_feedback_gate:
+        result["signal"] = feedback_signal
+    result["feedback_adaptive_gate"] = feedback_gate
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         json.dump(result, f, indent=2)
     print(json.dumps(result, indent=2))
