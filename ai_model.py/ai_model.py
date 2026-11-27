@@ -661,7 +661,7 @@ def advanced_horizon_models(data, prepared):
         latest=combined_features(data,len(base)-1,prepared); probs=predict(model,latest)
         ranked=sorted(probs,reverse=True); margin=ranked[0]-ranked[1]
         candidate=CLASSES[max(range(3),key=lambda k:probs[k])]
-        signal=candidate if candidate!="WAIT" and metrics["accuracy"]>=38.0 and margin>=0.10 else "WAIT"
+        signal=candidate if candidate!="WAIT" and metrics["accuracy"]>=38.0 and metrics["macro_f1"]>=25.0 and margin>=0.10 else "WAIT"
         output[label]={"signal":signal,"raw_model_class":candidate,
             "scores":{name:round(probs[k]*100,2) for k,name in enumerate(CLASSES)},
             "confidence_margin":round(margin*100,2),"holdout_accuracy":metrics["accuracy"],
