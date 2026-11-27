@@ -1,0 +1,42 @@
+name: BTC Signal Pro Elite Monitor
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: btc-signal-monitor
+  cancel-in-progress: true
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Restore monitoring state
+        uses: actions/cache/restore@v4
+        with:
+          path: state.json
+          key: btc-monitor-state-${{ github.run_id }}
+          restore-keys: |
+            btc-monitor-state-
+
+      - name: Run BTC monitor
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python3 bot/monitor.py
+
+      - name: Save monitoring state
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: state.json
+          key: btc-monitor-state-${{ github.run_id }}
