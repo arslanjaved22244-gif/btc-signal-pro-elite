@@ -195,6 +195,9 @@ def run():
         warnings.append("High-risk news lock active; entries blocked until the event lock expires.")
     elif not news.get("available"):
         warnings.append("News monitor unavailable; verify major headlines manually before any trade.")
+    price = analyses.get("5m", {}).get("price")
+    atr_value = analyses.get("5m", {}).get("atr14")
+
     # Volatility circuit breaker: block extreme 5m ATR or an unusually large latest candle.
     five = market.get("timeframes", {}).get("5m", {}).get("candles", [])
     atr_pct = (float(atr_value) / float(price) * 100.0) if price and atr_value else 0.0
@@ -207,8 +210,6 @@ def run():
         signal = "WAIT"
         warnings.append("Volatility circuit breaker active: 5m ATR or candle range exceeded safety threshold.")
 
-    price = analyses.get("5m", {}).get("price")
-    atr_value = analyses.get("5m", {}).get("atr14")
     risk = {"entry_reference": price, "stop_loss": None, "take_profit_1": None,
             "take_profit_2": None, "risk_reward": "1:1.5 and 1:2.5", "method": "1.5x 5m ATR stop"}
     if signal in ("LONG", "SHORT") and price and atr_value and atr_value > 0:
