@@ -32,9 +32,9 @@ def news_scan():
     if -2<=age<=60 and any(t in title.lower() for t in terms):hits.append({"title":title,"published":dt.isoformat(),"age_minutes":round(age,1)})
   except Exception as exc:print("News feed warning:",str(exc)[:160])
  unique={x["title"]:x for x in hits};return sorted(unique.values(),key=lambda x:x["age_minutes"])
-def market_data():
+def market_data_bybit():
  tick=api("/v5/market/tickers",{"category":"linear","symbol":"BTCUSDT"})["result"]["list"][0]
- price=float(tick["lastPrice"]); funding=float(tick.get("fundingRate") or 0)
+ price=float(tick["lastPrice"]);funding=float(tick.get("fundingRate") or 0)
  oi=api("/v5/market/open-interest",{"category":"linear","symbol":"BTCUSDT","intervalTime":"5min","limit":2})["result"]["list"]
  oi_change=None
  if len(oi)>=2:
@@ -53,6 +53,45 @@ def market_data():
  candle=api("/v5/market/kline",{"category":"linear","symbol":"BTCUSDT","interval":"5","limit":2})["result"]["list"][0]
  total=float(candle[5]);taker_buy=float(candle[6]);taker=taker_buy/total if total else .5
  return {"price":price,"funding_rate":funding,"funding_percent":funding*100,"open_interest":float(oi[0]["openInterest"]) if oi else None,"oi_change_5m_pct":oi_change,"orderbook_imbalance":imbalance,"cvd_proxy":cvd,"taker_buy_ratio":taker,"large_trades":sorted(large,key=lambda x:x["qty_btc"],reverse=True)[:8],"data_source":"Bybit public linear perpetual market API","as_of":now().isoformat()}
+
+def market_data_okx():
+ base="https://www.okx.com"
+ def okx(path,params):
+  url=base+path+"?"+urllib.parse.urlencode(params)
+  return get_json(url)["data"]
+ inst="BTC-USDT-SWAP"
+ tick=okx("/api/v5/market/ticker",{"instId":inst})[0]
+ funding_row=okx("/api/v5/public/funding-rate",{"instId":inst})[0]
+ oi_rows=okx("/api/v5/public/open-interest",{"instType":"SWAP","instId":inst})
+ book=okx("/api/v5/market/books",{"instId":inst,"sz":50})[0]
+ bids=sum(float(x[0])*float(x[1]) for x in book["bids"][:20])
+ asks=sum(float(x[0])*float(x[1]) for x in book["asks"][:20])
+ imbalance=(bids-asks)/(bids+asks) if bids+asks else 0
+ trades=okx("/api/v5/market/trades",{"instId":inst,"limit":500})
+ buy=sell=0.0;large=[]
+ for t in trades:
+  qty=float(t["sz"])*0.01
+  if t["side"]=="buy":buy+=qty
+  else:sell+=qty
+  if qty>=10:large.append({"side":t["side"].upper(),"qty_btc":round(qty,3),"price":float(t["px"]),"time":int(t["ts"])})
+ cvd=(buy-sell)/(buy+sell) if buy+sell else 0
+ taker=buy/(buy+sell) if buy+sell else .5
+ oi=float(oi_rows[0]["oi"]) if oi_rows else None
+ return {"price":float(tick["last"]),"funding_rate":float(funding_row["fundingRate"]),
+  "funding_percent":float(funding_row["fundingRate"])*100,"open_interest":oi,"oi_change_5m_pct":None,
+  "orderbook_imbalance":imbalance,"cvd_proxy":cvd,"taker_buy_ratio":taker,
+  "large_trades":sorted(large,key=lambda x:x["qty_btc"],reverse=True)[:8],
+  "data_source":"OKX public BTC-USDT-SWAP perpetual API","as_of":now().isoformat(),
+  "oi_note":"Current open interest available; 5-minute change not supplied by fallback feed"}
+
+def market_data():
+ errors=[]
+ for name,fn in (("Bybit",market_data_bybit),("OKX",market_data_okx)):
+  try:return fn()
+  except Exception as exc:
+   errors.append(name+": "+str(exc)[:180])
+ raise RuntimeError("All derivatives feeds unavailable: "+" | ".join(errors))
+
 def score_signal(m,paused):
  funding=m["funding_rate"];oi=m["oi_change_5m_pct"];book=m["orderbook_imbalance"];cvd=m["cvd_proxy"];taker=m["taker_buy_ratio"]
  long_crowded=funding>0.0005 and oi is not None and oi>0.5;short_crowded=funding< -0.0005 and oi is not None and oi>0.5
