@@ -936,7 +936,9 @@ def main():
         "model": "Four-model vote: full-history logistic, recent-regime logistic, nearest-centroid and decision-stump ensemble",
         "model_version": "4.1-volatility-adaptive-labels",
         "data_source": source,
-        "symbol": symbol,
+        "data_source_by_timeframe": data_source_by_tf,
+        "symbol": "BTC/USD" if used_sources == ["Kraken BTC/USD"] else symbol,
+        "quote_asset_note": ("Kraken BTC/USD spot is a public-data proxy, not identical to Binance BTC/USDT Futures." if "Kraken BTC/USD" in used_sources else "Binance USD-M BTC/USDT Futures market data."),
         "base_interval": "5m",
         "feature_timeframes": list(INTERVALS.keys()),
         "signal": signal,
@@ -969,12 +971,12 @@ def main():
             "status": "FRESH",
             "latest_5m_candle_age_minutes": data_age_minutes,
             "latest_5m_candle_time": datetime.fromtimestamp(latest_candle_time / 1000, timezone.utc).isoformat(),
-            "source": "Binance USD-M Futures REST klines merged with historical monthly archives",
+            "source_by_timeframe": data_source_by_tf,
             "max_allowed_age_minutes": 15
         },
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "limitations": [
-            "Training is strictly Binance USD-M Futures OHLCV. If Futures endpoints fail, training fails closed and never substitutes Spot data. CVD, open interest, funding, order book and liquidation remain separate confluence inputs.",
+            "When Binance USD-M Futures is unavailable, Kraken BTC/USD spot OHLC is used as a proxy and is not equivalent to BTC/USDT Futures. Funding, open interest, CVD, order book and liquidation remain separate confluence inputs.",
             "Class scores are model scores, not calibrated real-world win probabilities.",
             "Walk-forward metrics are historical diagnostics, not guarantees of future performance."
         ]
