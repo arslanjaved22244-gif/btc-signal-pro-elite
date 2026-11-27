@@ -374,18 +374,30 @@ def train_model(rows, labels, epochs=140, learning_rate=0.025, l2=0.01):
         min(2.5, n / (len(CLASSES) * count))
         for count in class_counts
     ]
+    # Exponential recency weighting helps the model adapt to changing
+    # market regimes while retaining older samples for context.
+    recency_half_life = 1800.0
+    sample_weights = [
+        math.exp(-math.log(2.0) * (n - 1 - i) / recency_half_life)
+        for i in range(n)
+    ]
+    mean_sample_weight = sum(sample_weights) / n
+    sample_weights = [value / mean_sample_weight for value in sample_weights]
     weights = [[0.0] * p for _ in CLASSES]
     biases = [0.0] * len(CLASSES)
     for _ in range(epochs):
         grad_w = [[0.0] * p for _ in CLASSES]
         grad_b = [0.0] * len(CLASSES)
-        for row, actual in zip(x, labels):
+        for row, actual, recency_weight in zip(x, labels, sample_weights):
             probs = softmax([
                 biases[k] + sum(weights[k][j] * row[j] for j in range(p))
                 for k in range(len(CLASSES))
             ])
             for k in range(len(CLASSES)):
-                error = (probs[k] - (1.0 if k == actual else 0.0)) * class_weights[actual]
+                error = (
+                    (probs[k] - (1.0 if k == actual else 0.0))
+                    * class_weights[actual] * recency_weight
+                )
                 grad_b[k] += error
                 for j in range(p):
                     grad_w[k][j] += error * row[j]
@@ -527,7 +539,7 @@ def main():
     result = {
         "system": "BTC Signal Pro Elite Advanced ML",
         "model": "Multinomial Logistic Regression",
-        "model_version": "3.5-cached-indicators-expanded-history",
+        "model_version": "3.6-recency-weighted-walkforward",
         "data_source": source,
         "symbol": symbol,
         "base_interval": "5m",
@@ -541,6 +553,7 @@ def main():
         "training_samples": len(rows),
         "label_distribution": {name: labels.count(i) for i, name in enumerate(CLASSES)},
         "training_class_weights": {name: weight for name, weight in zip(CLASSES, class_weights)},
+        "recency_weighting": {"method": "exponential", "half_life_training_samples": 1800},
         "future_horizon": f"{FUTURE_CANDLES} candles / 15 minutes",
         "neutral_threshold_pct": MOVE_THRESHOLD * 100,
         "last_price": data["5m"][-1]["close"],
