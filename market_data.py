@@ -160,7 +160,7 @@ def main():
     }
     print(json.dumps(summary, indent=2))
     if not payload["data_quality"]["core_timeframes_ok"]:
-        raise SystemExit("Core Futures market data incomplete; inspect market_data.json")
+        print("WARNING: Core Binance USD-M Futures data unavailable. Downstream engine must publish WAIT; no Spot fallback is permitted.")
 
 
 if __name__ == "__main__":
