@@ -149,15 +149,19 @@ def update_prediction_performance():
  if generated and not any(x.get("model_generated_at")==generated for x in records):
   forecasts=model.get("advanced_intelligence",{}).get("tree_ensemble",{}).get("forecasts",{})
   if not forecasts: forecasts=model.get("advanced_intelligence",{}).get("multi_horizon_forecasts",{})
+  # Anchor forecast outcomes to the same OKX perpetual ticker used for
+  # evaluation. Never compare a Kraken/Spot model price with an OKX Futures price.
+  reference_time=now()
   for horizon,mins in (("15m",15),("30m",30),("60m",60),("4h",240)):
    fc=forecasts.get(horizon,{})
    direction=fc.get("signal","WAIT")
    if direction not in ("LONG","SHORT","WAIT"): direction="WAIT"
    raw_direction=fc.get("raw_model_class",direction)
    if raw_direction not in ("LONG","SHORT","WAIT"): raw_direction=direction
-   records.append({"model_generated_at":generated,"logged_at":generated,"horizon":horizon,
+   records.append({"model_generated_at":generated,"logged_at":reference_time.isoformat(),"horizon":horizon,
     "horizon_minutes":mins,"direction":direction,"raw_direction":raw_direction,
-    "reference_price":float(model.get("last_price") or price),"outcome":None,"evaluated_at":None,"realized_change_pct":None,
+    "reference_price":price,"reference_exchange":"OKX BTC-USDT-SWAP",
+    "outcome":None,"evaluated_at":None,"realized_change_pct":None,
     "correct":None,"raw_correct":None,"validation_status":fc.get("status","unknown")})
  # Score only after each forecast horizon has elapsed. Directional hit rate excludes WAIT calls.
  current=now()
@@ -184,7 +188,10 @@ def update_prediction_performance():
  records=records[-500:]
  stats={}
  for horizon in ("15m","30m","60m","4h"):
-  group=[x for x in records if x.get("horizon")==horizon and x.get("outcome") is not None]
+  group=[x for x in records if x.get("horizon")==horizon and x.get("outcome") is not None
+   and x.get("reference_exchange")=="OKX BTC-USDT-SWAP"]
+  excluded_source_mismatch=sum(1 for x in records if x.get("horizon")==horizon
+   and x.get("outcome") is not None and x.get("reference_exchange")!="OKX BTC-USDT-SWAP")
   directional=[x for x in group if x.get("direction") in ("LONG","SHORT") and isinstance(x.get("correct"),bool)]
   wins=sum(1 for x in directional if x["correct"])
   raw_directional=[x for x in group if x.get("raw_direction") in ("LONG","SHORT") and isinstance(x.get("raw_correct"),bool)]
@@ -193,8 +200,9 @@ def update_prediction_performance():
    "directional_accuracy_pct":round(100*wins/len(directional),2) if directional else None,
    "raw_directional_calls":len(raw_directional),"raw_correct":raw_wins,
    "raw_directional_accuracy_pct":round(100*raw_wins/len(raw_directional),2) if raw_directional else None,
-   "wait_abstentions":sum(1 for x in group if x.get("direction")=="WAIT")}
- data={"source":"OKX BTC-USDT-SWAP public ticker; directional close comparison only",
+   "wait_abstentions":sum(1 for x in group if x.get("direction")=="WAIT"),
+   "excluded_legacy_source_mismatch":excluded_source_mismatch}
+ data={"source":"OKX BTC-USDT-SWAP public ticker; same-exchange reference and evaluation; directional close comparison only",
   "updated_at":current.isoformat(),"model_generated_at":generated,"current_price":price,
   "stats":stats,"records":records,
   "limitations":"Not a trade P&L, win-rate guarantee, or stop/target simulation. LONG/SHORT accuracy is directional only; WAIT is counted as abstention."}
