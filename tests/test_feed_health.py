@@ -128,5 +128,30 @@ class FeedHealthTests(unittest.TestCase):
         self.assertFalse(states["open_interest_data"])
 
 
+    def test_quality_gate_requires_shadow_to_beat_its_majority_baseline(self):
+        ai = {
+            "validation_gate": {"passed": True},
+            "walk_forward_metrics": {
+                "accuracy": 65.0, "majority_class_baseline_pct": 60.0,
+                "macro_f1": 35.0
+            }
+        }
+        paper = {"shadow_evaluation": {
+            "closed_forecasts": 30,
+            "beats_majority_baseline": False,
+            "validation_gate_passed_now": True
+        }}
+        metrics = {"backtest_5m": {
+            "status": "COMPLETED", "total_candles": 500,
+            "net_return_pct": 1.0
+        }}
+        result = INTEL.quality_gate(ai, paper, metrics)
+        self.assertFalse(result["passed"])
+        self.assertFalse(result["checks"]["shadow_beats_majority_baseline"])
+        paper["shadow_evaluation"]["beats_majority_baseline"] = True
+        result = INTEL.quality_gate(ai, paper, metrics)
+        self.assertTrue(result["passed"])
+
+
 if __name__ == "__main__":
     unittest.main()
