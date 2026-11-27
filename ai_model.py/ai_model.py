@@ -828,7 +828,7 @@ def lstm_sequence_forecast(rows, labels, sequence_length=24):
         import numpy as np
         import torch
         from torch import nn
-        from torch.utils.data import DataLoader, TensorDataset
+        from torch.utils.data import DataLoader, TensorDataset, WeightedRandomSampler
     except Exception as exc:
         return {"signal": "WAIT", "status": "LSTM DEPENDENCY ERROR", "detail": str(exc)[:220]}
 
@@ -897,12 +897,22 @@ def lstm_sequence_forecast(rows, labels, sequence_length=24):
         x_val, y_val = x_train[inner_split:], y_train[inner_split:]
         model = LSTMClassifier(x_train.shape[-1])
         counts = np.bincount(y_fit, minlength=3).astype(np.float32)
-        weights = len(y_fit) / np.maximum(counts * 3.0, 1.0)
-        weights = np.clip(weights, 0.5, 3.0)
-        loss_fn = nn.CrossEntropyLoss(weight=torch.tensor(weights, dtype=torch.float32))
-        optimizer = torch.optim.AdamW(model.parameters(), lr=0.001, weight_decay=0.015)
+        # Mild inverse-square-root balancing prevents a dominant class from
+        # monopolising predictions without letting rare classes overwhelm training.
+        class_weights = np.sqrt(len(y_fit) / np.maximum(counts * 3.0, 1.0))
+        class_weights = np.clip(class_weights, 0.70, 2.25)
+        class_weights = class_weights / np.mean(class_weights)
+        sample_weights = np.asarray([
+            1.0 / math.sqrt(max(1.0, counts[int(label)])) for label in y_fit
+        ], dtype=np.float64)
+        sampler = WeightedRandomSampler(
+            torch.as_tensor(sample_weights, dtype=torch.double),
+            num_samples=len(sample_weights), replacement=True
+        )
+        loss_fn = nn.CrossEntropyLoss(weight=torch.tensor(class_weights, dtype=torch.float32))
+        optimizer = torch.optim.AdamW(model.parameters(), lr=0.0007, weight_decay=0.025)
         train_ds = TensorDataset(torch.tensor(x_fit), torch.tensor(y_fit))
-        loader = DataLoader(train_ds, batch_size=64, shuffle=True)
+        loader = DataLoader(train_ds, batch_size=64, sampler=sampler)
         val_x = torch.tensor(x_val)
         val_y = torch.tensor(y_val)
         best_loss, best_state, best_epoch, patience = float("inf"), None, 0, 0
@@ -935,6 +945,14 @@ def lstm_sequence_forecast(rows, labels, sequence_length=24):
             latest_probs = torch.softmax(model(torch.tensor(latest)), dim=1)[0].cpu().numpy()
         predicted = [int(value) for value in np.argmax(test_probs, axis=1)]
         metrics = classification_metrics(y_test.tolist(), predicted)
+        predicted_distribution = {
+            name: round(float(np.mean(np.asarray(predicted) == k)) * 100.0, 2)
+            for k, name in enumerate(CLASSES)
+        }
+        actual_distribution = {
+            name: round(float(np.mean(y_test == k)) * 100.0, 2)
+            for k, name in enumerate(CLASSES)
+        }
         majority = max(float(np.mean(y_test == k)) * 100.0 for k in range(3))
         ordered = sorted(float(value) for value in latest_probs)
         margin = ordered[-1] - ordered[-2]
@@ -958,11 +976,14 @@ def lstm_sequence_forecast(rows, labels, sequence_length=24):
             "majority_baseline_pct": round(majority, 2),
             "per_class_metrics": metrics["per_class"],
             "confusion_matrix": metrics["confusion_matrix"],
+            "predicted_class_distribution_pct": predicted_distribution,
+            "actual_holdout_class_distribution_pct": actual_distribution,
+            "class_balancing": "sqrt inverse-frequency weighted sampling + capped class-weighted loss",
             "training_samples": len(x_fit),
             "early_stop_validation_samples": len(x_val),
             "validation_samples": len(x_test),
             "sequence_length": sequence_length,
-            "architecture": "2-layer PyTorch LSTM (48 hidden) + LayerNorm + dense classifier",
+            "architecture": "2-layer PyTorch LSTM (48 hidden) + LayerNorm + dense classifier; balanced sequence sampling",
             "best_epoch": best_epoch,
             "status": "VALIDATED LSTM MODEL" if passed else "WEAK EDGE — WAIT",
             "normalization": "training-only per-feature mean/std"
