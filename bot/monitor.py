@@ -126,6 +126,8 @@ def volatility_metrics():
  try:
   data=api("/v5/market/kline",{"category":"linear","symbol":"BTCUSDT","interval":"5","limit":30})["result"]["list"]
   rows=list(reversed(data))
+  now_ms=int(now().timestamp()*1000)
+  rows=[x for x in rows if int(x[0])+300000<=now_ms]
   parsed=[{"high":float(x[2]),"low":float(x[3]),"close":float(x[4])} for x in rows]
  except Exception as exc:
   errors.append("Bybit: "+str(exc)[:100])
