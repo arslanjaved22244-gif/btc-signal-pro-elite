@@ -1827,6 +1827,8 @@ setInterval(refreshAll,30000);
 setInterval(()=>{if(!document.hidden)loadPrice().catch(()=>setText("updated","Price refresh unavailable • retrying"));},5000);
 setInterval(loadDerivativesIntelligence,60000);
 setInterval(loadPredictionPerformance,60000);
+setInterval(loadPaperTrading,60000);
+setInterval(loadExchangeComparison,60000);
 setInterval(loadLiquidationSnapshot,60000);
 setInterval(loadAdvancedIntelligence,300000);
 setInterval(loadHybridSignal,30000);
