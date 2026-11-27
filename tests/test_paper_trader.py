@@ -141,6 +141,22 @@ class PaperTraderTests(unittest.TestCase):
         self.assertFalse(divergent["compatible"])
         self.assertFalse(stale["compatible"])
 
+    def test_same_venue_shadow_scoring_still_requires_fresh_price_and_time(self):
+        now_ms = int(datetime.now(timezone.utc).timestamp() * 1000)
+        ai = {
+            "data_source": "OKX BTC-USDT-SWAP Futures public OHLC candles",
+            "data_source_by_timeframe": {"5m": "OKX BTC-USDT-SWAP Futures"},
+            "symbol": "BTC/USDT", "last_price": 60000,
+            "last_candle_time": now_ms - 16 * 60 * 1000
+        }
+        market = {
+            "exchange": "OKX", "market_type": "OKX_SWAP",
+            "symbol": "BTCUSDT", "data_quality": {"futures_only": True}
+        }
+        result = PAPER.assess_venue_alignment(ai, market, 60000, now_ms)
+        self.assertFalse(result["compatible"])
+        self.assertEqual(result["type"], "BLOCKED")
+
     def test_spot_model_cannot_be_shadow_scored_against_futures(self):
         ai = {"data_source": "Binance BTCUSDT Spot public candles", "symbol": "BTC/USDT"}
         market = {"exchange": "Bitget", "data_quality": {"futures_only": True}}
