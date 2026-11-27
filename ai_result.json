@@ -1,19 +1,223 @@
 {
-  "system": "BTC Signal Pro Elite Free ML",
-  "model": "Logistic Regression",
+  "system": "BTC Signal Pro Elite Advanced ML",
+  "model": "Multinomial Logistic Regression",
+  "model_version": "2.0-mtf-walkforward",
   "data_source": "Kraken Spot",
   "symbol": "BTC/USD",
-  "interval": "5m",
+  "base_interval": "5m",
+  "feature_timeframes": [
+    "5m",
+    "15m",
+    "1h",
+    "4h",
+    "1d"
+  ],
   "signal": "WAIT",
-  "probability_up": 48.06,
-  "probability_down": 51.94,
-  "test_accuracy": 62.69,
-  "training_samples": 533,
-  "testing_samples": 134,
-  "historical_examples": 667,
-  "last_price": 60413.2,
-  "last_candle_time": 1795735200000,
+  "class_scores": {
+    "SHORT": 35.53,
+    "WAIT": 29.9,
+    "LONG": 34.56
+  },
+  "confidence_score": 35.53,
+  "confidence_margin": 0.97,
+  "walk_forward_metrics": {
+    "accuracy": 45.35,
+    "macro_precision": 41.16,
+    "macro_recall": 41.48,
+    "macro_f1": 39.53,
+    "per_class": {
+      "SHORT": {
+        "precision": 43.06,
+        "recall": 68.13,
+        "f1": 52.77,
+        "support": 91
+      },
+      "WAIT": {
+        "precision": 22.58,
+        "recall": 11.86,
+        "f1": 15.56,
+        "support": 59
+      },
+      "LONG": {
+        "precision": 57.83,
+        "recall": 44.44,
+        "f1": 50.26,
+        "support": 108
+      }
+    },
+    "confusion_matrix": [
+      [
+        62,
+        10,
+        19
+      ],
+      [
+        36,
+        7,
+        16
+      ],
+      [
+        46,
+        14,
+        48
+      ]
+    ]
+  },
+  "walk_forward_folds": [
+    {
+      "fold": 1,
+      "train_samples": 255,
+      "test_samples": 86,
+      "metrics": {
+        "accuracy": 43.02,
+        "macro_precision": 28.88,
+        "macro_recall": 34.99,
+        "macro_f1": 31.42,
+        "per_class": {
+          "SHORT": {
+            "precision": 39.13,
+            "recall": 56.25,
+            "f1": 46.15,
+            "support": 32
+          },
+          "WAIT": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 15
+          },
+          "LONG": {
+            "precision": 47.5,
+            "recall": 48.72,
+            "f1": 48.1,
+            "support": 39
+          }
+        },
+        "confusion_matrix": [
+          [
+            18,
+            0,
+            14
+          ],
+          [
+            8,
+            0,
+            7
+          ],
+          [
+            20,
+            0,
+            19
+          ]
+        ]
+      }
+    },
+    {
+      "fold": 2,
+      "train_samples": 341,
+      "test_samples": 86,
+      "metrics": {
+        "accuracy": 52.33,
+        "macro_precision": 45.47,
+        "macro_recall": 48.7,
+        "macro_f1": 43.23,
+        "per_class": {
+          "SHORT": {
+            "precision": 48.08,
+            "recall": 80.65,
+            "f1": 60.24,
+            "support": 31
+          },
+          "WAIT": {
+            "precision": 25.0,
+            "recall": 4.17,
+            "f1": 7.14,
+            "support": 24
+          },
+          "LONG": {
+            "precision": 63.33,
+            "recall": 61.29,
+            "f1": 62.3,
+            "support": 31
+          }
+        },
+        "confusion_matrix": [
+          [
+            25,
+            2,
+            4
+          ],
+          [
+            16,
+            1,
+            7
+          ],
+          [
+            11,
+            1,
+            19
+          ]
+        ]
+      }
+    },
+    {
+      "fold": 3,
+      "train_samples": 427,
+      "test_samples": 86,
+      "metrics": {
+        "accuracy": 40.7,
+        "macro_precision": 46.82,
+        "macro_recall": 41.39,
+        "macro_f1": 38.7,
+        "per_class": {
+          "SHORT": {
+            "precision": 41.3,
+            "recall": 67.86,
+            "f1": 51.35,
+            "support": 28
+          },
+          "WAIT": {
+            "precision": 22.22,
+            "recall": 30.0,
+            "f1": 25.53,
+            "support": 20
+          },
+          "LONG": {
+            "precision": 76.92,
+            "recall": 26.32,
+            "f1": 39.22,
+            "support": 38
+          }
+        },
+        "confusion_matrix": [
+          [
+            19,
+            8,
+            1
+          ],
+          [
+            12,
+            6,
+            2
+          ],
+          [
+            15,
+            13,
+            10
+          ]
+        ]
+      }
+    }
+  ],
+  "training_samples": 517,
   "future_horizon": "3 candles / 15 minutes",
-  "generated_at": "2026-11-26T23:26:55.351678+00:00",
-  "warning": "Experimental ML output based on Kraken Spot BTC/USD candles. It is not Binance Futures data and is not a guaranteed probability or trading signal. Backtest results do not guarantee future results."
+  "neutral_threshold_pct": 0.05,
+  "last_price": 60436.6,
+  "last_candle_time": 1795737900000,
+  "generated_at": "2026-11-27T00:11:12.843088+00:00",
+  "limitations": [
+    "Uses Kraken Spot OHLCV only; Binance Futures CVD, open interest, funding, order book and liquidation feeds are not included yet.",
+    "Class scores are model scores, not calibrated real-world win probabilities.",
+    "Walk-forward metrics are historical diagnostics, not guarantees of future performance."
+  ]
 }
