@@ -25,7 +25,7 @@ def news_scan():
   url="https://news.google.com/rss/search?q="+urllib.parse.quote(query)+"&hl=en-US&gl=US&ceid=US:en"
   try:
    req=urllib.request.Request(url,headers={"User-Agent":"Mozilla/5.0 BTC-Signal-Pro-Elite"})
-   with urllib.request.urlopen(req,timeout=15) as r:root=ET.fromstring(r)
+   with urllib.request.urlopen(req,timeout=15) as r:root=ET.fromstring(r.read())
    for item in root.findall(".//item"):
     title=item.findtext("title") or ""; pub=item.findtext("pubDate") or ""
     try:dt=parsedate_to_datetime(pub).astimezone(timezone.utc)
@@ -104,11 +104,11 @@ def market_data_okx():
  try:
   hist=okx("/api/v5/rubik/stat/contracts/open-interest-history",{"instId":inst,"period":"5m","limit":2})
   if len(hist)>=2:
-   # OKX returns newest first; use oiUsd for a comparable USD notional change.
-   newest=float(hist[0].get("oiUsd") or hist[0].get("oiCcy") or hist[0].get("oi"))
-   older=float(hist[1].get("oiUsd") or hist[1].get("oiCcy") or hist[1].get("oi"))
+   # OKX Rubik endpoint returns rows [ts, oi contracts, oi coin, oi USD], newest first.
+   newest=float(hist[0][3] or hist[0][2] or hist[0][1])
+   older=float(hist[1][3] or hist[1][2] or hist[1][1])
    oi_change=(newest-older)/older*100 if older else None
-   oi_history=[{"timestamp":x.get("ts"),"oi_usd":x.get("oiUsd"),"oi_coin":x.get("oiCcy"),"oi_contracts":x.get("oi")} for x in hist]
+   oi_history=[{"timestamp":x[0],"oi_contracts":x[1],"oi_coin":x[2],"oi_usd":x[3]} for x in hist]
  except Exception as exc:
   print("OKX OI history warning:",str(exc)[:160])
  return {"price":float(tick["last"]),"funding_rate":float(funding_row["fundingRate"]),
