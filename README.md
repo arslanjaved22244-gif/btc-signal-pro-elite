@@ -39,3 +39,19 @@ Optional signal-only Telegram alerts are supported. Add two repository Actions s
 
 ## Automation
 GitHub Actions refreshes the advanced AI output and public market snapshot on best-effort schedules (normally 5 minutes). You can inspect run history in the repository's **Actions** tab.
+
+
+## Institutional Intelligence (v6 layer)
+
+Open the additional [Institutional Intelligence dashboard](./institutional.html) for:
+- Market regime classification (bull trend, bear trend, range/chop, transition, high volatility).
+- Estimated 15m candle-volume profile, POC, 70% value area and VWAP.
+- Recent 15m liquidity sweep / breakout and false-breakout context.
+- Public Deribit BTC options snapshot (put/call open interest, volume, implied volatility and approximate max pain).
+- 14-day hourly BTC return correlations with Nasdaq, DXY and Gold (where public feeds are available).
+- 15m, 30m and 1h research-only next-move scenarios.
+- A strict signal-quality gate.
+
+The quality gate blocks LONG/SHORT until all checks pass: the AI model beats the majority-class baseline, macro-F1 is at least 30, at least 30 shadow forecasts are closed and pass validation, and a cost-aware 300+ candle holdout backtest is completed with positive net return. This is deliberately conservative and may keep the system on WAIT for an extended period. Options and macro feeds are optional context and are marked unavailable if a public source fails.
+
+This layer is public-data research only. It does not place orders, and scenario scores are not calibrated probabilities or profit guarantees. GitHub Actions refreshes server snapshots on its schedule (normally about every five minutes, subject to delays); it is not a five-second server-side AI engine.
