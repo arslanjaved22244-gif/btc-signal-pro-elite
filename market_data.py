@@ -275,11 +275,16 @@ def collect_bybit():
     result["feeds"]["open_interest_history_5m"]=bybit_feed(
         "/v5/market/open-interest",{"category":"linear","symbol":SYMBOL,"intervalTime":"5min","limit":"30"})
     if result["feeds"]["open_interest_history_5m"]["ok"]:
-        result["feeds"]["open_interest_history_5m"]["data"]=result["feeds"]["open_interest_history_5m"]["data"].get("list",[])
+        result["feeds"]["open_interest_history_5m"]["data"]=[
+            {"sumOpenInterest":x.get("openInterest",0),"timestamp":x.get("timestamp")}
+            for x in result["feeds"]["open_interest_history_5m"]["data"].get("list",[])]
     result["feeds"]["taker_flow_5m"]=bybit_feed(
         "/v5/market/account-ratio",{"category":"linear","symbol":SYMBOL,"period":"5min","limit":"30"})
     if result["feeds"]["taker_flow_5m"]["ok"]:
-        result["feeds"]["taker_flow_5m"]["data"]=result["feeds"]["taker_flow_5m"]["data"].get("list",[])
+        result["feeds"]["taker_flow_5m"]["data"]=[
+            {"buySellRatio":(float(x.get("buyRatio",0) or 0)/float(x.get("sellRatio",1) or 1)),
+             "buyRatio":x.get("buyRatio"),"sellRatio":x.get("sellRatio"),"timestamp":x.get("timestamp")}
+            for x in result["feeds"]["taker_flow_5m"]["data"].get("list",[])]
     result["feeds"]["order_book"]=bybit_feed(
         "/v5/market/orderbook",{"category":"linear","symbol":SYMBOL,"limit":"50"})
     if result["feeds"]["order_book"]["ok"]:
