@@ -1485,7 +1485,10 @@ async function loadAdvancedIntelligence(force=false){
   setText("advRegimeMetrics",Object.keys(rb).length?Object.entries(rb).map(([k,v])=>k.replaceAll("_"," ")+": "+v.accuracy+"% / F1 "+v.macro_f1).join(" | "):"No regime sample yet");
   const r=a.market_regime||{};
   setText("advRegime",r.regime||"--");setText("advVolatility","ATR ratio: "+(r.atr_ratio??"--"));
-  setText("advSweep",r.liquidity_sweep||"NONE");setText("advRegimeWhy",r.explanation||"--");
+  const sw=r.liquidity_sweep_detail||{};
+  const sweepText=r.liquidity_sweep||"NONE";
+  const sweepMeta=sw.level!=null?" • Level $"+fmt(sw.level)+" • wick $"+fmt(sw.wick_extreme)+" • "+(sw.bars_ago===0?"latest closed candle":sw.bars_ago+" bars ago"):"";
+  setText("advSweep",sweepText+sweepMeta);setText("advRegimeWhy",r.explanation||"--");
   const fresh=data.data_freshness||{};setText("advFreshness",fresh.status==="FRESH"?"FRESH • "+(fresh.latest_5m_candle_age_minutes??"--")+" min old":fresh.status||"NOT REPORTED");
   const freshEl=$("advFreshness");if(freshEl)freshEl.className=fresh.status==="FRESH"?"green":"yellow";
   setText("advUpdated",data.generated_at?new Date(data.generated_at).toLocaleString():"--");
