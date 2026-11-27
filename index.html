@@ -1483,10 +1483,16 @@ async function loadAdvancedIntelligence(force=false){
    setText(id+"Meta",x.holdout_accuracy!=null?"Holdout "+x.holdout_accuracy+"% • n="+(x.validation_samples||0):x.status||"Not ready");
   }
   const tree=a.tree_ensemble||{};
-  setText("advTreeStatus",globalGatePassed?(tree.status||"NOT READY"):"GATE BLOCKED — WAIT ONLY");
+  setText("advTreeStatus",globalGatePassed?(tree.status||"NOT READY"):(tree.status==="READY"?"TREE WATCH ONLY • MAIN GATE BLOCKED":"GATE BLOCKED — WAIT ONLY"));
   setText("advTreeModels",(tree.algorithms||[]).join(" • ")||"Models unavailable");
   const tf=tree.forecasts||{};
-  setText("advTreeForecast",["15m","30m","60m","4h"].map(h=>{const x=tf[h]||{};const side=globalGatePassed&&!(x.macro_f1!=null&&x.macro_f1<25)?(x.signal||"WAIT"):"WAIT";return h+": "+side+(x.holdout_accuracy!=null?" • "+x.holdout_accuracy+"% holdout":"");}).join(" | ")||"Tree forecasts unavailable");
+  setText("advTreeForecast",["15m","30m","60m","4h"].map(h=>{
+   const x=tf[h]||{};
+   const horizonGate=x.status==="VALIDATED TREE ENSEMBLE"&&Number(x.holdout_accuracy)>=38&&Number(x.macro_f1)>=25&&Number(x.confidence_margin)>=8;
+   const side=horizonGate?(x.signal||"WAIT"):"WAIT";
+   const tag=horizonGate&&!globalGatePassed?" • WATCH ONLY":"";
+   return h+": "+side+tag+(x.holdout_accuracy!=null?" • "+x.holdout_accuracy+"% holdout / F1 "+x.macro_f1:"");
+  }).join(" | ")||"Tree forecasts unavailable");
   const vm=data.walk_forward_metrics||{};
   setText("advSource",data.data_source||"Unknown");
   setText("advSourceGate",gate.futures_source_passed===true?"PERPETUAL FUTURES SOURCE CONFIRMED":"NOT FUTURES — WAIT ONLY");
@@ -1505,7 +1511,7 @@ async function loadAdvancedIntelligence(force=false){
   const fresh=data.data_freshness||{};setText("advFreshness",fresh.status==="FRESH"?"FRESH • "+(fresh.latest_5m_candle_age_minutes??"--")+" min old":fresh.status||"NOT REPORTED");
   const freshEl=$("advFreshness");if(freshEl)freshEl.className=fresh.status==="FRESH"?"green":"yellow";
   setText("advUpdated",data.generated_at?new Date(data.generated_at).toLocaleString():"--");
-  setText("advAiNote",globalGatePassed?("Method: "+(a.method||"Advanced AI")+". Scores are not calibrated win probabilities."):"SAFETY GATE BLOCKED: source is not verified perpetual Futures or validation failed. Raw model directions are suppressed; WAIT only.");
+  setText("advAiNote",globalGatePassed?("Method: "+(a.method||"Advanced AI")+". Scores are not calibrated win probabilities."):"MAIN SIGNAL GATE BLOCKED: source or global walk-forward validation failed. Per-horizon tree directions, if shown, are WATCH ONLY research context — not entry approval. Main signal remains WAIT.");
   advancedAiLastLoad=Date.now();
  }catch(e){setText("advAiNote","Advanced AI data unavailable: "+e.message+".");}
  finally{advancedAiBusy=false;}
