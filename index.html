@@ -241,6 +241,50 @@ button{background:#f5b942;color:#111;border:0;padding:12px 18px;border-radius:8p
 </div>
 
 <div class="card">
+<h3>Experimental ML Forecast</h3>
+<div class="note">Browser-trained logistic regression using historical Binance 15M candles. Experimental estimate, not guaranteed prediction.</div>
+<div class="scoregrid">
+<div class="scoretile">Next 1H bullish estimate<b class="green" id="mlBull">--</b></div>
+<div class="scoretile">Next 1H bearish estimate<b class="red" id="mlBear">--</b></div>
+<div class="scoretile">Out-of-sample accuracy<b id="mlAccuracy">--</b></div>
+<div class="scoretile">Validation samples<b id="mlSamples">--</b></div>
+</div>
+<div class="metric"><span>Model direction</span><b id="mlDirection">TRAINING...</b></div>
+<div class="metric"><span>Model status</span><b id="mlStatus">Waiting for data</b></div>
+<p class="note" id="mlNote">Training and validation details appear here.</p>
+</div>
+<div class="card">
+<h3>Historical ML Strategy Backtest</h3>
+<div class="metric"><span>Test period</span><b id="btPeriod">--</b></div>
+<div class="metric"><span>Trades / Win rate</span><b id="btTrades">--</b></div>
+<div class="metric"><span>Net result (R)</span><b id="btNet">--</b></div>
+<div class="metric"><span>Profit factor</span><b id="btPF">--</b></div>
+<div class="metric"><span>Maximum drawdown (R)</span><b id="btDD">--</b></div>
+<p class="note" id="btNote">Uses a 1.5 ATR stop, 2R target, 16-candle time exit, conservative stop-first handling, and estimated trading costs.</p>
+</div>
+<div class="card">
+<h3>Position Size & Risk Calculator</h3>
+<div class="metric"><span>Account balance (USDT)</span><input id="riskCapital" type="number" min="1" step="any" value="100" style="width:105px;background:#222e49;color:white;border:1px solid #52617c;padding:8px;border-radius:6px"></div>
+<div class="metric"><span>Risk per trade (%)</span><input id="riskPct" type="number" min="0.1" max="5" step="0.1" value="1" style="width:105px;background:#222e49;color:white;border:1px solid #52617c;padding:8px;border-radius:6px"></div>
+<div class="metric"><span>Entry price</span><input id="riskEntry" type="number" min="0" step="any" placeholder="Enter price" style="width:125px;background:#222e49;color:white;border:1px solid #52617c;padding:8px;border-radius:6px"></div>
+<div class="metric"><span>Stop-loss price</span><input id="riskStop" type="number" min="0" step="any" placeholder="Enter stop" style="width:125px;background:#222e49;color:white;border:1px solid #52617c;padding:8px;border-radius:6px"></div>
+<div class="metric"><span>Leverage (max 10x)</span><select id="riskLev" style="background:#222e49;color:white;border:1px solid #52617c;padding:8px;border-radius:6px"><option>1</option><option>2</option><option>3</option><option>5</option><option selected>10</option></select></div>
+<div class="metric"><span>Maximum loss at stop</span><b id="riskLoss">--</b></div>
+<div class="metric"><span>BTC position size</span><b id="riskQty">--</b></div>
+<div class="metric"><span>Position notional</span><b id="riskNotional">--</b></div>
+<div class="metric"><span>Estimated margin needed</span><b id="riskMargin">--</b></div>
+<p class="note" id="riskWarning">Enter entry and stop prices. Fees, slippage and funding are excluded. Leverage changes margin, not planned dollar risk.</p>
+</div>
+<div class="card">
+<h3>Manual News / Volatility Safety Pause</h3>
+<p class="note">This iPhone-only page cannot reliably monitor breaking news or public posts while closed. Activate this after major economic, geopolitical or breaking news to block signals for at least 30 minutes.</p>
+<button onclick="activateNewsPause()">PAUSE SIGNALS 30 MIN</button>
+<button onclick="clearNewsPause()">CLEAR PAUSE</button>
+<div class="metric"><span>Signal safety status</span><b id="newsPauseStatus">NO MANUAL PAUSE</b></div>
+<div class="metric"><span>Pause remaining</span><b id="newsPauseTimer">0 min</b></div>
+</div>
+
+<div class="card">
 <h3>Risk Management</h3>
 <p>Maximum leverage: 10x • Manual trading only.</p>
 <p>Always use a stop loss. Leverage magnifies losses.</p>
@@ -1114,6 +1158,7 @@ a.vr>=.8&&
 cvdReady;
 
 let side=dataReady&&enough?scoreSide:"WAIT";
+if(newsPauseUntil>Date.now())side="WAIT";
 
 let conf=Math.round(Math.min(
 90,
@@ -1225,6 +1270,93 @@ renderHistory();
 }
 }
 
+
+/* Experimental browser-side ML forecast, backtest and risk tools */
+let mlLastRun=0, newsPauseUntil=0;
+function sigmoid(z){return 1/(1+Math.exp(-Math.max(-30,Math.min(30,z))))}
+function mlFeatures(cs){
+ const close=cs.map(x=>x.c),volumes=cs.map(x=>x.v);
+ const e9=ema(close,9),e21=ema(close,21),e50=ema(close,50),e200=ema(close,200),rows=[];
+ for(let i=205;i<cs.length-5;i++){
+  const slice=close.slice(0,i+1),mm=macd(slice),aa=atr(cs.slice(0,i+1));
+  const av=avg(volumes.slice(Math.max(0,i-20),i)),vr=av?volumes[i]/av:1;
+  const x=[(e9[i]-e21[i])/close[i],(e50[i]-e200[i])/close[i],(rsi(slice)-50)/50,mm.h/close[i],(close[i]-close[i-1])/close[i-1],(close[i]-close[i-4])/close[i-4],vr-1,aa/close[i]];
+  const future=close[i+4]-close[i],threshold=aa*.35,y=future>threshold?1:future< -threshold?0:null;
+  if(y!==null&&x.every(Number.isFinite))rows.push({x,y,i});
+ }
+ return rows;
+}
+function trainLogistic(rows){
+ const cut=Math.floor(rows.length*.8),train=rows.slice(0,cut-4),test=rows.slice(cut);
+ if(train.length<80||test.length<20)throw Error("Not enough historical samples");
+ const n=train[0].x.length,mean=[],sd=[];
+ for(let j=0;j<n;j++){mean[j]=avg(train.map(r=>r.x[j]));sd[j]=Math.sqrt(avg(train.map(r=>(r.x[j]-mean[j])**2)))||1}
+ const norm=x=>x.map((v,j)=>(v-mean[j])/sd[j]),w=Array(n).fill(0);let bias=0,lr=.08,lambda=.015;
+ for(let epoch=0;epoch<450;epoch++){
+  const grad=Array(n).fill(0);let gb=0;
+  for(const r of train){const x=norm(r.x),p=sigmoid(bias+x.reduce((s,v,j)=>s+v*w[j],0)),err=p-r.y;gb+=err;for(let j=0;j<n;j++)grad[j]+=err*x[j]}
+  bias-=lr*gb/train.length;
+  for(let j=0;j<n;j++)w[j]-=lr*(grad[j]/train.length+lambda*w[j]);
+ }
+ const predict=x=>sigmoid(bias+norm(x).reduce((s,v,j)=>s+v*w[j],0));
+ let correct=0;for(const r of test)if((predict(r.x)>=.5?1:0)===r.y)correct++;
+ return {predict,accuracy:correct/test.length*100,test,trainCount:train.length};
+}
+function runMLBacktest(model,rows,cs){
+ const testStart=model.test[0].i;let trades=[],lastExit=-1,equity=0,peak=0,maxDD=0;
+ for(const r of rows){
+  if(r.i<testStart||r.i<=lastExit)continue;
+  const p=model.predict(r.x),side=p>=.58?1:p<=.42?-1:0;if(!side)continue;
+  const entry=cs[r.i].c,risk=atr(cs.slice(0,r.i+1))*1.5;if(!risk)continue;
+  const stop=entry-side*risk,target=entry+side*risk*2;
+  let result=null,exit=cs[Math.min(cs.length-1,r.i+16)].c,exitIndex=Math.min(cs.length-1,r.i+16);
+  for(let k=r.i+1;k<=exitIndex;k++){
+   const c=cs[k],hitStop=side===1?c.l<=stop:c.h>=stop,hitTarget=side===1?c.h>=target:c.l<=target;
+   if(hitStop){result=-1;exit=stop;exitIndex=k;break}
+   if(hitTarget){result=2;exit=target;exitIndex=k;break}
+  }
+  if(result===null)result=side*(exit-entry)/risk;
+  result-=(entry+exit)*.0007/risk;
+  trades.push(result);equity+=result;peak=Math.max(peak,equity);maxDD=Math.max(maxDD,peak-equity);lastExit=exitIndex;
+ }
+ const wins=trades.filter(x=>x>0),losses=trades.filter(x=>x<0),gw=wins.reduce((s,x)=>s+x,0),gl=Math.abs(losses.reduce((s,x)=>s+x,0));
+ return {trades,wins:wins.length,net:equity,pf:gl?gw/gl:(gw?Infinity:0),dd:maxDD};
+}
+async function loadML(){
+ try{
+  setText("mlStatus","Downloading historical candles...");
+  const raw=await get("/fapi/v1/klines?symbol=BTCUSDT&interval=15m&limit=1000"),cs=candles(raw).slice(0,-1),rows=mlFeatures(cs);
+  const model=trainLogistic(rows),latest=cs.slice(0,-1),close=latest.map(x=>x.c),i=latest.length-1,mm=macd(close),aa=atr(latest);
+  const av=avg(latest.slice(-21,-1).map(x=>x.v)),e9=ema(close,9),e21=ema(close,21),e50=ema(close,50),e200=ema(close,200);
+  const x=[(e9[i]-e21[i])/close[i],(e50[i]-e200[i])/close[i],(rsi(close)-50)/50,mm.h/close[i],(close[i]-close[i-1])/close[i-1],(close[i]-close[i-4])/close[i-4],(av?latest[i].v/av:1)-1,aa/close[i]];
+  const p=model.predict(x),bt=runMLBacktest(model,rows,cs);mlLastRun=Date.now();
+  setText("mlBull",(p*100).toFixed(1)+"%");setText("mlBear",((1-p)*100).toFixed(1)+"%");
+  setText("mlAccuracy",model.accuracy.toFixed(1)+"%");setText("mlSamples",String(model.test.length));
+  const dir=p>=.58?"BULLISH":p<=.42?"BEARISH":"NEUTRAL";setText("mlDirection",dir);
+  $("mlDirection").className=p>=.58?"green":p<=.42?"red":"yellow";
+  setText("mlStatus","TRAINED • "+model.trainCount+" training samples");
+  setText("mlNote","Forecast horizon: next four 15M candles (~1 hour). Chronological holdout accuracy is not proof of a profitable edge.");
+  setText("btPeriod",new Date(cs[model.test[0].i].t).toLocaleDateString()+" to "+new Date(cs[cs.length-1].t).toLocaleDateString());
+  setText("btTrades",bt.trades.length+" / "+(bt.trades.length?(bt.wins/bt.trades.length*100).toFixed(1):"0")+"% wins");
+  setText("btNet",(bt.net>=0?"+":"")+bt.net.toFixed(2)+" R");setText("btPF",Number.isFinite(bt.pf)?bt.pf.toFixed(2):"∞");setText("btDD",bt.dd.toFixed(2)+" R");
+  setText("btNote","Holdout-only strategy test. "+bt.trades.length+" trades; estimated 0.07% round-trip cost. Results can be unreliable in changing markets.");
+ }catch(e){setText("mlStatus","NOT READY");setText("mlNote","ML training unavailable: "+e.message+". Retry when Binance data is available.");setText("btNote","Backtest unavailable until enough historical candles load.");}
+}
+function calcRisk(){
+ const cap=+$("riskCapital").value,pct=+$("riskPct").value,entry=+$("riskEntry").value,stop=+$("riskStop").value,lev=+$("riskLev").value;
+ if(!(cap>0&&pct>0&&pct<=5&&entry>0&&stop>0&&entry!==stop)){
+  ["riskLoss","riskQty","riskNotional","riskMargin"].forEach(id=>setText(id,"--"));
+  setText("riskWarning","Enter valid balance, risk %, entry and stop. Calculator allows up to 5% risk.");return;
+ }
+ const loss=cap*pct/100,qty=loss/Math.abs(entry-stop),notional=qty*entry,margin=notional/Math.min(10,lev);
+ setText("riskLoss","$"+loss.toFixed(2));setText("riskQty",qty.toFixed(6)+" BTC");setText("riskNotional","$"+notional.toFixed(2));setText("riskMargin","$"+margin.toFixed(2));
+ setText("riskWarning",notional>cap*lev?"WARNING: Position exceeds selected leverage capacity. Reduce size.":"Leverage capped at 10x. Loss estimate excludes fees, slippage and funding.");
+}
+["riskCapital","riskPct","riskEntry","riskStop","riskLev"].forEach(id=>$(id).addEventListener("input",calcRisk));
+function activateNewsPause(){newsPauseUntil=Date.now()+1800000;renderNewsPause();setText("status","Manual safety pause activated for 30 minutes.");}
+function clearNewsPause(){newsPauseUntil=0;renderNewsPause();}
+function renderNewsPause(){const left=Math.max(0,newsPauseUntil-Date.now());setText("newsPauseStatus",left>0?"SIGNALS BLOCKED":"NO MANUAL PAUSE");setText("newsPauseTimer",Math.ceil(left/60000)+" min");if(!left)newsPauseUntil=0;}
+
 async function refreshAll(){
 if(busy)return;
 busy=true;
@@ -1245,6 +1377,8 @@ detectAbsorption();
 heatmap();
 renderLiveCVD();
 engine();
+renderNewsPause();
+if(Date.now()-mlLastRun>15*60000)loadML();
 setText("status","Data updated • "+new Date().toLocaleTimeString());
 
 }catch(e){
@@ -1266,6 +1400,8 @@ setInterval(refreshAll,30000);
 setInterval(renderLiq,10000);
 setInterval(renderWhales,5000);
 setInterval(renderLiveCVD,5000);
+setInterval(renderNewsPause,10000);
+calcRisk();
 
 document.addEventListener("visibilitychange",()=>{
 if(!document.hidden){
