@@ -1,15 +1,15 @@
 {
-  "generated_at": "2026-11-27T18:37:29.220087+00:00",
+  "generated_at": "2026-11-27T18:46:00.463548+00:00",
   "timeframe_indicators": {
     "5m": {
       "available": true,
-      "ema50": 60091.82,
-      "ema200": 60781.56,
-      "rsi14": 45.69,
+      "ema50": 60069.3,
+      "ema200": 60762.65,
+      "rsi14": 44.15,
       "macd": {
-        "macd": -60.101,
-        "signal": -84.7296,
-        "histogram": 24.6287,
+        "macd": -54.9511,
+        "signal": -74.078,
+        "histogram": 19.1269,
         "bullish": true,
         "cross_up": false,
         "cross_down": false
@@ -21,31 +21,31 @@
         "last_swing_low": 59468.9,
         "note": "Confirmed pivots use candles on both sides; most recent pivot is delayed by the confirmation window."
       },
-      "volatility_atr14": 143.53,
-      "atr_pct": 0.24
+      "volatility_atr14": 119.41,
+      "atr_pct": 0.1998
     },
     "15m": {
       "available": true,
-      "ema50": 60702.62,
-      "ema200": 60635.13,
-      "rsi14": 37.72,
+      "ema50": 60666.23,
+      "ema200": 60618.25,
+      "rsi14": 37.19,
       "macd": {
-        "macd": -383.8858,
-        "signal": -398.73,
-        "histogram": 14.8441,
+        "macd": -371.0458,
+        "signal": -393.1931,
+        "histogram": 22.1473,
         "bullish": true,
         "cross_up": false,
         "cross_down": false
       },
       "structure": {
-        "trend": "DOWNTREND",
+        "trend": "RANGE",
         "event": "NONE",
         "last_swing_high": 60525.1,
-        "last_swing_low": 58729.6,
+        "last_swing_low": 59468.9,
         "note": "Confirmed pivots use candles on both sides; most recent pivot is delayed by the confirmation window."
       },
-      "volatility_atr14": 391.9,
-      "atr_pct": 0.6553
+      "volatility_atr14": 330.34,
+      "atr_pct": 0.5526
     },
     "1h": {
       "available": true,
@@ -122,7 +122,7 @@
     "method": "Chronological 60/20/20 split; reported trades only in final 20% holdout",
     "total_candles": 599,
     "test_candles": 240,
-    "test_start_time": 1795732500000,
+    "test_start_time": 1795733100000,
     "trades": 12,
     "win_rate_pct": 16.67,
     "net_return_pct": -3.24,
