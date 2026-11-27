@@ -11,6 +11,57 @@ ROUND_TRIP_COST_PCT = 0.14
 HORIZON_BARS = 3  # 3 x 5m = 15 minutes
 TRADE_STATUSES = ("WIN", "LOSS", "BREAKEVEN")
 
+MAX_CROSS_VENUE_BASIS_PCT = 0.25
+MAX_CROSS_VENUE_CANDLE_SKEW_MINUTES = 15
+
+
+def assess_venue_alignment(ai, market, market_price, market_candle_time):
+    """Allow cross-venue shadow scoring only for fresh, close-aligned BTC perpetual feeds."""
+    ai_source = str(ai.get("data_source", ""))
+    ai_tf_source = str(ai.get("data_source_by_timeframe", {}).get("5m", ""))
+    exchange = str(market.get("exchange", ""))
+    source_text = (ai_source + " " + ai_tf_source).lower()
+    market_text = (exchange + " " + str(market.get("market_type", "")) + " " +
+                   str(market.get("source", ""))).lower()
+    same_venue = bool(exchange) and exchange.lower() in source_text
+    ai_is_futures = "futures" in source_text and "spot" not in source_text
+    market_is_futures = market.get("data_quality", {}).get("futures_only") is True
+    if same_venue and ai_is_futures and market_is_futures:
+        return {"compatible": True, "type": "SAME_VENUE", "basis_pct": 0.0,
+                "candle_skew_minutes": 0.0, "reason": "Both feeds identify the same perpetual Futures venue."}
+    if not (ai_is_futures and market_is_futures):
+        return {"compatible": False, "type": "BLOCKED",
+                "reason": "Both AI and evaluation feeds must be verified perpetual Futures."}
+    ai_symbol = str(ai.get("symbol", "BTC/USDT")).upper().replace("/", "").replace("-", "")
+    market_symbol = str(market.get("symbol", "BTCUSDT")).upper().replace("/", "").replace("-", "")
+    if "BTC" not in ai_symbol or "USDT" not in ai_symbol or "BTC" not in market_symbol or "USDT" not in market_symbol:
+        return {"compatible": False, "type": "BLOCKED", "reason": "Cross-venue shadow scoring is restricted to BTC/USDT perpetuals."}
+    try:
+        ai_price = float(ai.get("last_price"))
+        market_price = float(market_price)
+        ai_time = int(ai.get("last_candle_time"))
+        market_time = int(market_candle_time)
+        if min(ai_price, market_price) <= 0 or min(ai_time, market_time) <= 0:
+            raise ValueError("missing price or candle timestamp")
+        basis_pct = abs(ai_price / market_price - 1.0) * 100.0
+        skew_minutes = abs(ai_time - market_time) / 60000.0
+    except (TypeError, ValueError):
+        return {"compatible": False, "type": "BLOCKED",
+                "reason": "Cross-venue scoring requires valid AI and market prices plus candle timestamps."}
+    compatible = (basis_pct <= MAX_CROSS_VENUE_BASIS_PCT and
+                  skew_minutes <= MAX_CROSS_VENUE_CANDLE_SKEW_MINUTES)
+    return {
+        "compatible": compatible,
+        "type": "CROSS_VENUE_FUTURES" if compatible else "BLOCKED",
+        "ai_venue": ai_source, "market_venue": exchange or market_text[:80],
+        "basis_pct": round(basis_pct, 5),
+        "candle_skew_minutes": round(skew_minutes, 2),
+        "max_basis_pct": MAX_CROSS_VENUE_BASIS_PCT,
+        "max_candle_skew_minutes": MAX_CROSS_VENUE_CANDLE_SKEW_MINUTES,
+        "reason": ("Cross-venue BTC perpetual prices and candle times are within safety tolerances."
+                   if compatible else "Cross-venue basis or candle-time skew exceeds the safety tolerance.")
+    }
+
 
 def load(path, default):
     try:
@@ -125,7 +176,7 @@ def run():
         ai_is_fresh = -60 <= age_seconds <= 600
     except (TypeError, ValueError):
         pass
-    same_venue = (source.lower() in ai_source.lower()) or (source.lower() in ai_tf_source.lower())
+    venue_alignment = assess_venue_alignment(ai, market, price, stamp)
     model_scores = ai.get("class_scores", {})
     directional_scores = {
         "LONG": float(model_scores.get("LONG", 0) or 0),
@@ -133,7 +184,7 @@ def run():
     }
     raw_side = max(directional_scores, key=directional_scores.get) if directional_scores else "WAIT"
     wait_score = float(model_scores.get("WAIT", 0) or 0)
-    if not same_venue or not ai_source or "Futures" not in ai_source or max(directional_scores.values(), default=0) <= wait_score:
+    if not venue_alignment.get("compatible") or not ai_source or max(directional_scores.values(), default=0) <= wait_score:
         raw_side = "WAIT"
     # Do not score the same model output repeatedly on successive market snapshots.
     # Only record a fresh, timestamped model generation once.
@@ -150,7 +201,9 @@ def run():
             "actionable": False,
             "validation_gate_passed": ai.get("validation_gate", {}).get("passed") is True,
             "model_version": ai.get("model_version"),
-            "note": "Shadow-only raw ML forecast. Not a trading signal; validation gate may have failed."
+            "model_source": ai_source,
+            "venue_alignment": venue_alignment,
+            "note": "Shadow-only raw ML forecast. Not a trading signal; validation gate may have failed. Cross-venue records are accepted only when both perpetual Futures feeds pass price-basis and candle-time checks."
         })
 
     resolve_records(records, closed, source, "records", "side")
@@ -188,7 +241,8 @@ def run():
             "validation_gate_passed_now": ai.get("validation_gate", {}).get("passed") is True,
             "latest_model_timestamp": ai_generated_at or None,
             "latest_model_fresh": ai_is_fresh,
-            "note": "Research-only forecast tracking. Each fresh model generation is counted once; stale or repeated AI snapshots are skipped. Forecasts never authorize trades."
+            "latest_venue_alignment": venue_alignment,
+            "note": "Research-only forecast tracking. Each fresh model generation is counted once; same-venue Futures or cross-venue Futures with <=0.25% price basis and <=15-minute candle skew may be scored. Spot, stale, mismatched or unaligned feeds are abstentions. Forecasts never authorize trades."
         },
         "limitations": "15m fixed-close simulation only. Estimated 0.14% round-trip costs; no stop/target, funding, liquidation, intrabar fills or live order execution. Shadow forecasts are non-actionable. Historical results are not predictive.",
         "records": records,
