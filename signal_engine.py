@@ -239,7 +239,11 @@ def run():
 
     # A spot-trained ML model cannot be treated as a Futures confirmation.
     model_source = str(model.get("data_source", ""))
-    model_is_futures = "Futures" in model_source and "Spot" not in model_source
+    model_source_is_futures = "Futures" in model_source and "Spot" not in model_source
+    model_validation_passed = model.get("validation_gate", {}).get("passed") is True
+    # A Futures data source alone is not enough: the global chronological
+    # walk-forward gate must also pass before the model can authorize a trade.
+    model_is_futures = model_source_is_futures and model_validation_passed
     model_scores = model.get("class_scores", {})
     ml_bias = "WAIT"
     if model_is_futures:
@@ -249,7 +253,7 @@ def run():
         signal = "WAIT"
     elif signal != "WAIT" and not model_is_futures:
         signal = "WAIT"
-        warnings.append("Directional entries blocked: AI training source is not verified perpetual Futures. Spot/unknown-source ML cannot authorize a Futures trade.")
+        warnings.append("Directional entries blocked: AI must use verified perpetual Futures data AND pass the global walk-forward validation gate. Spot, unknown-source or failed-validation ML cannot authorize a Futures trade.")
 
     # Require the Futures ML model to agree directionally; disagreement or WAIT means no entry.
     if signal != "WAIT" and model_is_futures and ml_bias != signal:
@@ -342,8 +346,9 @@ def run():
                        "open_interest_change_30m_pct": round(oi_change_pct, 4) if oi_change_pct is not None else None,
                        "taker_buy_sell_ratio": taker_ratio},
         "ml_context": {"model_version": model.get("model_version"),
-                       "data_source": model_source, "futures_source": model_is_futures,
-                       "signal": ml_bias},
+                       "data_source": model_source, "source_is_futures": model_source_is_futures,
+                       "validation_passed": model_validation_passed,
+                       "futures_source": model_is_futures, "signal": ml_bias},
         "risk_levels": risk,
         "data_quality": quality,
         "news_guard": news,
