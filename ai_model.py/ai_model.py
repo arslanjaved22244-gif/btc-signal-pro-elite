@@ -1394,6 +1394,136 @@ def advanced_tree_ensemble(data, prepared):
 
 
 
+
+def lstm_walk_forward_validate(rows, labels, sequence_length=24, folds=2):
+    """
+    Expanding-window chronological LSTM validation. Each fold fits its own
+    scaler and model using only data before the purged test window.
+    This is evaluation-only and never contributes to live signal approval.
+    """
+    try:
+        import numpy as np
+        import torch
+        from torch import nn
+        from torch.utils.data import DataLoader, TensorDataset, WeightedRandomSampler
+    except Exception as exc:
+        return {"status": "DEPENDENCY ERROR", "detail": str(exc)[:180]}
+
+    if len(rows) != len(labels) or len(rows) < sequence_length + 500:
+        return {"status": "INSUFFICIENT HISTORY", "samples": len(rows)}
+
+    sequences = np.asarray([
+        rows[end-sequence_length+1:end+1]
+        for end in range(sequence_length-1, len(rows))
+    ], dtype=np.float32)
+    targets = np.asarray(labels[sequence_length-1:], dtype=np.int64)
+    n = len(targets)
+    test_size = max(40, n // 8)
+    purge = sequence_length + FUTURE_CANDLES
+    fold_metrics, actual_all, predicted_all = [], [], []
+
+    class FoldLSTM(nn.Module):
+        def __init__(self, input_size):
+            super().__init__()
+            self.lstm = nn.LSTM(input_size, 32, num_layers=1, batch_first=True)
+            self.norm = nn.LayerNorm(32)
+            self.head = nn.Sequential(nn.Linear(32, 16), nn.ReLU(), nn.Dropout(0.1), nn.Linear(16, 3))
+        def forward(self, x):
+            output, _ = self.lstm(x)
+            return self.head(self.norm(output[:, -1, :]))
+
+    try:
+        torch.set_num_threads(1)
+        for fold in range(folds):
+            test_start = n - (folds-fold) * test_size
+            test_end = min(n, test_start + test_size)
+            train_end = test_start - purge
+            if train_end < 260 or test_end - test_start < 30:
+                continue
+
+            x_train = sequences[:train_end].copy()
+            y_train = targets[:train_end].copy()
+            x_test = sequences[test_start:test_end].copy()
+            y_test = targets[test_start:test_end].copy()
+            if len(np.unique(y_train)) < 2:
+                continue
+
+            mean = x_train.reshape(-1, x_train.shape[-1]).mean(axis=0)
+            std = x_train.reshape(-1, x_train.shape[-1]).std(axis=0)
+            std[std < 1e-8] = 1.0
+            x_train = (x_train-mean)/std
+            x_test = (x_test-mean)/std
+
+            inner = int(len(x_train)*0.85)
+            fit_end = inner-purge
+            if fit_end < 180 or len(x_train)-inner < 20:
+                continue
+            x_fit, y_fit = x_train[:fit_end], y_train[:fit_end]
+            x_val, y_val = x_train[inner:], y_train[inner:]
+            counts = np.bincount(y_fit, minlength=3).astype(np.float32)
+            weights = np.asarray([1.0/math.sqrt(max(1.0, counts[int(v)])) for v in y_fit])
+            sampler = WeightedRandomSampler(torch.as_tensor(weights,dtype=torch.double),len(weights),replacement=True)
+            class_weights = np.sqrt(len(y_fit)/np.maximum(counts*3.0,1.0))
+            class_weights = np.clip(class_weights,0.7,2.25)
+            class_weights = class_weights/np.mean(class_weights)
+
+            torch.manual_seed(100+fold)
+            model = FoldLSTM(x_train.shape[-1])
+            optimizer = torch.optim.AdamW(model.parameters(),lr=0.0007,weight_decay=0.025)
+            loss_fn = nn.CrossEntropyLoss(weight=torch.tensor(class_weights,dtype=torch.float32))
+            loader = DataLoader(TensorDataset(torch.tensor(x_fit),torch.tensor(y_fit)),batch_size=64,sampler=sampler)
+            vx,vy=torch.tensor(x_val),torch.tensor(y_val)
+            best_loss=float("inf"); best_state=None; patience=0
+            for epoch in range(20):
+                model.train()
+                for bx,by in loader:
+                    optimizer.zero_grad()
+                    loss=loss_fn(model(bx),by); loss.backward()
+                    torch.nn.utils.clip_grad_norm_(model.parameters(),1.0); optimizer.step()
+                model.eval()
+                with torch.no_grad(): val_loss=float(loss_fn(model(vx),vy).item())
+                if val_loss < best_loss-1e-4:
+                    best_loss=val_loss
+                    best_state={k:v.detach().clone() for k,v in model.state_dict().items()}
+                    patience=0
+                else: patience+=1
+                if patience>=4: break
+            if best_state is None: continue
+            model.load_state_dict(best_state); model.eval()
+            with torch.no_grad():
+                pred=torch.argmax(model(torch.tensor(x_test)),dim=1).cpu().numpy().tolist()
+            actual=y_test.tolist()
+            metrics=classification_metrics(actual,pred)
+            majority=max(sum(1 for v in actual if v==k)/len(actual)*100 for k in range(3))
+            fold_metrics.append({
+                "fold":fold+1,"train_samples":int(train_end),"test_samples":len(actual),
+                "accuracy":metrics["accuracy"],"macro_f1":metrics["macro_f1"],
+                "majority_baseline_pct":round(majority,2),
+                "per_class":metrics["per_class"]
+            })
+            actual_all.extend(actual); predicted_all.extend(pred)
+
+        if not actual_all:
+            return {"status":"INSUFFICIENT VALID WALK-FORWARD FOLDS","folds":[]}
+        aggregate=classification_metrics(actual_all,predicted_all)
+        aggregate["majority_baseline_pct"]=round(
+            sum(sum(1 for a in fold["per_class"] if False) for fold in []) ,2
+        ) if False else round(
+            sum(max(sum(1 for v in actual_all if v==k)/len(actual_all)*100 for k in range(3))),2
+        )
+        return {
+            "status":"EVALUATION ONLY — NOT USED FOR SIGNAL APPROVAL",
+            "fold_count":len(fold_metrics),"folds":fold_metrics,
+            "aggregate_accuracy":aggregate["accuracy"],
+            "aggregate_macro_f1":aggregate["macro_f1"],
+            "aggregate_confusion_matrix":aggregate["confusion_matrix"],
+            "aggregate_per_class":aggregate["per_class"],
+            "test_samples":len(actual_all),
+            "method":"expanding chronological windows; per-fold train-only scaling; purged sequence/label overlap; inner chronological early stopping"
+        }
+    except Exception as exc:
+        return {"status":"WALK-FORWARD ERROR","detail":str(exc)[:220],"folds":fold_metrics}
+
 def update_prediction_feedback(data, result, path="prediction_feedback.json"):
     """
     Resolve matured 15m forecasts against later closed candles and retain a
@@ -1874,6 +2004,9 @@ def main():
     lstm_model = lstm_sequence_forecast(lstm_training_rows, lstm_training_labels, sequence_length=24)
     lstm_model["feature_mode"] = lstm_feature_mode
     lstm_model["derivatives_dataset_status"] = historical_derivatives.get("status")
+    lstm_model["walk_forward_validation"] = lstm_walk_forward_validate(
+        lstm_training_rows, lstm_training_labels, sequence_length=24, folds=2
+    )
     temporal_horizons = temporal_sequence_horizon_forecasts(data, prepared, sequence_length=12)
     tree_ensemble = advanced_tree_ensemble(data, prepared)
     tree_blend_applied = False
