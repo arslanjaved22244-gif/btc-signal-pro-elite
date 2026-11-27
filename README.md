@@ -22,7 +22,7 @@ This is an installable web app (PWA), not an App Store listing. The app shell ca
 - Eleven-point live data-health audit: 5m candles, five-timeframe coverage, funding, OI, taker flow, CVD, order book, news freshness, Trump-post archive availability, cross-exchange perpetual comparison and continuous liquidation WebSocket health. Missing/stale feeds are shown as unavailable, not guessed.
 - Market-risk headline scanning plus an independent archive RSS of public @realDonaldTrump Truth Social posts (`trumpstruth.org/feed`). Relevant posts/headlines trigger at least a 30-minute WAIT lock. The archive is third-party, not an official Truth Social API; it may lag or omit deleted/visual-only content.
 - Dashboard BTC price refreshes in the open browser every 5 seconds. This is client-side price refresh only; it is not a 5-second AI retraining or server-side signal cycle.
-- Full dashboard indicators refresh every 30 seconds, while the published server-side AI output follows GitHub Actions on a best-effort 5-minute schedule and can be delayed.
+- Full dashboard indicators refresh every 30 seconds, while the published server-side AI output follows GitHub Actions on a best-effort 15-minute market-data schedule (AI retraining runs separately) and can be delayed.
 
 ## Important limitations
 - Derivatives data comes from public exchange endpoints (Bybit with OKX fallback); individual fields can be unavailable during API outages or when the provider does not publish the requested history.
