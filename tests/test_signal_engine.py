@@ -54,7 +54,8 @@ class FuturesSourceSafetyTests(unittest.TestCase):
         payloads = {
             ENGINE.MARKET_FILE: market,
             ENGINE.MODEL_FILE: model,
-            ENGINE.NEWS_FILE: {"available": True, "block": False}
+            ENGINE.NEWS_FILE: {"available": True, "block": False},
+            ENGINE.INTELLIGENCE_FILE: {"signal_quality_gate": {"passed": True, "status": "PASSED"}}
         }
         with patch.object(ENGINE, "load", side_effect=lambda path: payloads[path]):
             return ENGINE.run()
@@ -75,6 +76,19 @@ class FuturesSourceSafetyTests(unittest.TestCase):
     def test_verified_futures_model_can_confirm_direction_when_other_gates_pass(self):
         result = self.run_with_source("Bybit linear Futures public OHLC candles")
         self.assertEqual(result["signal"], "LONG")
+
+    def test_institutional_quality_gate_blocks_directional_signal(self):
+        market = make_market()
+        model = {"data_source": "Bybit linear Futures public OHLC candles",
+                 "class_scores": {"LONG": 0.95, "SHORT": 0.02, "WAIT": 0.03},
+                 "validation_gate": {"passed": True, "futures_source_passed": True}}
+        payloads = {ENGINE.MARKET_FILE: market, ENGINE.MODEL_FILE: model,
+                    ENGINE.NEWS_FILE: {"available": True, "block": False},
+                    ENGINE.INTELLIGENCE_FILE: {"signal_quality_gate": {"passed": False}}}
+        with patch.object(ENGINE, "load", side_effect=lambda path: payloads[path]):
+            result = ENGINE.run()
+        self.assertEqual(result["signal"], "WAIT")
+        self.assertTrue(any("Institutional quality gate blocked" in x for x in result["warnings"]))
 
 
 if __name__ == "__main__":
