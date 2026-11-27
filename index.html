@@ -1273,6 +1273,7 @@ renderHistory();
 
 /* Experimental browser-side ML forecast, backtest and risk tools */
 let mlLastRun=0, newsPauseUntil=0;
+try{newsPauseUntil=Number(localStorage.getItem("btc_signal_pro_news_pause_until"))||0;}catch(e){}
 function sigmoid(z){return 1/(1+Math.exp(-Math.max(-30,Math.min(30,z))))}
 function mlFeatures(cs){
  const close=cs.map(x=>x.c),volumes=cs.map(x=>x.v);
@@ -1353,9 +1354,9 @@ function calcRisk(){
  setText("riskWarning",notional>cap*lev?"WARNING: Position exceeds selected leverage capacity. Reduce size.":"Leverage capped at 10x. Loss estimate excludes fees, slippage and funding.");
 }
 ["riskCapital","riskPct","riskEntry","riskStop","riskLev"].forEach(id=>$(id).addEventListener("input",calcRisk));
-function activateNewsPause(){newsPauseUntil=Date.now()+1800000;renderNewsPause();setText("status","Manual safety pause activated for 30 minutes.");}
-function clearNewsPause(){newsPauseUntil=0;renderNewsPause();}
-function renderNewsPause(){const left=Math.max(0,newsPauseUntil-Date.now());setText("newsPauseStatus",left>0?"SIGNALS BLOCKED":"NO MANUAL PAUSE");setText("newsPauseTimer",Math.ceil(left/60000)+" min");if(!left)newsPauseUntil=0;}
+function activateNewsPause(){newsPauseUntil=Date.now()+1800000;try{localStorage.setItem("btc_signal_pro_news_pause_until",String(newsPauseUntil));}catch(e){}renderNewsPause();setText("status","Manual safety pause activated for 30 minutes.");}
+function clearNewsPause(){newsPauseUntil=0;try{localStorage.removeItem("btc_signal_pro_news_pause_until");}catch(e){}renderNewsPause();}
+function renderNewsPause(){const left=Math.max(0,newsPauseUntil-Date.now());setText("newsPauseStatus",left>0?"SIGNALS BLOCKED":"NO MANUAL PAUSE");setText("newsPauseTimer",Math.ceil(left/60000)+" min");if(!left){newsPauseUntil=0;try{localStorage.removeItem("btc_signal_pro_news_pause_until");}catch(e){}}}
 
 async function refreshAll(){
 if(busy)return;
