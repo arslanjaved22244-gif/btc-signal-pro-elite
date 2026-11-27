@@ -306,10 +306,13 @@ def train_model(rows, labels, epochs=140, learning_rate=0.025, l2=0.01):
     means, scales = fit_scaler(rows)
     x = [[(v - means[j]) / scales[j] for j, v in enumerate(row)] for row in rows]
     n, p = len(x), len(x[0])
-    # Reduce the old inverse-frequency boost that favored WAIT too strongly.
-    # Keep directional classes symmetric; walk-forward validation will show
-    # whether this trade-off improves directional recall without excess noise.
-    class_weights = [1.0, 0.70, 1.0]
+    # Balanced inverse-frequency weights preserve all three classes.
+    # Model 3.3's WAIT down-weight caused near-exclusive SHORT predictions.
+    class_counts = [max(1, labels.count(k)) for k in range(len(CLASSES))]
+    class_weights = [
+        min(2.5, n / (len(CLASSES) * count))
+        for count in class_counts
+    ]
     weights = [[0.0] * p for _ in CLASSES]
     biases = [0.0] * len(CLASSES)
     for _ in range(epochs):
@@ -460,7 +463,7 @@ def main():
     result = {
         "system": "BTC Signal Pro Elite Advanced ML",
         "model": "Multinomial Logistic Regression",
-        "model_version": "3.3-direction-balanced-walkforward",
+        "model_version": "3.4-restored-class-balance-walkforward",
         "data_source": source,
         "symbol": symbol,
         "base_interval": "5m",
@@ -473,7 +476,7 @@ def main():
         "walk_forward_folds": folds,
         "training_samples": len(rows),
         "label_distribution": {name: labels.count(i) for i, name in enumerate(CLASSES)},
-        "training_class_weights": {name: weight for name, weight in zip(CLASSES, [1.0, 0.70, 1.0])},
+        "training_class_weights": {name: weight for name, weight in zip(CLASSES, class_weights)},
         "future_horizon": f"{FUTURE_CANDLES} candles / 15 minutes",
         "neutral_threshold_pct": MOVE_THRESHOLD * 100,
         "last_price": data["5m"][-1]["close"],
