@@ -1,0 +1,11 @@
+{
+  "generated_at": "2026-11-27T01:28:44.626471+00:00",
+  "source": "GDELT DOC public API",
+  "available": false,
+  "block": false,
+  "block_until": null,
+  "matched_events": [],
+  "warnings": [
+    "News feed unavailable: HTTP Error 429: Too Many Requests"
+  ]
+}

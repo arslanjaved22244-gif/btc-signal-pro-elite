@@ -1,0 +1,106 @@
+{
+  "system": "BTC Signal Pro Elite Hybrid Confluence Engine",
+  "version": "4.1-hybrid-futures-confluence",
+  "generated_at": "2026-11-27T01:29:40.616430+00:00",
+  "symbol": "BTCUSDT",
+  "market_type": "BINANCE_USDM_FUTURES",
+  "signal": "WAIT",
+  "confidence_score": 0.0,
+  "scores": {
+    "LONG": 0.0,
+    "SHORT": 0.0
+  },
+  "timeframe_analysis": {
+    "5m": {
+      "available": false,
+      "bias": "UNKNOWN"
+    },
+    "15m": {
+      "available": false,
+      "bias": "UNKNOWN"
+    },
+    "1h": {
+      "available": false,
+      "bias": "UNKNOWN"
+    },
+    "4h": {
+      "available": false,
+      "bias": "UNKNOWN"
+    },
+    "1d": {
+      "available": false,
+      "bias": "UNKNOWN"
+    }
+  },
+  "order_flow": {
+    "cvd_base": null,
+    "order_book_imbalance": null,
+    "funding_rate_pct": 0.0,
+    "funding_crowding": "NEUTRAL",
+    "open_interest_change_30m_pct": null,
+    "taker_buy_sell_ratio": null
+  },
+  "ml_context": {
+    "model_version": "3.8-temporal-ensemble-regime-specialist",
+    "data_source": "Coinbase Exchange public candles (fallback)",
+    "futures_source": false,
+    "signal": "WAIT"
+  },
+  "risk_levels": {
+    "entry_reference": null,
+    "stop_loss": null,
+    "take_profit_1": null,
+    "take_profit_2": null,
+    "risk_reward": "1:1.5 and 1:2.5",
+    "method": "No levels while signal is WAIT or ATR unavailable"
+  },
+  "data_quality": {
+    "core_timeframes_ok": false,
+    "five_minute_data_fresh": false,
+    "futures_only": true,
+    "status": "DEGRADED",
+    "warnings": [
+      "One or more Futures candle timeframes failed.",
+      "5m Futures candle data is stale.",
+      "mark_price_funding feed unavailable: HTTP Error 451: ",
+      "open_interest_current feed unavailable: HTTP Error 451: ",
+      "open_interest_history_5m feed unavailable: HTTP Error 451: ",
+      "taker_flow_5m feed unavailable: HTTP Error 451: ",
+      "order_book feed unavailable: HTTP Error 451: ",
+      "recent_agg_trades feed unavailable: HTTP Error 451: ",
+      "funding_history feed unavailable: HTTP Error 451: ",
+      "Liquidation feed is not connected yet."
+    ]
+  },
+  "news_guard": {
+    "generated_at": "2026-11-27T01:28:44.626471+00:00",
+    "source": "GDELT DOC public API",
+    "available": false,
+    "block": false,
+    "block_until": null,
+    "matched_events": [],
+    "warnings": [
+      "News feed unavailable: HTTP Error 429: Too Many Requests"
+    ]
+  },
+  "volatility_guard": {
+    "blocked": false,
+    "atr_5m_pct": 0.0,
+    "atr_threshold_pct": 0.45,
+    "range_spike": false
+  },
+  "warnings": [
+    "One or more Futures candle timeframes failed.",
+    "5m Futures candle data is stale.",
+    "mark_price_funding feed unavailable: HTTP Error 451: ",
+    "open_interest_current feed unavailable: HTTP Error 451: ",
+    "open_interest_history_5m feed unavailable: HTTP Error 451: ",
+    "taker_flow_5m feed unavailable: HTTP Error 451: ",
+    "order_book feed unavailable: HTTP Error 451: ",
+    "recent_agg_trades feed unavailable: HTTP Error 451: ",
+    "funding_history feed unavailable: HTTP Error 451: ",
+    "Liquidation feed is not connected yet.",
+    "News monitor unavailable; verify major headlines manually before any trade."
+  ],
+  "execution": "MANUAL_ONLY_NO_ORDERS"
+}

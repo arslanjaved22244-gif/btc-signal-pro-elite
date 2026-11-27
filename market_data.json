@@ -1,0 +1,94 @@
+{
+  "system": "BTC Signal Pro Elite Futures Data Engine",
+  "version": "4.0-market-data-foundation",
+  "symbol": "BTCUSDT",
+  "market_type": "BINANCE_USDM_FUTURES",
+  "generated_at": "2026-11-27T01:28:43.476296+00:00",
+  "source": "https://fapi.binance.com",
+  "timeframes": {
+    "5m": {
+      "ok": false,
+      "error": "HTTP Error 451: "
+    },
+    "15m": {
+      "ok": false,
+      "error": "HTTP Error 451: "
+    },
+    "1h": {
+      "ok": false,
+      "error": "HTTP Error 451: "
+    },
+    "4h": {
+      "ok": false,
+      "error": "HTTP Error 451: "
+    },
+    "1d": {
+      "ok": false,
+      "error": "HTTP Error 451: "
+    }
+  },
+  "feeds": {
+    "mark_price_funding": {
+      "ok": false,
+      "error": "HTTP Error 451: ",
+      "latency_ms": 60
+    },
+    "open_interest_current": {
+      "ok": false,
+      "error": "HTTP Error 451: ",
+      "latency_ms": 41
+    },
+    "open_interest_history_5m": {
+      "ok": false,
+      "error": "HTTP Error 451: ",
+      "latency_ms": 46
+    },
+    "taker_flow_5m": {
+      "ok": false,
+      "error": "HTTP Error 451: ",
+      "latency_ms": 64
+    },
+    "order_book": {
+      "ok": false,
+      "error": "HTTP Error 451: ",
+      "latency_ms": 175
+    },
+    "recent_agg_trades": {
+      "ok": false,
+      "error": "HTTP Error 451: ",
+      "latency_ms": 63
+    },
+    "funding_history": {
+      "ok": false,
+      "error": "HTTP Error 451: ",
+      "latency_ms": 100
+    },
+    "liquidations": {
+      "ok": false,
+      "status": "not_collected",
+      "reason": "No dependable public historical liquidation REST feed is used. A live force-order WebSocket collector is a separate service."
+    }
+  },
+  "data_quality": {
+    "core_timeframes_ok": false,
+    "five_minute_data_fresh": false,
+    "futures_only": true,
+    "status": "DEGRADED",
+    "warnings": [
+      "One or more Futures candle timeframes failed.",
+      "5m Futures candle data is stale.",
+      "mark_price_funding feed unavailable: HTTP Error 451: ",
+      "open_interest_current feed unavailable: HTTP Error 451: ",
+      "open_interest_history_5m feed unavailable: HTTP Error 451: ",
+      "taker_flow_5m feed unavailable: HTTP Error 451: ",
+      "order_book feed unavailable: HTTP Error 451: ",
+      "recent_agg_trades feed unavailable: HTTP Error 451: ",
+      "funding_history feed unavailable: HTTP Error 451: ",
+      "Liquidation feed is not connected yet."
+    ]
+  },
+  "derived": {
+    "cvd_base": null,
+    "note": "CVD unavailable because aggregate-trade data failed."
+  }
+}

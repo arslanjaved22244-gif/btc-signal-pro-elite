@@ -1,0 +1,12 @@
+{
+  "available": true,
+  "source": "Binance USD-M forceOrder WebSocket",
+  "generated_at": "2026-11-27T01:29:40.579227+00:00",
+  "sample_window_seconds": 45,
+  "continuous": false,
+  "event_count": 0,
+  "long_liquidation_notional_usdt": 0,
+  "short_liquidation_notional_usdt": 0,
+  "events": [],
+  "warning": "Only events observed during this short GitHub Actions sample are included; this is not continuous market-wide liquidation coverage."
+}

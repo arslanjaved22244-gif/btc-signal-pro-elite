@@ -1,0 +1,16 @@
+{
+  "generated_at": "2026-11-27T01:29:40.646174+00:00",
+  "timeframe_indicators": {},
+  "backtest_5m": {
+    "status": "INSUFFICIENT_DATA",
+    "candles": 0,
+    "minimum": 300
+  },
+  "risk_10x": {
+    "status": "WAIT_OR_EQUITY_REQUIRED",
+    "leverage_cap": 10,
+    "equity_usdt": null,
+    "note": "Set GitHub secret RISK_EQUITY_USDT for account-specific sizing. No balance is assumed."
+  },
+  "execution": "MANUAL_ONLY_NO_ORDERS"
+}
