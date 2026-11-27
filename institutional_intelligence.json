@@ -1,7 +1,7 @@
 {
   "system": "BTC Signal Pro Elite Institutional Intelligence",
   "version": "1.0-six-upgrades",
-  "generated_at": "2026-11-27T23:28:41.432461+00:00",
+  "generated_at": "2026-11-27T23:29:57.464802+00:00",
   "market_regime": {
     "status": "AVAILABLE",
     "regime": "BEAR_TREND",
@@ -29,15 +29,15 @@
   "options": {
     "status": "AVAILABLE",
     "venue": "Deribit public BTC options",
-    "put_call_open_interest_ratio": 0.811,
-    "call_open_interest": 190585.8,
-    "put_open_interest": 154560.9,
+    "put_call_open_interest_ratio": 0.8108,
+    "call_open_interest": 190585.9,
+    "put_open_interest": 154526.6,
     "call_volume_24h": 13711.9,
-    "put_volume_24h": 15234.0,
+    "put_volume_24h": 15234.5,
     "average_call_mark_iv_pct": 54.71,
     "average_put_mark_iv_pct": 54.71,
     "approx_max_pain_strike": 68000.0,
-    "btc_index_price": 59774.29,
+    "btc_index_price": 59778.49,
     "instruments_sampled": 960,
     "note": "Aggregated listed BTC options snapshot; max-pain is an approximation across returned instruments, not a price target."
   },
@@ -46,12 +46,12 @@
     "window": "14 days of hourly returns",
     "correlations_vs_btc": {
       "NASDAQ": {
-        "correlation": 0.751,
+        "correlation": 0.752,
         "samples": 60,
         "status": "AVAILABLE"
       },
       "DXY": {
-        "correlation": -0.417,
+        "correlation": -0.419,
         "samples": 203,
         "status": "AVAILABLE"
       },
@@ -168,7 +168,7 @@
       {
         "name": "5m_futures_candles",
         "passed": true,
-        "detail": "candle age 189s"
+        "detail": "candle age 267s"
       },
       {
         "name": "all_five_timeframes",
@@ -183,7 +183,7 @@
       {
         "name": "open_interest_data",
         "passed": true,
-        "detail": "historical OI latest row age 3.71m"
+        "detail": "historical OI latest row age 4.98m"
       },
       {
         "name": "executed_taker_flow",
@@ -203,7 +203,7 @@
       {
         "name": "fresh_news_scan",
         "passed": true,
-        "detail": "news snapshot age 0.52m"
+        "detail": "news snapshot age 0.48m"
       },
       {
         "name": "trump_public_post_archive",
@@ -213,7 +213,7 @@
       {
         "name": "cross_exchange_perpetuals",
         "passed": true,
-        "detail": "2 venues available; snapshot age 0.05m"
+        "detail": "2 venues available; snapshot age 0.04m"
       },
       {
         "name": "continuous_liquidation_stream",
@@ -221,7 +221,7 @@
         "detail": "not connected / no recent message"
       }
     ],
-    "market_snapshot_age_minutes": 0.59,
+    "market_snapshot_age_minutes": 0.56,
     "note": "A feed marked unavailable is not guessed or replaced. This audit reports source presence and freshness, not signal accuracy. GitHub Actions sampled liquidation data does not count as a continuous stream."
   },
   "execution": "MANUAL_ONLY_NO_ORDERS",
