@@ -1,7 +1,7 @@
 {
   "system": "BTC Signal Pro Elite Hybrid Confluence Engine",
   "version": "4.3-hybrid-sweep-validated-futures",
-  "generated_at": "2026-11-27T21:22:40.089519+00:00",
+  "generated_at": "2026-11-27T21:28:34.508430+00:00",
   "symbol": "BTCUSDT",
   "market_type": "BITGET_USDT_FUTURES",
   "market_exchange": "Bitget",
@@ -19,27 +19,27 @@
     "momentum_margin": 2.0,
     "note": "Early setup is a watchlist hint only, not an entry signal. Confirm the main signal and manual risk levels before any trade."
   },
-  "confidence_score": 73.91,
+  "confidence_score": 80.43,
   "scores": {
-    "LONG": 0.75,
-    "SHORT": 8.5
+    "LONG": 0.0,
+    "SHORT": 9.25
   },
   "timeframe_analysis": {
     "5m": {
       "available": true,
       "bias": "BEARISH",
       "momentum_bias": "NEUTRAL",
-      "price": 59842.2,
-      "ema50": 59899.19,
-      "ema200": 60520.87,
-      "rsi14": 52.04,
-      "atr14": 75.55,
+      "price": 59815.6,
+      "ema50": 59895.91,
+      "ema200": 60514.25,
+      "rsi14": 49.23,
+      "atr14": 68.46,
       "macd": {
-        "line": -19.36972,
-        "signal": -26.95181,
-        "histogram": 7.5821
+        "line": -16.84437,
+        "signal": -24.93033,
+        "histogram": 8.08595
       },
-      "age_seconds": 128
+      "age_seconds": 182
     },
     "15m": {
       "available": true,
@@ -55,7 +55,7 @@
         "signal": -259.56847,
         "histogram": 50.83737
       },
-      "age_seconds": 429
+      "age_seconds": 783
     },
     "1h": {
       "available": true,
@@ -71,7 +71,7 @@
         "signal": -63.10656,
         "histogram": -199.28395
       },
-      "age_seconds": 1330
+      "age_seconds": 1683
     },
     "4h": {
       "available": true,
@@ -87,7 +87,7 @@
         "signal": -28.7509,
         "histogram": 62.50666
       },
-      "age_seconds": 4930
+      "age_seconds": 5284
     },
     "1d": {
       "available": true,
@@ -103,7 +103,7 @@
         "signal": -4502.26763,
         "histogram": -20.97644
       },
-      "age_seconds": 19331
+      "age_seconds": 19685
     }
   },
   "liquidity_sweep": {
@@ -111,8 +111,8 @@
     "status": "NO_CONFIRMED_SWEEP"
   },
   "order_flow": {
-    "cvd_base": -2.2129,
-    "order_book_imbalance": 0.665968,
+    "cvd_base": -0.4324,
+    "order_book_imbalance": -0.256478,
     "order_book_imbalance_method": "Top-20 visible levels; quote-notional (price \u00d7 quantity); (bid-ask)/(bid+ask)",
     "funding_rate_pct": 0.0054,
     "funding_crowding": "NEUTRAL",
@@ -126,20 +126,20 @@
     "validation_passed": false,
     "futures_source": false,
     "market_alignment": {
-      "passed": false,
-      "type": "BLOCKED",
+      "passed": true,
+      "type": "CROSS_VENUE_FUTURES",
       "model_venue": "OKX BTC-USDT-SWAP Futures",
       "market_venue": "Bitget",
-      "basis_pct": 0.09425,
-      "candle_skew_minutes": 30.0,
+      "basis_pct": 0.02792,
+      "candle_skew_minutes": 5.0,
       "max_basis_pct": 0.25,
       "max_candle_skew_minutes": 15,
-      "reason": "Perpetual price basis or 5m candle-time skew exceeds safety tolerance."
+      "reason": "Same-venue or cross-venue perpetual prices and 5m candle times are aligned."
     },
     "signal": "WAIT"
   },
   "risk_levels": {
-    "entry_reference": 59842.2,
+    "entry_reference": 59815.6,
     "stop_loss": null,
     "take_profit_1": null,
     "take_profit_2": null,
@@ -156,7 +156,7 @@
     ]
   },
   "news_guard": {
-    "generated_at": "2026-11-27T21:22:12.779874+00:00",
+    "generated_at": "2026-11-27T21:28:06.267178+00:00",
     "source": "Google News RSS public fallback + Trump's Truth independent archive (unofficial)",
     "available": true,
     "block": false,
@@ -170,7 +170,7 @@
   },
   "volatility_guard": {
     "blocked": false,
-    "atr_5m_pct": 0.1262,
+    "atr_5m_pct": 0.1145,
     "atr_threshold_pct": 0.45,
     "range_spike": false
   },
@@ -194,7 +194,6 @@
   "warnings": [
     "Bitget USDT-FUTURES is a separate venue; verify execution venue price and liquidity.",
     "Taker-flow history is stale or missing timestamps; excluded from signal scoring.",
-    "Cross-venue AI authorization blocked: Perpetual price basis or 5m candle-time skew exceeds safety tolerance.",
     "Directional entries blocked: AI must use verified perpetual Futures data AND pass the global walk-forward validation gate. Spot, unknown-source or failed-validation ML cannot authorize a Futures trade.",
     "Institutional quality gate blocked: directional entries remain disabled until AI baseline, macro-F1, 30+ shadow forecasts and positive 300+ candle cost-aware backtest all pass."
   ],
