@@ -16,6 +16,13 @@ def snapshot(provider, score, valid=True):
     return {
         "exchange": provider,
         "feeds": feeds,
+        "timeframes": {
+            "5m": {"ok": valid, "age_seconds": 120},
+            "15m": {"ok": valid, "age_seconds": 300},
+            "1h": {"ok": valid, "age_seconds": 900},
+            "4h": {"ok": valid, "age_seconds": 1800},
+            "1d": {"ok": valid, "age_seconds": 3600},
+        },
         "data_quality": {
             "core_timeframes_ok": valid,
             "five_minute_data_fresh": valid,
@@ -63,6 +70,20 @@ class ProviderSelectionTests(unittest.TestCase):
         payload = snapshot("Binance", 6)
         payload["feeds"]["order_book"]["data"] = {"bids": [], "asks": []}
         self.assertEqual(market_data.derivatives_feed_score(payload), 5)
+
+    def test_stale_daily_candle_rejects_otherwise_valid_snapshot(self):
+        payload = snapshot("Binance", 6)
+        payload["timeframes"]["1d"]["age_seconds"] = 200000
+        self.assertFalse(market_data._valid_core_snapshot(payload))
+
+    def test_missing_higher_timeframe_age_fails_closed(self):
+        payload = snapshot("OKX", 6)
+        payload["timeframes"]["4h"].pop("age_seconds")
+        self.assertFalse(market_data._valid_core_snapshot(payload))
+
+    def test_fresh_all_timeframes_are_accepted(self):
+        payload = snapshot("Bitget", 6)
+        self.assertTrue(market_data._valid_core_snapshot(payload))
 
     def test_no_fresh_complete_futures_snapshot_fails_closed(self):
         with patch.object(market_data, "collect_binance", return_value=snapshot("Binance", 6, False)), \
