@@ -63,6 +63,31 @@ class PaperTraderTests(unittest.TestCase):
         self.assertFalse(shadow["actionable"])
         self.assertFalse(shadow["validation_gate_passed"])
 
+    def test_shadow_reports_directional_accuracy_separately_from_net_win_rate(self):
+        self.write_inputs(self.candles([100, 100, 100]), "WAIT")
+        with open("ai_result.json", "w") as f:
+            json.dump({
+                "data_source": "OKX BTC-USDT-SWAP Futures public OHLC candles",
+                "data_source_by_timeframe": {"5m": "OKX BTC-USDT-SWAP Futures"},
+                "class_scores": {"LONG": 70, "SHORT": 10, "WAIT": 20},
+                "validation_gate": {"passed": False}
+            }, f)
+        PAPER.run()
+        self.write_inputs(self.candles([100, 100, 100, 100.1, 100.1, 100.1]), "WAIT")
+        with open("ai_result.json", "w") as f:
+            json.dump({
+                "data_source": "OKX BTC-USDT-SWAP Futures public OHLC candles",
+                "data_source_by_timeframe": {"5m": "OKX BTC-USDT-SWAP Futures"},
+                "class_scores": {"LONG": 70, "SHORT": 10, "WAIT": 20},
+                "validation_gate": {"passed": False}
+            }, f)
+        result = PAPER.run()
+        shadow = result["shadow_evaluation"]
+        self.assertEqual(shadow["closed_forecasts"], 1)
+        self.assertEqual(shadow["directional_accuracy_pct"], 100.0)
+        self.assertEqual(shadow["net_win_rate_pct"], 0.0)
+        self.assertLess(shadow["average_net_return_pct"], 0)
+
     def test_wait_is_recorded_as_abstention_not_trade(self):
         self.write_inputs(self.candles([100, 100, 100]), "WAIT")
         result = PAPER.run()
