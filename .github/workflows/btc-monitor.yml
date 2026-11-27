@@ -1,6 +1,10 @@
 name: BTC Signal Pro Elite Monitor
 
 on:
+  push:
+    paths:
+      - "bot/monitor.py"
+      - ".github/workflows/btc-monitor.yml"
   schedule:
     - cron: "*/5 * * * *"
   workflow_dispatch:
