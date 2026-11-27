@@ -27,13 +27,14 @@ def collect():
             prior = json.load(f)
     except (OSError, ValueError):
         prior = {}
+
     prior_until = prior.get("block_until")
     result = {"generated_at": now.isoformat(), "source": "GDELT DOC public API",
               "available": False, "block": False, "block_until": None,
               "matched_events": [], "warnings": []}
     try:
-        req = urllib.request.Request(url, headers={"User-Agent": "BTC-Signal-Pro-Elite/4.2"})
-        with urllib.request.urlopen(req, timeout=20) as response:
+        req = urllib.request.Request(url, headers={"User-Agent": "BTC-Signal-Pro-Elite/4.3"})
+        with urllib.request.urlopen(req, timeout=25) as response:
             payload = json.loads(response.read().decode("utf-8"))
         articles = payload.get("articles", [])
         result["available"] = True
@@ -41,8 +42,7 @@ def collect():
             title = str(article.get("title", ""))
             domain = str(article.get("domain", ""))
             seen = str(article.get("seendate", ""))
-            text = title.lower()
-            matched = [term for term in RISK_TERMS if term in text]
+            matched = [term for term in RISK_TERMS if term in title.lower()]
             if not matched:
                 continue
             try:
@@ -58,24 +58,21 @@ def collect():
                 "age_minutes": round(max(0, age) / 60, 1),
                 "matched_terms": matched[:8]
             })
-        if result["matched_events"]:
-            # Keep the lock for 30 minutes after the newest qualifying report.
-            newest = max(datetime.fromisoformat(x["published_at"]) for x in result["matched_events"])
-            fresh_until = (newest + timedelta(minutes=30)).isoformat()
-            result["block_until"] = max([x for x in (prior_until, fresh_until) if x], default=None)
-    if prior_until:
-        try:
-            if datetime.fromisoformat(prior_until) > now:
-                result["block_until"] = max(prior_until, result.get("block_until") or prior_until)
-        except ValueError:
-            pass
-    if result.get("block_until"):
-        try:
-            result["block"] = datetime.fromisoformat(result["block_until"]) > now
-        except ValueError:
-            result["block"] = False
     except Exception as exc:
         result["warnings"].append("News feed unavailable: " + str(exc))
+
+    fresh_until = None
+    if result["matched_events"]:
+        newest = max(datetime.fromisoformat(x["published_at"]) for x in result["matched_events"])
+        fresh_until = (newest + timedelta(minutes=30)).isoformat()
+    candidates = [x for x in (prior_until, fresh_until) if x]
+    if candidates:
+        try:
+            active = [x for x in candidates if datetime.fromisoformat(x) > now]
+            result["block_until"] = max(active, key=lambda x: datetime.fromisoformat(x)) if active else None
+        except ValueError:
+            result["warnings"].append("Invalid saved event-lock timestamp; ignoring it.")
+    result["block"] = bool(result["block_until"])
     return result
 
 
