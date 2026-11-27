@@ -1,7 +1,7 @@
 {
   "system": "BTC Signal Pro Elite Hybrid Confluence Engine",
   "version": "4.3-hybrid-sweep-validated-futures",
-  "generated_at": "2026-11-27T19:30:43.171233+00:00",
+  "generated_at": "2026-11-27T19:40:55.498607+00:00",
   "symbol": "BTCUSDT",
   "market_type": "BITGET_USDT_FUTURES",
   "market_exchange": "Bitget",
@@ -22,7 +22,7 @@
   "confidence_score": 13.04,
   "scores": {
     "LONG": 1.5,
-    "SHORT": 0.75
+    "SHORT": 0.0
   },
   "timeframe_analysis": {
     "5m": {
@@ -51,13 +51,13 @@
     "status": "NO_CONFIRMED_SWEEP"
   },
   "order_flow": {
-    "cvd_base": 0.9298,
-    "order_book_imbalance": -0.688222,
+    "cvd_base": 1.9944,
+    "order_book_imbalance": 0.016123,
     "order_book_imbalance_method": "Top-20 visible levels; quote-notional (price \u00d7 quantity); (bid-ask)/(bid+ask)",
     "funding_rate_pct": 0.0044,
     "funding_crowding": "NEUTRAL",
     "open_interest_change_30m_pct": null,
-    "taker_buy_sell_ratio": 3.0745203034359663
+    "taker_buy_sell_ratio": 3.540960631927633
   },
   "ml_context": {
     "model_version": "4.5-expanded-futures-history",
@@ -85,7 +85,7 @@
     ]
   },
   "news_guard": {
-    "generated_at": "2026-11-27T19:30:10.442364+00:00",
+    "generated_at": "2026-11-27T19:40:24.496781+00:00",
     "source": "Google News RSS public fallback + Trump's Truth independent archive (unofficial)",
     "available": true,
     "block": false,
