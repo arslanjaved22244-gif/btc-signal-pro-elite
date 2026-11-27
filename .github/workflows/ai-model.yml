@@ -9,18 +9,12 @@ on:
       - "signal_engine.py"
       - "paper_trader.py"
       - ".github/workflows/ai-model.yml"
-  # Model training is compute-heavy and must not compete with the 5-minute live monitor.
-  # Run once daily; use workflow_dispatch for an on-demand validation run.
+  # Model training is compute-heavy; it must not hold the live publisher lock.
   schedule:
     - cron: "17 2 * * *"
 
 permissions:
   contents: write
-
-concurrency:
-  # All scheduled publishers share one lock because they commit generated JSON to main.
-  group: btc-signal-main-publisher
-  cancel-in-progress: false
 
 jobs:
   train-ai:
@@ -57,28 +51,54 @@ jobs:
       - name: Run BTC AI model
         run: python ai_model.py/ai_model.py
 
-      - name: Save AI result
+      - name: Upload AI candidate outputs
+        uses: actions/upload-artifact@v4
+        with:
+          name: btc-ai-candidate-${{ github.run_id }}
+          path: |
+            ai_result.json
+            prediction_feedback.json
+          if-no-files-found: error
+          retention-days: 1
+
+  publish-ai:
+    needs: train-ai
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    # Only the short git publication phase shares the lock with live publishers.
+    concurrency:
+      group: btc-signal-main-publisher
+      cancel-in-progress: false
+    steps:
+      - name: Checkout latest main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Download AI candidate outputs
+        uses: actions/download-artifact@v4
+        with:
+          name: btc-ai-candidate-${{ github.run_id }}
+          path: ai-candidate
+
+      - name: Merge and publish AI result safely
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          cp ai_result.json /tmp/ai_result_candidate.json
-          cp prediction_feedback.json /tmp/prediction_feedback_candidate.json
-          git checkout -- ai_result.json prediction_feedback.json
-          git pull --rebase origin main
           python - <<'PY'
           import json
           from pathlib import Path
-          candidate = json.loads(Path("/tmp/ai_result_candidate.json").read_text())
-          current_path = Path("ai_result.json")
-          current = json.loads(current_path.read_text()) if current_path.exists() else {}
-          if candidate.get("generated_at", "") > current.get("generated_at", ""):
-              current_path.write_text(json.dumps(candidate, indent=2))
-              print("Publishing newer AI result:", candidate.get("generated_at"))
-          else:
-              print("Keeping newer published AI result:", current.get("generated_at"))
 
-          # Merge the run's feedback with the latest repository ledger after pull.
-          candidate_ledger = json.loads(Path("/tmp/prediction_feedback_candidate.json").read_text())
+          candidate_dir = Path("ai-candidate")
+          candidate_result = json.loads((candidate_dir / "ai_result.json").read_text())
+          candidate_ledger = json.loads((candidate_dir / "prediction_feedback.json").read_text())
+
+          result_path = Path("ai_result.json")
+          current_result = json.loads(result_path.read_text()) if result_path.exists() else {}
+          if candidate_result.get("generated_at", "") > current_result.get("generated_at", ""):
+              result_path.write_text(json.dumps(candidate_result, indent=2))
+              print("Publishing newer AI result:", candidate_result.get("generated_at"))
+          else:
+              print("Keeping newer published AI result:", current_result.get("generated_at"))
+
           ledger_path = Path("prediction_feedback.json")
           current_ledger = json.loads(ledger_path.read_text()) if ledger_path.exists() else {"version": 1, "predictions": []}
           merged = {}
@@ -89,6 +109,7 @@ jobs:
               previous = merged.get(key)
               if previous is None or (previous.get("status") != "EVALUATED" and item.get("status") == "EVALUATED"):
                   merged[key] = item
+
           records = sorted(merged.values(), key=lambda item: int(item.get("prediction_time", 0)))[-1000:]
           ledger_path.write_text(json.dumps({
               "version": 1,
@@ -98,6 +119,13 @@ jobs:
           }, indent=2))
           print("Persisting prediction feedback records:", len(records))
           PY
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add ai_result.json prediction_feedback.json
-          git diff --cached --quiet || git commit -m "Update AI prediction and feedback"
-          git push
+          if ! git diff --cached --quiet; then
+            git commit -m "Update AI prediction and feedback"
+            git push origin HEAD:main
+          else
+            echo "No AI output changes to publish."
+          fi
