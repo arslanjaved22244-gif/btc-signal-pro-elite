@@ -1,8 +1,8 @@
 {
   "price": 59774.5,
-  "funding_rate": 1.55064871183e-05,
-  "funding_percent": 0.0015506487118299998,
-  "open_interest": 3229370.140000016,
+  "funding_rate": 1.56162954711e-05,
+  "funding_percent": 0.00156162954711,
+  "open_interest": 3229482.050000016,
   "oi_change_5m_pct": 0.0,
   "oi_history": [
     {
@@ -18,12 +18,12 @@
       "oi_usd": "1930173163.53588967796106"
     }
   ],
-  "orderbook_imbalance": -0.5751305442832522,
-  "cvd_proxy": 0.8059197715175912,
-  "taker_buy_ratio": 0.9029598857587956,
+  "orderbook_imbalance": -0.45688441814455755,
+  "cvd_proxy": 0.7514175834004111,
+  "taker_buy_ratio": 0.8757087917002055,
   "large_trades": [],
   "data_source": "OKX public BTC-USDT-SWAP perpetual API",
-  "as_of": "2026-11-27T20:32:33.037661+00:00",
+  "as_of": "2026-11-27T20:33:03.690005+00:00",
   "oi_note": "OKX public 5-minute open-interest history when available",
   "atr_5m_pct": 0.11242,
   "latest_range_atr_ratio": 0.853,
@@ -35,6 +35,6 @@
   "news_pause_active": false,
   "pause_until": "2026-11-27T18:13:05.922760+00:00",
   "news_alerts": [],
-  "updated_at": "2026-11-27T20:32:50.473200+00:00",
+  "updated_at": "2026-11-27T20:33:05.156307+00:00",
   "safety_note": "Signal-only; manual trading only. Large trades are trade-size alerts, not verified whale identities. Trump social posts are monitored through a third-party archive RSS, not an official API."
 }
