@@ -60,7 +60,11 @@ def run():
     by_time = {int(c.get("time", 0)): c for c in closed}
     candle_times = sorted(by_time)
     for item in records:
-        if item.get("status") != "PENDING" or item.get("exchange") != source:
+        if item.get("status") != "PENDING":
+            continue
+        if item.get("exchange") != source:
+            item["status"] = "UNRESOLVED_SOURCE_SWITCH"
+            item["resolution_note"] = "Market-data venue changed before the 15m outcome could be observed; excluded from P&L."
             continue
         try:
             pos = candle_times.index(int(item["entry_candle_time"]))
