@@ -784,6 +784,104 @@ def advanced_regime(data):
             "EMA structure and slope" if regime in ("BULL TREND","BEAR TREND") else
             "Low directional separation" if regime=="RANGE / CHOP" else "Trend transition"}
 
+
+def advanced_breakout_squeeze(data):
+    """
+    Rule-based market-structure context. It is descriptive, not a standalone
+    trade signal. Uses only closed candles and prior-window levels.
+    """
+    candles = data["5m"]
+    if len(candles) < 100:
+        return {"status": "INSUFFICIENT DATA", "signal": "WAIT"}
+
+    closes = [float(x["close"]) for x in candles]
+    highs = [float(x["high"]) for x in candles]
+    lows = [float(x["low"]) for x in candles]
+    volumes = [float(x.get("volume", 0.0)) for x in candles]
+    last = candles[-1]
+    atr_values = [candle_atr(candles, i, 14) for i in range(max(20, len(candles)-120), len(candles))]
+    atr_now = max(1e-12, atr_values[-1] if atr_values else candle_atr(candles, len(candles)-1, 14))
+    atr_base = sum(atr_values[:-1]) / max(1, len(atr_values)-1) if len(atr_values)>1 else atr_now
+    atr_ratio = atr_now / max(atr_base, 1e-12)
+
+    widths = []
+    for end in range(max(19, len(closes)-120), len(closes)):
+        window = closes[end-19:end+1]
+        mean = sum(window)/20.0
+        variance = sum((v-mean)**2 for v in window)/20.0
+        sd = math.sqrt(variance)
+        widths.append((4.0*sd)/max(mean, 1e-12))
+    current_width = widths[-1] if widths else 0.0
+    width_rank = (sum(1 for value in widths if value <= current_width)/len(widths)*100.0) if widths else 100.0
+
+    prior20_high = max(highs[-21:-1]); prior20_low = min(lows[-21:-1])
+    prior50_high = max(highs[-51:-1]); prior50_low = min(lows[-51:-1])
+    prior_volume = volumes[-21:-1]
+    volume_base = sum(prior_volume)/max(1,len(prior_volume))
+    volume_ratio = volumes[-1]/max(volume_base,1e-12)
+    candle_range = max(1e-12, highs[-1]-lows[-1])
+    close_location = (closes[-1]-lows[-1])/candle_range
+
+    compression = width_rank <= 20.0 and atr_ratio <= 0.90
+    bullish_break = closes[-1] > prior20_high + 0.10*atr_now
+    bearish_break = closes[-1] < prior20_low - 0.10*atr_now
+    volume_confirm = volume_ratio >= 1.20
+    bullish_confirmed = bullish_break and volume_confirm and close_location >= 0.70
+    bearish_confirmed = bearish_break and volume_confirm and close_location <= 0.30
+
+    if bullish_confirmed:
+        breakout = "BULLISH_BREAKOUT_CONFIRMED"
+        candidate = "LONG_BIAS"
+    elif bearish_confirmed:
+        breakout = "BEARISH_BREAKDOWN_CONFIRMED"
+        candidate = "SHORT_BIAS"
+    elif bullish_break:
+        breakout = "BULLISH_BREAKOUT_UNCONFIRMED"
+        candidate = "WAIT"
+    elif bearish_break:
+        breakout = "BEARISH_BREAKDOWN_UNCONFIRMED"
+        candidate = "WAIT"
+    else:
+        breakout = "NO_CONFIRMED_BREAKOUT"
+        candidate = "WAIT"
+
+    squeeze_score = 0
+    if width_rank <= 20: squeeze_score += 40
+    elif width_rank <= 35: squeeze_score += 20
+    if atr_ratio <= 0.80: squeeze_score += 30
+    elif atr_ratio <= 0.95: squeeze_score += 15
+    if volume_ratio < 0.85: squeeze_score += 15
+    if abs(closes[-1]/max(closes[-5],1e-12)-1.0) < 0.002: squeeze_score += 15
+
+    expansion = atr_ratio >= 1.25 and volume_ratio >= 1.20
+    return {
+        "status": "AVAILABLE",
+        "volatility_compression": bool(compression),
+        "squeeze_score_0_100": min(100, squeeze_score),
+        "bollinger_width_pct": round(current_width*100,4),
+        "bollinger_width_percentile_lookback": round(width_rank,2),
+        "atr_expansion_ratio": round(atr_ratio,3),
+        "volume_ratio_vs_prior_20": round(volume_ratio,3),
+        "close_location_in_candle_pct": round(close_location*100,2),
+        "prior_20_candle_high": round(prior20_high,2),
+        "prior_20_candle_low": round(prior20_low,2),
+        "prior_50_candle_high": round(prior50_high,2),
+        "prior_50_candle_low": round(prior50_low,2),
+        "breakout_state": breakout,
+        "breakout_candidate_bias": candidate,
+        "volatility_expansion": bool(expansion),
+        "confirmation": {
+            "price_close_beyond_prior_20_level": bool(bullish_break or bearish_break),
+            "volume_at_least_1_2x": bool(volume_confirm),
+            "candle_close_location_confirmed": bool(
+                (bullish_break and close_location >= 0.70) or
+                (bearish_break and close_location <= 0.30)
+            )
+        },
+        "warning": "Context only, not an order or guaranteed prediction. Unconfirmed breaks remain WAIT."
+    }
+
+
 def advanced_horizon_models(data, prepared):
     base=data["5m"]; output={}
     for horizon,label in ((3,"15m"),(6,"30m"),(12,"60m"),(48,"4h")):
@@ -2138,6 +2236,7 @@ def main():
         raise ValueError("Could not build latest multi-timeframe features.")
     scores = predict_ensemble(final_model, latest)
     regime_analysis = advanced_regime(data)
+    breakout_squeeze_analysis = advanced_breakout_squeeze(data)
     horizon_forecasts = advanced_horizon_models(data, prepared)
     temporal_model = temporal_sequence_forecast(rows, labels, sequence_length=12)
     if lstm_rows:
@@ -2252,7 +2351,7 @@ def main():
         "validation_gate": {"passed": validation_gate, "minimum_accuracy_pct": 38.0, "minimum_macro_f1_pct": 30.0, "must_beat_majority_baseline": True, "decision": "directional signals allowed" if validation_gate else "WAIT only — historical validation too weak"},
         "futures_microstructure": futures_microstructure,
         "historical_derivatives_training": historical_derivatives,
-        "advanced_intelligence": {"market_regime": regime_analysis, "multi_timeframe_trend_alignment": trend_alignment, "alignment_veto": alignment_veto, "multi_horizon_forecasts": horizon_forecasts, "multi_horizon_consensus": horizon_consensus, "temporal_sequence_model": temporal_model, "lstm_sequence_model": lstm_model, "temporal_sequence_horizons": temporal_horizons, "temporal_model_veto": temporal_veto, "lstm_model_veto": lstm_veto, "tree_ensemble": tree_ensemble, "tree_blend_applied_to_primary_signal": tree_blend_applied, "method": "2-layer recurrent PyTorch LSTM on 24 ordered candles + temporal MLP + four-horizon chronological ML + Random Forest + gradient boosting + neural MLP + XGBoost (when installed) + volatility regime + liquidity sweep detector"},
+        "advanced_intelligence": {"market_regime": regime_analysis, "breakout_squeeze_analysis": breakout_squeeze_analysis, "multi_timeframe_trend_alignment": trend_alignment, "alignment_veto": alignment_veto, "multi_horizon_forecasts": horizon_forecasts, "multi_horizon_consensus": horizon_consensus, "temporal_sequence_model": temporal_model, "lstm_sequence_model": lstm_model, "temporal_sequence_horizons": temporal_horizons, "temporal_model_veto": temporal_veto, "lstm_model_veto": lstm_veto, "tree_ensemble": tree_ensemble, "tree_blend_applied_to_primary_signal": tree_blend_applied, "method": "2-layer recurrent PyTorch LSTM on 24 ordered candles + temporal MLP + four-horizon chronological ML + Random Forest + gradient boosting + neural MLP + XGBoost (when installed) + volatility regime + liquidity sweep detector"},
         "walk_forward_folds": folds,
         "training_samples": len(rows),
         "label_distribution": {name: labels.count(i) for i, name in enumerate(CLASSES)},
