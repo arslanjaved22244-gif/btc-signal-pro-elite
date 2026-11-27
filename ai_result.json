@@ -77,33 +77,33 @@
     "market_regime": "BEAR TREND",
     "regime_specific_weights_active": false,
     "regime_sample_counts": {
-      "full_history_logistic": 0,
-      "recent_regime_logistic": 0,
-      "nearest_centroid": 0,
-      "decision_stumps": 0
+      "full_history_logistic": 1,
+      "recent_regime_logistic": 1,
+      "nearest_centroid": 1,
+      "decision_stumps": 1
     },
     "minimum_evaluated_predictions_per_component": 30,
     "weights_retrained": false,
     "method": "bounded reliability weighting with 30-sample neutral prior; chronological matured forecasts only",
     "component_history": {
       "full_history_logistic": {
-        "evaluated_predictions": 12,
-        "realized_accuracy_pct": 41.67,
+        "evaluated_predictions": 13,
+        "realized_accuracy_pct": 38.46,
         "base_weight": 0.35
       },
       "recent_regime_logistic": {
-        "evaluated_predictions": 12,
-        "realized_accuracy_pct": 66.67,
+        "evaluated_predictions": 13,
+        "realized_accuracy_pct": 61.54,
         "base_weight": 0.2
       },
       "nearest_centroid": {
-        "evaluated_predictions": 12,
-        "realized_accuracy_pct": 25.0,
+        "evaluated_predictions": 13,
+        "realized_accuracy_pct": 23.08,
         "base_weight": 0.2
       },
       "decision_stumps": {
-        "evaluated_predictions": 12,
-        "realized_accuracy_pct": 25.0,
+        "evaluated_predictions": 13,
+        "realized_accuracy_pct": 23.08,
         "base_weight": 0.25
       }
     },
@@ -474,7 +474,7 @@
     "api_key_required": false,
     "features": {
       "open_interest": {
-        "latest_contracts": 802460820.0,
+        "latest_contracts": 801986330.0,
         "direction": "UNAVAILABLE \u2014 SINGLE DERIBIT SNAPSHOT",
         "samples": 1,
         "provider": "Deribit BTC perpetual",
@@ -489,10 +489,10 @@
         "provider": "Deribit BTC perpetual"
       },
       "taker_flow": {
-        "buy_amount_contract_units": 1668090.0,
-        "sell_amount_contract_units": 1828040.0,
-        "buy_sell_ratio": 0.9125,
-        "buy_imbalance_pct": -4.58,
+        "buy_amount_contract_units": 1682110.0,
+        "sell_amount_contract_units": 1737670.0,
+        "buy_sell_ratio": 0.968,
+        "buy_imbalance_pct": -1.62,
         "bias": "BALANCED",
         "samples": 1000,
         "window": "latest 1000 Deribit BTC perpetual trades",
@@ -500,10 +500,10 @@
         "note": "Cross-exchange contract-amount flow proxy, not Binance BTC spot CVD."
       },
       "orderbook_snapshot": {
-        "bid_quantity_contract_units_top5": 32060.0,
-        "ask_quantity_contract_units_top5": 109960.0,
-        "bid_ask_imbalance_pct": -54.85,
-        "bias": "ASK_HEAVY",
+        "bid_quantity_contract_units_top5": 108870.0,
+        "ask_quantity_contract_units_top5": 102450.0,
+        "bid_ask_imbalance_pct": 3.04,
+        "bias": "BALANCED",
         "provider": "Deribit BTC perpetual",
         "note": "Cross-exchange snapshot; not Binance order-book depth."
       },
@@ -534,7 +534,7 @@
       "bybit_orderbook: HTTP Error 403: Forbidden"
     ],
     "available_context_fields": 4,
-    "retrieved_at": "2026-11-27T17:40:00.899832+00:00"
+    "retrieved_at": "2026-11-27T17:42:11.080904+00:00"
   },
   "macro_news_risk": {
     "status": "HIGH_RISK_EVENT",
@@ -552,7 +552,7 @@
         "domain": "Benzinga",
         "url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxQSFZjelZmOEgtejdybEpZWUgwWV9tRnU2bHhHMTlWbUNpZlRBV1V2eGozQjctdktNd3E3d2F1OTQyN1Y5VVgwX1lRWXRHM183c3h1RElKc25CYXFsN21DVHpJQWNlMWJaTE5XYXpXRXM5QW1fendhU0R4Rkl4a2FpekJmOFFwc3NzWHlFTFVSUkU3TmhrU3ZGcE9wSWJWMDRfUzhQVGhUTHJtNXRzYWVkZV9xNldlOVFibDZsd29CdjFLOHUtOU1yaWp3?oc=5",
         "published_at": "2026-11-27T17:31:03+00:00",
-        "age_minutes": 9.1,
+        "age_minutes": 11.3,
         "matched_terms": [
           "fed"
         ],
@@ -563,7 +563,7 @@
         "domain": "Yahoo Finance",
         "url": "https://news.google.com/rss/articles/CBMijgFBVV95cUxPU1RZbWVZTzRENUptQmU2Q1F5d2I1bXlBamx1Qjg5ZUNJeUYxcEVtMHBJZGh2QmFNM0FvWEZkSEFvLVMteDFfS1ZWX21EcDh1QXVPSllXa294Z3hDLUdoa2JwaHlySDJrTi1aTVR2RDloZVAwOTBUcGtsQ3VhWE5mT19jX2tLTmt0OHZYTzlB?oc=5",
         "published_at": "2026-11-27T17:30:00+00:00",
-        "age_minutes": 10.1,
+        "age_minutes": 12.3,
         "matched_terms": [
           "etf"
         ],
@@ -574,19 +574,18 @@
         "domain": "Coinpaper",
         "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxPMTRjaWp5NVRZMHd0aXpWdjhNZUcwdmprYlM3RjJyVnpCMGRLcXBVRDgxLURXc3pIYTBwTnBmbzFlZTVGU0VwUHpSUWZuSXcwTjJZZFYzc3VpdjZJdHJtRjVGVXpyNDZxMzF4NzNOSzRNTlZ0RTgxVXhjaG1RNk1sUGFGZ3R6a0FJMXYzWkhZQ0t4YTduVDhncjdCTHR2TTFId3hv?oc=5",
         "published_at": "2026-11-27T17:15:45+00:00",
-        "age_minutes": 24.4,
+        "age_minutes": 26.6,
         "matched_terms": [
           "etf"
         ],
-        "provider": "Google News RSS",
-        "cached_from_previous_run": true
+        "provider": "Google News RSS"
       },
       {
         "title": "Congress takes aim at ASML\u2019s China service engineers as chip war heats up - Crypto Briefing",
         "domain": "Crypto Briefing",
         "url": "https://news.google.com/rss/articles/CBMic0FVX3lxTFBrSjVGTVdyaEF2dHpoeGdDNXUzb3NZUXNpS2FpVDlvNS1ETC1fWElZcUl2TUlxdGoxVHF5ZGd5dk1aaFdpODJHdUstRWdMWWF5U0h1WlYwdXVtQ1VUSGpkS2Q0S3VqcFFlbmhZdGlSSkh2enc?oc=5",
         "published_at": "2026-11-27T17:12:05+00:00",
-        "age_minutes": 28.1,
+        "age_minutes": 30.2,
         "matched_terms": [
           "war",
           "china"
@@ -598,7 +597,7 @@
         "domain": "Yahoo Finance",
         "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQMHlNbjZOdDZpV0trR2dBdW92eGszUzJTU3FhTGx6d3lGbnVYNHFteFhEUjc2T2hzUnNtMm53N2JGQmI0a0V4dUZLdlRzcFJTYUVQT0lSZ0pWMGtlV2drOGVaQW9sNkpSNk5IWHF2SElSbkxSUnZkeW52OTllazlkVndsWlJfa09HTlNUNTFibGQ2TnFncW1zZFZFN1Y0cmM?oc=5",
         "published_at": "2026-11-27T17:02:38+00:00",
-        "age_minutes": 37.5,
+        "age_minutes": 39.7,
         "matched_terms": [
           "etf"
         ],
@@ -609,7 +608,7 @@
         "domain": "24/7 Wall St.",
         "url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxNd2sxOHJ0Skd6Rmg5S09hUThrT2wxckh3MnR4SW5DRUl3My1EcUdnTTlIOVN6dmRYS29MSEREZlQ0WXlrTjhDRWJ3TDFYeU9lMjhWUFViOUNvRENNaUlNWFotZ1RKWVl5aklnNEQ1UWc0UFROMThWbWpLenJmS0tkejJ1MVZUbjdQM2tLQl95WTNULUFFLVYwWHA4eHRvVGZ2d0lIR3RqanBjQkFXUEVNaUFUWml1cldUWjBEWEdKVXZkbUd2NVhmbWxEUQ?oc=5",
         "published_at": "2026-11-27T17:02:00+00:00",
-        "age_minutes": 38.1,
+        "age_minutes": 40.3,
         "matched_terms": [
           "etf"
         ],
@@ -620,7 +619,7 @@
         "domain": "Crypto Briefing",
         "url": "https://news.google.com/rss/articles/CBMiekFVX3lxTE1MaXk0YW9RSElhZ2Q5V1lDbGhiWHQxX21aSnZQYWx6cW8zWTUtS3RIN3FYdi1DNVdySGRrb1JSVExZYnFUSDZZWF9SRDd4T3FkQURtcy13eFRqLU5NUUxyREdFVlVmZDNlUTYxX2stZ0psQllYV0F2VXVB?oc=5",
         "published_at": "2026-11-27T16:16:56+00:00",
-        "age_minutes": 83.2,
+        "age_minutes": 85.4,
         "matched_terms": [
           "sec"
         ],
@@ -631,7 +630,7 @@
         "domain": "BigGo Finance",
         "url": "https://news.google.com/rss/articles/CBMidkFVX3lxTE9paFBJc2pOM0kxdUxIZW0xR1ZHS3Z2NUNJYkJkNm5sY2ZRUHlha1dfM2dzTG9YYVVZbnFXSDkzemJVYlJrVGtpdkkya25TSDVrbkZZUk9oMGxlejNWLU9hSVZtcVNMTi0yWk50MFU1V05jVXEwc2c?oc=5",
         "published_at": "2026-11-27T16:05:00+00:00",
-        "age_minutes": 95.1,
+        "age_minutes": 97.3,
         "matched_terms": [
           "liquidation",
           "etf"
@@ -643,7 +642,7 @@
         "domain": "Crypto Briefing",
         "url": "https://news.google.com/rss/articles/CBMipgFBVV95cUxOQVpiUC0yUVRFaUpQR3BQbzJMVEZSM3BmR0tvZG9zS1hXR05FZzZWLXhLblFCT0oxeWotcE4xLUhMQ0ZnZ1FlcnRYUmxJaEttaWJKaE01Mk1DUlFJYlJJMzZRbG1zM0RkOW1MR2hoclFlYlo4aURIRUs5VEZUNWFlT20zMWtWVnBsclVIa2c1dTAwc2cySk9iYklWOU5VZ1RxZlpIaHJB?oc=5",
         "published_at": "2026-11-27T15:46:44+00:00",
-        "age_minutes": 113.4,
+        "age_minutes": 115.6,
         "matched_terms": [
           "etf"
         ],
@@ -654,7 +653,7 @@
         "domain": "BigGo Finance",
         "url": "https://news.google.com/rss/articles/CBMidkFVX3lxTE93OTFkR0Uwemkwc2ZEaTgtQVdieEswN0laYURLSWtWLWlKTzY5WDFZbDhTempWQ3hlRmtHRm9jd0I3c29sTVNicjRXQXpIQkpidV9mVEpSU1ZmU01sVUxTZC1xNU9yS203d0JuZFAtcjVlQThDYUE?oc=5",
         "published_at": "2026-11-27T15:35:00+00:00",
-        "age_minutes": 125.1,
+        "age_minutes": 127.3,
         "matched_terms": [
           "etf"
         ],
@@ -665,7 +664,7 @@
         "domain": "Crypto News",
         "url": "https://news.google.com/rss/articles/CBMia0FVX3lxTFBuR1JNRnVtbmhqNTNNclhKdmU1VXNsTEJDa2U3R1M3VGdwbEhOVjN1TTdOY25PRVgtU2FfZ2toMmFoNXFCRnA5RkJYWFBCc2h3bTdZUnYyMm5WUzh1Qlk3M0RFcGE2OVRydktj?oc=5",
         "published_at": "2026-11-27T15:29:53+00:00",
-        "age_minutes": 130.3,
+        "age_minutes": 132.4,
         "matched_terms": [
           "etf"
         ],
@@ -676,7 +675,7 @@
         "domain": "Coinpaper",
         "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxObGpYUHltaXBMTzJkOFdXWUllM2xCSVJrWmdaU1g4SmRKTEJObkxmbllYUW9qZU5sQ1NiQWJqLWRsbUVPOGZORjRPUU5ORTlLSDZfZHlacmlraUJDSUVGSTdXWlNJQ1JKU2owbFlVOF8wY0M2S1hrRmotQmpScnB5U0dybHVPNUd5QXE3TkYzdmtuaWhIaFJtV25TaUJpMUVQazYxNWJaYw?oc=5",
         "published_at": "2026-11-27T15:25:42+00:00",
-        "age_minutes": 134.4,
+        "age_minutes": 136.6,
         "matched_terms": [
           "etf"
         ],
@@ -687,7 +686,7 @@
         "domain": "Yahoo Finance",
         "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxQZHhMQlhyVHNFTGFRRHNBQUtSRENFeDJDdDBfaGFOd0k3WmI4ZEtZc2VwRmNEcHFqT2pLMzc5RW1NYUdPbUo4WnRJM1hyMVdpVXZMMzBKUTJ3WDk2azhLMkdKSHQ4ZWlIMDgzVVY5a1pNbEZ4VDItazhpS3hPSEdTRmxZVUVUVE1tYzgyVnZJWHRXWTA1UFVwSmF3LVBiQQ?oc=5",
         "published_at": "2026-11-27T15:15:24+00:00",
-        "age_minutes": 144.7,
+        "age_minutes": 146.9,
         "matched_terms": [
           "etf",
           "bitcoin reserve"
@@ -699,7 +698,7 @@
         "domain": "Bitcoin Magazine",
         "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxNaGVhSTBZRE00VWk2dEozU2kyb2RXMTFYWFBIU1dpcTRkb2Jkc1F5YVF1d293SjBWU1N0Z3ZsTEFoanRhU01IYkxPamtoXzdUS2xrVkJBZWViUmVXaXkxNVdMQlM4WUxVNnBybGcxekNaQXRTa09CdkctdE9sdVB4MVJhRkVCQTZQRUQ0dEVib1ZaT3lobDJEdmFOM3JHRUk5ZkVZbXdPT0trRDJZWC02SVAtRQ?oc=5",
         "published_at": "2026-11-27T14:45:09+00:00",
-        "age_minutes": 175.0,
+        "age_minutes": 177.2,
         "matched_terms": [
           "fed",
           "inflation",
@@ -712,7 +711,7 @@
         "domain": "TradingView",
         "url": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxPbV81M2J1Yk54QTJTRV9WRzF4OVh4Z0RhWVI3U3RJaTFKSUlLNHJjaHhsNGxHSG1LaEFxV25PMFVnOERoUmF2bm55Q0dXajlfYlV2TThCQzM3T2ZGZ21adDRRdDl2cUdvek1vOUVuVjdxNWxqTW5NUGVHUXNYbnZBc2Q0cVA1ZXpybFNyTURuODQ1TFVWck5pMWUzSkVmNFZ5Y3hKS0t6UzcyY095ZzU1VVNOd2ZSNGpqMnYyNUNXbnpVQ0dhMHpSdEEyaHYzblJhRUE?oc=5",
         "published_at": "2026-11-27T14:24:52+00:00",
-        "age_minutes": 195.3,
+        "age_minutes": 197.4,
         "matched_terms": [
           "etf"
         ],
@@ -723,7 +722,18 @@
         "domain": "Crypto Briefing",
         "url": "https://news.google.com/rss/articles/CBMigAFBVV95cUxPTWp2bE5Ha0w1N29HejE0RTN3TU9RZFp6U1djOFRLYnl0Y1lXU3FuY0RpVGloRGhHeXZWanZDQVdfM0pueGxIV1ZSVm1qMTh6dXJqcDM3RDNZLUx3bE83Rlpmb3JRSmp5VGNIOHBaT2I3S2pBMk5lT2RkYURnNTdnOQ?oc=5",
         "published_at": "2026-11-27T14:24:52+00:00",
-        "age_minutes": 195.3,
+        "age_minutes": 197.4,
+        "matched_terms": [
+          "etf"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "U.S. Spot Bitcoin ETFs Record $5.39 Billion Outflows in November 2026 - KuCoin",
+        "domain": "KuCoin",
+        "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxNLVRSTEh1bFVNcUkwTFByd2YtbzItMnB6dXdhZkFxejc5ZW95Wk14dkF4M0F3ZVhZbVM4cnpFeGVuTkxVaUJyVU0xaFRsa3BxR2VnUjJHVWRDS0RtOTFoT1hEOWpQTFV3TDhXMXE1UEFFb0RpbmJ0TnhzdUZ3NmdtVUxvVGVLTmZaRnJ6eWNvYkRHcmpuSnRXdmw4QWlwR3A2eXM4?oc=5",
+        "published_at": "2026-11-27T14:10:46+00:00",
+        "age_minutes": 211.5,
         "matched_terms": [
           "etf"
         ],
@@ -734,7 +744,7 @@
         "domain": "CCN.com",
         "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxQdUtOTm1BTEVQVkxRYm8tOF95UVdBZnBIejcyb2YwOHRPQWlLTllpRWU5cjBQdEVPTHFyYXdCZUFDa3l0Q1pzOWlWN0dOcmxBYTRucXducThveC12WWFMV3dDbGRHdWdoVlE5R2RKTmVCX3JDSXphNmw3d2c5YkZQMWxVUkkwN1ZYZ1JJcnllSDA?oc=5",
         "published_at": "2026-11-27T14:09:20+00:00",
-        "age_minutes": 210.8,
+        "age_minutes": 213.0,
         "matched_terms": [
           "war",
           "tariff",
@@ -747,7 +757,7 @@
         "domain": "FinanceX Magazine",
         "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxOQXZVLVFURG9MaHA4a2MzXzdETTZGc1BuaG1SdXo4Z1UxM2VIYjdXTWpCQjVXNW5BMXBZbDRhNTBsdzZQNVpXSkR3cWFmM0dVaFgyOFJtcGk3Rmw3a2VfT1VLQ1FkUmsxRTlyZ2pPSmVrb2t6cWh4amROUlplcjBIUVp4SWJTN01QQjVoZ3E0Ym9pc01IQWp5SEpoeWdOUQ?oc=5",
         "published_at": "2026-11-27T13:21:54+00:00",
-        "age_minutes": 258.2,
+        "age_minutes": 260.4,
         "matched_terms": [
           "etf"
         ],
@@ -758,18 +768,7 @@
         "domain": "Crypto Briefing",
         "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE15WW4xc0ZGLVFjSEVkUXJneUVMelJDa0FzU0txNWNnanRTdHc3TVp0RHhma2Zwcm1Ka2dWZGZfTkpmQ2tjZFFXdjVYWnc3aTE2LUd5WWpYcnZOUUQ1UFRMSVNLdXRsMFhQTjl5a2lwclFNY0RMWUtsRTlRWTFyX2M?oc=5",
         "published_at": "2026-11-27T12:25:01+00:00",
-        "age_minutes": 315.1,
-        "matched_terms": [
-          "trump"
-        ],
-        "provider": "Google News RSS"
-      },
-      {
-        "title": "Trump floats possible US government stake in Nvidia after leadership crisis ends - Crypto Briefing",
-        "domain": "Crypto Briefing",
-        "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE95VHNLcVhVVjlsdVNUUjQ2eVhqUDZrNk9sM2ZBTzB4RFJiSm5DWENaZ3ZoZHRzUWxJUjU2bG4wUGw3bTExZ1Q4bmZLeWxQMFVvb0wyTFdXejNHVUV2U2RaaTBhOHVCTXUwRGhpUw?oc=5",
-        "published_at": "2026-11-27T12:11:57+00:00",
-        "age_minutes": 328.2,
+        "age_minutes": 317.3,
         "matched_terms": [
           "trump"
         ],
@@ -783,8 +782,8 @@
     ],
     "gdelt_error": "<urlopen error _ssl.c:1001: The handshake operation timed out>",
     "provider_used": "Google News RSS",
-    "fresh_high_risk_count": 4,
-    "retrieved_at": "2026-11-27T17:40:08.549414+00:00"
+    "fresh_high_risk_count": 3,
+    "retrieved_at": "2026-11-27T17:42:18.680169+00:00"
   },
   "news_event_veto": null,
   "historical_derivatives_training": {
@@ -1963,7 +1962,7 @@
   "last_candle_time": 1795800900000,
   "data_freshness": {
     "status": "FRESH",
-    "latest_5m_candle_age_minutes": 5.37,
+    "latest_5m_candle_age_minutes": 7.54,
     "latest_5m_candle_time": "2026-11-27T17:35:00+00:00",
     "source_by_timeframe": {
       "5m": "OKX BTC-USDT-SWAP Futures",
@@ -1974,7 +1973,7 @@
     },
     "max_allowed_age_minutes": 15
   },
-  "generated_at": "2026-11-27T17:41:10.381394+00:00",
+  "generated_at": "2026-11-27T17:43:22.069237+00:00",
   "limitations": [
     "When Binance USD-M Futures is unavailable, Kraken BTC/USD spot OHLC is used as a proxy and is not equivalent to BTC/USDT Futures. Funding, open interest, CVD, order book and liquidation remain separate confluence inputs.",
     "Class scores are model scores, not calibrated real-world win probabilities.",
@@ -1983,11 +1982,11 @@
   "prediction_feedback": {
     "status": "ACTIVE",
     "method": "multi-horizon forecasts scored against subsequent closed 5m candles",
-    "history_retained": 412,
+    "history_retained": 430,
     "models": {
       "classic_horizon_15m": {
         "evaluated_predictions": 23,
-        "pending_predictions": 2,
+        "pending_predictions": 3,
         "realized_accuracy_pct": 17.39,
         "realized_macro_f1_pct": 18.47,
         "approved_directional_trades": 0,
@@ -2005,7 +2004,7 @@
       },
       "classic_horizon_30m": {
         "evaluated_predictions": 22,
-        "pending_predictions": 3,
+        "pending_predictions": 4,
         "realized_accuracy_pct": 45.45,
         "realized_macro_f1_pct": 41.16,
         "approved_directional_trades": 0,
@@ -2023,7 +2022,7 @@
       },
       "classic_horizon_4h": {
         "evaluated_predictions": 10,
-        "pending_predictions": 15,
+        "pending_predictions": 16,
         "realized_accuracy_pct": 100.0,
         "realized_macro_f1_pct": 33.33,
         "approved_directional_trades": 0,
@@ -2041,7 +2040,7 @@
       },
       "classic_horizon_60m": {
         "evaluated_predictions": 21,
-        "pending_predictions": 4,
+        "pending_predictions": 5,
         "realized_accuracy_pct": 52.38,
         "realized_macro_f1_pct": 49.18,
         "approved_directional_trades": 0,
@@ -2059,7 +2058,7 @@
       },
       "decision_stumps": {
         "evaluated_predictions": 13,
-        "pending_predictions": 2,
+        "pending_predictions": 3,
         "realized_accuracy_pct": 23.08,
         "realized_macro_f1_pct": 17.66,
         "approved_directional_trades": 0,
@@ -2077,7 +2076,7 @@
       },
       "full_history_logistic": {
         "evaluated_predictions": 13,
-        "pending_predictions": 2,
+        "pending_predictions": 3,
         "realized_accuracy_pct": 38.46,
         "realized_macro_f1_pct": 31.52,
         "approved_directional_trades": 0,
@@ -2095,7 +2094,7 @@
       },
       "lstm_sequence_15m": {
         "evaluated_predictions": 22,
-        "pending_predictions": 2,
+        "pending_predictions": 3,
         "realized_accuracy_pct": 40.91,
         "realized_macro_f1_pct": 37.22,
         "approved_directional_trades": 0,
@@ -2113,7 +2112,7 @@
       },
       "nearest_centroid": {
         "evaluated_predictions": 13,
-        "pending_predictions": 2,
+        "pending_predictions": 3,
         "realized_accuracy_pct": 23.08,
         "realized_macro_f1_pct": 23.33,
         "approved_directional_trades": 0,
@@ -2131,7 +2130,7 @@
       },
       "primary_ensemble": {
         "evaluated_predictions": 24,
-        "pending_predictions": 2,
+        "pending_predictions": 3,
         "realized_accuracy_pct": 45.83,
         "realized_macro_f1_pct": 35.25,
         "approved_directional_trades": 0,
@@ -2149,7 +2148,7 @@
       },
       "recent_regime_logistic": {
         "evaluated_predictions": 13,
-        "pending_predictions": 2,
+        "pending_predictions": 3,
         "realized_accuracy_pct": 61.54,
         "realized_macro_f1_pct": 55.64,
         "approved_directional_trades": 0,
@@ -2185,7 +2184,7 @@
       },
       "temporal_sequence_15m": {
         "evaluated_predictions": 23,
-        "pending_predictions": 2,
+        "pending_predictions": 3,
         "realized_accuracy_pct": 52.17,
         "realized_macro_f1_pct": 34.1,
         "approved_directional_trades": 3,
@@ -2203,7 +2202,7 @@
       },
       "temporal_sequence_1h": {
         "evaluated_predictions": 21,
-        "pending_predictions": 4,
+        "pending_predictions": 5,
         "realized_accuracy_pct": 57.14,
         "realized_macro_f1_pct": 42.31,
         "approved_directional_trades": 2,
@@ -2221,7 +2220,7 @@
       },
       "temporal_sequence_30m": {
         "evaluated_predictions": 22,
-        "pending_predictions": 3,
+        "pending_predictions": 4,
         "realized_accuracy_pct": 63.64,
         "realized_macro_f1_pct": 41.48,
         "approved_directional_trades": 0,
@@ -2239,7 +2238,7 @@
       },
       "temporal_sequence_4h": {
         "evaluated_predictions": 10,
-        "pending_predictions": 15,
+        "pending_predictions": 16,
         "realized_accuracy_pct": 100.0,
         "realized_macro_f1_pct": 33.33,
         "approved_directional_trades": 0,
@@ -2257,7 +2256,7 @@
       },
       "tree_ensemble_15m": {
         "evaluated_predictions": 24,
-        "pending_predictions": 2,
+        "pending_predictions": 3,
         "realized_accuracy_pct": 62.5,
         "realized_macro_f1_pct": 41.19,
         "approved_directional_trades": 9,
@@ -2275,7 +2274,7 @@
       },
       "tree_ensemble_30m": {
         "evaluated_predictions": 22,
-        "pending_predictions": 3,
+        "pending_predictions": 4,
         "realized_accuracy_pct": 59.09,
         "realized_macro_f1_pct": 37.41,
         "approved_directional_trades": 11,
@@ -2293,7 +2292,7 @@
       },
       "tree_ensemble_4h": {
         "evaluated_predictions": 10,
-        "pending_predictions": 15,
+        "pending_predictions": 16,
         "realized_accuracy_pct": 60.0,
         "realized_macro_f1_pct": 25.0,
         "approved_directional_trades": 0,
@@ -2311,7 +2310,7 @@
       },
       "tree_ensemble_60m": {
         "evaluated_predictions": 21,
-        "pending_predictions": 4,
+        "pending_predictions": 5,
         "realized_accuracy_pct": 66.67,
         "realized_macro_f1_pct": 52.31,
         "approved_directional_trades": 2,
