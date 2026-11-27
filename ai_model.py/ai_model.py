@@ -6,6 +6,7 @@ Public Kraken Spot OHLCV only; no API keys and no orders are placed.
 import bisect
 import json
 import math
+import time
 import urllib.request
 from datetime import datetime, timezone
 
@@ -83,6 +84,81 @@ def get_binance_spot_data(interval):
     if len(candles) < 210:
         raise ValueError(f"Not enough completed Binance Spot {interval} candles: {len(candles)}")
     return candles
+
+
+def get_coinbase_data(granularity_seconds, max_candles):
+    # Coinbase Exchange public candles: max 300 buckets per request, no API key.
+    candles_by_time = {}
+    remaining = max_candles
+    end_time = int(datetime.now(timezone.utc).timestamp())
+    while remaining > 0:
+        batch = min(300, remaining)
+        start_time = end_time - (batch - 1) * granularity_seconds
+        start_iso = datetime.fromtimestamp(start_time, timezone.utc).isoformat()
+        end_iso = datetime.fromtimestamp(end_time, timezone.utc).isoformat()
+        url = (
+            "https://api.exchange.coinbase.com/products/BTC-USD/candles"
+            f"?granularity={granularity_seconds}&start={start_iso}&end={end_iso}"
+        )
+        request = urllib.request.Request(
+            url, headers={"User-Agent": "BTC-Signal-Pro-Elite/3.2", "Accept": "application/json"}
+        )
+        last_error = None
+        for attempt in range(3):
+            try:
+                with urllib.request.urlopen(request, timeout=30) as response:
+                    rows = json.loads(response.read().decode("utf-8"))
+                last_error = None
+                break
+            except Exception as exc:
+                last_error = exc
+                if attempt < 2:
+                    time.sleep(1.5 * (attempt + 1))
+        if last_error is not None:
+            raise RuntimeError(f"Coinbase candles request failed: {last_error}")
+        if not isinstance(rows, list):
+            raise ValueError(f"Unexpected Coinbase response: {rows}")
+        for row in rows:
+            # Coinbase format: [time, low, high, open, close, volume].
+            timestamp = int(row[0]) * 1000
+            candles_by_time[timestamp] = {
+                "time": timestamp, "open": float(row[3]),
+                "high": float(row[2]), "low": float(row[1]),
+                "close": float(row[4]), "volume": float(row[5])
+            }
+        remaining -= batch
+        end_time = start_time - 1
+        if not rows:
+            break
+    candles = [candles_by_time[t] for t in sorted(candles_by_time)]
+    candles = candles[:-1]  # discard the currently forming candle
+    if len(candles) < 210:
+        raise ValueError(
+            f"Not enough completed Coinbase candles at {granularity_seconds}s: {len(candles)}"
+        )
+    return candles
+
+
+def aggregate_four_hour(hourly_candles):
+    buckets = {}
+    for candle in hourly_candles:
+        bucket = (candle["time"] // 14_400_000) * 14_400_000
+        buckets.setdefault(bucket, []).append(candle)
+    result = []
+    for bucket in sorted(buckets):
+        group = sorted(buckets[bucket], key=lambda item: item["time"])
+        if len(group) != 4:
+            continue
+        result.append({
+            "time": bucket, "open": group[0]["open"],
+            "high": max(item["high"] for item in group),
+            "low": min(item["low"] for item in group),
+            "close": group[-1]["close"],
+            "volume": sum(item["volume"] for item in group)
+        })
+    if len(result) < 210:
+        raise ValueError(f"Not enough complete Coinbase 4h candles: {len(result)}")
+    return result
 
 
 def get_kraken_data(interval_minutes):
@@ -343,13 +419,29 @@ def main():
             source = "Binance Spot public klines (fallback)"
             symbol = "BTC/USDT"
         except Exception as spot_exc:
-            print(f"Binance Spot unavailable ({spot_exc}); switching all timeframes to Kraken Spot.")
+            print(f"Binance Spot unavailable ({spot_exc}); trying Coinbase Exchange.")
             data = {}
-            source = "Kraken Spot public OHLC (fallback)"
-            symbol = "BTC/USD"
-            for tf, minutes in INTERVALS.items():
-                print(f"Loading Kraken Spot {tf} candles...")
-                data[tf] = get_kraken_data(minutes)
+            try:
+                print("Loading Coinbase Exchange 5m history...")
+                data["5m"] = get_coinbase_data(300, 3000)
+                print("Loading Coinbase Exchange 15m history...")
+                data["15m"] = get_coinbase_data(900, 3000)
+                print("Loading Coinbase Exchange 1h history for 1h and 4h...")
+                hourly = get_coinbase_data(3600, 3000)
+                data["1h"] = hourly
+                data["4h"] = aggregate_four_hour(hourly)
+                print("Loading Coinbase Exchange 1d history...")
+                data["1d"] = get_coinbase_data(86400, 400)
+                source = "Coinbase Exchange public candles (fallback)"
+                symbol = "BTC/USD"
+            except Exception as coinbase_exc:
+                print(f"Coinbase unavailable ({coinbase_exc}); switching all timeframes to Kraken Spot.")
+                data = {}
+                source = "Kraken Spot public OHLC (fallback)"
+                symbol = "BTC/USD"
+                for tf, minutes in INTERVALS.items():
+                    print(f"Loading Kraken Spot {tf} candles...")
+                    data[tf] = get_kraken_data(minutes)
     rows, labels = build_dataset(data)
     if len(rows) < 250:
         raise ValueError(f"Not enough aligned multi-timeframe samples: {len(rows)}")
@@ -366,7 +458,7 @@ def main():
     result = {
         "system": "BTC Signal Pro Elite Advanced ML",
         "model": "Multinomial Logistic Regression",
-        "model_version": "3.1-multi-source-mtf-balanced-walkforward",
+        "model_version": "3.2-expanded-history-multi-source-walkforward",
         "data_source": source,
         "symbol": symbol,
         "base_interval": "5m",
@@ -384,7 +476,7 @@ def main():
         "last_candle_time": data["5m"][-1]["time"],
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "limitations": [
-            "Uses one consistent OHLCV source across all timeframes. Source fallback order is Binance USD-M Futures, Binance Spot, then Kraken Spot. When a spot source is used, it is not Futures data; CVD, open interest, funding, order book and liquidation feeds are not model features yet.",
+            "Uses one consistent OHLCV source across all timeframes. Source fallback order is Binance USD-M Futures, Binance Spot, Coinbase Exchange, then Kraken Spot. Coinbase 4h candles are aggregated from 1h candles. Spot sources are not Futures data; CVD, open interest, funding, order book and liquidation feeds are not model features yet.",
             "Class scores are model scores, not calibrated real-world win probabilities.",
             "Walk-forward metrics are historical diagnostics, not guarantees of future performance."
         ]
