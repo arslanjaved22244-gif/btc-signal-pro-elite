@@ -726,6 +726,15 @@ def walk_forward_validate(rows, labels, forward_returns=None, round_trip_cost_pc
     if test_size < 25:
         raise ValueError("Not enough samples for three walk-forward test windows.")
     actual_all, predicted_all, regime_all, fold_results = [], [], [], []
+    decision_diagnostics = {
+        "raw_argmax_counts": {name: 0 for name in CLASSES},
+        "actionable_counts": {name: 0 for name in CLASSES},
+        "blocked_by_wait_probability": 0,
+        "blocked_by_direction_confidence": 0,
+        "blocked_by_confidence_margin": 0,
+        "directional_candidate_scores": {"SHORT": [], "LONG": []},
+        "directional_candidate_margins": {"SHORT": [], "LONG": []}
+    }
     baseline_correct = 0
     baseline_total = 0
     for fold in range(3):
@@ -743,7 +752,23 @@ def walk_forward_validate(rows, labels, forward_returns=None, round_trip_cost_pc
         for row_index in range(test_start, test_end):
             row, actual = rows[row_index], labels[row_index]
             probs = predict_ensemble(model, row)
+            raw_candidate = max(range(len(CLASSES)), key=lambda k: probs[k])
+            decision_diagnostics["raw_argmax_counts"][CLASSES[raw_candidate]] += 1
+            if raw_candidate in (0, 2):
+                candidate_name = CLASSES[raw_candidate]
+                ordered_probs = sorted((float(value) for value in probs), reverse=True)
+                candidate_margin = ordered_probs[0] - ordered_probs[1]
+                decision_diagnostics["directional_candidate_scores"][candidate_name].append(float(probs[raw_candidate]))
+                decision_diagnostics["directional_candidate_margins"][candidate_name].append(candidate_margin)
             predicted = predict_actionable_class(probs, wait_threshold)
+            decision_diagnostics["actionable_counts"][CLASSES[predicted]] += 1
+            if predicted == 1 and raw_candidate in (0, 2):
+                if float(probs[1]) >= wait_threshold:
+                    decision_diagnostics["blocked_by_wait_probability"] += 1
+                elif float(probs[raw_candidate]) < 0.48:
+                    decision_diagnostics["blocked_by_direction_confidence"] += 1
+                elif candidate_margin < 0.10:
+                    decision_diagnostics["blocked_by_confidence_margin"] += 1
             fold_actual.append(actual)
             fold_predicted.append(predicted)
             fold_regimes.append(classify_feature_regime(row))
@@ -789,6 +814,26 @@ def walk_forward_validate(rows, labels, forward_returns=None, round_trip_cost_pc
         baseline_correct / max(1, baseline_total) * 100, 2
     )
     aggregate["balanced_random_baseline_pct"] = round(100 / len(CLASSES), 2)
+    aggregate["decision_diagnostics"] = {
+        "raw_argmax_counts": decision_diagnostics["raw_argmax_counts"],
+        "actionable_counts": decision_diagnostics["actionable_counts"],
+        "blocked_by_wait_probability": decision_diagnostics["blocked_by_wait_probability"],
+        "blocked_by_direction_confidence": decision_diagnostics["blocked_by_direction_confidence"],
+        "blocked_by_confidence_margin": decision_diagnostics["blocked_by_confidence_margin"],
+        "directional_candidate_score_summary": {
+            side: {
+                "count": len(values),
+                "mean_pct": round(sum(values) / len(values) * 100.0, 2) if values else None,
+                "p90_pct": round(sorted(values)[min(len(values)-1, int(0.90 * (len(values)-1)))] * 100.0, 2) if values else None
+            }
+            for side, values in decision_diagnostics["directional_candidate_scores"].items()
+        },
+        "directional_candidate_margin_mean_pct": {
+            side: round(sum(values) / len(values) * 100.0, 2) if values else None
+            for side, values in decision_diagnostics["directional_candidate_margins"].items()
+        },
+        "note": "Diagnostics only. Does not change WAIT/LONG/SHORT decisions or validation thresholds."
+    }
     aggregate["regime_breakdown"] = {}
     for regime in ("BULL_TREND", "BEAR_TREND", "RANGE_CHOP", "TRANSITION"):
         indices = [i for i, value in enumerate(regime_all) if value == regime]
