@@ -1,14 +1,14 @@
 {
-  "available": true,
+  "available": false,
   "source": "Binance USD-M forceOrder WebSocket",
-  "generated_at": "2026-11-27T01:44:40.056420+00:00",
-  "sample_window_seconds": 45,
+  "generated_at": "2026-11-27T01:45:36.854142+00:00",
+  "sample_window_seconds": 10,
   "continuous": false,
-  "connected": true,
+  "connected": false,
   "errors": [],
   "event_count": 0,
   "long_liquidation_notional_usdt": 0,
   "short_liquidation_notional_usdt": 0,
   "events": [],
-  "warning": "Only events observed during this short GitHub Actions sample are included; this is not continuous market-wide liquidation coverage."
+  "warning": "WebSocket did not connect; liquidation data is unavailable."
 }

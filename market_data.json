@@ -4,7 +4,7 @@
   "symbol": "BTCUSDT",
   "market_type": "BYBIT_LINEAR_USDT_PERPETUAL",
   "exchange": "Bybit",
-  "generated_at": "2026-11-27T01:43:43.838464+00:00",
+  "generated_at": "2026-11-27T01:45:19.786193+00:00",
   "source": "https://api.bybit.com/v5/market (linear USDT perpetual)",
   "timeframes": {
     "5m": {
@@ -32,37 +32,37 @@
     "mark_price_funding": {
       "ok": false,
       "error": "HTTP Error 403: Forbidden",
-      "latency_ms": 46
+      "latency_ms": 10
     },
     "open_interest_current": {
       "ok": false,
       "error": "HTTP Error 403: Forbidden",
-      "latency_ms": 52
+      "latency_ms": 9
     },
     "open_interest_history_5m": {
       "ok": false,
       "error": "HTTP Error 403: Forbidden",
-      "latency_ms": 111
+      "latency_ms": 9
     },
     "taker_flow_5m": {
       "ok": false,
       "error": "HTTP Error 403: Forbidden",
-      "latency_ms": 82
+      "latency_ms": 9
     },
     "order_book": {
       "ok": false,
       "error": "HTTP Error 403: Forbidden",
-      "latency_ms": 80
+      "latency_ms": 10
     },
     "recent_agg_trades": {
       "ok": false,
       "error": "HTTP Error 403: Forbidden",
-      "latency_ms": 55
+      "latency_ms": 10
     },
     "funding_history": {
       "ok": false,
       "error": "HTTP Error 403: Forbidden",
-      "latency_ms": 102
+      "latency_ms": 9
     },
     "liquidations": {
       "ok": false,
