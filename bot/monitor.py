@@ -37,7 +37,7 @@ def news_scan():
  # Third-party archive says it checks @realDonaldTrump posts every few minutes.
  try:
   req=urllib.request.Request("https://www.trumpstruth.org/feed",headers={"User-Agent":"Mozilla/5.0 BTC-Signal-Pro-Elite","Accept":"application/rss+xml, application/xml, text/xml"})
-  with urllib.request.urlopen(req,timeout=15) as r:root=ET.fromstring(r)
+  with urllib.request.urlopen(req,timeout=15) as r:root=ET.fromstring(r.read())
   for item in root.findall(".//item"):
    title=item.findtext("title") or "Donald Trump Truth Social post"
    desc=item.findtext("description") or ""
