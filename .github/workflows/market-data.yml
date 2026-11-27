@@ -15,7 +15,7 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: btc-signal-publish
+  group: btc-signal-market-data
   cancel-in-progress: false
 jobs:
   collect:
