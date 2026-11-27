@@ -456,7 +456,9 @@ def train_stumps(rows, labels, max_stumps=48):
             if score>majority+0.005: candidates.append((score,j,threshold,lp,rp))
     candidates.sort(key=lambda z:z[0],reverse=True)
     chosen=candidates[:max_stumps]
-    if not chosen: raise ValueError("Decision-stump model found no useful splits")
+    if not chosen:
+        global_probs=[(labels.count(k)+1)/(n+3) for k in range(3)]
+        chosen=[(majority,0,0.0,global_probs,global_probs)]
     return {"means":means,"scales":scales,"stumps":[{"feature":j,"threshold":t,"left":lp,"right":rp,"weight":max(0.005,score-majority)} for score,j,t,lp,rp in chosen]}
 
 def predict_stumps(model,row):
