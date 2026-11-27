@@ -790,7 +790,21 @@ def derivatives_feed_score(payload):
         "order_book",
         "recent_agg_trades",
     )
-    return sum(1 for name in required if feeds.get(name, {}).get("ok") is True)
+    def independently_verified(feed):
+        if not isinstance(feed, dict) or feed.get("ok") is not True:
+            return False
+        # A feed borrowed from another exchange is useful context, but it must
+        # not count as coverage for the selected venue's own derivatives set.
+        venue = str(feed.get("venue", "")).lower()
+        note = str(feed.get("note", "")).lower()
+        if "cross-venue" in venue or "cross venue" in venue:
+            return False
+        if "cross-venue" in note or "cross venue" in note:
+            return False
+        data = feed.get("data")
+        return data is not None and data != [] and data != {}
+
+    return sum(1 for name in required if independently_verified(feeds.get(name)))
 
 
 def _valid_core_snapshot(payload):
