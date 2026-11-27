@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BTC Signal Pro Elite — AI Terminal</title>
+<style>
+:root{color-scheme:dark;--bg:#080d18;--panel:#111a2b;--line:#24334b;--muted:#91a2bd;--text:#edf3ff;--green:#27d99a;--red:#ff647c;--amber:#f6c76b;--blue:#78aaff}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#142542 0,#080d18 55%);color:var(--text);font:15px system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1100px;margin:auto;padding:22px 16px 48px}.top{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+h1{font-size:clamp(22px,4vw,32px);margin:0}.sub,.muted{color:var(--muted)}.sub{margin:5px 0 18px}.pill{border:1px solid var(--line);border-radius:99px;padding:7px 12px;font-size:12px;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:14px 0}.card{background:linear-gradient(145deg,#142038,#0e1727);border:1px solid var(--line);border-radius:16px;padding:16px;min-width:0}.label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}.value{font-size:clamp(20px,4vw,28px);font-weight:750;margin-top:8px;overflow-wrap:anywhere}.small{font-size:12px;color:var(--muted);margin-top:6px}
+.signal{font-size:34px;font-weight:850}.LONG{color:var(--green)}.SHORT{color:var(--red)}.WAIT{color:var(--amber)}
+.section{margin:24px 0 10px;font-size:17px}.rows{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}.tf{background:#0e1727;border:1px solid var(--line);border-radius:12px;padding:12px}.tf b{display:block;font-size:18px;margin-top:7px}.ok{color:var(--green)}.bad{color:var(--red)}
+table{width:100%;border-collapse:collapse;font-size:13px}td{padding:10px 4px;border-bottom:1px solid var(--line)}td:last-child{text-align:right;overflow-wrap:anywhere}.notice{border-left:3px solid var(--amber);padding:10px 12px;background:#201d17;border-radius:8px;color:#e8d9b4;font-size:13px;margin-top:14px}
+footer{color:var(--muted);font-size:12px;margin-top:24px;line-height:1.6}
+@media(max-width:760px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.rows{grid-template-columns:repeat(2,minmax(0,1fr))}}
+</style></head>
+<body><main>
+<div class="top"><div><h1>BTC Signal Pro Elite</h1><div class="sub">Advanced AI • Futures market intelligence</div></div><div class="pill" id="status">CONNECTING…</div></div>
+<div class="grid">
+ <div class="card"><div class="label">AI Signal</div><div class="signal WAIT" id="signal">WAIT</div><div class="small" id="model">AI model loading</div></div>
+ <div class="card"><div class="label">BTC Price</div><div class="value" id="price">—</div><div class="small" id="priceSource">Futures feed</div></div>
+ <div class="card"><div class="label">Funding Rate</div><div class="value" id="funding">—</div><div class="small" id="mark">Mark price —</div></div>
+ <div class="card"><div class="label">Open Interest</div><div class="value" id="oi">—</div><div class="small">Current contracts</div></div>
+</div>
+<h2 class="section">Multi-timeframe Futures data</h2><div class="rows" id="timeframes"></div>
+<h2 class="section">Order flow & positioning</h2><div class="grid">
+ <div class="card"><div class="label">Rolling CVD</div><div class="value" id="cvd">—</div><div class="small">Latest 1,000 aggregate trades</div></div>
+ <div class="card"><div class="label">Aggressive Buy</div><div class="value" id="buy">—</div><div class="small">BTC volume</div></div>
+ <div class="card"><div class="label">Aggressive Sell</div><div class="value" id="sell">—</div><div class="small">BTC volume</div></div>
+ <div class="card"><div class="label">Book Imbalance</div><div class="value" id="imbalance">—</div><div class="small">Top 100 visible levels</div></div>
+</div>
+<h2 class="section">AI model assessment</h2><div class="card"><table>
+<tr><td>Model version</td><td id="version">—</td></tr><tr><td>Training samples</td><td id="samples">—</td></tr>
+<tr><td>Walk-forward accuracy</td><td id="accuracy">—</td></tr><tr><td>Macro F1</td><td id="f1">—</td></tr>
+<tr><td>SHORT score</td><td id="short">—</td></tr><tr><td>WAIT score</td><td id="wait">—</td></tr><tr><td>LONG score</td><td id="long">—</td></tr>
+</table><div class="notice" id="warning">Signals are for manual review only. No orders are placed.</div></div>
+<footer>Data refresh: every 5 minutes via scheduled collector; AI refresh: according to model workflow. This web page polls published snapshots every 30 seconds. It does not execute trades. Futures data unavailable or stale means WAIT. Model scores are not verified win probabilities.</footer>
+</main>
+<script>
+const $=id=>document.getElementById(id),fmt=(n,d=2)=>Number.isFinite(Number(n))?Number(n).toLocaleString(undefined,{maximumFractionDigits:d}):"—";
+async function get(path){const r=await fetch(path+"?t="+Date.now(),{cache:"no-store"});if(!r.ok)throw Error(path+" HTTP "+r.status);return r.json()}
+async function refresh(){
+ try{
+  const [m,a]=await Promise.all([get("./market_data.json"),get("./ai_result.json")]);
+  const q=m.data_quality||{},tf=m.timeframes||{},feeds=m.feeds||{},derived=m.derived||{};
+  const good=q.status==="HEALTHY"&&q.five_minute_data_fresh;
+  $("status").textContent=good?"FUTURES DATA HEALTHY":"DATA DEGRADED";
+  $("status").style.color=good?"var(--green)":"var(--red)";
+  const signal=good?(a.signal||"WAIT"):"WAIT";
+  $("signal").textContent=signal;$("signal").className="signal "+signal;
+  $("model").textContent=(a.model_version||"Model pending")+" • "+(a.data_source||"");
+  const candles=tf["5m"]?.candles||[],last=candles[candles.length-1];
+  $("price").textContent=last?"$"+fmt(last.close):"—";
+  $("priceSource").textContent="Binance USD-M Futures • "+(tf["5m"]?.age_seconds??"—")+"s old";
+  const premium=feeds.mark_price_funding?.data;
+  $("funding").textContent=premium?fmt(Number(premium.lastFundingRate)*100,5)+"%":"—";
+  $("mark").textContent="Mark price "+(premium?"$"+fmt(premium.markPrice):"—");
+  const oi=feeds.open_interest_current?.data;$("oi").textContent=oi?fmt(oi.openInterest,0):"—";
+  $("timeframes").innerHTML=["5m","15m","1h","4h","1d"].map(k=>{const x=tf[k];return '<div class="tf"><span class="muted">'+k+'</span><b class="'+(x?.ok?'ok':'bad')+'">'+(x?.ok?'READY':'MISSING')+'</b><div class="small">'+(x?.age_seconds??'—')+' sec old</div></div>'}).join("");
+  $("cvd").textContent=derived.cvd_base==null?"—":fmt(derived.cvd_base,4)+" BTC";
+  $("buy").textContent=derived.aggressive_buy_base==null?"—":fmt(derived.aggressive_buy_base,4);
+  $("sell").textContent=derived.aggressive_sell_base==null?"—":fmt(derived.aggressive_sell_base,4);
+  $("imbalance").textContent=derived.order_book_imbalance==null?"—":fmt(derived.order_book_imbalance*100,2)+"%";
+  $("version").textContent=a.model_version||"—";$("samples").textContent=fmt(a.training_samples,0);
+  $("accuracy").textContent=a.walk_forward_metrics?.accuracy==null?"—":a.walk_forward_metrics.accuracy+"%";
+  $("f1").textContent=a.walk_forward_metrics?.macro_f1==null?"—":a.walk_forward_metrics.macro_f1+"%";
+  $("short").textContent=(a.class_scores?.SHORT??"—")+"%";$("wait").textContent=(a.class_scores?.WAIT??"—")+"%";$("long").textContent=(a.class_scores?.LONG??"—")+"%";
+  const warnings=[...(q.warnings||[])];if(!good)warnings.unshift("Market data is degraded or stale; signal forced to WAIT.");
+  if(a.data_source&&/Spot|Kraken|Coinbase/i.test(a.data_source))warnings.push("AI training data is spot market fallback, not Futures. Treat model output cautiously.");
+  $("warning").textContent=warnings.length?warnings.join(" "):"Manual signals only. No orders are placed. Liquidations feed is not connected.";
+ }catch(e){$("status").textContent="WAITING FOR DATA";$("signal").textContent="WAIT";$("signal").className="signal WAIT";$("warning").textContent="Live data files not published yet: "+e.message}
+}
+refresh();setInterval(refresh,30000);
+</script></body></html>
