@@ -265,6 +265,7 @@ button{background:#f5b942;color:#111;border:0;padding:12px 18px;border-radius:8p
 <div class="scoretile">Tree AI ensemble<b id="advTreeStatus">Loading</b><small id="advTreeModels">Random Forest / Boosting / XGBoost</small></div>
 <div class="scoretile">Market regime<b id="advRegime">--</b><small id="advVolatility">Volatility: --</small></div>
 </div>
+<div class="metric"><span>Tree ensemble forecasts</span><b id="advTreeForecast">Waiting for tree models</b></div>
 <div class="metric"><span>Liquidity sweep detector</span><b id="advSweep">--</b></div>
 <div class="metric"><span>Regime explanation</span><b id="advRegimeWhy">Waiting for analysis</b></div>
 <div class="metric"><span>Model update</span><b id="advUpdated">Waiting...</b></div>
@@ -1387,7 +1388,8 @@ async function loadAdvancedIntelligence(force=false){
    setText(id,side);if(el)el.className=side==="LONG"?"green":side==="SHORT"?"red":"yellow";
    setText(id+"Meta",x.holdout_accuracy!=null?"Holdout "+x.holdout_accuracy+"% • n="+(x.validation_samples||0):x.status||"Not ready");
   }
-  const tree=a.tree_ensemble||{};\n  setText("advTreeStatus",tree.status||"NOT READY");\n  setText("advTreeModels",(tree.algorithms||[]).join(" • ")||"Models unavailable");\n  const r=a.market_regime||{};
+  const tree=a.tree_ensemble||{};\n  setText("advTreeStatus",tree.status||"NOT READY");\n  setText("advTreeModels",(tree.algorithms||[]).join(" • ")||"Models unavailable");
+  const tf=tree.forecasts||{};\n  setText("advTreeForecast",["15m","30m","60m","4h"].map(h=>{const x=tf[h]||{};return h+": "+(x.signal||"WAIT")+(x.holdout_accuracy!=null?" • "+x.holdout_accuracy+"% holdout":"");}).join(" | ")||"Tree forecasts unavailable");\n  const r=a.market_regime||{};
   setText("advRegime",r.regime||"--");setText("advVolatility","ATR ratio: "+(r.atr_ratio??"--"));
   setText("advSweep",r.liquidity_sweep||"NONE");setText("advRegimeWhy",r.explanation||"--");
   setText("advUpdated",data.generated_at?new Date(data.generated_at).toLocaleString():"--");
