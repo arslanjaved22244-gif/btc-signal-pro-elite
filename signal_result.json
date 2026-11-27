@@ -1,7 +1,7 @@
 {
   "system": "BTC Signal Pro Elite Hybrid Confluence Engine",
   "version": "4.1-hybrid-futures-confluence",
-  "generated_at": "2026-11-27T01:33:45.084034+00:00",
+  "generated_at": "2026-11-27T01:39:58.698852+00:00",
   "symbol": "BTCUSDT",
   "market_type": "BINANCE_USDM_FUTURES",
   "signal": "WAIT",
@@ -73,15 +73,13 @@
     ]
   },
   "news_guard": {
-    "generated_at": "2026-11-27T01:32:45.958595+00:00",
-    "source": "GDELT DOC public API",
-    "available": false,
+    "generated_at": "2026-11-27T01:39:00.538369+00:00",
+    "source": "Google News RSS public fallback",
+    "available": true,
     "block": false,
     "block_until": null,
     "matched_events": [],
-    "warnings": [
-      "News feed unavailable: HTTP Error 429: Too Many Requests"
-    ]
+    "warnings": []
   },
   "volatility_guard": {
     "blocked": false,
@@ -99,8 +97,7 @@
     "order_book feed unavailable: Expecting value: line 1 column 1 (char 0)",
     "recent_agg_trades feed unavailable: Expecting value: line 1 column 1 (char 0)",
     "funding_history feed unavailable: Expecting value: line 1 column 1 (char 0)",
-    "Liquidation feed is not connected yet.",
-    "News monitor unavailable; verify major headlines manually before any trade."
+    "Liquidation feed is not connected yet."
   ],
   "execution": "MANUAL_ONLY_NO_ORDERS"
 }

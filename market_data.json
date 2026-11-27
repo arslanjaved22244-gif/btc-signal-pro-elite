@@ -3,7 +3,7 @@
   "version": "4.0-market-data-foundation",
   "symbol": "BTCUSDT",
   "market_type": "BINANCE_USDM_FUTURES",
-  "generated_at": "2026-11-27T01:32:18.141610+00:00",
+  "generated_at": "2026-11-27T01:38:43.700895+00:00",
   "source": "https://fapi.binance.com",
   "timeframes": {
     "5m": {
@@ -31,37 +31,37 @@
     "mark_price_funding": {
       "ok": false,
       "error": "Expecting value: line 1 column 1 (char 0)",
-      "latency_ms": 2259
+      "latency_ms": 1364
     },
     "open_interest_current": {
       "ok": false,
       "error": "Expecting value: line 1 column 1 (char 0)",
-      "latency_ms": 2316
+      "latency_ms": 1358
     },
     "open_interest_history_5m": {
       "ok": false,
       "error": "Expecting value: line 1 column 1 (char 0)",
-      "latency_ms": 2244
+      "latency_ms": 1354
     },
     "taker_flow_5m": {
       "ok": false,
       "error": "Expecting value: line 1 column 1 (char 0)",
-      "latency_ms": 2299
+      "latency_ms": 1357
     },
     "order_book": {
       "ok": false,
       "error": "Expecting value: line 1 column 1 (char 0)",
-      "latency_ms": 2283
+      "latency_ms": 1362
     },
     "recent_agg_trades": {
       "ok": false,
       "error": "Expecting value: line 1 column 1 (char 0)",
-      "latency_ms": 2269
+      "latency_ms": 1371
     },
     "funding_history": {
       "ok": false,
       "error": "Expecting value: line 1 column 1 (char 0)",
-      "latency_ms": 2247
+      "latency_ms": 1356
     },
     "liquidations": {
       "ok": false,
