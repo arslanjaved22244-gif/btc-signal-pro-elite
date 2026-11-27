@@ -261,6 +261,8 @@ button{background:#f5b942;color:#111;border:0;padding:12px 18px;border-radius:8p
 <div class="scoretile">15-minute forecast<b id="adv15">WAIT</b><small id="adv15Meta">Awaiting model</small></div>
 <div class="scoretile">30-minute forecast<b id="adv30">WAIT</b><small id="adv30Meta">Awaiting model</small></div>
 <div class="scoretile">60-minute forecast<b id="adv60">WAIT</b><small id="adv60Meta">Awaiting model</small></div>
+<div class="scoretile">4-hour forecast<b id="adv4h">WAIT</b><small id="adv4hMeta">Awaiting model</small></div>
+<div class="scoretile">Tree AI ensemble<b id="advTreeStatus">Loading</b><small id="advTreeModels">Random Forest / Boosting / XGBoost</small></div>
 <div class="scoretile">Market regime<b id="advRegime">--</b><small id="advVolatility">Volatility: --</small></div>
 </div>
 <div class="metric"><span>Liquidity sweep detector</span><b id="advSweep">--</b></div>
@@ -1367,12 +1369,12 @@ async function loadAdvancedIntelligence(force=false){
   if(!response.ok)throw Error("AI result HTTP "+response.status);
   const data=await response.json(),a=data.advanced_intelligence;
   if(!a)throw Error("Advanced AI model output not published yet");
-  for(const [h,id] of [["15m","adv15"],["30m","adv30"],["60m","adv60"]]){
+  for(const [h,id] of [["15m","adv15"],["30m","adv30"],["60m","adv60"],["4h","adv4h"]]){
    const x=a.multi_horizon_forecasts?.[h]||{},el=$(id),side=x.signal||"WAIT";
    setText(id,side);if(el)el.className=side==="LONG"?"green":side==="SHORT"?"red":"yellow";
    setText(id+"Meta",x.holdout_accuracy!=null?"Holdout "+x.holdout_accuracy+"% • n="+(x.validation_samples||0):x.status||"Not ready");
   }
-  const r=a.market_regime||{};
+  const tree=a.tree_ensemble||{};\n  setText("advTreeStatus",tree.status||"NOT READY");\n  setText("advTreeModels",(tree.algorithms||[]).join(" • ")||"Models unavailable");\n  const r=a.market_regime||{};
   setText("advRegime",r.regime||"--");setText("advVolatility","ATR ratio: "+(r.atr_ratio??"--"));
   setText("advSweep",r.liquidity_sweep||"NONE");setText("advRegimeWhy",r.explanation||"--");
   setText("advUpdated",data.generated_at?new Date(data.generated_at).toLocaleString():"--");
