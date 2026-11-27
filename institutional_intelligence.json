@@ -1,0 +1,113 @@
+{
+  "system": "BTC Signal Pro Elite Institutional Intelligence",
+  "version": "1.0-six-upgrades",
+  "generated_at": "2026-11-27T20:20:16.361998+00:00",
+  "market_regime": {
+    "status": "INSUFFICIENT_DATA",
+    "regime": "UNKNOWN",
+    "reason": "At least 205 completed 1h Futures candles are required."
+  },
+  "volume_profile": {
+    "status": "AVAILABLE",
+    "method": "15m typical-price volume bins; last 400 candles maximum",
+    "poc": 60442.66,
+    "value_area_high": 61196.36,
+    "value_area_low": 59473.61,
+    "vwap": 60623.47,
+    "last_price": 59758.5,
+    "price_vs_vwap": "BELOW",
+    "total_sampled_volume": 87756.6382,
+    "note": "Estimated profile from candle volume, not exchange tick-level volume-at-price."
+  },
+  "liquidity_structure": {
+    "status": "NO_CONFIRMED_SWEEP_OR_BREAKOUT"
+  },
+  "options": {
+    "status": "AVAILABLE",
+    "venue": "Deribit public BTC options",
+    "put_call_open_interest_ratio": 0.8034,
+    "call_open_interest": 189291.5,
+    "put_open_interest": 152078.6,
+    "call_volume_24h": 13941.8,
+    "put_volume_24h": 15328.5,
+    "average_call_mark_iv_pct": 54.73,
+    "average_put_mark_iv_pct": 54.73,
+    "approx_max_pain_strike": 68000.0,
+    "btc_index_price": 59742.71,
+    "instruments_sampled": 960,
+    "note": "Aggregated listed BTC options snapshot; max-pain is an approximation across returned instruments, not a price target."
+  },
+  "macro_correlations": {
+    "status": "AVAILABLE",
+    "window": "14 days of hourly returns",
+    "correlations_vs_btc": {
+      "NASDAQ": {
+        "correlation": 0.849,
+        "samples": 61,
+        "status": "AVAILABLE"
+      },
+      "DXY": {
+        "correlation": -0.492,
+        "samples": 205,
+        "status": "AVAILABLE"
+      },
+      "GOLD": {
+        "correlation": 0.7,
+        "samples": 197,
+        "status": "AVAILABLE"
+      }
+    },
+    "note": "Yahoo Finance hourly proxy correlations; asynchronous market hours and feed gaps can reduce comparability."
+  },
+  "next_move_scenarios": {
+    "15m": {
+      "status": "RESEARCH_ONLY",
+      "scenario": "SHORT_BIAS",
+      "directional_score": -7.03,
+      "recent_momentum_pct": -0.2149,
+      "ema_spread_bps": -2.92,
+      "atr_pct": 0.1246,
+      "regime": "UNKNOWN",
+      "note": "Heuristic scenario, not a calibrated probability or an entry signal."
+    },
+    "30m": {
+      "status": "RESEARCH_ONLY",
+      "scenario": "SHORT_BIAS",
+      "directional_score": -7.5,
+      "recent_momentum_pct": -0.4012,
+      "ema_spread_bps": -2.92,
+      "atr_pct": 0.1246,
+      "regime": "UNKNOWN",
+      "note": "Heuristic scenario, not a calibrated probability or an entry signal."
+    },
+    "1h": {
+      "status": "RESEARCH_ONLY",
+      "scenario": "SHORT_BIAS",
+      "directional_score": -36.33,
+      "recent_momentum_pct": -0.1087,
+      "ema_spread_bps": -30.42,
+      "atr_pct": 0.38,
+      "regime": "UNKNOWN",
+      "note": "Heuristic scenario, not a calibrated probability or an entry signal."
+    }
+  },
+  "signal_quality_gate": {
+    "status": "BLOCKED",
+    "passed": false,
+    "checks": {
+      "ai_validation_passed": false,
+      "model_beats_majority_baseline": false,
+      "macro_f1_at_least_30": true,
+      "shadow_sample_at_least_30": false,
+      "shadow_validation_passed": false,
+      "cost_aware_backtest_completed": false,
+      "cost_aware_backtest_positive": false
+    },
+    "passed_checks": 1,
+    "total_checks": 7,
+    "policy": "Directional signals remain blocked until AI validation beats the majority baseline, macro-F1 is >=30, shadow sample >=30 and passes its validation, and a >=300-candle cost-aware holdout backtest is positive.",
+    "note": "This is a conservative evidence gate, not proof of future profitability."
+  },
+  "execution": "MANUAL_ONLY_NO_ORDERS",
+  "disclaimer": "Public-data research context only. Scenarios are not calibrated probabilities; unavailable feeds are explicitly marked."
+}
