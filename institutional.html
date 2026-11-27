@@ -6,6 +6,7 @@
 <h1>₿ BTC Signal Pro Elite</h1><p class="muted">INSTITUTIONAL INTELLIGENCE • PUBLIC DATA • MANUAL TRADING ONLY</p>
 <p><a href="./index.html">← Back to main dashboard</a> · <button onclick="refresh()">Refresh now</button> <span id="updated" class="muted">Loading...</span></p>
 <div class="card"><h2>Signal Quality Gate</h2><div class="value yellow" id="gate">WAIT / LOADING</div><p id="gatePolicy" class="note">Directional entries remain blocked until evidence thresholds pass.</p><div class="grid" id="checks"></div></div>
+<div class="card"><h2>Live Data Feed Health • 11 Checks</h2><div class="value yellow" id="feedStatus">Checking sources...</div><div class="grid" id="feedChecks"></div><p class="note" id="feedNote">Source availability and freshness only; not proof of prediction accuracy.</p></div>
 <div class="grid">
 <div class="card"><h2>Market Regime AI</h2><div class="value" id="regime">--</div><div class="note" id="regimeMeta">--</div></div>
 <div class="card"><h2>Volume Profile + VWAP</h2><div class="row"><span>POC</span><b id="poc">--</b></div><div class="row"><span>Value Area High</span><b id="vah">--</b></div><div class="row"><span>Value Area Low</span><b id="val">--</b></div><div class="row"><span>VWAP</span><b id="vwap">--</b></div><div class="note" id="profileNote">--</div></div>
@@ -23,6 +24,7 @@ async function refresh(){try{const r=await fetch("./institutional_intelligence.j
 $("updated").textContent="Updated "+new Date(d.generated_at).toLocaleString();
 const g=d.signal_quality_gate||{};$("gate").textContent=(g.status||"UNKNOWN")+" • "+(g.passed_checks||0)+"/"+(g.total_checks||0)+" checks";$("gate").className="value "+(g.passed?"green":"red");$("gatePolicy").textContent=g.policy||g.note||"";
 $("checks").innerHTML=Object.entries(g.checks||{}).map(([k,v])=>'<div class="tile"><b class="'+(v?"green":"red")+'">'+(v?"PASS":"BLOCKED")+'</b><div>'+k.replaceAll("_"," ")+'</div></div>').join("");
+const fh=d.feed_health||{};$("feedStatus").textContent=(fh.status||"UNKNOWN")+" • "+(fh.passed||0)+"/"+(fh.total||11)+" available";$("feedStatus").className="value "+(fh.passed===fh.total?"green":"yellow");$("feedChecks").innerHTML=(fh.items||[]).map(x=>'<div class="tile"><b class="'+(x.passed?"green":"red")+'">'+(x.passed?"AVAILABLE":"UNAVAILABLE")+'</b><div>'+x.name.replaceAll("_"," ")+'</div><small>'+x.detail+'</small></div>').join("");$("feedNote").textContent=fh.note||"Feed health unavailable";
 const m=d.market_regime||{};$("regime").textContent=m.regime||m.status||"--";$("regimeMeta").textContent="EMA spread "+fmt(m.ema50_200_spread_pct)+"% • 6h slope "+fmt(m.ema50_slope_6h_pct)+"% • ATR "+fmt(m.atr_pct)+"%";
 const p=d.volume_profile||{};$("poc").textContent="$"+fmt(p.poc);$("vah").textContent="$"+fmt(p.value_area_high);$("val").textContent="$"+fmt(p.value_area_low);$("vwap").textContent="$"+fmt(p.vwap);$("profileNote").textContent=p.note||p.status||"--";
 const l=d.liquidity_structure||{};$("liquidity").textContent=l.status||"--";$("liquidityNote").textContent=(l.note||"")+" "+(l.level?"Level $"+fmt(l.level):"");
