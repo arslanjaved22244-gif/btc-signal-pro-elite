@@ -342,6 +342,7 @@ def run():
         "timeframe_analysis": analyses,
         "liquidity_sweep": liquidity_sweep,
         "order_flow": {"cvd_base": cvd, "order_book_imbalance": imbalance,
+                       "order_book_imbalance_method": derived.get("order_book_imbalance_method"),
                        "funding_rate_pct": round(funding_pct, 6), "funding_crowding": crowding,
                        "open_interest_change_30m_pct": round(oi_change_pct, 4) if oi_change_pct is not None else None,
                        "taker_buy_sell_ratio": taker_ratio},
