@@ -1,14 +1,14 @@
 {
-  "price": 60125.1,
-  "funding_rate": 1.60685937601e-05,
-  "funding_percent": 0.0016068593760099998,
-  "open_interest": 3200659.940000013,
+  "price": 60095.9,
+  "funding_rate": 1.4122708496e-05,
+  "funding_percent": 0.0014122708496,
+  "open_interest": 3205490.6200000136,
   "oi_change_5m_pct": 0.08255206550959336,
   "oi_history": [
     {
       "timestamp": "1795793700000",
-      "oi_contracts": "3216663.3500000125",
-      "oi_coin": "32180.7685000001271",
+      "oi_contracts": "3205149.72000001292",
+      "oi_coin": "32051.4972000001292",
       "oi_usd": "1928762811.2736074952"
     },
     {
@@ -18,19 +18,19 @@
       "oi_usd": "1927171891.07160764996742"
     }
   ],
-  "orderbook_imbalance": -0.8917040820148746,
-  "cvd_proxy": -0.6219598316431737,
-  "taker_buy_ratio": 0.1890200841784132,
+  "orderbook_imbalance": 0.849582404647426,
+  "cvd_proxy": -0.3528700525474313,
+  "taker_buy_ratio": 0.32356497372628434,
   "large_trades": [],
   "data_source": "OKX public BTC-USDT-SWAP perpetual API",
-  "as_of": "2026-11-27T15:37:04.347142+00:00",
+  "as_of": "2026-11-27T15:38:42.831300+00:00",
   "oi_note": "OKX public 5-minute open-interest history when available",
   "oi_change_source": "OKX 5-minute OI history",
-  "signal": "SHORT",
-  "reason": "Negative taker flow, CVD and order-book imbalance",
+  "signal": "WAIT",
+  "reason": "Derivatives flow is mixed or squeeze/crowding filters are active",
   "news_pause_active": false,
   "pause_until": "2026-11-27T12:18:09.994355+00:00",
   "news_alerts": [],
-  "updated_at": "2026-11-27T15:37:06.356975+00:00",
+  "updated_at": "2026-11-27T15:38:44.246286+00:00",
   "safety_note": "Signal-only; manual trading only. Large trades are trade-size alerts, not verified whale identities. Trump social posts are monitored through a third-party archive RSS, not an official API."
 }
