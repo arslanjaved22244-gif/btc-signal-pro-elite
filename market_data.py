@@ -348,9 +348,19 @@ def collect():
             fallback["fallback_from"]="Binance USD-M Futures"
             fallback["binance_failure_summary"]=primary.get("data_quality",{}).get("warnings",[])
             return fallback
-        fallback["data_quality"]["warnings"].append("Bybit fallback also failed core data checks; Binance diagnostics retained below.")
-        fallback["binance_failure_summary"]=primary.get("data_quality",{}).get("warnings",[])
-        return fallback
+        bybit_errors = [v.get("error") for v in fallback.get("timeframes", {}).values() if v.get("error")]
+        primary["data_quality"]["warnings"].append(
+            "Bybit fallback did not provide complete fresh Futures candles: " +
+            ("; ".join(bybit_errors[:3]) if bybit_errors else "core timeframes incomplete")
+        )
+        primary["fallback_attempt"] = {
+            "exchange": "Bybit",
+            "market_type": "BYBIT_LINEAR_USDT_PERPETUAL",
+            "core_timeframes_ok": False,
+            "five_minute_data_fresh": False,
+            "timeframe_errors": {k:v.get("error") for k,v in fallback.get("timeframes",{}).items() if v.get("error")}
+        }
+        return primary
     except Exception as exc:
         primary["data_quality"]["warnings"].append("Bybit linear Futures fallback failed: "+str(exc))
         return primary
