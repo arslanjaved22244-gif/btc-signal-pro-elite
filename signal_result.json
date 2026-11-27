@@ -1,7 +1,7 @@
 {
   "system": "BTC Signal Pro Elite Hybrid Confluence Engine",
   "version": "4.2-hybrid-sweep-confluence",
-  "generated_at": "2026-11-27T15:40:55.305919+00:00",
+  "generated_at": "2026-11-27T15:43:46.132696+00:00",
   "symbol": "BTCUSDT",
   "market_type": "OKX_BTC_USDT_SWAP",
   "market_exchange": "OKX",
@@ -19,10 +19,10 @@
     "momentum_margin": 2.5,
     "note": "Early setup is a watchlist hint only, not an entry signal. Confirm the main signal and manual risk levels before any trade."
   },
-  "confidence_score": 43.48,
+  "confidence_score": 34.78,
   "scores": {
-    "LONG": 2.0,
-    "SHORT": 5.0
+    "LONG": 3.5,
+    "SHORT": 4.0
   },
   "timeframe_analysis": {
     "5m": {
@@ -39,7 +39,7 @@
         "signal": -465.9565,
         "histogram": 52.28174
       },
-      "age_seconds": 27
+      "age_seconds": 200
     },
     "15m": {
       "available": true,
@@ -55,7 +55,7 @@
         "signal": -204.35016,
         "histogram": -228.60324
       },
-      "age_seconds": 627
+      "age_seconds": 800
     },
     "1h": {
       "available": true,
@@ -71,7 +71,7 @@
         "signal": 264.54865,
         "histogram": -167.81276
       },
-      "age_seconds": 2427
+      "age_seconds": 2600
     },
     "4h": {
       "available": true,
@@ -87,7 +87,7 @@
         "signal": -82.33866,
         "histogram": 256.79631
       },
-      "age_seconds": 13227
+      "age_seconds": 13401
     },
     "1d": {
       "available": true,
@@ -103,7 +103,7 @@
         "signal": -4496.99009,
         "histogram": -173.08834
       },
-      "age_seconds": 85227
+      "age_seconds": 85401
     }
   },
   "liquidity_sweep": {
@@ -117,12 +117,12 @@
     "note": "15m wick swept below the prior 20-bar low and closed back above it."
   },
   "order_flow": {
-    "cvd_base": -2585.87,
-    "order_book_imbalance": 0.690867,
-    "funding_rate_pct": 0.00122,
+    "cvd_base": 3177.19,
+    "order_book_imbalance": 0.433701,
+    "funding_rate_pct": 0.001101,
     "funding_crowding": "NEUTRAL",
-    "open_interest_change_30m_pct": -2.299,
-    "taker_buy_sell_ratio": 0.9946956852975037
+    "open_interest_change_30m_pct": -2.5327,
+    "taker_buy_sell_ratio": 1.4818722474880892
   },
   "ml_context": {
     "model_version": "4.1-volatility-adaptive-labels",
@@ -149,7 +149,7 @@
     "derivatives_confluence_status": "AVAILABLE"
   },
   "news_guard": {
-    "generated_at": "2026-11-27T15:40:29.764140+00:00",
+    "generated_at": "2026-11-27T15:43:22.759611+00:00",
     "source": "Google News RSS public fallback + Trump's Truth independent archive (unofficial)",
     "available": true,
     "block": false,
@@ -169,7 +169,6 @@
   },
   "warnings": [
     "OKX BTC-USDT-SWAP is a separate exchange perpetual reference; confirm execution venue price and liquidity.",
-    "Directional entries blocked: AI training source is not verified perpetual Futures. Spot/unknown-source ML cannot authorize a Futures trade.",
     "Volatility circuit breaker active: 5m ATR or candle range exceeded safety threshold."
   ],
   "execution": "MANUAL_ONLY_NO_ORDERS"
