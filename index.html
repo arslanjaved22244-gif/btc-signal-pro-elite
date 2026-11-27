@@ -347,7 +347,8 @@ button{background:#f5b942;color:#111;border:0;padding:12px 18px;border-radius:8p
 <div class="metric"><span>Pending / WAIT abstentions</span><b id="paperPending">-- / --</b></div>
 <div class="metric"><span>Paper tracker updated</span><b id="paperUpdated">--</b></div>
 <div class="metric"><span>Shadow AI forecasts closed / pending</span><b id="shadowCount">-- / --</b></div>
-<div class="metric"><span>Shadow AI directional accuracy</span><b id="shadowAccuracy">Collecting...</b></div>
+<div class="metric"><span>Shadow AI directional accuracy (before fees)</span><b id="shadowAccuracy">Collecting...</b></div>
+<div class="metric"><span>Shadow AI net win rate (after estimated fees)</span><b id="shadowNetWin">Collecting...</b></div>
 <div class="metric"><span>Shadow AI average net return</span><b id="shadowAverage">--</b></div>
 <p class="note" id="paperNote">Waiting for the first paper-trading snapshot.</p>
 </div>
@@ -358,8 +359,8 @@ button{background:#f5b942;color:#111;border:0;padding:12px 18px;border-radius:8p
 <p class="note" id="exchangeNote">Waiting for comparison snapshot.</p>
 </div>
 <div class="card">
-<h3>Experimental ML Forecast</h3>
-<div class="note">Browser-trained logistic regression using historical Binance 15M candles. Experimental estimate, not guaranteed prediction.</div>
+<h3>Browser ML Forecast (Experimental)</h3>
+<div class="note">Separate browser-side experimental model. It may be unavailable when Binance public Futures data is blocked. Do not confuse it with the server-side multi-model AI or treat its estimates as validated trading signals.</div>
 <div class="scoregrid">
 <div class="scoretile">Next 1H bullish estimate<b class="green" id="mlBull">--</b></div>
 <div class="scoretile">Next 1H bearish estimate<b class="red" id="mlBear">--</b></div>
@@ -1494,7 +1495,7 @@ async function loadNextMoveAI(){
  }catch(e){
   setText("nextMoveStatus","NOT READY");
   setText("nextMoveReason","No reliable forecast available.");
-  setText("nextMoveNote","AI forecast unavailable: "+e.message+". Dashboard will retry when Binance data is available.");
+  setText("nextMoveNote","AI forecast unavailable: "+e.message+". Dashboard will retry when public Futures data is available.");
  }finally{nextMoveBusy=false;}
 }
 
@@ -1638,6 +1639,7 @@ async function loadPaperTrading(force=false){
   const sh=d.shadow_evaluation||{};
   setText("shadowCount",(sh.closed_forecasts||0)+" / "+(sh.pending_forecasts||0));
   setText("shadowAccuracy",sh.directional_accuracy_pct==null?"Collecting...":Number(sh.directional_accuracy_pct).toFixed(1)+"%");
+  setText("shadowNetWin",sh.net_win_rate_pct==null?"Collecting...":Number(sh.net_win_rate_pct).toFixed(1)+"%");
   setText("shadowAverage",sh.average_net_return_pct==null?"--":Number(sh.average_net_return_pct).toFixed(3)+"%");
   setText("paperNote",(d.source||"")+". "+(d.limitations||"")+" Shadow AI is non-actionable and can include forecasts blocked by the validation gate.");
   paperLastLoad=Date.now();
@@ -1755,7 +1757,7 @@ async function loadML(){
   setText("btTrades",bt.trades.length+" / "+(bt.trades.length?(bt.wins/bt.trades.length*100).toFixed(1):"0")+"% wins");
   setText("btNet",(bt.net>=0?"+":"")+bt.net.toFixed(2)+" R");setText("btPF",Number.isFinite(bt.pf)?bt.pf.toFixed(2):"∞");setText("btDD",bt.dd.toFixed(2)+" R");
   setText("btNote","Holdout-only strategy test. "+bt.trades.length+" trades; estimated 0.07% round-trip cost. Results can be unreliable in changing markets.");
- }catch(e){setText("mlStatus","NOT READY");setText("mlNote","ML training unavailable: "+e.message+". Retry when Binance data is available.");setText("btNote","Backtest unavailable until enough historical candles load.");}
+ }catch(e){setText("mlStatus","NOT READY");setText("mlNote","ML training unavailable: "+e.message+". Retry when public Futures data is available.");setText("btNote","Backtest unavailable until enough historical candles load.");}
 }
 function calcRisk(){
  const cap=+$("riskCapital").value,pct=+$("riskPct").value,entry=+$("riskEntry").value,stop=+$("riskStop").value,lev=+$("riskLev").value;
@@ -1799,7 +1801,7 @@ async function refreshFromPublishedFuturesSnapshot(){
 async function refreshAll(){
 if(busy)return;
 busy=true;
-setText("status","Updating Binance data...");
+setText("status","Updating public Futures data...");
 
 try{
 await Promise.all([
