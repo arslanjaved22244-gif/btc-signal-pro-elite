@@ -16,7 +16,10 @@ RISK_TERMS = (
     "war", "attack", "missile", "strike", "invasion", "sanction", "emergency",
     "tariff", "trade war", "federal reserve", "interest rate", "rate decision",
     "inflation", "cpi", "fomc", "powell", "trump", "iran", "israel", "ukraine",
-    "russia", "china", "explosion", "terror", "hack", "outage", "liquidation"
+    "russia", "china", "explosion", "terror", "hack", "outage", "liquidation",
+    "bitcoin", "crypto", "stock", "stocks", "market", "economy", "economic",
+    "employment", "jobs", "oil", "energy", "sanction", "treasury", "dollar",
+    "bond", "recession", "shutdown", "election", "military", "ceasefire"
 )
 
 
