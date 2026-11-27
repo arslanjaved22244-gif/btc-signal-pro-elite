@@ -347,9 +347,10 @@ def run():
 
     # Additional evidence gate: no directional signal until the full six-part
     # intelligence layer confirms validation, shadow sample and cost-aware backtest.
-    if signal in ("LONG", "SHORT") and quality_gate.get("passed") is not True:
-        signal = "WAIT"
-        warnings.append("Institutional quality gate blocked directional entry: AI baseline, macro-F1, 30+ shadow forecasts and positive 300+ candle cost-aware backtest must all pass.")
+    if quality_gate.get("passed") is not True:
+        if signal in ("LONG", "SHORT"):
+            signal = "WAIT"
+        warnings.append("Institutional quality gate not passed: directional entries remain disabled until AI baseline, macro-F1, 30+ shadow forecasts and positive 300+ candle cost-aware backtest all pass.")
 
     # A separate early-setup readout makes developing direction visible without
     # mislabeling a weak setup as an actionable LONG/SHORT entry.
