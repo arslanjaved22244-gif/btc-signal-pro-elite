@@ -9,9 +9,15 @@ import websocket
 ROOT = Path(__file__).resolve().parent
 OUT = ROOT / "liquidation_data.json"
 URL = "wss://fstream.binance.com/ws/btcusdt@forceOrder"
-events = []
 lock = threading.Lock()
 status = {"connected": False, "last_message": None, "last_error": None}
+try:
+    existing = json.loads(OUT.read_text(encoding="utf-8")) if OUT.exists() else {}
+    events = [item for item in existing.get("events", [])
+              if isinstance(item, dict) and item.get("time") is not None]
+    events = events[-500:]
+except (OSError, ValueError, TypeError):
+    events = []
 
 def utc():
     return datetime.now(timezone.utc).isoformat()
@@ -30,6 +36,8 @@ def save_liquidations():
         "source": "Binance USD-M forceOrder WebSocket",
         "generated_at": utc(), "last_message_at": last_message,
         "event_count": len(snapshot),
+        "retained_session_events": len(snapshot),
+        "last_event_time": snapshot[-1].get("time") if snapshot else None,
         "long_liquidation_notional_usdt": round(long_usd, 2),
         "short_liquidation_notional_usdt": round(short_usd, 2),
         "events": snapshot[-100:], "last_error": last_error,
