@@ -2532,7 +2532,19 @@ def fetch_futures_microstructure():
         "note": "Position buildup is not proof of an imminent liquidation or squeeze."
     }
     result["errors"] = errors
-    result["status"] = "AVAILABLE" if len(features) >= 5 else "PARTIAL" if len(features) > 1 else "UNAVAILABLE"
+    available_context_fields = sum(
+        1 for key in ("funding", "open_interest", "taker_flow", "mark_premium", "orderbook_snapshot")
+        if key in features
+    )
+    result["available_context_fields"] = available_context_fields
+    if "Deribit BTC perpetual" in result["source"]:
+        result["limitations"].append(
+            "Deribit fallback fields are cross-exchange BTC perpetual context, not Binance BTCUSDT measurements."
+        )
+    result["status"] = (
+        "AVAILABLE" if available_context_fields == 5 else
+        "PARTIAL" if available_context_fields > 0 else "UNAVAILABLE"
+    )
     result["retrieved_at"] = datetime.now(timezone.utc).isoformat()
     return result
 
