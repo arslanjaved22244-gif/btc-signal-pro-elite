@@ -12,6 +12,7 @@ on:
       - "institutional_intelligence.py"
       - "news_guard.py"
       - "live_runner.py"
+      - "runner_safety.py"
       - ".github/workflows/quality-checks.yml"
 
 permissions:
