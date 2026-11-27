@@ -1230,7 +1230,54 @@ def build_lstm_derivatives_dataset(data, prepared, oi_pages=12):
 
 
 
-def lstm_sequence_forecast(rows, labels, sequence_length=24):
+def load_matured_lstm_feedback(path="prediction_feedback.json", feature_mode=None,
+                              sequence_length=24, feature_count=None, before_time_ms=None,
+                              max_samples=500):
+    """
+    Return only matured, out-of-sample LSTM forecast windows from prior runs.
+    Examples must match the current feature schema and predate the current
+    chronological holdout. They are added to the training fold only.
+    """
+    try:
+        with open(path, "r", encoding="utf-8") as handle:
+            ledger = json.load(handle)
+        records = ledger.get("predictions", []) if isinstance(ledger, dict) else []
+    except (OSError, ValueError, TypeError):
+        records = []
+    examples = []
+    for item in records:
+        if item.get("model") != "lstm_sequence_15m" or item.get("status") != "EVALUATED":
+            continue
+        if item.get("actual_class") not in CLASSES:
+            continue
+        if feature_mode and item.get("feature_mode") != feature_mode:
+            continue
+        if before_time_ms is not None and int(item.get("prediction_time", 0)) >= int(before_time_ms):
+            continue
+        sequence = item.get("training_sequence")
+        if not isinstance(sequence, list) or len(sequence) != sequence_length:
+            continue
+        if not all(isinstance(row, list) and len(row) == feature_count for row in sequence):
+            continue
+        try:
+            values = [[float(value) for value in row] for row in sequence]
+        except (TypeError, ValueError):
+            continue
+        examples.append((int(item.get("prediction_time", 0)), values,
+                         CLASSES.index(item["actual_class"])))
+    examples.sort(key=lambda item: item[0])
+    examples = examples[-max_samples:]
+    return [(sequence, label) for _, sequence, label in examples], {
+        "status": "MATURED FEEDBACK READY" if examples else "COLLECTING COMPATIBLE OUTCOMES",
+        "samples_added_to_training_fold": len(examples),
+        "feature_mode": feature_mode,
+        "chronological_cutoff_enforced": before_time_ms is not None,
+        "validation_and_test_sets_untouched": True,
+        "note": "Only previously matured, matching-schema 15m LSTM forecast windows are used; they are added to the fit fold, never validation or test."
+    }
+
+
+def lstm_sequence_forecast(rows, labels, sequence_length=24, feedback_examples=None):
     """
     True recurrent sequence model: PyTorch LSTM reads ordered 5m feature vectors.
     Uses a chronological purged holdout and training-only feature normalization.
@@ -1306,6 +1353,23 @@ def lstm_sequence_forecast(rows, labels, sequence_length=24):
             return {"signal": "WAIT", "status": "INSUFFICIENT LSTM EARLY-STOP VALIDATION"}
         x_fit, y_fit = x_train[:fit_end], y_train[:fit_end]
         x_val, y_val = x_train[inner_split:], y_train[inner_split:]
+        # Matured prior forecasts enrich the fit fold only. The chronological
+        # validation and final holdout remain untouched to avoid leakage.
+        feedback_added = 0
+        if feedback_examples:
+            compatible = [
+                (sequence, label) for sequence, label in feedback_examples
+                if len(sequence) == sequence_length
+                and all(len(row) == x_train.shape[-1] for row in sequence)
+                and int(label) in (0, 1, 2)
+            ]
+            if compatible:
+                feedback_x = np.asarray([item[0] for item in compatible], dtype=np.float32)
+                feedback_y = np.asarray([item[1] for item in compatible], dtype=np.int64)
+                feedback_x = (feedback_x - feature_mean) / feature_std
+                x_fit = np.concatenate((x_fit, feedback_x), axis=0)
+                y_fit = np.concatenate((y_fit, feedback_y), axis=0)
+                feedback_added = len(compatible)
         model = LSTMClassifier(x_train.shape[-1])
         counts = np.bincount(y_fit, minlength=3).astype(np.float32)
         # Mild inverse-square-root balancing prevents a dominant class from
@@ -1414,6 +1478,7 @@ def lstm_sequence_forecast(rows, labels, sequence_length=24):
             "sequence_length": sequence_length,
             "architecture": "2-layer PyTorch LSTM (48 hidden) + LayerNorm + dense classifier; balanced sequence sampling",
             "best_epoch": best_epoch,
+            "matured_feedback_samples_used": feedback_added,
             "status": "VALIDATED LSTM MODEL" if passed else "WEAK EDGE — WAIT",
             "normalization": "training-only per-feature mean/std"
         }
@@ -1935,7 +2000,12 @@ def update_prediction_feedback(data, result, path="prediction_feedback.json"):
             "threshold_pct": threshold_pct,
             "predicted_class": prediction["class"],
             "approved_signal": prediction["approved_signal"],
-            "scores": prediction["scores"], "status": "PENDING"
+            "scores": prediction["scores"], "status": "PENDING",
+            "market_regime": result.get("advanced_intelligence", {}).get("market_regime", {}).get("regime"),
+            **({
+                "training_sequence": result.get("_feedback_training_sequence"),
+                "feature_mode": result.get("_feedback_feature_mode")
+            } if model_name == "lstm_sequence_15m" and result.get("_feedback_training_sequence") else {})
         })
 
     records = sorted(records, key=lambda item: int(item.get("prediction_time", 0)))[-1000:]
@@ -2188,7 +2258,7 @@ def fetch_macro_news_risk():
 
 
 
-def adaptive_component_weights(path="prediction_feedback.json", minimum_samples=30):
+def adaptive_component_weights(path="prediction_feedback.json", minimum_samples=30, market_regime=None):
     """
     Learn bounded ensemble component weights from matured, out-of-sample forecasts.
     Uses a 30-sample neutral prior and only adapts after every component has
@@ -2206,6 +2276,16 @@ def adaptive_component_weights(path="prediction_feedback.json", minimum_samples=
         records = ledger.get("predictions", []) if isinstance(ledger, dict) else []
     except (OSError, ValueError, TypeError):
         records = []
+    regime_counts = {
+        name: sum(1 for item in records
+                  if item.get("model") == name and item.get("status") == "EVALUATED"
+                  and item.get("market_regime") == market_regime
+                  and item.get("predicted_class") in CLASSES and item.get("actual_class") in CLASSES)
+        for name in base
+    } if market_regime else {}
+    use_regime = bool(market_regime and all(
+        count >= minimum_samples for count in regime_counts.values()
+    ))
     details = {}
     ready = True
     raw = {}
@@ -2216,6 +2296,7 @@ def adaptive_component_weights(path="prediction_feedback.json", minimum_samples=
             item for item in records
             if item.get("model") == name and item.get("status") == "EVALUATED"
             and item.get("predicted_class") in CLASSES and item.get("actual_class") in CLASSES
+            and (not use_regime or item.get("market_regime") == market_regime)
         ]
         count = len(evaluated)
         correct = sum(1 for item in evaluated if item.get("correct"))
@@ -2238,7 +2319,10 @@ def adaptive_component_weights(path="prediction_feedback.json", minimum_samples=
         weights = dict(base)
         status = "COLLECTING COMPONENT OUTCOMES"
     return weights, {
-        "status": status,
+        "status": ("REGIME-SPECIFIC ADAPTIVE WEIGHTS ACTIVE" if use_regime and ready else status),
+        "market_regime": market_regime,
+        "regime_specific_weights_active": use_regime and ready,
+        "regime_sample_counts": regime_counts,
         "minimum_evaluated_predictions_per_component": minimum_samples,
         "weights_retrained": False,
         "method": "bounded reliability weighting with 30-sample neutral prior; chronological matured forecasts only",
@@ -2680,12 +2764,14 @@ def main():
         "nearest_centroid": predict_centroid(final_model["centroid"], latest),
         "decision_stumps": predict_stumps(final_model["stumps"], latest)
     }
-    adaptive_weights, adaptive_learning = adaptive_component_weights()
+    regime_analysis = advanced_regime(data)
+    adaptive_weights, adaptive_learning = adaptive_component_weights(
+        market_regime=regime_analysis.get("regime")
+    )
     scores = [
         sum(model_probabilities[name][k] * adaptive_weights[name] for name in adaptive_weights)
         for k in range(len(CLASSES))
     ]
-    regime_analysis = advanced_regime(data)
     breakout_squeeze_analysis = advanced_breakout_squeeze(data)
     horizon_forecasts = advanced_horizon_models(data, prepared)
     temporal_model = temporal_sequence_forecast(rows, labels, sequence_length=12)
@@ -2695,7 +2781,18 @@ def main():
     else:
         lstm_feature_mode = "MARKET_PLUS_TAKER_FLOW_FEATURES"
         lstm_training_rows, lstm_training_labels = tradeflow_rows, tradeflow_labels
-    lstm_model = lstm_sequence_forecast(lstm_training_rows, lstm_training_labels, sequence_length=24)
+    feedback_test_samples = max(60, int(max(0, len(lstm_training_rows) - 24) * 0.20))
+    feedback_cutoff_time = latest_candle_time - feedback_test_samples * INTERVALS["5m"] * 60_000
+    matured_lstm_feedback, matured_lstm_feedback_report = load_matured_lstm_feedback(
+        feature_mode=lstm_feature_mode, sequence_length=24,
+        feature_count=len(lstm_training_rows[0]) if lstm_training_rows else None,
+        before_time_ms=feedback_cutoff_time
+    )
+    lstm_model = lstm_sequence_forecast(
+        lstm_training_rows, lstm_training_labels, sequence_length=24,
+        feedback_examples=matured_lstm_feedback
+    )
+    lstm_model["matured_feedback_training"] = matured_lstm_feedback_report
     lstm_model["feature_mode"] = lstm_feature_mode
     lstm_model["derivatives_dataset_status"] = historical_derivatives.get("status")
     lstm_model["historical_tradeflow_dataset"] = historical_tradeflow
@@ -2829,6 +2926,8 @@ def main():
             "max_allowed_age_minutes": 15
         },
         "generated_at": datetime.now(timezone.utc).isoformat(),
+        "_feedback_training_sequence": [list(map(float, row)) for row in lstm_training_rows[-24:]] if len(lstm_training_rows) >= 24 else None,
+        "_feedback_feature_mode": lstm_feature_mode,
         "limitations": [
             "When Binance USD-M Futures is unavailable, Kraken BTC/USD spot OHLC is used as a proxy and is not equivalent to BTC/USDT Futures. Funding, open interest, CVD, order book and liquidation remain separate confluence inputs.",
             "Class scores are model scores, not calibrated real-world win probabilities.",
@@ -2849,6 +2948,8 @@ def main():
     result["signal"] = feedback_signal
     result["prediction_feedback"] = update_prediction_feedback(data, result)
     result["feedback_adaptive_gate"] = feedback_gate
+    result.pop("_feedback_training_sequence", None)
+    result.pop("_feedback_feature_mode", None)
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         json.dump(result, f, indent=2)
     print(json.dumps(result, indent=2))
