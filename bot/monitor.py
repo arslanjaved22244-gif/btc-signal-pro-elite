@@ -119,10 +119,44 @@ def market_data_okx():
   "data_source":"OKX public BTC-USDT-SWAP perpetual API","as_of":now().isoformat(),
   "oi_note":"OKX public 5-minute open-interest history when available"}
 
+def volatility_metrics():
+ """Calculate 5m ATR% and latest-range/ATR from public perpetual candles."""
+ errors=[]
+ rows=None
+ try:
+  data=api("/v5/market/kline",{"category":"linear","symbol":"BTCUSDT","interval":"5","limit":30})["result"]["list"]
+  rows=list(reversed(data))
+  parsed=[{"high":float(x[2]),"low":float(x[3]),"close":float(x[4])} for x in rows]
+ except Exception as exc:
+  errors.append("Bybit: "+str(exc)[:100])
+  try:
+   payload=get_json("https://www.okx.com/api/v5/market/candles?instId=BTC-USDT-SWAP&bar=5m&limit=30")
+   parsed=[{"high":float(x[2]),"low":float(x[3]),"close":float(x[4])} for x in reversed(payload["data"]) if x[8]=="1"]
+  except Exception as exc2:
+   errors.append("OKX: "+str(exc2)[:100]);parsed=[]
+ if len(parsed)<16:
+  return {"atr_5m_pct":None,"latest_range_atr_ratio":None,"volatility_status":"UNVERIFIED",
+          "volatility_error":"; ".join(errors) or "Insufficient completed 5m Futures candles"}
+ tr=[]
+ for prev,cur in zip(parsed[:-1],parsed[1:]):
+  tr.append(max(cur["high"]-cur["low"],abs(cur["high"]-prev["close"]),abs(cur["low"]-prev["close"])))
+ atr_value=sum(tr[-14:])/14 if len(tr)>=14 else None
+ price=parsed[-1]["close"]
+ ratio=(parsed[-1]["high"]-parsed[-1]["low"])/atr_value if atr_value else None
+ atr_pct=atr_value/price*100 if atr_value and price else None
+ blocked=atr_pct is None or atr_pct>=0.45 or (ratio is not None and ratio>=2.5)
+ return {"atr_5m_pct":round(atr_pct,5) if atr_pct is not None else None,
+         "latest_range_atr_ratio":round(ratio,3) if ratio is not None else None,
+         "volatility_status":"HIGH" if blocked and atr_pct is not None else "UNVERIFIED" if atr_pct is None else "NORMAL",
+         "volatility_source":"Bybit/OKX completed BTC perpetual 5m candles"}
+
 def market_data():
  errors=[]
  for name,fn in (("Bybit",market_data_bybit),("OKX",market_data_okx)):
-  try:return fn()
+  try:
+   result=fn()
+   result.update(volatility_metrics())
+   return result
   except Exception as exc:
    errors.append(name+": "+str(exc)[:180])
  raise RuntimeError("All derivatives feeds unavailable: "+" | ".join(errors))
@@ -217,6 +251,8 @@ def score_signal(m,paused):
  funding=m["funding_rate"];oi=m["oi_change_5m_pct"];book=m["orderbook_imbalance"];cvd=m["cvd_proxy"];taker=m["taker_buy_ratio"]
  long_crowded=funding>0.0005 and oi is not None and oi>0.5;short_crowded=funding< -0.0005 and oi is not None and oi>0.5
  if paused:return "WAIT","News safety pause active (minimum 30 minutes)"
+ if m.get("volatility_status") != "NORMAL":return "WAIT","Post-news/market volatility not verified as normal; entries remain blocked"
+ if m.get("atr_5m_pct") is not None and (m.get("atr_5m_pct") >= 0.45 or (m.get("latest_range_atr_ratio") or 0) >= 2.5):return "WAIT","5m volatility remains elevated after the news lock; waiting for normalization"
  if cvd>0.08 and taker>0.53 and book>0.03 and not long_crowded:return "LONG","Positive taker flow, CVD and order-book imbalance"
  if cvd< -0.08 and taker<0.47 and book< -0.03 and not short_crowded:return "SHORT","Negative taker flow, CVD and order-book imbalance"
  return "WAIT","Derivatives flow is mixed or squeeze/crowding filters are active"
