@@ -1,6 +1,11 @@
 name: BTC Futures Market Data
 on:
   workflow_dispatch:
+  workflow_run:
+    workflows:
+      - BTC Signal Pro Elite AI
+    types: [completed]
+    branches: [main]
   push:
     paths:
       - "market_data.py"
@@ -20,6 +25,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   collect:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
