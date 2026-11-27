@@ -35,14 +35,14 @@ footer{color:var(--muted);font-size:12px;margin-top:24px;line-height:1.6}
 <tr><td>Walk-forward accuracy</td><td id="accuracy">—</td></tr><tr><td>Macro F1</td><td id="f1">—</td></tr>
 <tr><td>SHORT score</td><td id="short">—</td></tr><tr><td>WAIT score</td><td id="wait">—</td></tr><tr><td>LONG score</td><td id="long">—</td></tr>
 </table><div class="notice" id="warning">Signals are for manual review only. No orders are placed.</div></div>
-<footer>Data refresh: every 5 minutes via scheduled collector; AI refresh: according to model workflow. This web page polls published snapshots every 30 seconds. It does not execute trades. Futures data unavailable or stale means WAIT. Model scores are not verified win probabilities.</footer>
+<h2 class="section">Advanced intelligence & risk</h2><div class="card"><table><tr><td>MACD (5m)</td><td id="macd5">—</td></tr><tr><td>Market structure</td><td id="structure5">—</td></tr><tr><td>ATR volatility</td><td id="atr5">—</td></tr><tr><td>10x risk sizing</td><td id="risk10">—</td></tr><tr><td>Backtest holdout</td><td id="backtest">—</td></tr><tr><td>Max drawdown</td><td id="drawdown">—</td></tr><tr><td>Liquidation sample</td><td id="liquidations">—</td></tr><tr><td>Telegram alerts</td><td id="telegram">—</td></tr></table><div class="small">Backtest is an OHLCV simulation, not a guarantee. Liquidations are sampled, not continuous. Account equity secret required for personal sizing. No orders are placed.</div></div><footer>Data refresh: every 5 minutes via scheduled collector; AI refresh: according to model workflow. This web page polls published snapshots every 30 seconds. It does not execute trades. Futures data unavailable or stale means WAIT. Model scores are not verified win probabilities.</footer>
 </main>
 <script>
 const $=id=>document.getElementById(id),fmt=(n,d=2)=>Number.isFinite(Number(n))?Number(n).toLocaleString(undefined,{maximumFractionDigits:d}):"—";
 async function get(path){const r=await fetch(path+"?t="+Date.now(),{cache:"no-store"});if(!r.ok)throw Error(path+" HTTP "+r.status);return r.json()}
 async function refresh(){
  try{
-  const [m,a,s]=await Promise.all([get("./market_data.json"),get("./ai_result.json"),get("./signal_result.json")]);
+  const [m,a,s,x,l,t]=await Promise.all([get("./market_data.json"),get("./ai_result.json"),get("./signal_result.json"),get("./advanced_metrics.json"),get("./liquidation_data.json"),get("./alert_status.json")]);
   const q=m.data_quality||{},tf=m.timeframes||{},feeds=m.feeds||{},derived=m.derived||{};
   const good=q.status==="HEALTHY"&&q.five_minute_data_fresh;
   $("status").textContent=good?"FUTURES DATA HEALTHY":"DATA DEGRADED";
@@ -69,6 +69,15 @@ async function refresh(){
   $("accuracy").textContent=a.walk_forward_metrics?.accuracy==null?"—":a.walk_forward_metrics.accuracy+"%";
   $("f1").textContent=a.walk_forward_metrics?.macro_f1==null?"—":a.walk_forward_metrics.macro_f1+"%";
   $("short").textContent=(a.class_scores?.SHORT??"—")+"%";$("wait").textContent=(a.class_scores?.WAIT??"—")+"%";$("long").textContent=(a.class_scores?.LONG??"—")+"%";
+  const adv=x.timeframe_indicators?.["5m"]||{}, mac=adv.macd||{}, st=adv.structure||{};
+  $("macd5").textContent=mac.histogram==null?"—":fmt(mac.histogram,4)+" histogram";
+  $("structure5").textContent=(st.trend||"—")+" / "+(st.event||"—");
+  $("atr5").textContent=adv.volatility_atr14==null?"—":fmt(adv.volatility_atr14)+" ("+fmt(adv.atr_pct,3)+"%)";
+  const rk=x.risk_10x||{};$("risk10").textContent=rk.status==="CALCULATED"?"Qty "+fmt(rk.position_qty_btc,5)+" BTC / margin $"+fmt(rk.estimated_initial_margin_usdt):"Equity secret required / WAIT";
+  const bt=x.backtest_5m||{};$("backtest").textContent=bt.status==="COMPLETED"?bt.trades+" trades / "+fmt(bt.net_return_pct)+"% net / "+fmt(bt.win_rate_pct)+"% win":"Insufficient candles";
+  $("drawdown").textContent=bt.max_drawdown_pct==null?"—":fmt(bt.max_drawdown_pct)+"%";
+  $("liquidations").textContent=l.available?l.event_count+" events / "+l.sample_window_seconds+"s sample":"Unavailable";
+  $("telegram").textContent=t.status||"—";
   const warnings=[...(q.warnings||[]),...(s.warnings||[])];if(!good)warnings.unshift("Market data is degraded or stale; signal forced to WAIT.");
   if(a.data_source&&/Spot|Kraken|Coinbase/i.test(a.data_source))warnings.push("Historical ML model uses spot fallback, not Futures; hybrid engine does not treat it as Futures confirmation.");
   $("warning").textContent=warnings.length?warnings.join(" "):"Manual signals only. No orders are placed. Liquidations feed is not connected.";
