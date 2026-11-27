@@ -2090,7 +2090,7 @@ def fetch_macro_news_risk():
         result["gdelt_error"] = str(gdelt_error)[:160]
 
     # Provider 2: Google News RSS fallback, including Trump + macro/geopolitical queries.
-    if not result.get("provider_used"):
+    if not result.get("provider_used") or not result.get("matched_events"):
         try:
             result["providers_attempted"].append("Google News RSS")
             rss_query = '(Bitcoin OR BTC OR crypto) (Trump OR tariff OR "Federal Reserve" OR war OR sanctions OR hack OR liquidation OR SEC OR inflation OR ETF)'
