@@ -5,12 +5,13 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from datetime import datetime, timezone
 from pathlib import Path
 import websocket
+from runner_safety import publish_wait_override
 
 ROOT = Path(__file__).resolve().parent
 OUT = ROOT / "liquidation_data.json"
 URL = "wss://fstream.binance.com/ws/btcusdt@forceOrder"
 lock = threading.Lock()
-status = {"connected": False, "last_message": None, "last_error": None}
+status = {"connected": False, "last_message": None, "last_error": None, "market_ok": False, "market_updated_at": None}
 try:
     existing = json.loads(OUT.read_text(encoding="utf-8")) if OUT.exists() else {}
     events = [item for item in existing.get("events", [])
@@ -102,16 +103,29 @@ def dashboard_server():
                     connected = status["connected"]
                     last_message = status["last_message"]
                     last_error = status["last_error"]
+                    market_ok = status["market_ok"]
+                    market_updated_at = status["market_updated_at"]
+                market_fresh = False
+                if market_ok and market_updated_at:
+                    try:
+                        updated = datetime.fromisoformat(market_updated_at.replace("Z", "+00:00"))
+                        market_fresh = (datetime.now(timezone.utc) - updated).total_seconds() <= 180
+                    except (TypeError, ValueError):
+                        market_fresh = False
+                healthy = connected and market_fresh
                 body = json.dumps({
                     "service": "BTC Signal Pro Elite live runner",
                     "process_alive": True,
                     "liquidation_websocket_connected": connected,
-                    "continuous": connected,
+                    "market_collection_healthy": market_ok,
+                    "market_snapshot_fresh_within_180s": market_fresh,
+                    "market_updated_at": market_updated_at,
+                    "continuous": healthy,
                     "last_message_at": last_message,
                     "last_error": last_error,
                     "checked_at": utc()
                 }).encode("utf-8")
-                self.send_response(200 if connected else 503)
+                self.send_response(200 if healthy else 503)
                 self.send_header("Content-Type", "application/json")
                 self.send_header("Content-Length", str(len(body)))
                 self.end_headers()
@@ -143,24 +157,38 @@ def run_step(name, script, timeout=100):
 def monitor_worker():
     while True:
         started = time.time()
-        # Refresh the actual market and signal snapshots in this persistent process.
-        # A failed market collection must never allow a stale snapshot to authorize a signal.
-        market_ok = False
         try:
             market_ok = run_step("Futures market collection", "market_data.py", timeout=100)
-            if market_ok:
-                news_ok = run_step("News/event risk scan", "news_guard.py", timeout=60)
-                signal_ok = news_ok and run_step("Signal confluence engine", "signal_engine.py", timeout=45)
-                if signal_ok:
-                    run_step("Paper-trade journal (no orders)", "paper_trader.py", timeout=45)
-                    run_step("Advanced metrics", "advanced_modules.py", timeout=60)
+            with lock:
+                status["market_ok"] = market_ok
+                status["market_updated_at"] = utc() if market_ok else None
+            if not market_ok:
+                publish_wait_override(ROOT / "signal_result.json", "MARKET_DATA", "Latest Futures market collection failed; prior snapshots are stale.")
+                print("Market collection failed; published signal forced to WAIT.", flush=True)
             else:
-                print("Signal update skipped: latest market collection failed; existing signal must be treated as stale.", flush=True)
+                news_ok = run_step("News/event risk scan", "news_guard.py", timeout=60)
+                if not news_ok:
+                    publish_wait_override(ROOT / "signal_result.json", "NEWS_SCAN", "News/event-risk scan failed; directional signals disabled.")
+                else:
+                    signal_ok = run_step("Signal confluence engine", "signal_engine.py", timeout=45)
+                    if not signal_ok:
+                        publish_wait_override(ROOT / "signal_result.json", "SIGNAL_ENGINE", "Signal engine failed; directional signals disabled.")
+                    else:
+                        run_step("Paper-trade journal (no orders)", "paper_trader.py", timeout=45)
+                        run_step("Advanced metrics", "advanced_modules.py", timeout=60)
             run_step("Derivatives and news monitor", "bot/monitor.py", timeout=55)
         except subprocess.TimeoutExpired as exc:
-            print("Live scan timed out:", str(exc), flush=True)
+            with lock:
+                status["market_ok"] = False
+                status["market_updated_at"] = None
+            publish_wait_override(ROOT / "signal_result.json", "RUNNER_TIMEOUT", str(exc))
+            print("Live scan timed out; signal forced to WAIT:", str(exc), flush=True)
         except Exception as exc:
-            print("Live monitor runner error:", str(exc), flush=True)
+            with lock:
+                status["market_ok"] = False
+                status["market_updated_at"] = None
+            publish_wait_override(ROOT / "signal_result.json", "RUNNER_EXCEPTION", str(exc))
+            print("Live monitor runner error; signal forced to WAIT:", str(exc), flush=True)
         elapsed = time.time() - started
         time.sleep(max(5, 60 - elapsed))
 
