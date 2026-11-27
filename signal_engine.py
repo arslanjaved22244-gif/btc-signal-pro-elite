@@ -8,6 +8,7 @@ MARKET_FILE = "market_data.json"
 MODEL_FILE = "ai_result.json"
 OUTPUT_FILE = "signal_result.json"
 NEWS_FILE = "event_guard.json"
+INTELLIGENCE_FILE = "institutional_intelligence.json"
 TIMEFRAMES = ("5m", "15m", "1h", "4h", "1d")
 
 
@@ -148,6 +149,8 @@ def detect_recent_liquidity_sweep(market):
 
 def run():
     market, model, news = load(MARKET_FILE), load(MODEL_FILE), load(NEWS_FILE)
+    institutional = load(INTELLIGENCE_FILE)
+    quality_gate = institutional.get("signal_quality_gate", {})
     quality = market.get("data_quality", {})
     analyses = {tf: timeframe_analysis(market.get("timeframes", {}).get(tf, {})) for tf in TIMEFRAMES}
     warnings = list(quality.get("warnings", []))
@@ -285,6 +288,12 @@ def run():
         signal = "WAIT"
         warnings.append("Volatility circuit breaker active: 5m ATR or candle range exceeded safety threshold.")
 
+    # Additional evidence gate: no directional signal until the full six-part
+    # intelligence layer confirms validation, shadow sample and cost-aware backtest.
+    if signal in ("LONG", "SHORT") and quality_gate.get("passed") is not True:
+        signal = "WAIT"
+        warnings.append("Institutional quality gate blocked directional entry: AI baseline, macro-F1, 30+ shadow forecasts and positive 300+ candle cost-aware backtest must all pass.")
+
     # A separate early-setup readout makes developing direction visible without
     # mislabeling a weak setup as an actionable LONG/SHORT entry.
     momentum_weights = {"5m": 1.0, "15m": 2.0, "1h": 1.5, "4h": 1.5, "1d": 0.5}
@@ -354,6 +363,7 @@ def run():
         "data_quality": quality,
         "news_guard": news,
         "volatility_guard": {"blocked": volatility_block, "atr_5m_pct": round(atr_pct, 4), "atr_threshold_pct": 0.45, "range_spike": range_spike},
+        "institutional_quality_gate": quality_gate,
         "warnings": warnings,
         "execution": "MANUAL_ONLY_NO_ORDERS"
     }
