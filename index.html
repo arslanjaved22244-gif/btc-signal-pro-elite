@@ -1543,11 +1543,15 @@ renderHistory();
 renderLiq();
 renderWhales();
 renderLiveCVD();
+loadAdvancedIntelligence();
+loadDerivativesIntelligence();
 connectLiq();
 connectWhales();
 refreshAll();
 
 setInterval(refreshAll,30000);
+setInterval(loadDerivativesIntelligence,60000);
+setInterval(loadAdvancedIntelligence,300000);
 setInterval(renderLiq,10000);
 setInterval(renderWhales,5000);
 setInterval(renderLiveCVD,5000);
