@@ -2,16 +2,16 @@
   "system": "BTC Signal Pro Elite Advanced ML",
   "model": "Four-model vote: full-history logistic, recent-regime logistic, nearest-centroid and decision-stump ensemble",
   "model_version": "4.1-volatility-adaptive-labels",
-  "data_source": "Kraken BTC/USD public OHLC candles",
+  "data_source": "OKX BTC-USDT-SWAP Futures public OHLC candles",
   "data_source_by_timeframe": {
-    "5m": "Kraken BTC/USD",
-    "15m": "Kraken BTC/USD",
-    "1h": "Kraken BTC/USD",
-    "4h": "Kraken BTC/USD",
-    "1d": "Kraken BTC/USD"
+    "5m": "OKX BTC-USDT-SWAP Futures",
+    "15m": "OKX BTC-USDT-SWAP Futures",
+    "1h": "OKX BTC-USDT-SWAP Futures",
+    "4h": "OKX BTC-USDT-SWAP Futures",
+    "1d": "OKX BTC-USDT-SWAP Futures"
   },
-  "symbol": "BTC/USD",
-  "quote_asset_note": "Kraken BTC/USD spot is a public-data proxy, not identical to Binance BTC/USDT Futures.",
+  "symbol": "BTC/USDT",
+  "quote_asset_note": "OKX BTC-USDT-SWAP and/or Binance USD-M BTCUSDT perpetual Futures data; cross-exchange prices may differ.",
   "base_interval": "5m",
   "feature_timeframes": [
     "5m",
@@ -22,9 +22,9 @@
   ],
   "signal": "WAIT",
   "class_scores": {
-    "SHORT": 11.61,
-    "WAIT": 9.7,
-    "LONG": 78.69
+    "SHORT": 21.05,
+    "WAIT": 9.29,
+    "LONG": 69.66
   },
   "individual_model_votes": {
     "full_history_logistic": "LONG",
@@ -34,29 +34,29 @@
   },
   "individual_model_scores": {
     "full_history_logistic": {
-      "SHORT": 3.44,
-      "WAIT": 8.93,
-      "LONG": 87.63
+      "SHORT": 20.03,
+      "WAIT": 13.25,
+      "LONG": 66.72
     },
     "recent_regime_logistic": {
-      "SHORT": 9.31,
-      "WAIT": 9.88,
-      "LONG": 80.81
+      "SHORT": 19.98,
+      "WAIT": 4.28,
+      "LONG": 75.74
     },
     "nearest_centroid": {
-      "SHORT": 0.11,
-      "WAIT": 1.23,
-      "LONG": 98.66
+      "SHORT": 0.15,
+      "WAIT": 0.01,
+      "LONG": 99.85
     },
     "decision_stumps": {
-      "SHORT": 38.38,
-      "WAIT": 15.45,
-      "LONG": 46.17
+      "SHORT": 40.07,
+      "WAIT": 15.18,
+      "LONG": 44.75
     }
   },
-  "confidence_score": 78.69,
-  "confidence_margin": 67.08,
-  "wait_probability_threshold": 0.6000000000000001,
+  "confidence_score": 69.66,
+  "confidence_margin": 48.61,
+  "wait_probability_threshold": 0.25,
   "ensemble_configuration": {
     "models": [
       "full_history_logistic",
@@ -70,40 +70,40 @@
       "nearest_centroid": 0.2,
       "decision_stumps": 0.25
     },
-    "recent_training_window": 336
+    "recent_training_window": 200
   },
   "adaptive_learning": {
     "status": "COLLECTING COMPONENT OUTCOMES",
     "market_regime": "HIGH VOLATILITY",
     "regime_specific_weights_active": false,
     "regime_sample_counts": {
-      "full_history_logistic": 0,
-      "recent_regime_logistic": 0,
-      "nearest_centroid": 0,
-      "decision_stumps": 0
+      "full_history_logistic": 1,
+      "recent_regime_logistic": 1,
+      "nearest_centroid": 1,
+      "decision_stumps": 1
     },
     "minimum_evaluated_predictions_per_component": 30,
     "weights_retrained": false,
     "method": "bounded reliability weighting with 30-sample neutral prior; chronological matured forecasts only",
     "component_history": {
       "full_history_logistic": {
-        "evaluated_predictions": 6,
-        "realized_accuracy_pct": 50.0,
+        "evaluated_predictions": 7,
+        "realized_accuracy_pct": 57.14,
         "base_weight": 0.35
       },
       "recent_regime_logistic": {
-        "evaluated_predictions": 6,
-        "realized_accuracy_pct": 83.33,
+        "evaluated_predictions": 7,
+        "realized_accuracy_pct": 85.71,
         "base_weight": 0.2
       },
       "nearest_centroid": {
-        "evaluated_predictions": 6,
-        "realized_accuracy_pct": 16.67,
+        "evaluated_predictions": 7,
+        "realized_accuracy_pct": 28.57,
         "base_weight": 0.2
       },
       "decision_stumps": {
-        "evaluated_predictions": 6,
-        "realized_accuracy_pct": 0.0,
+        "evaluated_predictions": 7,
+        "realized_accuracy_pct": 14.29,
         "base_weight": 0.25
       }
     },
@@ -116,373 +116,309 @@
     "note": "This safely adapts ensemble blending; it does not retrain the underlying neural-network weights."
   },
   "walk_forward_metrics": {
-    "accuracy": 34.88,
-    "macro_precision": 31.7,
-    "macro_recall": 31.5,
-    "macro_f1": 31.56,
+    "accuracy": 36.73,
+    "macro_precision": 45.04,
+    "macro_recall": 39.86,
+    "macro_f1": 35.43,
     "per_class": {
       "SHORT": {
-        "precision": 33.64,
-        "recall": 35.64,
-        "f1": 34.62,
-        "support": 101
+        "precision": 70.37,
+        "recall": 38.0,
+        "f1": 49.35,
+        "support": 50
       },
       "WAIT": {
-        "precision": 20.0,
-        "recall": 17.78,
-        "f1": 18.82,
-        "support": 45
+        "precision": 10.2,
+        "recall": 50.0,
+        "f1": 16.95,
+        "support": 10
       },
       "LONG": {
-        "precision": 41.44,
-        "recall": 41.07,
-        "f1": 41.26,
-        "support": 112
+        "precision": 54.55,
+        "recall": 31.58,
+        "f1": 40.0,
+        "support": 38
       }
     },
     "confusion_matrix": [
       [
-        36,
-        13,
-        52
-      ],
-      [
-        24,
-        8,
-        13
-      ],
-      [
-        47,
         19,
-        46
+        22,
+        9
+      ],
+      [
+        4,
+        5,
+        1
+      ],
+      [
+        4,
+        22,
+        12
       ]
     ],
-    "majority_class_baseline_pct": 43.41,
+    "majority_class_baseline_pct": 38.78,
     "balanced_random_baseline_pct": 33.33,
     "regime_breakdown": {
       "BULL_TREND": {
-        "accuracy": 30.65,
-        "macro_precision": 26.72,
-        "macro_recall": 27.8,
-        "macro_f1": 25.31,
-        "per_class": {
-          "SHORT": {
-            "precision": 33.33,
-            "recall": 56.52,
-            "f1": 41.94,
-            "support": 46
-          },
-          "WAIT": {
-            "precision": 11.11,
-            "recall": 8.0,
-            "f1": 9.3,
-            "support": 25
-          },
-          "LONG": {
-            "precision": 35.71,
-            "recall": 18.87,
-            "f1": 24.69,
-            "support": 53
-          }
-        },
-        "confusion_matrix": [
-          [
-            26,
-            7,
-            13
-          ],
-          [
-            18,
-            2,
-            5
-          ],
-          [
-            34,
-            9,
-            10
-          ]
-        ]
-      },
-      "BEAR_TREND": {
-        "accuracy": 100.0,
-        "macro_precision": 33.33,
+        "accuracy": 9.76,
+        "macro_precision": 3.25,
         "macro_recall": 33.33,
-        "macro_f1": 33.33,
+        "macro_f1": 5.93,
         "per_class": {
           "SHORT": {
             "precision": 0.0,
             "recall": 0.0,
             "f1": 0.0,
-            "support": 0
+            "support": 19
           },
           "WAIT": {
-            "precision": 0.0,
-            "recall": 0.0,
-            "f1": 0.0,
-            "support": 0
-          },
-          "LONG": {
-            "precision": 100.0,
+            "precision": 9.76,
             "recall": 100.0,
-            "f1": 100.0,
-            "support": 5
-          }
-        },
-        "confusion_matrix": [
-          [
-            0,
-            0,
-            0
-          ],
-          [
-            0,
-            0,
-            0
-          ],
-          [
-            0,
-            0,
-            5
-          ]
-        ]
-      },
-      "RANGE_CHOP": {
-        "accuracy": 41.1,
-        "macro_precision": 40.27,
-        "macro_recall": 40.15,
-        "macro_f1": 39.27,
-        "per_class": {
-          "SHORT": {
-            "precision": 34.48,
-            "recall": 45.45,
-            "f1": 39.22,
-            "support": 22
-          },
-          "WAIT": {
-            "precision": 26.32,
-            "recall": 33.33,
-            "f1": 29.41,
-            "support": 15
+            "f1": 17.78,
+            "support": 4
           },
           "LONG": {
-            "precision": 60.0,
-            "recall": 41.67,
-            "f1": 49.18,
-            "support": 36
-          }
-        },
-        "confusion_matrix": [
-          [
-            10,
-            6,
-            6
-          ],
-          [
-            6,
-            5,
-            4
-          ],
-          [
-            13,
-            8,
-            15
-          ]
-        ]
-      },
-      "TRANSITION": {
-        "accuracy": 30.36,
-        "macro_precision": 21.17,
-        "macro_recall": 36.3,
-        "macro_f1": 23.36,
-        "per_class": {
-          "SHORT": {
             "precision": 0.0,
             "recall": 0.0,
             "f1": 0.0,
-            "support": 33
-          },
-          "WAIT": {
-            "precision": 33.33,
-            "recall": 20.0,
-            "f1": 25.0,
-            "support": 5
-          },
-          "LONG": {
-            "precision": 30.19,
-            "recall": 88.89,
-            "f1": 45.07,
             "support": 18
           }
         },
         "confusion_matrix": [
           [
             0,
-            0,
-            33
+            19,
+            0
           ],
           [
             0,
+            4,
+            0
+          ],
+          [
+            0,
+            18,
+            0
+          ]
+        ]
+      },
+      "BEAR_TREND": {
+        "accuracy": 83.33,
+        "macro_precision": 27.78,
+        "macro_recall": 33.33,
+        "macro_f1": 30.3,
+        "per_class": {
+          "SHORT": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 1
+          },
+          "WAIT": {
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 0
+          },
+          "LONG": {
+            "precision": 83.33,
+            "recall": 100.0,
+            "f1": 90.91,
+            "support": 5
+          }
+        },
+        "confusion_matrix": [
+          [
+            0,
+            0,
+            1
+          ],
+          [
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            5
+          ]
+        ]
+      },
+      "TRANSITION": {
+        "accuracy": 52.94,
+        "macro_precision": 42.21,
+        "macro_recall": 42.22,
+        "macro_f1": 42.04,
+        "per_class": {
+          "SHORT": {
+            "precision": 70.37,
+            "recall": 63.33,
+            "f1": 66.67,
+            "support": 30
+          },
+          "WAIT": {
+            "precision": 12.5,
+            "recall": 16.67,
+            "f1": 14.29,
+            "support": 6
+          },
+          "LONG": {
+            "precision": 43.75,
+            "recall": 46.67,
+            "f1": 45.16,
+            "support": 15
+          }
+        },
+        "confusion_matrix": [
+          [
+            19,
+            3,
+            8
+          ],
+          [
+            4,
             1,
-            4
+            1
           ],
           [
-            0,
-            2,
-            16
+            4,
+            4,
+            7
           ]
         ]
       }
     },
     "cost_aware_backtest": {
       "status": "OUT-OF-SAMPLE \u2014 NON-OVERLAPPING 15M HOLDS",
-      "trades": 80,
+      "trades": 17,
       "round_trip_cost_assumption_pct": 0.14,
       "cost_assumption": "0.05% taker fee + 0.02% slippage per side; funding excluded",
-      "gross_win_rate_pct": 42.5,
-      "estimated_net_win_rate_pct": 17.5,
-      "average_net_trade_return_pct": -0.17795,
-      "compounded_net_return_pct": -13.3268,
-      "net_max_drawdown_pct": 14.006,
+      "gross_win_rate_pct": 64.71,
+      "estimated_net_win_rate_pct": 35.29,
+      "average_net_trade_return_pct": -0.22504,
+      "compounded_net_return_pct": -3.7941,
+      "net_max_drawdown_pct": 4.8316,
       "trade_sample": [
         {
           "fold": 3,
-          "row_index": 457,
-          "side": "LONG",
-          "gross_return_pct": -0.13968406417355084,
-          "estimated_net_return_pct": -0.27968406417355085
+          "row_index": 246,
+          "side": "SHORT",
+          "gross_return_pct": -0.29867569244361736,
+          "estimated_net_return_pct": -0.43867569244361737
         },
         {
           "fold": 3,
-          "row_index": 460,
-          "side": "LONG",
-          "gross_return_pct": 0.06352249281107447,
-          "estimated_net_return_pct": -0.07647750718892554
+          "row_index": 249,
+          "side": "SHORT",
+          "gross_return_pct": 0.39785801148719546,
+          "estimated_net_return_pct": 0.25785801148719545
         },
         {
           "fold": 3,
-          "row_index": 463,
-          "side": "LONG",
-          "gross_return_pct": -0.0452980171158357,
-          "estimated_net_return_pct": -0.1852980171158357
+          "row_index": 252,
+          "side": "SHORT",
+          "gross_return_pct": -0.26044545602341707,
+          "estimated_net_return_pct": -0.4004454560234171
         },
         {
           "fold": 3,
-          "row_index": 466,
-          "side": "LONG",
-          "gross_return_pct": 0.0721198358786479,
-          "estimated_net_return_pct": -0.06788016412135212
+          "row_index": 255,
+          "side": "SHORT",
+          "gross_return_pct": 0.14885633579913016,
+          "estimated_net_return_pct": 0.008856335799130144
         },
         {
           "fold": 3,
-          "row_index": 469,
-          "side": "LONG",
-          "gross_return_pct": -0.0150952951373573,
-          "estimated_net_return_pct": -0.15509529513735731
+          "row_index": 258,
+          "side": "SHORT",
+          "gross_return_pct": 0.029880607485743838,
+          "estimated_net_return_pct": -0.11011939251425618
         },
         {
           "fold": 3,
-          "row_index": 472,
-          "side": "LONG",
-          "gross_return_pct": -0.035877031070163934,
-          "estimated_net_return_pct": -0.17587703107016395
+          "row_index": 261,
+          "side": "SHORT",
+          "gross_return_pct": 0.1385640025990953,
+          "estimated_net_return_pct": -0.0014359974009047205
         },
         {
           "fold": 3,
-          "row_index": 475,
+          "row_index": 264,
           "side": "LONG",
-          "gross_return_pct": -0.03913786271542152,
-          "estimated_net_return_pct": -0.17913786271542154
+          "gross_return_pct": 0.12883348759733515,
+          "estimated_net_return_pct": -0.011166512402664863
         },
         {
           "fold": 3,
-          "row_index": 478,
-          "side": "LONG",
-          "gross_return_pct": -0.08366759757022502,
-          "estimated_net_return_pct": -0.22366759757022503
+          "row_index": 267,
+          "side": "SHORT",
+          "gross_return_pct": 0.29860008870274957,
+          "estimated_net_return_pct": 0.15860008870274955
         },
         {
           "fold": 3,
-          "row_index": 481,
+          "row_index": 270,
           "side": "LONG",
-          "gross_return_pct": -0.0640633739610097,
-          "estimated_net_return_pct": -0.2040633739610097
+          "gross_return_pct": -0.04171412463072066,
+          "estimated_net_return_pct": -0.18171412463072067
         },
         {
           "fold": 3,
-          "row_index": 484,
+          "row_index": 273,
           "side": "LONG",
-          "gross_return_pct": 0.1576578775247306,
-          "estimated_net_return_pct": 0.01765787752473058
+          "gross_return_pct": 0.25430152662422323,
+          "estimated_net_return_pct": 0.11430152662422322
         },
         {
           "fold": 3,
-          "row_index": 487,
-          "side": "LONG",
-          "gross_return_pct": -0.21735210553759376,
-          "estimated_net_return_pct": -0.3573521055375938
+          "row_index": 276,
+          "side": "SHORT",
+          "gross_return_pct": 0.0905683693628423,
+          "estimated_net_return_pct": -0.04943163063715772
         },
         {
           "fold": 3,
-          "row_index": 490,
-          "side": "LONG",
-          "gross_return_pct": -0.087260461080374,
-          "estimated_net_return_pct": -0.227260461080374
+          "row_index": 279,
+          "side": "SHORT",
+          "gross_return_pct": 0.12173528109783449,
+          "estimated_net_return_pct": -0.018264718902165522
         },
         {
           "fold": 3,
-          "row_index": 493,
+          "row_index": 282,
           "side": "LONG",
-          "gross_return_pct": -0.03715067368184055,
-          "estimated_net_return_pct": -0.17715067368184056
+          "gross_return_pct": -0.9475313671174823,
+          "estimated_net_return_pct": -1.0875313671174824
         },
         {
           "fold": 3,
-          "row_index": 496,
+          "row_index": 285,
           "side": "LONG",
-          "gross_return_pct": 0.08068604327053919,
-          "estimated_net_return_pct": -0.059313956729460826
+          "gross_return_pct": -2.1517227765119995,
+          "estimated_net_return_pct": -2.2917227765119996
         },
         {
           "fold": 3,
-          "row_index": 499,
+          "row_index": 288,
           "side": "LONG",
-          "gross_return_pct": 0.04022906134362181,
-          "estimated_net_return_pct": -0.0997709386563782
+          "gross_return_pct": -0.7224216339808742,
+          "estimated_net_return_pct": -0.8624216339808742
         },
         {
           "fold": 3,
-          "row_index": 502,
+          "row_index": 291,
           "side": "LONG",
-          "gross_return_pct": -0.1234063406112651,
-          "estimated_net_return_pct": -0.2634063406112651
+          "gross_return_pct": 0.8872022055586015,
+          "estimated_net_return_pct": 0.7472022055586015
         },
         {
           "fold": 3,
-          "row_index": 505,
+          "row_index": 294,
           "side": "LONG",
-          "gross_return_pct": -1.9384716197778928,
-          "estimated_net_return_pct": -2.078471619777893
-        },
-        {
-          "fold": 3,
-          "row_index": 508,
-          "side": "LONG",
-          "gross_return_pct": -1.7161446255782753,
-          "estimated_net_return_pct": -1.8561446255782754
-        },
-        {
-          "fold": 3,
-          "row_index": 511,
-          "side": "LONG",
-          "gross_return_pct": 0.8082779569628773,
-          "estimated_net_return_pct": 0.6682779569628773
-        },
-        {
-          "fold": 3,
-          "row_index": 514,
-          "side": "LONG",
-          "gross_return_pct": 0.26072250669422203,
-          "estimated_net_return_pct": 0.12072250669422202
+          "gross_return_pct": 0.480405272708051,
+          "estimated_net_return_pct": 0.340405272708051
         }
       ],
       "warning": "Illustrative costs only; real spread, funding, fills and exchange fees may differ."
@@ -491,11 +427,11 @@
   "validation_gate": {
     "passed": false,
     "futures_source_required": true,
-    "futures_source_passed": false,
+    "futures_source_passed": true,
     "minimum_accuracy_pct": 38.0,
     "minimum_macro_f1_pct": 30.0,
     "must_beat_majority_baseline": true,
-    "decision": "WAIT only \u2014 training source is not Binance Futures"
+    "decision": "WAIT only \u2014 historical validation too weak"
   },
   "futures_microstructure": {
     "source": "Deribit BTC perpetual",
@@ -518,10 +454,10 @@
         "provider": "Deribit BTC perpetual"
       },
       "taker_flow": {
-        "buy_amount_contract_units": 1312490.0,
-        "sell_amount_contract_units": 1352650.0,
-        "buy_sell_ratio": 0.9703,
-        "buy_imbalance_pct": -1.51,
+        "buy_amount_contract_units": 1650190.0,
+        "sell_amount_contract_units": 1666190.0,
+        "buy_sell_ratio": 0.9904,
+        "buy_imbalance_pct": -0.48,
         "bias": "BALANCED",
         "samples": 1000,
         "window": "latest 1000 Deribit BTC perpetual trades",
@@ -529,10 +465,10 @@
         "note": "Cross-exchange contract-amount flow proxy, not Binance BTC spot CVD."
       },
       "orderbook_snapshot": {
-        "bid_quantity_contract_units_top5": 49050.0,
-        "ask_quantity_contract_units_top5": 253140.0,
-        "bid_ask_imbalance_pct": -67.54,
-        "bias": "ASK_HEAVY",
+        "bid_quantity_contract_units_top5": 162350.0,
+        "ask_quantity_contract_units_top5": 38710.0,
+        "bid_ask_imbalance_pct": 61.49,
+        "bias": "BID_HEAVY",
         "provider": "Deribit BTC perpetual",
         "note": "Cross-exchange snapshot; not Binance order-book depth."
       },
@@ -563,10 +499,10 @@
       "bybit_orderbook: HTTP Error 403: Forbidden"
     ],
     "available_context_fields": 4,
-    "retrieved_at": "2026-11-27T15:42:14.239349+00:00"
+    "retrieved_at": "2026-11-27T15:44:01.279888+00:00"
   },
   "macro_news_risk": {
-    "status": "CACHED_HIGH_RISK_EVENT",
+    "status": "HIGH_RISK_EVENT",
     "providers_attempted": [
       "GDELT DOC",
       "Google News RSS"
@@ -574,44 +510,233 @@
     "lookback_minutes": 60,
     "high_risk": true,
     "block_minutes": 30,
-    "articles_checked": 0,
+    "articles_checked": 100,
     "matched_events": [
       {
         "title": "Ethereum slides below $1,650 as ETF outflows top $523M - Crypto News",
         "domain": "Crypto News",
         "url": "https://news.google.com/rss/articles/CBMia0FVX3lxTFBuR1JNRnVtbmhqNTNNclhKdmU1VXNsTEJDa2U3R1M3VGdwbEhOVjN1TTdOY25PRVgtU2FfZ2toMmFoNXFCRnA5RkJYWFBCc2h3bTdZUnYyMm5WUzh1Qlk3M0RFcGE2OVRydktj?oc=5",
         "published_at": "2026-11-27T15:29:53+00:00",
-        "age_minutes": 12.6,
+        "age_minutes": 14.3,
         "matched_terms": [
           "etf"
         ],
-        "provider": "Google News RSS",
-        "cached_from_previous_run": true
+        "provider": "Google News RSS"
       },
       {
         "title": "Hyperliquid Price Prediction: HYPE Up 6% Ahead of Franklin Templeton ETF Entry - Coinpaper",
         "domain": "Coinpaper",
         "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxObGpYUHltaXBMTzJkOFdXWUllM2xCSVJrWmdaU1g4SmRKTEJObkxmbllYUW9qZU5sQ1NiQWJqLWRsbUVPOGZORjRPUU5ORTlLSDZfZHlacmlraUJDSUVGSTdXWlNJQ1JKU2owbFlVOF8wY0M2S1hrRmotQmpScnB5U0dybHVPNUd5QXE3TkYzdmtuaWhIaFJtV25TaUJpMUVQazYxNWJaYw?oc=5",
         "published_at": "2026-11-27T15:25:42+00:00",
-        "age_minutes": 16.8,
+        "age_minutes": 18.4,
         "matched_terms": [
           "etf"
         ],
-        "provider": "Google News RSS",
-        "cached_from_previous_run": true
+        "provider": "Google News RSS"
       },
       {
         "title": "Bitcoin Reserve bill advances; ETF outflows top $5.3B - Yahoo Finance",
         "domain": "Yahoo Finance",
         "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxQZHhMQlhyVHNFTGFRRHNBQUtSRENFeDJDdDBfaGFOd0k3WmI4ZEtZc2VwRmNEcHFqT2pLMzc5RW1NYUdPbUo4WnRJM1hyMVdpVXZMMzBKUTJ3WDk2azhLMkdKSHQ4ZWlIMDgzVVY5a1pNbEZ4VDItazhpS3hPSEdTRmxZVUVUVE1tYzgyVnZJWHRXWTA1UFVwSmF3LVBiQQ?oc=5",
         "published_at": "2026-11-27T15:15:24+00:00",
-        "age_minutes": 27.1,
+        "age_minutes": 28.7,
         "matched_terms": [
           "etf",
           "bitcoin reserve"
         ],
-        "provider": "Google News RSS",
-        "cached_from_previous_run": true
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "Peter St. Onge: \u201cMassively Bullish\u201d For Bitcoin If Fed Abandons 2% Inflation Target - Bitcoin Magazine",
+        "domain": "Bitcoin Magazine",
+        "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxNaGVhSTBZRE00VWk2dEozU2kyb2RXMTFYWFBIU1dpcTRkb2Jkc1F5YVF1d293SjBWU1N0Z3ZsTEFoanRhU01IYkxPamtoXzdUS2xrVkJBZWViUmVXaXkxNVdMQlM4WUxVNnBybGcxekNaQXRTa09CdkctdE9sdVB4MVJhRkVCQTZQRUQ0dEVib1ZaT3lobDJEdmFOM3JHRUk5ZkVZbXdPT0trRDJZWC02SVAtRQ?oc=5",
+        "published_at": "2026-11-27T14:45:09+00:00",
+        "age_minutes": 59.0,
+        "matched_terms": [
+          "fed",
+          "inflation",
+          "ban"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "Historical Data for T. Rowe Price Technology ETF (Robinhood Token) in USD - CryptoRank",
+        "domain": "CryptoRank",
+        "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxPWm8zUjlKOExoYW1RM1B2bExyMFluQWU5aHYwXy1GeFlqVEFZbzB6blFFelo1Wnp2YWJlQjJGLXZLR0YxeFQ1RUlnX3pPWkdfYmVzQ29tSUsyd3BtMUFDYldLS3ROQ0pBOVBUZW9OWXJ0TmlCM0ZLMzlPSVk0NlBmUGRfWXF4UUhnUm5zSVdRNlY?oc=5",
+        "published_at": "2026-11-27T14:28:54+00:00",
+        "age_minutes": 75.2,
+        "matched_terms": [
+          "etf"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "Malaysia approves its first spot Bitcoin ETF, and it's Shariah-compliant - TradingView",
+        "domain": "TradingView",
+        "url": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxPbV81M2J1Yk54QTJTRV9WRzF4OVh4Z0RhWVI3U3RJaTFKSUlLNHJjaHhsNGxHSG1LaEFxV25PMFVnOERoUmF2bm55Q0dXajlfYlV2TThCQzM3T2ZGZ21adDRRdDl2cUdvek1vOUVuVjdxNWxqTW5NUGVHUXNYbnZBc2Q0cVA1ZXpybFNyTURuODQ1TFVWck5pMWUzSkVmNFZ5Y3hKS0t6UzcyY095ZzU1VVNOd2ZSNGpqMnYyNUNXbnpVQ0dhMHpSdEEyaHYzblJhRUE?oc=5",
+        "published_at": "2026-11-27T14:24:52+00:00",
+        "age_minutes": 79.3,
+        "matched_terms": [
+          "etf"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "Malaysia approves its first spot Bitcoin ETF, and it\u2019s Shariah-compliant - Crypto Briefing",
+        "domain": "Crypto Briefing",
+        "url": "https://news.google.com/rss/articles/CBMigAFBVV95cUxPTWp2bE5Ha0w1N29HejE0RTN3TU9RZFp6U1djOFRLYnl0Y1lXU3FuY0RpVGloRGhHeXZWanZDQVdfM0pueGxIV1ZSVm1qMTh6dXJqcDM3RDNZLUx3bE83Rlpmb3JRSmp5VGNIOHBaT2I3S2pBMk5lT2RkYURnNTdnOQ?oc=5",
+        "published_at": "2026-11-27T14:24:52+00:00",
+        "age_minutes": 79.3,
+        "matched_terms": [
+          "etf"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "Analyst Warns of $38,000 Bitcoin Crash as Trump Proposes Tariffs on 14 Trading Partners - CCN.com",
+        "domain": "CCN.com",
+        "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxQdUtOTm1BTEVQVkxRYm8tOF95UVdBZnBIejcyb2YwOHRPQWlLTllpRWU5cjBQdEVPTHFyYXdCZUFDa3l0Q1pzOWlWN0dOcmxBYTRucXducThveC12WWFMV3dDbGRHdWdoVlE5R2RKTmVCX3JDSXphNmw3d2c5YkZQMWxVUkkwN1ZYZ1JJcnllSDA?oc=5",
+        "published_at": "2026-11-27T14:09:20+00:00",
+        "age_minutes": 94.8,
+        "matched_terms": [
+          "war",
+          "tariff",
+          "trump"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "Swiss Spot Bitcoin ETF Begins Trading on SIX Swiss Exchange - FinanceX Magazine",
+        "domain": "FinanceX Magazine",
+        "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxOQXZVLVFURG9MaHA4a2MzXzdETTZGc1BuaG1SdXo4Z1UxM2VIYjdXTWpCQjVXNW5BMXBZbDRhNTBsdzZQNVpXSkR3cWFmM0dVaFgyOFJtcGk3Rmw3a2VfT1VLQ1FkUmsxRTlyZ2pPSmVrb2t6cWh4amROUlplcjBIUVp4SWJTN01QQjVoZ3E0Ym9pc01IQWp5SEpoeWdOUQ?oc=5",
+        "published_at": "2026-11-27T13:21:54+00:00",
+        "age_minutes": 142.2,
+        "matched_terms": [
+          "etf"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "Kalshi traders bet on how many presidential actions Trump will sign this week - Crypto Briefing",
+        "domain": "Crypto Briefing",
+        "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE15WW4xc0ZGLVFjSEVkUXJneUVMelJDa0FzU0txNWNnanRTdHc3TVp0RHhma2Zwcm1Ka2dWZGZfTkpmQ2tjZFFXdjVYWnc3aTE2LUd5WWpYcnZOUUQ1UFRMSVNLdXRsMFhQTjl5a2lwclFNY0RMWUtsRTlRWTFyX2M?oc=5",
+        "published_at": "2026-11-27T12:25:01+00:00",
+        "age_minutes": 199.1,
+        "matched_terms": [
+          "trump"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "Trump floats possible US government stake in Nvidia after leadership crisis ends - Crypto Briefing",
+        "domain": "Crypto Briefing",
+        "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE95VHNLcVhVVjlsdVNUUjQ2eVhqUDZrNk9sM2ZBTzB4RFJiSm5DWENaZ3ZoZHRzUWxJUjU2bG4wUGw3bTExZ1Q4bmZLeWxQMFVvb0wyTFdXejNHVUV2U2RaaTBhOHVCTXUwRGhpUw?oc=5",
+        "published_at": "2026-11-27T12:11:57+00:00",
+        "age_minutes": 212.2,
+        "matched_terms": [
+          "trump"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "Crypto Market Outlook, 27 November 2026: Bitcoin Holds $61K After a Record ETF Outflow Month - Howl.Link",
+        "domain": "Howl.Link",
+        "url": "https://news.google.com/rss/articles/CBMiO0FVX3lxTE1NREUtZy1JMjZ3MFA1VmwwVDhmN3dNVk94U0c0S3V5djUwQmlRanhsM2tKMmVYZ1pDSXBZ?oc=5",
+        "published_at": "2026-11-27T12:03:57+00:00",
+        "age_minutes": 220.2,
+        "matched_terms": [
+          "etf"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "Arthur Hayes Issues Weekend Crypto Market Warning as Fed Blackout Begins - BeInCrypto",
+        "domain": "BeInCrypto",
+        "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE9sWllBNXBIRW53VFk3bXJQS0NEd0c0M0wydXBhbTVxcV9NUHlRcUYzTkFMTEpZVzFmc3p2aUtXLXQ1elczeUlkUTB2VExjT2V3bVVJN2R2QU81dklPOGoyVFJ0Ml9haGd2VXNBMzNpZ2ZIdw?oc=5",
+        "published_at": "2026-11-27T11:49:29+00:00",
+        "age_minutes": 234.7,
+        "matched_terms": [
+          "war",
+          "fed"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "Harbor Capital launches Anthropic AI Lab Ecosystem ETF, with Bitcoin miners among top holdings - Crypto Briefing",
+        "domain": "Crypto Briefing",
+        "url": "https://news.google.com/rss/articles/CBMiekFVX3lxTFBTal8zSmR2dVdnSy1jQS1oRk5zNWhqeUJOdDdPRUZNSXV6OXZQbnVVWUU3UnB3WWJKYWNKOGc5VHR1UjgybHd3U1U0VFNoa0RUUzdDNVA1TlpDSGQ1RlFiQnNRQVpiTlFBVHA4Q0hKdV9LT1FCanNqWTFB?oc=5",
+        "published_at": "2026-11-27T11:25:47+00:00",
+        "age_minutes": 258.4,
+        "matched_terms": [
+          "etf"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "BIT Asset Management Introduces Switzerland's First Spot Bitcoin ETF on SIX Swiss Exchange - lincolnjournal.com",
+        "domain": "lincolnjournal.com",
+        "url": "https://news.google.com/rss/articles/CBMiqAJBVV95cUxOU3F0aG92RU1qUm42LUIwYVVrYWdrVmVjZTZCTVRjWjVXSmZqR0NNdWZIVmw5bVI2dWpkOC16WTIyRlFTSWRseTI0bWl5ZHhLT292NFVHRHI4RkZTQk1KeFJNeWlmVkxHUGw3ZHhzc081c29vLUdnbVdfamdfalFGUHpZVmJPMWM1WUZzTmswbXZMaU1uSTg5WlF3Wk9GZmVHOEVVX1hJV2JtZ2d0VUtGZWtRMUVLTnNUVlFlNjN2Sm8wRjNva0diUWI5a2F5d3FSOUVpbGdJT0otdEVEcDJWM3dsdlhpa2t2NnZsdGhjRmdwWFRSZi1FTE8yaGVEeFQ2Z3F1eEJXaUxndTFhOTM5TVlndEplSnJaX2JDZmJfY0FQakxTRlgyUA?oc=5",
+        "published_at": "2026-11-27T11:23:31+00:00",
+        "age_minutes": 260.6,
+        "matched_terms": [
+          "etf"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "BIT Asset Management Introduces Switzerland's First Spot Bitcoin ETF on SIX Swiss Exchange - GlobeNewswire",
+        "domain": "GlobeNewswire",
+        "url": "https://news.google.com/rss/articles/CBMi9AFBVV95cUxNZ0lzVWNnenozRjhadWhVZUE1bWhMODRJXzJwWEtIdWRiV3VSUmRsZ2JQT1FIZ04tQnZXS2w2VTRtMzc0NUotQXI0Qm1BU04zMWU0d0xYaHU1bHpfY2RMelRNelEzdmRiQUtxU19LTmJET3FVYnpMNnZYVnFDZUxfTmVYNXE2MkFjaXB5SVc4UWVJcW84VE5KMmgyN0t2SFZaUnVKaER3RUZJSllsSjhrMkMzaGFvR2FmZWtIVG1WbG5BQ2tqS0tBcWM5TXFNcTBiY0VwbmMtUnU1dDdJVmM3b3JrLXZWZlVwSFdjdi1TbU1IaFIz?oc=5",
+        "published_at": "2026-11-27T11:23:31+00:00",
+        "age_minutes": 260.6,
+        "matched_terms": [
+          "etf"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "Swiss Bitcoin ETF Debuts: 'Bitcoin Wasn't the Problem,' BIT CEO - Cryptonews",
+        "domain": "Cryptonews",
+        "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE1kdlpaVE9zVG93cVBzeXpKTkdsMzlVV3JPb1BvcnpoVldxa3JWZXJfZzUzUlgwWGw1UnRPclpzWGdDYXJ2T0RiQjhtbEV5UDhWczk1c2NPdmdhbjQ2Wk9ScFF3OG1OVFR0eEN5UTJuMjVzUQ?oc=5",
+        "published_at": "2026-11-27T10:15:48+00:00",
+        "age_minutes": 328.3,
+        "matched_terms": [
+          "etf"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "Binance Lifts Withdrawal Suspension From $6.3 Billion Hack, Says Recovery Is Complete - unchainedcrypto.com",
+        "domain": "unchainedcrypto.com",
+        "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxQaHg3SUlLT3VQcWo5bkdMN1F3bldCZVU1ZzNhUUw1bWFqYlVkU252OHJVSkd5Tm9naEMtQkMtMzkta04wQ1JGZTR1R3l1LVJJNTVsMW04VTJ3bzBuSms0SXlmSzFhQktLcURGLUgwU0g4Zm1PNElIN2pGSmxSRktWM0phWmY4MS1SbmNPMTRrSEpHOHlwUktXT08zdmdQRmMxSW9PZTZqQ1dzcjdlNllnY093?oc=5",
+        "published_at": "2026-11-27T10:15:00+00:00",
+        "age_minutes": 329.1,
+        "matched_terms": [
+          "hack"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "Bitcoin ETF Outflows vs AI ETF Inflows: Where Is Crypto Liquidity Going? - KuCoin",
+        "domain": "KuCoin",
+        "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxNeGFNV292a3N4NmRsNUpHZ2lKN1A0Y2Q2MGNxWElkTVZSVXBiQVpaLUJGeUFRemNzSmh5WlBkc3RfUVFGcXhjWVczNjVRYVdtLTRxdXphNkdkc2NMaDJfWFZrcGVqS0p5NzVyNmVLaUlad2R6cDBoS3ZpN3F0RlVtZG1NU1I4NXlGUnRjT0x3NGJPOG9ZVTdDOTJMVkZEWGc?oc=5",
+        "published_at": "2026-11-27T10:06:00+00:00",
+        "age_minutes": 338.1,
+        "matched_terms": [
+          "etf"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "EU plans crypto blockade of Kyrgyzstan over Russian sanctions evasion - Traders Union",
+        "domain": "Traders Union",
+        "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxPaGEzVE5qVzdpdmEwVktJY0REMTFmT2pydGt4MWNydDhobWhJcktoS0pqUDhxWC1neWVBa002eklzbVRRZTRoSGpna3RvNEVMNThuRXE2Mk9hMHVoQml5OTVNSURzZDBuSUtVcGk5ZmJlTVAwa3lCdVkxRjVEaHRDcVhRc2luT2JRYkJ2eDZ0QkZ0dw?oc=5",
+        "published_at": "2026-11-27T08:51:25+00:00",
+        "age_minutes": 412.7,
+        "matched_terms": [
+          "sanction"
+        ],
+        "provider": "Google News RSS"
       }
     ],
     "limitations": [
@@ -620,9 +745,9 @@
       "A clear scan does not prove that no market-moving event exists."
     ],
     "gdelt_error": "<urlopen error _ssl.c:1001: The handshake operation timed out>",
-    "rss_error": "HTTP Error 503: Service Unavailable",
+    "provider_used": "Google News RSS",
     "fresh_high_risk_count": 3,
-    "retrieved_at": "2026-11-27T15:42:29.091590+00:00"
+    "retrieved_at": "2026-11-27T15:44:08.919404+00:00"
   },
   "news_event_veto": null,
   "historical_derivatives_training": {
@@ -648,40 +773,40 @@
   "advanced_intelligence": {
     "market_regime": {
       "regime": "HIGH VOLATILITY",
-      "atr_ratio": 3.495,
-      "trend_slope_pct": -0.987,
+      "atr_ratio": 3.339,
+      "trend_slope_pct": -0.9967,
       "liquidity_sweep": "BULLISH LOW-SIDE LIQUIDITY SWEEP",
       "liquidity_sweep_detail": {
         "direction": "BULLISH",
-        "level": 58745.0,
-        "wick_extreme": 58728.7,
-        "close": 59115.9,
+        "level": 58757.1,
+        "wick_extreme": 58729.6,
+        "close": 59128.7,
         "candle_time": 1795791900000,
         "bars_ago": 6
       },
-      "range_high": 61488.8,
-      "range_low": 58728.7,
+      "range_high": 61536.1,
+      "range_low": 58729.6,
       "explanation": "Volatility expansion"
     },
     "breakout_squeeze_analysis": {
       "status": "AVAILABLE",
       "volatility_compression": false,
-      "squeeze_score_0_100": 0,
-      "bollinger_width_pct": 5.7803,
+      "squeeze_score_0_100": 15,
+      "bollinger_width_pct": 5.8062,
       "bollinger_width_percentile_lookback": 94.17,
-      "atr_expansion_ratio": 3.57,
-      "volume_ratio_vs_prior_20": 1.325,
-      "close_location_in_candle_pct": 63.21,
-      "prior_20_candle_high": 61488.8,
-      "prior_20_candle_low": 58728.7,
-      "prior_50_candle_high": 61750.5,
-      "prior_50_candle_low": 58728.7,
+      "atr_expansion_ratio": 3.406,
+      "volume_ratio_vs_prior_20": 0.835,
+      "close_location_in_candle_pct": 62.97,
+      "prior_20_candle_high": 61536.1,
+      "prior_20_candle_low": 58729.6,
+      "prior_50_candle_high": 61809.0,
+      "prior_50_candle_low": 58729.6,
       "breakout_state": "NO_CONFIRMED_BREAKOUT",
       "breakout_candidate_bias": "WAIT",
-      "volatility_expansion": true,
+      "volatility_expansion": false,
       "confirmation": {
         "price_close_beyond_prior_20_level": false,
-        "volume_at_least_1_2x": true,
+        "volume_at_least_1_2x": false,
         "candle_close_location_confirmed": false
       },
       "warning": "Context only, not an order or guaranteed prediction. Unconfirmed breaks remain WAIT."
@@ -696,33 +821,33 @@
       "by_timeframe": {
         "5m": {
           "trend": "BEARISH",
-          "ema20_slope_pct": -0.2987,
-          "close_vs_ema200_pct": -1.707,
-          "samples": 720
+          "ema20_slope_pct": -0.3057,
+          "close_vs_ema200_pct": -1.7353,
+          "samples": 599
         },
         "15m": {
           "trend": "MIXED",
-          "ema20_slope_pct": -1.0043,
-          "close_vs_ema200_pct": -1.6049,
-          "samples": 720
+          "ema20_slope_pct": -1.0098,
+          "close_vs_ema200_pct": -1.6226,
+          "samples": 299
         },
         "1h": {
           "trend": "MIXED",
-          "ema20_slope_pct": -0.0845,
-          "close_vs_ema200_pct": -3.5964,
-          "samples": 720
+          "ema20_slope_pct": -0.0869,
+          "close_vs_ema200_pct": -3.0387,
+          "samples": 299
         },
         "4h": {
           "trend": "MIXED",
-          "ema20_slope_pct": 0.6685,
-          "close_vs_ema200_pct": -10.5091,
-          "samples": 720
+          "ema20_slope_pct": 0.6702,
+          "close_vs_ema200_pct": -10.5097,
+          "samples": 299
         },
         "1d": {
           "trend": "BEARISH",
-          "ema20_slope_pct": -4.5592,
-          "close_vs_ema200_pct": -18.8342,
-          "samples": 720
+          "ema20_slope_pct": -4.7816,
+          "close_vs_ema200_pct": -17.6074,
+          "samples": 299
         }
       },
       "note": "EMA alignment is contextual confirmation, not a standalone entry signal."
@@ -731,69 +856,27 @@
     "multi_horizon_forecasts": {
       "15m": {
         "signal": "WAIT",
-        "raw_model_class": "LONG",
-        "scores": {
-          "SHORT": 5.37,
-          "WAIT": 36.96,
-          "LONG": 57.67
-        },
-        "confidence_margin": 20.71,
-        "holdout_accuracy": 15.38,
-        "macro_f1": 13.96,
-        "training_samples": 410,
-        "validation_samples": 104,
-        "status": "WEAK EDGE \u2014 WAIT"
+        "status": "INSUFFICIENT DATA",
+        "samples": 296
       },
       "30m": {
         "signal": "WAIT",
-        "raw_model_class": "LONG",
-        "scores": {
-          "SHORT": 6.62,
-          "WAIT": 5.76,
-          "LONG": 87.62
-        },
-        "confidence_margin": 81.0,
-        "holdout_accuracy": 19.42,
-        "macro_f1": 17.78,
-        "training_samples": 405,
-        "validation_samples": 103,
-        "status": "WEAK EDGE \u2014 WAIT"
+        "status": "INSUFFICIENT DATA",
+        "samples": 293
       },
       "60m": {
         "signal": "WAIT",
-        "raw_model_class": "LONG",
-        "scores": {
-          "SHORT": 0.89,
-          "WAIT": 26.86,
-          "LONG": 72.25
-        },
-        "confidence_margin": 45.38,
-        "holdout_accuracy": 30.39,
-        "macro_f1": 30.66,
-        "training_samples": 394,
-        "validation_samples": 102,
-        "status": "WEAK EDGE \u2014 WAIT"
+        "status": "INSUFFICIENT DATA",
+        "samples": 287
       },
       "4h": {
         "signal": "WAIT",
-        "raw_model_class": "LONG",
-        "scores": {
-          "SHORT": 7.84,
-          "WAIT": 13.21,
-          "LONG": 78.95
-        },
-        "confidence_margin": 65.75,
-        "holdout_accuracy": 57.89,
-        "macro_f1": 24.44,
-        "training_samples": 329,
-        "validation_samples": 95,
-        "status": "WEAK EDGE \u2014 WAIT"
+        "status": "INSUFFICIENT DATA",
+        "samples": 251
       }
     },
     "multi_horizon_consensus": {
-      "validated_directional_forecasts": {
-        "temporal_4h": "LONG"
-      },
+      "validated_directional_forecasts": {},
       "opposite_horizons_to_primary": [],
       "opposite_horizon_count": 0,
       "veto_threshold": 2,
@@ -802,101 +885,15 @@
     },
     "temporal_sequence_model": {
       "signal": "WAIT",
-      "raw_model_class": "LONG",
-      "scores": {
-        "SHORT": 0.0,
-        "WAIT": 0.0,
-        "LONG": 100.0
-      },
-      "confidence_margin": 100.0,
-      "holdout_accuracy": 31.37,
-      "macro_f1": 30.72,
-      "majority_baseline_pct": 49.02,
-      "training_samples": 389,
-      "validation_samples": 102,
-      "sequence_length": 12,
-      "input_order": "12 consecutive 5m feature vectors; oldest to newest",
-      "architecture": "StandardScaler + MLP 96-48-24 (ReLU)",
-      "status": "WEAK EDGE \u2014 WAIT"
+      "status": "INSUFFICIENT SEQUENCE HISTORY",
+      "samples": 296,
+      "sequence_length": 12
     },
     "lstm_sequence_model": {
       "signal": "WAIT",
-      "raw_model_class": "WAIT",
-      "scores": {
-        "SHORT": 29.95,
-        "WAIT": 35.35,
-        "LONG": 34.7
-      },
-      "confidence_margin": 0.65,
-      "holdout_accuracy": 14.14,
-      "macro_f1": 13.87,
-      "majority_baseline_pct": 50.51,
-      "per_class_metrics": {
-        "SHORT": {
-          "precision": 40.0,
-          "recall": 4.0,
-          "f1": 7.27,
-          "support": 50
-        },
-        "WAIT": {
-          "precision": 8.99,
-          "recall": 80.0,
-          "f1": 16.16,
-          "support": 10
-        },
-        "LONG": {
-          "precision": 80.0,
-          "recall": 10.26,
-          "f1": 18.18,
-          "support": 39
-        }
-      },
-      "confusion_matrix": [
-        [
-          2,
-          47,
-          1
-        ],
-        [
-          2,
-          8,
-          0
-        ],
-        [
-          1,
-          34,
-          4
-        ]
-      ],
-      "predicted_class_distribution_pct": {
-        "SHORT": 5.05,
-        "WAIT": 89.9,
-        "LONG": 5.05
-      },
-      "actual_holdout_class_distribution_pct": {
-        "SHORT": 50.51,
-        "WAIT": 10.1,
-        "LONG": 39.39
-      },
-      "directional_coverage_pct": {
-        "SHORT": 5.05,
-        "LONG": 5.05
-      },
-      "directional_recall_pct": {
-        "LONG": 10.26,
-        "SHORT": 4.0
-      },
-      "both_directions_tested": false,
-      "class_balancing": "sqrt inverse-frequency weighted sampling + capped class-weighted loss",
-      "training_samples": 285,
-      "early_stop_validation_samples": 56,
-      "validation_samples": 99,
+      "status": "INSUFFICIENT LSTM HISTORY",
+      "samples": 296,
       "sequence_length": 24,
-      "architecture": "2-layer PyTorch LSTM (48 hidden) + LayerNorm + dense classifier; balanced sequence sampling",
-      "best_epoch": 3,
-      "matured_feedback_samples_used": 0,
-      "status": "WEAK EDGE \u2014 WAIT",
-      "normalization": "training-only per-feature mean/std",
       "matured_feedback_training": {
         "status": "COLLECTING COMPATIBLE OUTCOMES",
         "samples_added_to_training_fold": 0,
@@ -913,7 +910,7 @@
         "days_requested": 3,
         "days_loaded": 3,
         "trade_records": 7041050,
-        "covered_samples": 332,
+        "covered_samples": 211,
         "features": [
           "taker_delta_pct",
           "taker_buy_ratio",
@@ -927,10 +924,10 @@
           "Missing flow is explicitly marked unavailable; no future observations are joined.",
           "Historical OI, funding and order-book depth are not included in this dataset."
         ],
-        "aggtrade_samples": 332,
+        "aggtrade_samples": 211,
         "kline_taker_samples": 0,
-        "coverage_pct_of_eligible_candles": 64.22,
-        "samples": 517,
+        "coverage_pct_of_eligible_candles": 53.28,
+        "samples": 296,
         "note": "Full chronological dataset retained; aggTrade features override kline taker-buy proxy where available.",
         "sources_used": [
           "AGGTRADES"
@@ -938,107 +935,8 @@
       },
       "historical_tradeflow_dataset_status": "PARTIAL",
       "walk_forward_validation": {
-        "status": "EVALUATION ONLY \u2014 NOT USED FOR SIGNAL APPROVAL",
-        "fold_count": 2,
-        "folds": [
-          {
-            "fold": 1,
-            "train_samples": 345,
-            "test_samples": 61,
-            "accuracy": 19.67,
-            "macro_f1": 10.96,
-            "majority_baseline_pct": 42.62,
-            "per_class": {
-              "SHORT": {
-                "precision": 0.0,
-                "recall": 0.0,
-                "f1": 0.0,
-                "support": 23
-              },
-              "WAIT": {
-                "precision": 19.67,
-                "recall": 100.0,
-                "f1": 32.88,
-                "support": 12
-              },
-              "LONG": {
-                "precision": 0.0,
-                "recall": 0.0,
-                "f1": 0.0,
-                "support": 26
-              }
-            }
-          },
-          {
-            "fold": 2,
-            "train_samples": 406,
-            "test_samples": 61,
-            "accuracy": 40.98,
-            "macro_f1": 25.67,
-            "majority_baseline_pct": 55.74,
-            "per_class": {
-              "SHORT": {
-                "precision": 71.43,
-                "recall": 14.71,
-                "f1": 24.39,
-                "support": 34
-              },
-              "WAIT": {
-                "precision": 0.0,
-                "recall": 0.0,
-                "f1": 0.0,
-                "support": 5
-              },
-              "LONG": {
-                "precision": 37.04,
-                "recall": 90.91,
-                "f1": 52.63,
-                "support": 22
-              }
-            }
-          }
-        ],
-        "aggregate_accuracy": 30.33,
-        "aggregate_macro_f1": 28.54,
-        "aggregate_confusion_matrix": [
-          [
-            5,
-            23,
-            29
-          ],
-          [
-            0,
-            12,
-            5
-          ],
-          [
-            2,
-            26,
-            20
-          ]
-        ],
-        "aggregate_per_class": {
-          "SHORT": {
-            "precision": 71.43,
-            "recall": 8.77,
-            "f1": 15.62,
-            "support": 57
-          },
-          "WAIT": {
-            "precision": 19.67,
-            "recall": 70.59,
-            "f1": 30.77,
-            "support": 17
-          },
-          "LONG": {
-            "precision": 37.04,
-            "recall": 41.67,
-            "f1": 39.22,
-            "support": 48
-          }
-        },
-        "test_samples": 122,
-        "method": "expanding chronological windows; per-fold train-only scaling; purged sequence/label overlap; inner chronological early stopping"
+        "status": "INSUFFICIENT HISTORY",
+        "samples": 296
       }
     },
     "temporal_sequence_horizons": {
@@ -1046,79 +944,27 @@
       "forecasts": {
         "15m": {
           "signal": "WAIT",
-          "raw_model_class": "LONG",
-          "scores": {
-            "SHORT": 0.0,
-            "WAIT": 0.0,
-            "LONG": 100.0
-          },
-          "confidence_margin": 100.0,
-          "holdout_accuracy": 39.22,
-          "macro_f1": 32.06,
-          "majority_baseline_pct": 49.02,
-          "training_samples": 389,
-          "validation_samples": 102,
-          "sequence_length": 12,
-          "purge_candles": 15,
-          "architecture": "StandardScaler + temporal MLP 64-32 (ReLU)",
-          "status": "WEAK EDGE \u2014 WAIT"
+          "status": "INSUFFICIENT PURGED HOLDOUT",
+          "training_samples": 213,
+          "validation_samples": 57
         },
         "30m": {
           "signal": "WAIT",
-          "raw_model_class": "LONG",
-          "scores": {
-            "SHORT": 0.0,
-            "WAIT": 0.0,
-            "LONG": 100.0
-          },
-          "confidence_margin": 100.0,
-          "holdout_accuracy": 50.5,
-          "macro_f1": 39.61,
-          "majority_baseline_pct": 56.44,
-          "training_samples": 384,
-          "validation_samples": 101,
-          "sequence_length": 12,
-          "purge_candles": 18,
-          "architecture": "StandardScaler + temporal MLP 64-32 (ReLU)",
-          "status": "WEAK EDGE \u2014 WAIT"
+          "status": "INSUFFICIENT PURGED HOLDOUT",
+          "training_samples": 207,
+          "validation_samples": 57
         },
         "1h": {
           "signal": "WAIT",
-          "raw_model_class": "WAIT",
-          "scores": {
-            "SHORT": 6.37,
-            "WAIT": 70.61,
-            "LONG": 23.02
-          },
-          "confidence_margin": 47.58,
-          "holdout_accuracy": 57.0,
-          "macro_f1": 24.36,
-          "majority_baseline_pct": 57.0,
-          "training_samples": 373,
-          "validation_samples": 100,
-          "sequence_length": 12,
-          "purge_candles": 24,
-          "architecture": "StandardScaler + temporal MLP 64-32 (ReLU)",
-          "status": "WEAK EDGE \u2014 WAIT"
+          "status": "INSUFFICIENT PURGED HOLDOUT",
+          "training_samples": 196,
+          "validation_samples": 56
         },
         "4h": {
-          "signal": "LONG",
-          "raw_model_class": "LONG",
-          "scores": {
-            "SHORT": 0.0,
-            "WAIT": 0.0,
-            "LONG": 100.0
-          },
-          "confidence_margin": 100.0,
-          "holdout_accuracy": 63.44,
-          "macro_f1": 42.59,
-          "majority_baseline_pct": 59.14,
-          "training_samples": 308,
-          "validation_samples": 93,
-          "sequence_length": 12,
-          "purge_candles": 60,
-          "architecture": "StandardScaler + temporal MLP 64-32 (ReLU)",
-          "status": "VALIDATED TEMPORAL MODEL"
+          "signal": "WAIT",
+          "status": "INSUFFICIENT PURGED HOLDOUT",
+          "training_samples": 132,
+          "validation_samples": 48
         }
       },
       "method": "four independent chronological sequence classifiers; 12 ordered 5m candles"
@@ -1135,464 +981,166 @@
       ],
       "forecasts": {
         "15m": {
-          "signal": "LONG",
-          "raw_model_class": "LONG",
-          "scores": {
-            "SHORT": 9.62,
-            "WAIT": 10.62,
-            "LONG": 79.76
-          },
-          "confidence_margin": 69.14,
-          "holdout_accuracy": 40.62,
-          "macro_f1": 32.93,
-          "training_samples": 410,
-          "validation_samples": 104,
-          "models": {
-            "random_forest": {
-              "holdout_accuracy": 30.77,
-              "macro_f1": 29.84
-            },
-            "gradient_boosting": {
-              "holdout_accuracy": 37.5,
-              "macro_f1": 31.16
-            },
-            "neural_mlp": {
-              "holdout_accuracy": 48.08,
-              "macro_f1": 33.02
-            },
-            "xgboost": {
-              "holdout_accuracy": 46.15,
-              "macro_f1": 37.7
-            }
-          },
-          "model_count": 4,
-          "status": "VALIDATED TREE ENSEMBLE"
+          "signal": "WAIT",
+          "status": "INSUFFICIENT DATA",
+          "samples": 296
         },
         "30m": {
-          "signal": "LONG",
-          "raw_model_class": "LONG",
-          "scores": {
-            "SHORT": 11.09,
-            "WAIT": 4.99,
-            "LONG": 83.91
-          },
-          "confidence_margin": 72.82,
-          "holdout_accuracy": 48.06,
-          "macro_f1": 36.5,
-          "training_samples": 405,
-          "validation_samples": 103,
-          "models": {
-            "random_forest": {
-              "holdout_accuracy": 50.49,
-              "macro_f1": 41.39
-            },
-            "gradient_boosting": {
-              "holdout_accuracy": 41.75,
-              "macro_f1": 30.56
-            },
-            "neural_mlp": {
-              "holdout_accuracy": 40.78,
-              "macro_f1": 32.21
-            },
-            "xgboost": {
-              "holdout_accuracy": 59.22,
-              "macro_f1": 41.86
-            }
-          },
-          "model_count": 4,
-          "status": "VALIDATED TREE ENSEMBLE"
+          "signal": "WAIT",
+          "status": "INSUFFICIENT DATA",
+          "samples": 293
         },
         "60m": {
           "signal": "WAIT",
-          "raw_model_class": "LONG",
-          "scores": {
-            "SHORT": 23.12,
-            "WAIT": 22.43,
-            "LONG": 54.45
-          },
-          "confidence_margin": 31.32,
-          "holdout_accuracy": 24.26,
-          "macro_f1": 17.69,
-          "training_samples": 394,
-          "validation_samples": 102,
-          "models": {
-            "random_forest": {
-              "holdout_accuracy": 33.33,
-              "macro_f1": 25.27
-            },
-            "gradient_boosting": {
-              "holdout_accuracy": 22.55,
-              "macro_f1": 15.65
-            },
-            "neural_mlp": {
-              "holdout_accuracy": 15.69,
-              "macro_f1": 11.67
-            },
-            "xgboost": {
-              "holdout_accuracy": 25.49,
-              "macro_f1": 18.17
-            }
-          },
-          "model_count": 4,
-          "status": "WEAK EDGE \u2014 WAIT"
+          "status": "INSUFFICIENT DATA",
+          "samples": 287
         },
         "4h": {
-          "signal": "LONG",
-          "raw_model_class": "LONG",
-          "scores": {
-            "SHORT": 3.52,
-            "WAIT": 10.65,
-            "LONG": 85.83
-          },
-          "confidence_margin": 75.17,
-          "holdout_accuracy": 52.9,
-          "macro_f1": 34.64,
-          "training_samples": 329,
-          "validation_samples": 95,
-          "models": {
-            "random_forest": {
-              "holdout_accuracy": 57.89,
-              "macro_f1": 38.31
-            },
-            "gradient_boosting": {
-              "holdout_accuracy": 46.32,
-              "macro_f1": 33.62
-            },
-            "neural_mlp": {
-              "holdout_accuracy": 60.0,
-              "macro_f1": 31.44
-            },
-            "xgboost": {
-              "holdout_accuracy": 47.37,
-              "macro_f1": 35.18
-            }
-          },
-          "model_count": 4,
-          "status": "VALIDATED TREE ENSEMBLE"
+          "signal": "WAIT",
+          "status": "INSUFFICIENT DATA",
+          "samples": 251
         }
       },
       "validation": "chronological holdout with horizon purge; scores are not calibrated win probabilities"
     },
-    "tree_blend_applied_to_primary_signal": true,
+    "tree_blend_applied_to_primary_signal": false,
     "method": "2-layer recurrent PyTorch LSTM on 24 ordered candles + temporal MLP + four-horizon chronological ML + Random Forest + gradient boosting + neural MLP + XGBoost (when installed) + volatility regime + liquidity sweep detector"
   },
   "walk_forward_folds": [
     {
-      "fold": 1,
-      "train_samples": 255,
-      "test_samples": 86,
-      "wait_threshold": 0.55,
+      "fold": 2,
+      "train_samples": 194,
+      "test_samples": 49,
+      "wait_threshold": 0.2,
       "train_majority_class": "LONG",
-      "majority_baseline_accuracy": 50.0,
+      "majority_baseline_accuracy": 44.9,
       "metrics": {
-        "accuracy": 37.21,
-        "macro_precision": 34.71,
-        "macro_recall": 34.31,
-        "macro_f1": 32.56,
+        "accuracy": 10.2,
+        "macro_precision": 3.4,
+        "macro_recall": 33.33,
+        "macro_f1": 6.17,
         "per_class": {
           "SHORT": {
-            "precision": 31.91,
-            "recall": 55.56,
-            "f1": 40.54,
-            "support": 27
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 22
           },
           "WAIT": {
-            "precision": 16.67,
-            "recall": 12.5,
-            "f1": 14.29,
-            "support": 16
+            "precision": 10.2,
+            "recall": 100.0,
+            "f1": 18.52,
+            "support": 5
           },
           "LONG": {
-            "precision": 55.56,
-            "recall": 34.88,
-            "f1": 42.86,
-            "support": 43
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 22
           }
         },
         "confusion_matrix": [
           [
-            15,
-            4,
-            8
-          ],
-          [
-            10,
-            2,
-            4
-          ],
-          [
+            0,
             22,
-            6,
-            15
+            0
+          ],
+          [
+            0,
+            5,
+            0
+          ],
+          [
+            0,
+            22,
+            0
           ]
         ]
       },
       "regime_metrics": {
         "BULL_TREND": {
-          "accuracy": 28.57,
-          "macro_precision": 10.53,
-          "macro_recall": 25.0,
-          "macro_f1": 14.81,
+          "accuracy": 9.76,
+          "macro_precision": 3.25,
+          "macro_recall": 33.33,
+          "macro_f1": 5.93,
           "per_class": {
             "SHORT": {
-              "precision": 31.58,
-              "recall": 75.0,
-              "f1": 44.44,
-              "support": 8
-            },
-            "WAIT": {
               "precision": 0.0,
               "recall": 0.0,
               "f1": 0.0,
+              "support": 19
+            },
+            "WAIT": {
+              "precision": 9.76,
+              "recall": 100.0,
+              "f1": 17.78,
               "support": 4
             },
             "LONG": {
               "precision": 0.0,
               "recall": 0.0,
               "f1": 0.0,
-              "support": 9
-            }
-          },
-          "confusion_matrix": [
-            [
-              6,
-              1,
-              1
-            ],
-            [
-              4,
-              0,
-              0
-            ],
-            [
-              9,
-              0,
-              0
-            ]
-          ]
-        },
-        "RANGE_CHOP": {
-          "accuracy": 40.0,
-          "macro_precision": 34.33,
-          "macro_recall": 34.75,
-          "macro_f1": 33.52,
-          "per_class": {
-            "SHORT": {
-              "precision": 32.14,
-              "recall": 50.0,
-              "f1": 39.13,
               "support": 18
-            },
-            "WAIT": {
-              "precision": 12.5,
-              "recall": 9.09,
-              "f1": 10.53,
-              "support": 11
-            },
-            "LONG": {
-              "precision": 58.33,
-              "recall": 45.16,
-              "f1": 50.91,
-              "support": 31
             }
           },
           "confusion_matrix": [
             [
-              9,
-              3,
-              6
+              0,
+              19,
+              0
             ],
             [
-              6,
-              1,
-              4
-            ],
-            [
-              13,
+              0,
               4,
-              14
+              0
+            ],
+            [
+              0,
+              18,
+              0
             ]
           ]
         },
         "TRANSITION": {
-          "accuracy": 40.0,
-          "macro_precision": 27.78,
-          "macro_recall": 44.44,
-          "macro_f1": 30.0,
+          "accuracy": 12.5,
+          "macro_precision": 4.17,
+          "macro_recall": 33.33,
+          "macro_f1": 7.41,
           "per_class": {
             "SHORT": {
               "precision": 0.0,
               "recall": 0.0,
               "f1": 0.0,
-              "support": 1
-            },
-            "WAIT": {
-              "precision": 33.33,
-              "recall": 100.0,
-              "f1": 50.0,
-              "support": 1
-            },
-            "LONG": {
-              "precision": 50.0,
-              "recall": 33.33,
-              "f1": 40.0,
               "support": 3
-            }
-          },
-          "confusion_matrix": [
-            [
-              0,
-              0,
-              1
-            ],
-            [
-              0,
-              1,
-              0
-            ],
-            [
-              0,
-              2,
-              1
-            ]
-          ]
-        }
-      }
-    },
-    {
-      "fold": 2,
-      "train_samples": 341,
-      "test_samples": 86,
-      "wait_threshold": 0.5,
-      "train_majority_class": "LONG",
-      "majority_baseline_accuracy": 45.35,
-      "metrics": {
-        "accuracy": 29.07,
-        "macro_precision": 51.0,
-        "macro_recall": 33.08,
-        "macro_f1": 24.29,
-        "per_class": {
-          "SHORT": {
-            "precision": 31.58,
-            "recall": 66.67,
-            "f1": 42.86,
-            "support": 27
-          },
-          "WAIT": {
-            "precision": 21.43,
-            "recall": 30.0,
-            "f1": 25.0,
-            "support": 20
-          },
-          "LONG": {
-            "precision": 100.0,
-            "recall": 2.56,
-            "f1": 5.0,
-            "support": 39
-          }
-        },
-        "confusion_matrix": [
-          [
-            18,
-            9,
-            0
-          ],
-          [
-            14,
-            6,
-            0
-          ],
-          [
-            25,
-            13,
-            1
-          ]
-        ]
-      },
-      "regime_metrics": {
-        "BULL_TREND": {
-          "accuracy": 26.03,
-          "macro_precision": 14.04,
-          "macro_recall": 28.8,
-          "macro_f1": 18.39,
-          "per_class": {
-            "SHORT": {
-              "precision": 30.36,
-              "recall": 73.91,
-              "f1": 43.04,
-              "support": 23
             },
             "WAIT": {
-              "precision": 11.76,
-              "recall": 12.5,
-              "f1": 12.12,
-              "support": 16
+              "precision": 12.5,
+              "recall": 100.0,
+              "f1": 22.22,
+              "support": 1
             },
             "LONG": {
               "precision": 0.0,
               "recall": 0.0,
               "f1": 0.0,
-              "support": 34
+              "support": 4
             }
           },
           "confusion_matrix": [
             [
-              17,
-              6,
-              0
-            ],
-            [
-              14,
-              2,
-              0
-            ],
-            [
-              25,
-              9,
-              0
-            ]
-          ]
-        },
-        "RANGE_CHOP": {
-          "accuracy": 46.15,
-          "macro_precision": 78.79,
-          "macro_recall": 48.33,
-          "macro_f1": 42.22,
-          "per_class": {
-            "SHORT": {
-              "precision": 100.0,
-              "recall": 25.0,
-              "f1": 40.0,
-              "support": 4
-            },
-            "WAIT": {
-              "precision": 36.36,
-              "recall": 100.0,
-              "f1": 53.33,
-              "support": 4
-            },
-            "LONG": {
-              "precision": 100.0,
-              "recall": 20.0,
-              "f1": 33.33,
-              "support": 5
-            }
-          },
-          "confusion_matrix": [
-            [
-              1,
+              0,
               3,
               0
             ],
             [
               0,
-              4,
+              1,
               0
             ],
             [
               0,
               4,
-              1
+              0
             ]
           ]
         }
@@ -1600,109 +1148,66 @@
     },
     {
       "fold": 3,
-      "train_samples": 427,
-      "test_samples": 86,
-      "wait_threshold": 0.55,
+      "train_samples": 243,
+      "test_samples": 49,
+      "wait_threshold": 0.6000000000000001,
       "train_majority_class": "LONG",
-      "majority_baseline_accuracy": 34.88,
+      "majority_baseline_accuracy": 32.65,
       "metrics": {
-        "accuracy": 38.37,
-        "macro_precision": 45.38,
-        "macro_recall": 35.46,
-        "macro_f1": 21.7,
+        "accuracy": 63.27,
+        "macro_precision": 41.64,
+        "macro_recall": 47.62,
+        "macro_f1": 44.08,
         "per_class": {
           "SHORT": {
-            "precision": 100.0,
-            "recall": 6.38,
-            "f1": 12.0,
-            "support": 47
+            "precision": 70.37,
+            "recall": 67.86,
+            "f1": 69.09,
+            "support": 28
           },
           "WAIT": {
             "precision": 0.0,
             "recall": 0.0,
             "f1": 0.0,
-            "support": 9
+            "support": 5
           },
           "LONG": {
-            "precision": 36.14,
-            "recall": 100.0,
-            "f1": 53.1,
-            "support": 30
+            "precision": 54.55,
+            "recall": 75.0,
+            "f1": 63.16,
+            "support": 16
           }
         },
         "confusion_matrix": [
           [
-            3,
-            0,
-            44
-          ],
-          [
-            0,
+            19,
             0,
             9
           ],
           [
+            4,
             0,
+            1
+          ],
+          [
+            4,
             0,
-            30
+            12
           ]
         ]
       },
       "regime_metrics": {
-        "BULL_TREND": {
-          "accuracy": 43.33,
-          "macro_precision": 45.68,
-          "macro_recall": 40.0,
-          "macro_f1": 29.13,
-          "per_class": {
-            "SHORT": {
-              "precision": 100.0,
-              "recall": 20.0,
-              "f1": 33.33,
-              "support": 15
-            },
-            "WAIT": {
-              "precision": 0.0,
-              "recall": 0.0,
-              "f1": 0.0,
-              "support": 5
-            },
-            "LONG": {
-              "precision": 37.04,
-              "recall": 100.0,
-              "f1": 54.05,
-              "support": 10
-            }
-          },
-          "confusion_matrix": [
-            [
-              3,
-              0,
-              12
-            ],
-            [
-              0,
-              0,
-              5
-            ],
-            [
-              0,
-              0,
-              10
-            ]
-          ]
-        },
         "BEAR_TREND": {
-          "accuracy": 100.0,
-          "macro_precision": 33.33,
+          "accuracy": 83.33,
+          "macro_precision": 27.78,
           "macro_recall": 33.33,
-          "macro_f1": 33.33,
+          "macro_f1": 30.3,
           "per_class": {
             "SHORT": {
               "precision": 0.0,
               "recall": 0.0,
               "f1": 0.0,
-              "support": 0
+              "support": 1
             },
             "WAIT": {
               "precision": 0.0,
@@ -1711,9 +1216,9 @@
               "support": 0
             },
             "LONG": {
-              "precision": 100.0,
+              "precision": 83.33,
               "recall": 100.0,
-              "f1": 100.0,
+              "f1": 90.91,
               "support": 5
             }
           },
@@ -1721,7 +1226,7 @@
             [
               0,
               0,
-              0
+              1
             ],
             [
               0,
@@ -1736,61 +1241,61 @@
           ]
         },
         "TRANSITION": {
-          "accuracy": 29.41,
-          "macro_precision": 9.8,
-          "macro_recall": 33.33,
-          "macro_f1": 15.15,
+          "accuracy": 60.47,
+          "macro_precision": 38.04,
+          "macro_recall": 44.67,
+          "macro_f1": 40.74,
           "per_class": {
             "SHORT": {
-              "precision": 0.0,
-              "recall": 0.0,
-              "f1": 0.0,
-              "support": 32
+              "precision": 70.37,
+              "recall": 70.37,
+              "f1": 70.37,
+              "support": 27
             },
             "WAIT": {
               "precision": 0.0,
               "recall": 0.0,
               "f1": 0.0,
-              "support": 4
+              "support": 5
             },
             "LONG": {
-              "precision": 29.41,
-              "recall": 100.0,
-              "f1": 45.45,
-              "support": 15
+              "precision": 43.75,
+              "recall": 63.64,
+              "f1": 51.85,
+              "support": 11
             }
           },
           "confusion_matrix": [
             [
+              19,
               0,
-              0,
-              32
+              8
             ],
             [
+              4,
               0,
-              0,
-              4
+              1
             ],
             [
+              4,
               0,
-              0,
-              15
+              7
             ]
           ]
         }
       }
     }
   ],
-  "training_samples": 517,
+  "training_samples": 296,
   "label_distribution": {
-    "SHORT": 200,
-    "WAIT": 87,
-    "LONG": 230
+    "SHORT": 118,
+    "WAIT": 49,
+    "LONG": 129
   },
   "training_class_weights": {
-    "SHORT": 0.8616666666666667,
-    "WAIT": 1.9808429118773947,
-    "LONG": 0.7492753623188406
+    "SHORT": 0.8361581920903954,
+    "WAIT": 2.0136054421768708,
+    "LONG": 0.7648578811369509
   },
   "recency_weighting": {
     "method": "exponential",
@@ -1804,22 +1309,22 @@
     "horizon_candles": 3,
     "lookahead_free": true
   },
-  "last_price": 60058.1,
+  "last_price": 60085.4,
   "last_candle_time": 1795793700000,
   "data_freshness": {
     "status": "FRESH",
-    "latest_5m_candle_age_minutes": 7.64,
+    "latest_5m_candle_age_minutes": 9.38,
     "latest_5m_candle_time": "2026-11-27T15:35:00+00:00",
     "source_by_timeframe": {
-      "5m": "Kraken BTC/USD",
-      "15m": "Kraken BTC/USD",
-      "1h": "Kraken BTC/USD",
-      "4h": "Kraken BTC/USD",
-      "1d": "Kraken BTC/USD"
+      "5m": "OKX BTC-USDT-SWAP Futures",
+      "15m": "OKX BTC-USDT-SWAP Futures",
+      "1h": "OKX BTC-USDT-SWAP Futures",
+      "4h": "OKX BTC-USDT-SWAP Futures",
+      "1d": "OKX BTC-USDT-SWAP Futures"
     },
     "max_allowed_age_minutes": 15
   },
-  "generated_at": "2026-11-27T15:43:08.465025+00:00",
+  "generated_at": "2026-11-27T15:44:47.380216+00:00",
   "limitations": [
     "When Binance USD-M Futures is unavailable, Kraken BTC/USD spot OHLC is used as a proxy and is not equivalent to BTC/USDT Futures. Funding, open interest, CVD, order book and liquidation remain separate confluence inputs.",
     "Class scores are model scores, not calibrated real-world win probabilities.",
