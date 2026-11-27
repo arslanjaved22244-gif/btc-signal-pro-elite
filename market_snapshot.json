@@ -1,40 +1,48 @@
 {
-  "price": 59832.2,
-  "funding_rate": 1.26497247031e-05,
-  "funding_percent": 0.00126497247031,
-  "open_interest": 3183023.3000000142,
+  "price": 59845.0,
+  "funding_rate": 9.9940639715e-06,
+  "funding_percent": 0.0009994063971500002,
+  "open_interest": 3184079.230000014,
   "oi_change_5m_pct": 0.0,
   "oi_history": [
     {
-      "timestamp": "1795803600000",
-      "oi_contracts": "3186652.0600000143",
-      "oi_coin": "31834.981500000138",
-      "oi_usd": "1907877268.1905485615387"
+      "timestamp": "1795804200000",
+      "oi_contracts": "3183531.59000001452",
+      "oi_coin": "31836.4419000001408",
+      "oi_usd": "1903923801.52586868374408"
     },
     {
-      "timestamp": "1795803300000",
-      "oi_contracts": "3186652.0600000143",
-      "oi_coin": "31866.520600000143",
-      "oi_usd": "1907877268.1905485615387"
+      "timestamp": "1795803900000",
+      "oi_contracts": "3183531.59000001452",
+      "oi_coin": "31835.3159000001452",
+      "oi_usd": "1903923801.52586868374408"
     }
   ],
-  "orderbook_imbalance": -0.1253204146125895,
-  "cvd_proxy": 0.7532118263729485,
-  "taker_buy_ratio": 0.8766059131864742,
+  "orderbook_imbalance": 0.4533570099175129,
+  "cvd_proxy": 0.10474407890000637,
+  "taker_buy_ratio": 0.5523720394500031,
   "large_trades": [],
   "data_source": "OKX public BTC-USDT-SWAP perpetual API",
-  "as_of": "2026-11-27T18:23:53.912469+00:00",
+  "as_of": "2026-11-27T18:31:49.483259+00:00",
   "oi_note": "OKX public 5-minute open-interest history when available",
-  "atr_5m_pct": 0.2638,
-  "latest_range_atr_ratio": 0.463,
+  "atr_5m_pct": 0.25336,
+  "latest_range_atr_ratio": 0.505,
   "volatility_status": "NORMAL",
   "volatility_source": "Bybit/OKX completed BTC perpetual 5m candles",
   "oi_change_source": "OKX 5-minute OI history",
   "signal": "WAIT",
-  "reason": "Derivatives flow is mixed or squeeze/crowding filters are active",
-  "news_pause_active": false,
-  "pause_until": "2026-11-27T18:13:05.922760+00:00",
-  "news_alerts": [],
-  "updated_at": "2026-11-27T18:23:55.733779+00:00",
+  "reason": "News safety pause active (minimum 30 minutes)",
+  "news_pause_active": true,
+  "pause_until": "2026-11-27T19:01:50.869343+00:00",
+  "news_alerts": [
+    {
+      "title": "Joe Rogan on TRUMP Coin: 'It's Legal, but It's Crazy' - FinanceFeeds",
+      "published": "2026-11-27T18:21:50+00:00",
+      "age_minutes": 10.0,
+      "source": "Google News RSS",
+      "url": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE1HTWZkYlZweVlGTmJMRWI5bVpENFo5ZEN3QTk4enVaVVppTTlQOV91X25yc0M0UkhMWGZPN1RRRElsa0NUQ0JxXzg0ckx0c013ZHB0azRVYW4yS1Z0akRHYjdRLWY?oc=5"
+    }
+  ],
+  "updated_at": "2026-11-27T18:31:50.869343+00:00",
   "safety_note": "Signal-only; manual trading only. Large trades are trade-size alerts, not verified whale identities. Trump social posts are monitored through a third-party archive RSS, not an official API."
 }
