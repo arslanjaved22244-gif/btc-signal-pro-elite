@@ -347,6 +347,7 @@ button{background:#f5b942;color:#111;border:0;padding:12px 18px;border-radius:8p
 <div class="metric"><span>Pending / WAIT abstentions</span><b id="paperPending">-- / --</b></div>
 <div class="metric"><span>Paper tracker updated</span><b id="paperUpdated">--</b></div>
 <div class="metric"><span>Shadow AI forecasts closed / pending</span><b id="shadowCount">-- / --</b></div>
+<div class="metric"><span>Latest AI output freshness</span><b id="shadowFreshness">Checking...</b></div>
 <div class="metric"><span>Shadow AI directional accuracy (before fees)</span><b id="shadowAccuracy">Collecting...</b></div>
 <div class="metric"><span>Shadow AI net win rate (after estimated fees)</span><b id="shadowNetWin">Collecting...</b></div>
 <div class="metric"><span>Shadow AI average net return</span><b id="shadowAverage">--</b></div>
@@ -1638,6 +1639,8 @@ async function loadPaperTrading(force=false){
   setText("paperUpdated",d.updated_at?new Date(d.updated_at).toLocaleString():"--");
   const sh=d.shadow_evaluation||{};
   setText("shadowCount",(sh.closed_forecasts||0)+" / "+(sh.pending_forecasts||0));
+  setText("shadowFreshness",sh.latest_model_fresh===true?"FRESH":sh.latest_model_fresh===false?"STALE / NOT COUNTED":"NOT AVAILABLE");
+  $("shadowFreshness").className=sh.latest_model_fresh===true?"green":"yellow";
   setText("shadowAccuracy",sh.directional_accuracy_pct==null?"Collecting...":Number(sh.directional_accuracy_pct).toFixed(1)+"%");
   setText("shadowNetWin",sh.net_win_rate_pct==null?"Collecting...":Number(sh.net_win_rate_pct).toFixed(1)+"%");
   setText("shadowAverage",sh.average_net_return_pct==null?"--":Number(sh.average_net_return_pct).toFixed(3)+"%");
