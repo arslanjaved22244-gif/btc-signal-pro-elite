@@ -205,6 +205,7 @@ button{background:#f5b942;color:#111;border:0;padding:12px 18px;border-radius:8p
 <div id="lowerPools">Calculating...</div>
 </div>
 <div class="metric"><span>Nearest upper / lower pool</span><b id="nearestPools">--</b></div>
+<div class="metric"><span>Estimated lower / upper pool strength</span><b id="poolStrength">--</b></div>
 <div class="price yellow" id="poolAlert">ANALYZING...</div>
 <p id="poolAlertText">Checking repeated highs and lows.</p>
 <p class="note">Estimated swing levels, not actual liquidation levels.</p>
@@ -978,62 +979,54 @@ renderWhales();
 }
 
 function heatmap(){
-let cs=M.cs||[],p=M.price,a=M.a;
-if(cs.length<30||!p||!a)return;
-
-let s=cs.slice(-120);
-let tol=Math.max(a.atr*.18,p*.0003);
-let hi=[],lo=[];
-
-for(let i=2;i<s.length-2;i++){
-if(s[i].h>s[i-1].h&&s[i].h>s[i-2].h&&s[i].h>=s[i+1].h&&s[i].h>=s[i+2].h)hi.push(s[i].h);
-if(s[i].l<s[i-1].l&&s[i].l<s[i-2].l&&s[i].l<=s[i+1].l&&s[i].l<=s[i+2].l)lo.push(s[i].l);
-}
-
-function cluster(v){
-let g=[];
-v.sort((x,y)=>x-y).forEach(x=>{
-let z=g.find(y=>Math.abs(y.avg-x)<=tol);
-if(!z)g.push({avg:x,n:1});
-else{
-z.avg=(z.avg*z.n+x)/(++z.n);
-}
-});
-return g.filter(x=>x.n>=2).map(x=>({p:x.avg,n:x.n}));
-}
-
-let u=cluster(hi).filter(x=>x.p>p).sort((x,y)=>x.p-y.p);
-let l=cluster(lo).filter(x=>x.p<p).sort((x,y)=>y.p-x.p);
-
-function show(v){
-return v.slice(0,4).map((x,i)=>
-`<div class="zone">Pool ${i+1}: $${fmt(x.p)} • ${x.n} touches • ${(Math.abs(x.p-p)/p*100).toFixed(2)}%</div>`
-).join("")||"No repeated pool detected.";
-}
-
-setText("poolPrice","$"+fmt(p));
-$("upperPools").innerHTML=show(u);
-$("lowerPools").innerHTML=show(l);
-setText("nearestPools",(u[0]?"$"+fmt(u[0].p):"--")+" / "+(l[0]?"$"+fmt(l[0].p):"--"));
-
-let un=u[0]?(u[0].p-p)/p*100:99;
-let ln=l[0]?(p-l[0].p)/p*100:99;
-let title="NO CLEAR NEARBY POOL";
-let msg="No repeated pool is very close.";
-
-if(un<.35&&ln<.35){
-title="LIQUIDITY ON BOTH SIDES";
-msg="Nearby swing levels on both sides; direction uncertain.";
-}else if(un<.35){
-title="UPPER LIQUIDITY NEARBY";
-msg="Repeated swing highs are close; sweep possible, not guaranteed.";
-}else if(ln<.35){
-title="LOWER LIQUIDITY NEARBY";
-msg="Repeated swing lows are close; sweep possible, not guaranteed.";
-}
-
-setText("poolAlert",title);
-setText("poolAlertText",msg);
+ let cs=M.cs||[],p=M.price,a=M.a;
+ if(cs.length<30||!p||!a)return;
+ let s=cs.slice(-120),tol=Math.max(a.atr*.18,p*.0003),hi=[],lo=[];
+ for(let i=2;i<s.length-2;i++){
+  if(s[i].h>s[i-1].h&&s[i].h>s[i-2].h&&s[i].h>=s[i+1].h&&s[i].h>=s[i+2].h)hi.push(s[i].h);
+  if(s[i].l<s[i-1].l&&s[i].l<s[i-2].l&&s[i].l<=s[i+1].l&&s[i].l<=s[i+2].l)lo.push(s[i].l);
+ }
+ function cluster(v){
+  let g=[];
+  v.sort((x,y)=>x-y).forEach(x=>{
+   let z=g.find(y=>Math.abs(y.avg-x)<=tol);
+   if(!z)g.push({avg:x,n:1});else z.avg=(z.avg*z.n+x)/(++z.n);
+  });
+  return g.filter(x=>x.n>=2).map(x=>({p:x.avg,n:x.n}));
+ }
+ let u=cluster(hi).filter(x=>x.p>p).sort((x,y)=>x.p-y.p);
+ let l=cluster(lo).filter(x=>x.p<p).sort((x,y)=>y.p-x.p);
+ function show(v){
+  return v.slice(0,4).map((x,i)=>`<div class="zone">Pool ${i+1}: $${fmt(x.p)} • ${x.n} touches • ${(Math.abs(x.p-p)/p*100).toFixed(2)}%</div>`).join("")||"No repeated pool detected.";
+ }
+ setText("poolPrice","$"+fmt(p));
+ $("upperPools").innerHTML=show(u);$("lowerPools").innerHTML=show(l);
+ setText("nearestPools",(u[0]?"$"+fmt(u[0].p):"--")+" / "+(l[0]?"$"+fmt(l[0].p):"--"));
+ // Relative swing-pool concentration, not exchange liquidation-map data.
+ const strength=pools=>pools.reduce((sum,x)=>{
+  const distance=Math.abs(x.p-p)/p*100;
+  return sum+(distance<=2.0?x.n/(1+distance*2):0);
+ },0);
+ const lowerStrength=strength(l),upperStrength=strength(u);
+ setText("poolStrength",lowerStrength.toFixed(1)+" / "+upperStrength.toFixed(1));
+ let un=u[0]?(u[0].p-p)/p*100:99,ln=l[0]?(p-l[0].p)/p*100:99;
+ let title="NO CLEAR NEARBY POOL",msg="No repeated swing pool is very close; estimated levels only.";
+ if(lowerStrength>=3&&lowerStrength>=upperStrength*1.5){
+  title="DOWNSIDE LIQUIDITY STACKED";
+  msg="Repeated swing lows show stronger estimated stop-liquidity below price ("+lowerStrength.toFixed(1)+" vs "+upperStrength.toFixed(1)+" above). Downside sweep risk is elevated, not guaranteed.";
+ }else if(un<.35&&ln<.35){
+  title="LIQUIDITY ON BOTH SIDES";msg="Nearby swing levels on both sides; direction uncertain.";
+ }else if(un<.35){
+  title="UPPER LIQUIDITY NEARBY";msg="Repeated swing highs are close; upside sweep possible, not guaranteed.";
+ }else if(ln<.35){
+  title="LOWER LIQUIDITY NEARBY";msg="Repeated swing lows are close; downside sweep possible, not guaranteed.";
+ }else if(lowerStrength>upperStrength&&lowerStrength>=2){
+  title="MORE ESTIMATED LIQUIDITY BELOW";
+  msg="Lower-side repeated swing lows outweigh upper-side pools in the recent 120 candles. Watch for a downside sweep; not a price prediction.";
+ }
+ setText("poolAlert",title);
+ setPriceClass("poolAlert",title.includes("DOWNSIDE")||title.includes("LOWER")?"red":"yellow");
+ setText("poolAlertText",msg);
 }
 
 /* MARKET DECISION ENGINE */
