@@ -118,6 +118,20 @@ class FuturesSourceSafetyTests(unittest.TestCase):
         self.assertTrue(alignment["passed"])
         self.assertEqual(alignment["type"], "CROSS_VENUE_FUTURES")
 
+    def test_same_venue_model_still_requires_fresh_matching_candle_time(self):
+        market = make_market()
+        last = market["timeframes"]["5m"]["candles"][-1]
+        model = {
+            "data_source": "Bybit linear Futures public OHLC candles",
+            "data_source_by_timeframe": {"5m": "Bybit linear Futures"},
+            "symbol": "BTC/USDT", "last_price": last["close"],
+            "last_candle_time": last["time"] - 16 * 60 * 1000,
+            "validation_gate": {"passed": True}
+        }
+        alignment = ENGINE.validate_model_market_alignment(model, market)
+        self.assertFalse(alignment["passed"])
+        self.assertEqual(alignment["type"], "BLOCKED")
+
     def test_cross_venue_futures_model_blocks_stale_candle_timestamp(self):
         market = make_market()
         last = market["timeframes"]["5m"]["candles"][-1]
