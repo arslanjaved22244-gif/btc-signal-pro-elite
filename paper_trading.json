@@ -4,7 +4,7 @@
   "source": "OKX public Futures 5m candles",
   "horizon_minutes": 15,
   "estimated_round_trip_cost_pct": 0.14,
-  "updated_at": "2026-11-27T18:36:01.997680+00:00",
+  "updated_at": "2026-11-27T18:37:29.173257+00:00",
   "current_signal": "WAIT",
   "current_signal_reason": null,
   "closed_trades": 0,
