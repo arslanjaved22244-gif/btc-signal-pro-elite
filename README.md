@@ -18,7 +18,8 @@ This is an installable web app (PWA), not an App Store listing. The app shell ca
 - Multi-timeframe BTC context: 5m, 15m, 1h, 4h and 1d.
 - Experimental ML forecasts for 15m, 30m, 1h and 4h, including a Random Forest, gradient-boosting, neural MLP and optional XGBoost ensemble.
 - Chronological holdout validation and conservative WAIT gates. Model scores are not calibrated win probabilities and are not guarantees of future performance.
-- Public derivatives monitor: funding, open interest where available, CVD proxy, taker buy ratio, order-book imbalance and large-trade size alerts.
+- Public derivatives monitor: funding, open interest where available, executed taker-flow feed where published, rolling CVD proxy, order-book imbalance and large-trade size alerts.
+- Eleven-point live data-health audit: 5m candles, five-timeframe coverage, funding, OI, taker flow, CVD, order book, news freshness, Trump-post archive availability, cross-exchange perpetual comparison and continuous liquidation WebSocket health. Missing/stale feeds are shown as unavailable, not guessed.
 - Market-risk headline scanning plus an independent archive RSS of public @realDonaldTrump Truth Social posts (`trumpstruth.org/feed`). Relevant posts/headlines trigger at least a 30-minute WAIT lock. The archive is third-party, not an official Truth Social API; it may lag or omit deleted/visual-only content.
 - Dashboard BTC price refreshes in the open browser every 5 seconds. This is client-side price refresh only; it is not a 5-second AI retraining or server-side signal cycle.
 - Full dashboard indicators refresh every 30 seconds, while the published server-side AI output follows GitHub Actions on a best-effort 5-minute schedule and can be delayed.
@@ -35,7 +36,7 @@ This is an installable web app (PWA), not an App Store listing. The app shell ca
 Telegram integration is intentionally not part of this setup. The dashboard remains signal-only and does not require bot tokens, exchange API keys, or paid alert services.
 
 ## 24/7 hosting
-`live_runner.py` provides a persistent liquidation WebSocket and a periodic monitor, but it must run on an always-on host. See `DEPLOY_VPS.md`. GitHub Actions schedules are best-effort and do not provide a guaranteed 5-second backend. The current live runner polls the REST/news monitor about once per minute to avoid excessive public API requests; the dashboard price itself refreshes every 5 seconds in an open browser.
+`live_runner.py` provides a persistent liquidation WebSocket and a periodic monitor, but it must run on an always-on host. See `DEPLOY_VPS.md`. GitHub Actions schedules are best-effort and do not provide a guaranteed 5-second backend. The current live runner polls the REST/news monitor about once per minute to avoid excessive public API requests; the dashboard price itself refreshes every 5 seconds in an open browser. The 11-point health panel distinguishes a short GitHub Actions sample from a genuinely connected, recently active continuous liquidation stream.
 
 ## Automation
 GitHub Actions refreshes the advanced AI output and public market snapshot on best-effort schedules (normally 5 minutes). You can inspect run history in the repository's **Actions** tab.
