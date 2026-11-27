@@ -105,26 +105,22 @@ MAX_MODEL_CANDLE_SKEW_MINUTES = 15
 
 
 def validate_model_market_alignment(model, market):
-    """Require fresh, price-aligned perpetual Futures before using cross-venue ML."""
-    model_source = str(model.get("data_source", ""))
-    model_tf_source = str(model.get("data_source_by_timeframe", {}).get("5m", ""))
-    source_text = (model_source + " " + model_tf_source).lower()
+    """Require the model's actual 5m perpetual venue, price and candle time to align."""
+    model_source = str(model.get("data_source_by_timeframe", {}).get("5m")
+                       or model.get("data_source", ""))
     market_exchange = str(market.get("exchange", ""))
-    market_text = (market_exchange + " " + str(market.get("market_type", ""))).lower()
-    model_is_futures = "futures" in source_text and "spot" not in source_text
+    model_source_lower = model_source.lower()
+    market_exchange_lower = market_exchange.lower()
+    model_is_futures = "futures" in model_source_lower and "spot" not in model_source_lower
     market_is_futures = market.get("data_quality", {}).get("futures_only") is True
     if not model_is_futures or not market_is_futures:
         return {"passed": False, "type": "BLOCKED",
-                "reason": "Both model and live market must be verified perpetual Futures."}
-    if market_exchange and market_exchange.lower() in source_text:
-        return {"passed": True, "type": "SAME_VENUE",
-                "basis_pct": 0.0, "candle_skew_minutes": 0.0,
-                "reason": "Model and live market identify the same Futures venue."}
+                "reason": "Both model 5m input and live market must be verified perpetual Futures."}
     ai_symbol = str(model.get("symbol", "BTC/USDT")).upper().replace("/", "").replace("-", "")
     market_symbol = str(market.get("symbol", "BTCUSDT")).upper().replace("/", "").replace("-", "")
     if "BTC" not in ai_symbol or "USDT" not in ai_symbol or "BTC" not in market_symbol or "USDT" not in market_symbol:
         return {"passed": False, "type": "BLOCKED",
-                "reason": "Cross-venue model alignment is restricted to BTC/USDT perpetual Futures."}
+                "reason": "Model alignment is restricted to BTC/USDT perpetual Futures."}
     rows = market.get("timeframes", {}).get("5m", {}).get("candles", [])
     try:
         market_price = float(rows[-1]["close"])
@@ -137,20 +133,22 @@ def validate_model_market_alignment(model, market):
         skew_minutes = abs(model_time - market_time) / 60000.0
     except (IndexError, KeyError, TypeError, ValueError):
         return {"passed": False, "type": "BLOCKED",
-                "reason": "Cross-venue model alignment requires valid current prices and candle timestamps."}
+                "reason": "Alignment requires valid current prices and 5m candle timestamps."}
+    same_venue = bool(market_exchange_lower and market_exchange_lower in model_source_lower)
     passed = basis_pct <= MAX_MODEL_MARKET_BASIS_PCT and skew_minutes <= MAX_MODEL_CANDLE_SKEW_MINUTES
+    alignment_type = "SAME_VENUE" if same_venue and passed else (
+        "CROSS_VENUE_FUTURES" if passed else "BLOCKED"
+    )
     return {
-        "passed": passed,
-        "type": "CROSS_VENUE_FUTURES" if passed else "BLOCKED",
-        "model_venue": model_source, "market_venue": market_exchange or market_text[:80],
+        "passed": passed, "type": alignment_type,
+        "model_venue": model_source, "market_venue": market_exchange or "UNKNOWN",
         "basis_pct": round(basis_pct, 5),
         "candle_skew_minutes": round(skew_minutes, 2),
         "max_basis_pct": MAX_MODEL_MARKET_BASIS_PCT,
         "max_candle_skew_minutes": MAX_MODEL_CANDLE_SKEW_MINUTES,
-        "reason": ("Cross-venue perpetual prices and candle timestamps are aligned."
-                   if passed else "Cross-venue price basis or candle-time skew exceeds safety tolerance.")
+        "reason": ("Same-venue or cross-venue perpetual prices and 5m candle times are aligned."
+                   if passed else "Perpetual price basis or 5m candle-time skew exceeds safety tolerance.")
     }
-
 
 def detect_recent_liquidity_sweep(market):
     """Detect a confirmed wick-and-reclaim on recent closed 15m Futures candles."""
