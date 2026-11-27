@@ -417,8 +417,31 @@ def collect_okx():
         result["feeds"]["open_interest_current"]={"ok":True,"data":{"openInterest":x.get("oi"),"openInterestCurrency":x.get("oiCcy")}}
     else:
         result["feeds"]["open_interest_current"]=oi
-    result["feeds"]["open_interest_history_5m"]={"ok":False,"error":"OKX public OI history not configured in this fallback."}
-    result["feeds"]["taker_flow_5m"]={"ok":False,"error":"OKX taker buy/sell ratio not configured in this fallback."}
+    oi_hist=okx_feed("/api/v5/rubik/stat/contracts/open-interest-history",{
+        "instId":"BTC-USDT-SWAP","period":"5m","limit":"30"})
+    if oi_hist["ok"]:
+        normalized=[]
+        for point in oi_hist["data"]:
+            value=point.get("oi",point.get("oiCcy",0))
+            normalized.append({"sumOpenInterest":value,"timestamp":point.get("ts")})
+        oi_hist["data"]=list(reversed(normalized))
+        if len(oi_hist["data"])<2:
+            oi_hist={"ok":False,"error":"OKX returned fewer than two 5m open-interest history points."}
+    result["feeds"]["open_interest_history_5m"]=oi_hist
+
+    taker=okx_feed("/api/v5/rubik/stat/taker-volume",{
+        "ccy":"BTC","instType":"CONTRACTS","period":"5m"})
+    if taker["ok"]:
+        normalized=[]
+        for point in taker["data"]:
+            buy=float(point.get("buyVol",0) or 0)
+            sell=float(point.get("sellVol",0) or 0)
+            normalized.append({"buySellRatio":buy/sell if sell>0 else None,
+                "buyVol":buy,"sellVol":sell,"timestamp":point.get("ts")})
+        taker["data"]=list(reversed(normalized))
+        if not taker["data"]:
+            taker={"ok":False,"error":"OKX returned no 5m taker-volume points."}
+    result["feeds"]["taker_flow_5m"]=taker
 
     book=okx_feed("/api/v5/market/books",{"instId":"BTC-USDT-SWAP","sz":"50"})
     if book["ok"]:
@@ -461,6 +484,12 @@ def collect_okx():
         "futures_only":True,"status":"HEALTHY" if core and fresh else "DEGRADED","warnings":[]}
     if not core: result["data_quality"]["warnings"].append("One or more OKX BTC-USDT-SWAP candle timeframes failed.")
     if not fresh: result["data_quality"]["warnings"].append("OKX 5m Futures candle data is stale.")
+    critical_ok=all(result["feeds"].get(k,{}).get("ok") for k in
+        ("mark_price_funding","open_interest_current","open_interest_history_5m",
+         "taker_flow_5m","order_book","recent_agg_trades"))
+    if not critical_ok:
+        result["data_quality"]["status"]="DEGRADED"
+        result["data_quality"]["warnings"].append("One or more critical Futures confluence feeds are unavailable; directional signals must remain WAIT.")
     for key,feed in result["feeds"].items():
         if key not in ("liquidations",) and not feed.get("ok"):
             result["data_quality"]["warnings"].append(key+" feed unavailable: "+feed.get("error","not configured"))
