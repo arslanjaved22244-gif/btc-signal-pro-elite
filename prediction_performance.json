@@ -1,6 +1,91 @@
 {
-  "source": "Binance USD-M Futures ticker",
-  "records": [],
-  "updated_at": "2026-11-27T11:30:11.594220+00:00",
-  "last_error": "HTTP Error 451: "
+  "source": "OKX BTC-USDT-SWAP public ticker; directional close comparison only",
+  "updated_at": "2026-11-27T11:30:46.239991+00:00",
+  "model_generated_at": "2026-11-27T11:23:41.578220+00:00",
+  "current_price": 61651.9,
+  "stats": {
+    "15m": {
+      "evaluated": 0,
+      "directional_calls": 0,
+      "correct": 0,
+      "directional_accuracy_pct": null,
+      "wait_abstentions": 0
+    },
+    "30m": {
+      "evaluated": 0,
+      "directional_calls": 0,
+      "correct": 0,
+      "directional_accuracy_pct": null,
+      "wait_abstentions": 0
+    },
+    "60m": {
+      "evaluated": 0,
+      "directional_calls": 0,
+      "correct": 0,
+      "directional_accuracy_pct": null,
+      "wait_abstentions": 0
+    },
+    "4h": {
+      "evaluated": 0,
+      "directional_calls": 0,
+      "correct": 0,
+      "directional_accuracy_pct": null,
+      "wait_abstentions": 0
+    }
+  },
+  "records": [
+    {
+      "model_generated_at": "2026-11-27T11:23:41.578220+00:00",
+      "logged_at": "2026-11-27T11:30:46.239961+00:00",
+      "horizon": "15m",
+      "horizon_minutes": 15,
+      "direction": "WAIT",
+      "reference_price": 61651.9,
+      "outcome": null,
+      "evaluated_at": null,
+      "realized_change_pct": null,
+      "correct": null,
+      "validation_status": "WEAK EDGE \u2014 WAIT"
+    },
+    {
+      "model_generated_at": "2026-11-27T11:23:41.578220+00:00",
+      "logged_at": "2026-11-27T11:30:46.239984+00:00",
+      "horizon": "30m",
+      "horizon_minutes": 30,
+      "direction": "WAIT",
+      "reference_price": 61651.9,
+      "outcome": null,
+      "evaluated_at": null,
+      "realized_change_pct": null,
+      "correct": null,
+      "validation_status": "WEAK EDGE \u2014 WAIT"
+    },
+    {
+      "model_generated_at": "2026-11-27T11:23:41.578220+00:00",
+      "logged_at": "2026-11-27T11:30:46.239988+00:00",
+      "horizon": "60m",
+      "horizon_minutes": 60,
+      "direction": "WAIT",
+      "reference_price": 61651.9,
+      "outcome": null,
+      "evaluated_at": null,
+      "realized_change_pct": null,
+      "correct": null,
+      "validation_status": "WEAK EDGE \u2014 WAIT"
+    },
+    {
+      "model_generated_at": "2026-11-27T11:23:41.578220+00:00",
+      "logged_at": "2026-11-27T11:30:46.239990+00:00",
+      "horizon": "4h",
+      "horizon_minutes": 240,
+      "direction": "WAIT",
+      "reference_price": 61651.9,
+      "outcome": null,
+      "evaluated_at": null,
+      "realized_change_pct": null,
+      "correct": null,
+      "validation_status": "WEAK EDGE \u2014 WAIT"
+    }
+  ],
+  "limitations": "Not a trade P&L, win-rate guarantee, or stop/target simulation. LONG/SHORT accuracy is directional only; WAIT is counted as abstention."
 }
