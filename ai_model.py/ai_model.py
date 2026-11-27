@@ -52,6 +52,29 @@ def get_binance_data(interval):
     return candles
 
 
+def get_kraken_data(interval_minutes):
+    # Geographic restrictions can block Binance Futures API requests on CI runners.
+    url = f"https://api.kraken.com/0/public/OHLC?pair=XBTUSD&interval={interval_minutes}"
+    request = urllib.request.Request(url, headers={"User-Agent": "BTC-Signal-Pro-Elite/3.0"})
+    with urllib.request.urlopen(request, timeout=30) as response:
+        raw = json.loads(response.read().decode("utf-8"))
+    if raw.get("error"):
+        raise RuntimeError("Kraken API error: " + ", ".join(raw["error"]))
+    result = raw.get("result", {})
+    pair_key = next((key for key in result if key != "last"), None)
+    if pair_key is None:
+        raise ValueError(f"Kraken returned no BTC/USD candles for {interval_minutes}m.")
+    candles = [{
+        "time": int(float(row[0]) * 1000), "open": float(row[1]),
+        "high": float(row[2]), "low": float(row[3]),
+        "close": float(row[4]), "volume": float(row[6])
+    } for row in result[pair_key]]
+    candles = candles[:-1]
+    if len(candles) < 210:
+        raise ValueError(f"Not enough completed Kraken {interval_minutes}m candles: {len(candles)}")
+    return candles
+
+
 def ema(values, period):
     if not values:
         return []
@@ -271,9 +294,20 @@ def walk_forward_validate(rows, labels):
 def main():
     print("BTC Signal Pro Elite - Advanced ML starting...")
     data = {}
-    for tf in INTERVALS:
-        print(f"Loading Binance Futures {tf} candles...")
-        data[tf] = get_binance_data(tf)
+    source = "Binance USD-M Futures public klines"
+    symbol = "BTC/USDT"
+    try:
+        for tf in INTERVALS:
+            print(f"Loading Binance Futures {tf} candles...")
+            data[tf] = get_binance_data(tf)
+    except Exception as exc:
+        print(f"Binance Futures data unavailable ({exc}); switching all timeframes to Kraken Spot.")
+        data = {}
+        source = "Kraken Spot public OHLC (fallback)"
+        symbol = "BTC/USD"
+        for tf, minutes in INTERVALS.items():
+            print(f"Loading Kraken Spot {tf} candles...")
+            data[tf] = get_kraken_data(minutes)
     rows, labels = build_dataset(data)
     if len(rows) < 250:
         raise ValueError(f"Not enough aligned multi-timeframe samples: {len(rows)}")
@@ -291,8 +325,8 @@ def main():
         "system": "BTC Signal Pro Elite Advanced ML",
         "model": "Multinomial Logistic Regression",
         "model_version": "3.0-binance-mtf-balanced-walkforward",
-        "data_source": DATA_SOURCE,
-        "symbol": SYMBOL,
+        "data_source": source,
+        "symbol": symbol,
         "base_interval": "5m",
         "feature_timeframes": list(INTERVALS.keys()),
         "signal": signal,
@@ -308,7 +342,7 @@ def main():
         "last_candle_time": data["5m"][-1]["time"],
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "limitations": [
-            "Uses public Binance USD-M Futures OHLCV only; CVD, open interest, funding, order book and liquidation feeds are not model features yet.",
+            "Uses one consistent OHLCV source across all timeframes. Kraken fallback is spot data, not Binance Futures data; CVD, open interest, funding, order book and liquidation feeds are not model features yet.",
             "Class scores are model scores, not calibrated real-world win probabilities.",
             "Walk-forward metrics are historical diagnostics, not guarantees of future performance."
         ]
