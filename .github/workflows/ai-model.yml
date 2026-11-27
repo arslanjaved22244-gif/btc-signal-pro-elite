@@ -5,7 +5,6 @@ on:
   push:
     paths:
       - "ai_model.py/**"
-      - "tests/**"
       - "signal_engine.py"
       - "paper_trader.py"
       - ".github/workflows/ai-model.yml"
