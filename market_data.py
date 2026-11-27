@@ -686,9 +686,31 @@ def collect_bitget():
         values = (oi["data"] or {}).get("openInterestList", [])
         oi["data"] = {"openInterest": values[0].get("size") if values else None}
     result["feeds"]["open_interest_current"] = oi
-    result["feeds"]["open_interest_history_5m"] = {
-        "ok": False, "error": "Bitget historical OI series is not collected by this fallback; current OI only."
-    }
+    # Bitget's public fallback exposes current OI but not a reliable 5m history.
+    # Add OKX BTC-USDT-SWAP history as a separately labelled cross-venue
+    # Futures confluence feed; never relabel it as Bitget OI.
+    oi_hist = okx_feed("/api/v5/rubik/stat/contracts/open-interest-history", {
+        "instId": "BTC-USDT-SWAP", "period": "5m", "limit": "30"
+    })
+    if oi_hist.get("ok"):
+        normalized_oi = []
+        for point in oi_hist.get("data", []):
+            if isinstance(point, dict):
+                value = point.get("oiUsd", point.get("oi", point.get("oiCcy", 0)))
+                timestamp = point.get("ts")
+            elif isinstance(point, (list, tuple)) and len(point) >= 4:
+                value = point[3] or point[2] or point[1]
+                timestamp = point[0]
+            else:
+                continue
+            normalized_oi.append({"sumOpenInterest": value, "timestamp": timestamp})
+        oi_hist["data"] = list(reversed(normalized_oi))
+        if len(oi_hist["data"]) < 2:
+            oi_hist = {"ok": False, "error": "OKX returned fewer than two 5m OI history points."}
+        else:
+            oi_hist["venue"] = "OKX BTC-USDT-SWAP (cross-venue Futures context)"
+            oi_hist["note"] = "Historical OI is sourced from OKX perpetuals, not the primary Bitget execution venue."
+    result["feeds"]["open_interest_history_5m"] = oi_hist
 
     book = bitget_feed("order_book", "/api/v2/mix/market/merge-depth",
                        {"productType":"USDT-FUTURES","symbol":SYMBOL,"limit":"50"})
