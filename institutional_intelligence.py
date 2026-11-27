@@ -307,16 +307,21 @@ def feed_health(market, news, liquidation, comparison, now=None):
     oi_rows = oi.get("data", []) if oi.get("ok") else []
     oi_stamp = None
     if isinstance(oi_rows, list) and oi_rows:
-        last = oi_rows[-1]
-        raw_stamp = last.get("timestamp") if isinstance(last, dict) else None
-        try:
-            raw_stamp = int(raw_stamp)
-            if raw_stamp < 10_000_000_000:
-                raw_stamp *= 1000
-            oi_age = (now.timestamp() * 1000 - raw_stamp) / 60000
-            oi_stamp = round(oi_age, 2) if -1 <= oi_age <= 1e6 else None
-        except (TypeError, ValueError):
-            pass
+        ages = []
+        for row in oi_rows:
+            raw_stamp = row.get("timestamp") if isinstance(row, dict) else None
+            try:
+                raw_stamp = int(raw_stamp)
+                if raw_stamp < 10_000_000_000:
+                    raw_stamp *= 1000
+                oi_age = (now.timestamp() * 1000 - raw_stamp) / 60000
+                if -1 <= oi_age <= 1e6:
+                    ages.append(oi_age)
+            except (TypeError, ValueError):
+                continue
+        # Exchange APIs differ in ascending/descending order; use the newest timestamp.
+        if ages:
+            oi_stamp = round(min(ages), 2)
     taker = feeds.get("taker_flow_5m", {})
     taker_rows = taker.get("data", []) if taker.get("ok") else []
     news_age = _age_minutes(news.get("generated_at"), now)
