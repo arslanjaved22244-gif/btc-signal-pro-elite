@@ -584,13 +584,34 @@ def bitget_feed(name, path, params=None):
 def bitget_candles(interval):
     granularity = {"5m": "5m", "15m": "15m", "1h": "1H", "4h": "4H", "1d": "1D"}[interval]
     duration = {"5m": 300000, "15m": 900000, "1h": 3600000, "4h": 14400000, "1d": 86400000}[interval]
-    raw = bitget_request("/api/v2/mix/market/candles", {
-        "symbol": SYMBOL, "productType": "USDT-FUTURES",
-        "granularity": granularity, "limit": "200"
-    })
+    params = {"symbol": SYMBOL, "productType": "USDT-FUTURES",
+              "granularity": granularity, "limit": "200"}
+    raw = bitget_request("/api/v2/mix/market/candles", params)
+    # Bitget's latest-candles endpoint is capped at 200 rows. Page backwards
+    # through history-candles so EMA200 and the 300+ candle holdout backtest
+    # have enough completed observations instead of silently stalling at 199.
+    combined = list(raw or [])
+    seen = {int(row[0]) for row in combined if row}
+    for _ in range(2):
+        if not combined:
+            break
+        oldest = min(int(row[0]) for row in combined if row)
+        older = bitget_request("/api/v2/mix/market/history-candles", {
+            "symbol": SYMBOL, "productType": "USDT-FUTURES",
+            "granularity": granularity, "endTime": str(oldest - 1), "limit": "200"
+        })
+        added = 0
+        for row in older or []:
+            stamp = int(row[0])
+            if stamp not in seen:
+                combined.append(row)
+                seen.add(stamp)
+                added += 1
+        if not added:
+            break
     now_ms = int(time.time() * 1000)
     rows = []
-    for row in raw or []:
+    for row in combined:
         stamp = int(row[0])
         if stamp + duration > now_ms:
             continue
