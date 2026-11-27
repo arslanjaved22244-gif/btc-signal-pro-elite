@@ -11,7 +11,8 @@ GitHub Pages: https://arslanjaved22244-gif.github.io/btc-signal-pro-elite/
 - Chronological holdout validation and conservative WAIT gates. Model scores are not calibrated win probabilities and are not guarantees of future performance.
 - Public derivatives monitor: funding, open interest where available, CVD proxy, taker buy ratio, order-book imbalance and large-trade size alerts.
 - Headline-based news safety pause of at least 30 minutes. Headlines can extend the pause while they remain in the recent feed. This is not a direct Trump/X feed and cannot guarantee detection of every breaking event or public post.
-- Dashboard market snapshot is updated by scheduled GitHub Actions; schedules are best-effort and can be delayed.
+- Dashboard BTC price refreshes in the open browser every 5 seconds; this is a client-side price refresh, not a 5-second AI retraining or server-side signal cycle.
+- Full dashboard indicators refresh every 30 seconds, while the published server-side AI output follows GitHub Actions on a best-effort 5-minute schedule and can be delayed.
 
 ## Important limitations
 - Derivatives data comes from public exchange endpoints (Bybit with OKX fallback); individual fields can be unavailable during API outages or when the provider does not publish the requested history.
