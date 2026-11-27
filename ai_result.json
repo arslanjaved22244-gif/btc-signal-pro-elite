@@ -107,6 +107,65 @@
       ]
     ]
   },
+  "advanced_intelligence": {
+    "market_regime": {
+      "regime": "RANGE / CHOP",
+      "atr_ratio": 0.759,
+      "trend_slope_pct": -0.0249,
+      "liquidity_sweep": "NONE",
+      "range_high": 77630.0,
+      "range_low": 77458.4,
+      "explanation": "Low directional separation"
+    },
+    "multi_horizon_forecasts": {
+      "15m": {
+        "signal": "WAIT",
+        "raw_model_class": "LONG",
+        "scores": {
+          "SHORT": 29.04,
+          "WAIT": 29.88,
+          "LONG": 41.07
+        },
+        "confidence_margin": 11.19,
+        "holdout_accuracy": 35.96,
+        "macro_f1": 17.63,
+        "training_samples": 2074,
+        "validation_samples": 520,
+        "status": "WEAK EDGE \u2014 WAIT"
+      },
+      "30m": {
+        "signal": "WAIT",
+        "raw_model_class": "LONG",
+        "scores": {
+          "SHORT": 28.53,
+          "WAIT": 32.07,
+          "LONG": 39.4
+        },
+        "confidence_margin": 7.32,
+        "holdout_accuracy": 35.26,
+        "macro_f1": 17.38,
+        "training_samples": 2069,
+        "validation_samples": 519,
+        "status": "WEAK EDGE \u2014 WAIT"
+      },
+      "60m": {
+        "signal": "WAIT",
+        "raw_model_class": "LONG",
+        "scores": {
+          "SHORT": 28.85,
+          "WAIT": 21.93,
+          "LONG": 49.22
+        },
+        "confidence_margin": 20.37,
+        "holdout_accuracy": 36.49,
+        "macro_f1": 17.82,
+        "training_samples": 2058,
+        "validation_samples": 518,
+        "status": "WEAK EDGE \u2014 WAIT"
+      }
+    },
+    "method": "chronological holdout horizon models + volatility regime + 20-candle liquidity sweep detector"
+  },
   "walk_forward_folds": [
     {
       "fold": 1,
@@ -275,7 +334,7 @@
   "neutral_threshold_pct": 0.05,
   "last_price": 77522.6,
   "last_candle_time": 1793490900000,
-  "generated_at": "2026-11-27T10:06:25.952761+00:00",
+  "generated_at": "2026-11-27T11:09:45.142854+00:00",
   "limitations": [
     "Training is strictly Binance USD-M Futures OHLCV. If Futures endpoints fail, training fails closed and never substitutes Spot data. CVD, open interest, funding, order book and liquidation remain separate confluence inputs.",
     "Class scores are model scores, not calibrated real-world win probabilities.",
