@@ -1,7 +1,7 @@
 {
   "system": "BTC Signal Pro Elite Institutional Intelligence",
   "version": "1.0-six-upgrades",
-  "generated_at": "2026-11-27T23:24:36.317006+00:00",
+  "generated_at": "2026-11-27T23:26:12.087805+00:00",
   "market_regime": {
     "status": "AVAILABLE",
     "regime": "BEAR_TREND",
@@ -29,15 +29,15 @@
   "options": {
     "status": "AVAILABLE",
     "venue": "Deribit public BTC options",
-    "put_call_open_interest_ratio": 0.8109,
-    "call_open_interest": 190585.8,
-    "put_open_interest": 154545.8,
-    "call_volume_24h": 13712.2,
-    "put_volume_24h": 15233.9,
-    "average_call_mark_iv_pct": 54.73,
-    "average_put_mark_iv_pct": 54.73,
+    "put_call_open_interest_ratio": 0.811,
+    "call_open_interest": 190587.8,
+    "put_open_interest": 154571.0,
+    "call_volume_24h": 13711.9,
+    "put_volume_24h": 15234.0,
+    "average_call_mark_iv_pct": 54.72,
+    "average_put_mark_iv_pct": 54.72,
     "approx_max_pain_strike": 68000.0,
-    "btc_index_price": 59780.22,
+    "btc_index_price": 59752.08,
     "instruments_sampled": 960,
     "note": "Aggregated listed BTC options snapshot; max-pain is an approximation across returned instruments, not a price target."
   },
@@ -67,20 +67,20 @@
     "15m": {
       "status": "RESEARCH_ONLY",
       "scenario": "RANGE_OR_WAIT",
-      "directional_score": -1.38,
-      "recent_momentum_pct": -0.0182,
-      "ema_spread_bps": 1.8,
-      "atr_pct": 0.1466,
+      "directional_score": -1.19,
+      "recent_momentum_pct": -0.0027,
+      "ema_spread_bps": 1.82,
+      "atr_pct": 0.132,
       "regime": "BEAR_TREND",
       "note": "Heuristic scenario, not a calibrated probability or an entry signal."
     },
     "30m": {
       "status": "RESEARCH_ONLY",
       "scenario": "RANGE_OR_WAIT",
-      "directional_score": -1.35,
-      "recent_momentum_pct": -0.0065,
-      "ema_spread_bps": 1.8,
-      "atr_pct": 0.1466,
+      "directional_score": -1.31,
+      "recent_momentum_pct": -0.0505,
+      "ema_spread_bps": 1.82,
+      "atr_pct": 0.132,
       "regime": "BEAR_TREND",
       "note": "Heuristic scenario, not a calibrated probability or an entry signal."
     },
@@ -136,7 +136,7 @@
       }
     },
     "pending_forecasts": 0,
-    "abstentions": 11,
+    "abstentions": 12,
     "wins": 1,
     "losses": 5,
     "directional_accuracy_pct": 33.33,
@@ -152,8 +152,8 @@
       "type": "SAME_VENUE",
       "ai_venue": "OKX BTC-USDT-SWAP Futures",
       "market_venue": "OKX",
-      "basis_pct": 0.02608,
-      "candle_skew_minutes": 10.0,
+      "basis_pct": 0.00268,
+      "candle_skew_minutes": 15.0,
       "max_basis_pct": 0.25,
       "max_candle_skew_minutes": 15,
       "reason": "Same-venue or cross-venue BTC perpetual prices and 5m candle times are aligned."
@@ -168,7 +168,7 @@
       {
         "name": "5m_futures_candles",
         "passed": true,
-        "detail": "candle age 244s"
+        "detail": "candle age 39s"
       },
       {
         "name": "all_five_timeframes",
@@ -183,7 +183,7 @@
       {
         "name": "open_interest_data",
         "passed": true,
-        "detail": "historical OI latest row age 4.62m"
+        "detail": "historical OI latest row age 1.22m"
       },
       {
         "name": "executed_taker_flow",
@@ -203,7 +203,7 @@
       {
         "name": "fresh_news_scan",
         "passed": true,
-        "detail": "news snapshot age 0.51m"
+        "detail": "news snapshot age 0.52m"
       },
       {
         "name": "trump_public_post_archive",
@@ -213,7 +213,7 @@
       {
         "name": "cross_exchange_perpetuals",
         "passed": true,
-        "detail": "2 venues available; snapshot age 0.03m"
+        "detail": "2 venues available; snapshot age 0.04m"
       },
       {
         "name": "continuous_liquidation_stream",
@@ -221,7 +221,7 @@
         "detail": "not connected / no recent message"
       }
     ],
-    "market_snapshot_age_minutes": 0.57,
+    "market_snapshot_age_minutes": 0.59,
     "note": "A feed marked unavailable is not guessed or replaced. This audit reports source presence and freshness, not signal accuracy. GitHub Actions sampled liquidation data does not count as a continuous stream."
   },
   "execution": "MANUAL_ONLY_NO_ORDERS",
