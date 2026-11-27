@@ -39,9 +39,14 @@ def make_market():
 class FuturesSourceSafetyTests(unittest.TestCase):
     def run_with_source(self, source):
         market = make_market()
+        source_is_futures = "Futures" in source and "Spot" not in source
         model = {
             "data_source": source,
             "class_scores": {"LONG": 0.95, "SHORT": 0.02, "WAIT": 0.03},
+            "validation_gate": {
+                "passed": source_is_futures,
+                "futures_source_passed": source_is_futures
+            },
             "model_version": "test"
         }
         payloads = {
