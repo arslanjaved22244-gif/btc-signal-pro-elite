@@ -824,11 +824,30 @@ def derivatives_feed_score(payload):
     return sum(1 for name in required if independently_verified(feeds.get(name)))
 
 
+def _timeframe_freshness(payload):
+    """Require every Futures timeframe to have a recent completed candle."""
+    limits = {"5m": 600, "15m": 1800, "1h": 7200, "4h": 28800, "1d": 172800}
+    frames = payload.get("timeframes", {})
+    result = {}
+    for timeframe, max_age in limits.items():
+        frame = frames.get(timeframe, {})
+        age = frame.get("age_seconds")
+        ok = bool(frame.get("ok")) and isinstance(age, (int, float)) and 0 <= age <= max_age
+        result[timeframe] = {
+            "fresh": ok,
+            "age_seconds": age,
+            "max_age_seconds": max_age,
+        }
+    return result
+
+
 def _valid_core_snapshot(payload):
     quality = payload.get("data_quality", {})
+    freshness = _timeframe_freshness(payload)
     return bool(
         quality.get("core_timeframes_ok")
         and quality.get("five_minute_data_fresh")
+        and all(item["fresh"] for item in freshness.values())
     )
 
 
@@ -852,9 +871,17 @@ def collect():
     for rank, (name, collector) in enumerate(providers):
         try:
             payload = collector()
+            freshness = _timeframe_freshness(payload)
+            payload["data_quality"]["timeframe_freshness"] = freshness
+            stale_frames = [tf for tf, state in freshness.items() if not state["fresh"]]
+            if stale_frames:
+                payload["data_quality"].setdefault("warnings", []).append(
+                    "Stale or missing completed Futures candles: " + ", ".join(stale_frames)
+                )
             valid = _valid_core_snapshot(payload)
             score = derivatives_feed_score(payload) if valid else 0
             attempts[name] = {
+                "timeframe_freshness": freshness,
                 "attempted": True,
                 "core_timeframes_ok": bool(payload.get("data_quality", {}).get("core_timeframes_ok")),
                 "five_minute_data_fresh": bool(payload.get("data_quality", {}).get("five_minute_data_fresh")),
