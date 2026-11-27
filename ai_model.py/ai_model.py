@@ -273,6 +273,43 @@ def get_okx_data(interval):
     return candles
 
 
+def get_bybit_data(interval):
+    """Fetch completed public Bybit BTCUSDT linear perpetual candles; no API key."""
+    interval_code = {"5m": "5", "15m": "15", "1h": "60", "4h": "240", "1d": "D"}[interval]
+    duration_ms = INTERVALS[interval] * 60_000
+    params = urllib.parse.urlencode({
+        "category": "linear", "symbol": "BTCUSDT",
+        "interval": interval_code, "limit": "1000"
+    })
+    request = urllib.request.Request(
+        "https://api.bybit.com/v5/market/kline?" + params,
+        headers={"User-Agent": "BTC-Signal-Pro-Elite/7.0", "Accept": "application/json"}
+    )
+    with urllib.request.urlopen(request, timeout=30) as response:
+        payload = json.loads(response.read().decode("utf-8"))
+    if payload.get("retCode") != 0:
+        raise RuntimeError("Bybit Futures API error: " + str(payload.get("retCode")) + " " + str(payload.get("retMsg")))
+    now_ms = int(datetime.now(timezone.utc).timestamp() * 1000)
+    rows = []
+    for row in payload.get("result", {}).get("list", []):
+        stamp = int(row[0])
+        if stamp + duration_ms > now_ms:
+            continue
+        rows.append({
+            "time": stamp, "open": float(row[1]), "high": float(row[2]),
+            "low": float(row[3]), "close": float(row[4]), "volume": float(row[5]),
+            "taker_buy_volume": None
+        })
+    rows.sort(key=lambda item: item["time"])
+    if len(rows) < 210:
+        raise ValueError(f"Insufficient completed Bybit BTCUSDT linear Futures candles for {interval}: {len(rows)}")
+    age_ms = now_ms - rows[-1]["time"]
+    max_age_ms = max(15 * 60_000, duration_ms * 2)
+    if age_ms > max_age_ms:
+        raise ValueError(f"STALE DATA BLOCK: latest Bybit {interval} Futures candle is {age_ms / 60_000:.1f} minutes old")
+    return rows
+
+
 def get_kraken_data(interval_minutes):
     # Geographic restrictions can block Binance Futures API requests on CI runners.
     url = f"https://api.kraken.com/0/public/OHLC?pair=XBTUSD&interval={interval_minutes}"
@@ -2912,22 +2949,28 @@ def main():
             data_source_by_tf[tf] = "Binance USD-M Futures"
         except Exception as futures_error:
             print(f"Binance Futures unavailable for {tf}: {futures_error}")
-            print(f"Trying OKX BTC-USDT-SWAP perpetual {tf} candles...")
+            print(f"Trying Bybit BTCUSDT linear Futures {tf} candles...")
             try:
-                data[tf] = get_okx_data(tf)
-                data_source_by_tf[tf] = "OKX BTC-USDT-SWAP Futures"
-            except Exception as okx_error:
-                print(f"OKX Futures unavailable for {tf}: {okx_error}")
-                interval_minutes = INTERVALS[tf]
-                print(f"Trying Kraken public BTC/USD {interval_minutes}m candles as a non-Futures research fallback...")
+                data[tf] = get_bybit_data(tf)
+                data_source_by_tf[tf] = "Bybit BTCUSDT Linear Futures"
+            except Exception as bybit_error:
+                print(f"Bybit Futures unavailable for {tf}: {bybit_error}")
+                print(f"Trying OKX BTC-USDT-SWAP perpetual {tf} candles...")
                 try:
-                    data[tf] = get_kraken_data(interval_minutes)
-                    data_source_by_tf[tf] = "Kraken BTC/USD Spot"
-                except Exception as fallback_error:
-                    raise RuntimeError(
-                        f"No fresh market data for {tf}. Binance Futures: {futures_error}; "
-                        f"OKX Futures: {okx_error}; Kraken Spot: {fallback_error}"
-                    ) from fallback_error
+                    data[tf] = get_okx_data(tf)
+                    data_source_by_tf[tf] = "OKX BTC-USDT-SWAP Futures"
+                except Exception as okx_error:
+                    print(f"OKX Futures unavailable for {tf}: {okx_error}")
+                    interval_minutes = INTERVALS[tf]
+                    print(f"Trying Kraken public BTC/USD {interval_minutes}m candles as a non-Futures research fallback...")
+                    try:
+                        data[tf] = get_kraken_data(interval_minutes)
+                        data_source_by_tf[tf] = "Kraken BTC/USD Spot"
+                    except Exception as fallback_error:
+                        raise RuntimeError(
+                            f"No fresh market data for {tf}. Binance Futures: {futures_error}; "
+                            f"Bybit Futures: {bybit_error}; OKX Futures: {okx_error}; Kraken Spot: {fallback_error}"
+                        ) from fallback_error
     used_sources = sorted(set(data_source_by_tf.values()))
     source = " + ".join(used_sources) + " public OHLC candles"
     if len(used_sources) > 1:
