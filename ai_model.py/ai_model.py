@@ -381,6 +381,16 @@ def combined_features(data, base_index, prepared):
     return features
 
 
+def adaptive_move_threshold(candles, index, horizon_candles=FUTURE_CANDLES):
+    """Scale the neutral band to recent realized volatility; use past candles only."""
+    price = candles[index]["close"]
+    if price <= 0:
+        return MOVE_THRESHOLD
+    atr_pct = candle_atr(candles, index, 14) / price
+    horizon_scale = math.sqrt(max(1, horizon_candles) / FUTURE_CANDLES)
+    return max(0.00035, atr_pct * 0.20 * horizon_scale)
+
+
 def build_dataset(data, prepared):
     candles = data["5m"]
     rows, labels = [], []
@@ -389,7 +399,8 @@ def build_dataset(data, prepared):
         if features is None:
             continue
         move = candles[i + FUTURE_CANDLES]["close"] / candles[i]["close"] - 1.0
-        label = 2 if move > MOVE_THRESHOLD else 0 if move < -MOVE_THRESHOLD else 1
+        threshold = adaptive_move_threshold(candles, i, FUTURE_CANDLES)
+        label = 2 if move > threshold else 0 if move < -threshold else 1
         rows.append(features)
         labels.append(label)
     return rows, labels
@@ -902,7 +913,7 @@ def main():
     result = {
         "system": "BTC Signal Pro Elite Advanced ML",
         "model": "Four-model vote: full-history logistic, recent-regime logistic, nearest-centroid and decision-stump ensemble",
-        "model_version": "4.0-four-model-futures-only-voting",
+        "model_version": "4.1-volatility-adaptive-labels",
         "data_source": source,
         "symbol": symbol,
         "base_interval": "5m",
@@ -925,6 +936,12 @@ def main():
         "recency_weighting": {"method": "exponential", "half_life_training_samples": 1800},
         "future_horizon": f"{FUTURE_CANDLES} candles / 15 minutes",
         "neutral_threshold_pct": MOVE_THRESHOLD * 100,
+        "labeling_method": "volatility-adaptive ATR neutral band",
+        "label_threshold": {
+            "formula": "max(0.035%, 20% of trailing 14-candle ATR as a fraction of price)",
+            "horizon_candles": FUTURE_CANDLES,
+            "lookahead_free": True
+        },
         "last_price": data["5m"][-1]["close"],
         "last_candle_time": data["5m"][-1]["time"],
         "data_freshness": {
