@@ -1,7 +1,7 @@
 {
   "system": "BTC Signal Pro Elite Hybrid Confluence Engine",
   "version": "4.3-hybrid-sweep-validated-futures",
-  "generated_at": "2026-11-27T15:51:09.631028+00:00",
+  "generated_at": "2026-11-27T16:50:50.286090+00:00",
   "symbol": "BTCUSDT",
   "market_type": "OKX_BTC_USDT_SWAP",
   "market_exchange": "OKX",
@@ -10,100 +10,100 @@
   "execution_price_note": "Use this exchange feed as the analysis reference only; verify the live Binance Futures execution price and spread before any manual entry.",
   "signal": "WAIT",
   "early_setup": {
-    "direction": "WAIT",
-    "status": "NO_CLEAR_EARLY_SETUP",
+    "direction": "SHORT",
+    "status": "EARLY_SETUP_ONLY_NOT_ENTRY",
     "momentum_scores": {
-      "LONG": 1.5,
+      "LONG": 0.0,
       "SHORT": 4.0
     },
-    "momentum_margin": 2.5,
+    "momentum_margin": 4.0,
     "note": "Early setup is a watchlist hint only, not an entry signal. Confirm the main signal and manual risk levels before any trade."
   },
-  "confidence_score": 43.48,
+  "confidence_score": 63.04,
   "scores": {
-    "LONG": 2.0,
-    "SHORT": 5.0
+    "LONG": 2.25,
+    "SHORT": 7.25
   },
   "timeframe_analysis": {
     "5m": {
       "available": true,
       "bias": "BEARISH",
       "momentum_bias": "NEUTRAL",
-      "price": 59941.3,
-      "ema50": 60683.51,
-      "ema200": 61123.81,
-      "rsi14": 41.68,
-      "atr14": 410.93,
+      "price": 60131.2,
+      "ema50": 60461.11,
+      "ema200": 61007.39,
+      "rsi14": 48.45,
+      "atr14": 229.54,
       "macd": {
-        "line": -335.57816,
-        "signal": -423.55763,
-        "histogram": 87.97947
+        "line": -61.15126,
+        "signal": -145.52673,
+        "histogram": 84.37547
       },
-      "age_seconds": 39
+      "age_seconds": 23
     },
     "15m": {
       "available": true,
       "bias": "NEUTRAL",
       "momentum_bias": "BEARISH",
-      "price": 60126.3,
-      "ema50": 61146.61,
-      "ema200": 60733.6,
-      "rsi14": 35.19,
-      "atr14": 457.82,
+      "price": 60267.9,
+      "ema50": 60990.43,
+      "ema200": 60727.09,
+      "rsi14": 40.26,
+      "atr14": 515.95,
       "macd": {
-        "line": -439.51133,
-        "signal": -251.38239,
-        "histogram": -188.12893
+        "line": -417.81579,
+        "signal": -360.66419,
+        "histogram": -57.1516
       },
-      "age_seconds": 339
+      "age_seconds": 324
     },
     "1h": {
       "available": true,
       "bias": "BEARISH",
       "momentum_bias": "BEARISH",
-      "price": 59180.8,
-      "ema50": 60747.78,
-      "ema200": 61035.5,
-      "rsi14": 25.09,
-      "atr14": 581.08,
+      "price": 60076.5,
+      "ema50": 60721.45,
+      "ema200": 61004.64,
+      "rsi14": 39.91,
+      "atr14": 668.71,
       "macd": {
-        "line": 96.73589,
-        "signal": 264.54865,
-        "histogram": -167.81276
+        "line": 7.94274,
+        "signal": 213.22747,
+        "histogram": -205.28473
       },
-      "age_seconds": 3039
+      "age_seconds": 3024
     },
     "4h": {
       "available": true,
-      "bias": "NEUTRAL",
-      "momentum_bias": "BULLISH",
-      "price": 61629.3,
-      "ema50": 61370.29,
-      "ema200": 68867.04,
-      "rsi14": 59.53,
-      "atr14": 1029.21,
+      "bias": "BEARISH",
+      "momentum_bias": "NEUTRAL",
+      "price": 60076.5,
+      "ema50": 61319.55,
+      "ema200": 68778.08,
+      "rsi14": 45.92,
+      "atr14": 1182.58,
       "macd": {
-        "line": 174.45765,
-        "signal": -82.33866,
-        "histogram": 256.79631
+        "line": 104.23469,
+        "signal": -45.02399,
+        "histogram": 149.25868
       },
-      "age_seconds": 13839
+      "age_seconds": 3024
     },
     "1d": {
       "available": true,
       "bias": "BEARISH",
       "momentum_bias": "BEARISH",
-      "price": 60597.9,
-      "ema50": 71595.32,
-      "ema200": 73547.76,
-      "rsi14": 32.07,
-      "atr14": 3467.12,
+      "price": 60076.5,
+      "ema50": 71143.61,
+      "ema200": 73475.95,
+      "rsi14": 31.23,
+      "atr14": 3375.61,
       "macd": {
-        "line": -4670.07842,
-        "signal": -4496.99009,
-        "histogram": -173.08834
+        "line": -4522.89153,
+        "signal": -4502.17037,
+        "histogram": -20.72115
       },
-      "age_seconds": 85839
+      "age_seconds": 3024
     }
   },
   "liquidity_sweep": {
@@ -113,16 +113,16 @@
     "wick_extreme": 58729.6,
     "close": 59629.2,
     "time": 1795791600000,
-    "bars_ago": 2,
+    "bars_ago": 6,
     "note": "15m wick swept below the prior 20-bar low and closed back above it."
   },
   "order_flow": {
-    "cvd_base": -151.65,
-    "order_book_imbalance": 0.715713,
-    "funding_rate_pct": 0.000468,
+    "cvd_base": 175.17,
+    "order_book_imbalance": -0.782336,
+    "funding_rate_pct": -0.000563,
     "funding_crowding": "NEUTRAL",
-    "open_interest_change_30m_pct": -2.2609,
-    "taker_buy_sell_ratio": 0.9448105016575158
+    "open_interest_change_30m_pct": -3.1991,
+    "taker_buy_sell_ratio": 0.6499700243018297
   },
   "ml_context": {
     "model_version": "4.1-volatility-adaptive-labels",
@@ -133,7 +133,7 @@
     "signal": "WAIT"
   },
   "risk_levels": {
-    "entry_reference": 59941.3,
+    "entry_reference": 60131.2,
     "stop_loss": null,
     "take_profit_1": null,
     "take_profit_2": null,
@@ -151,7 +151,7 @@
     "derivatives_confluence_status": "AVAILABLE"
   },
   "news_guard": {
-    "generated_at": "2026-11-27T15:50:41.662417+00:00",
+    "generated_at": "2026-11-27T16:50:26.438171+00:00",
     "source": "Google News RSS public fallback + Trump's Truth independent archive (unofficial)",
     "available": true,
     "block": false,
@@ -164,15 +164,14 @@
     ]
   },
   "volatility_guard": {
-    "blocked": true,
-    "atr_5m_pct": 0.6856,
+    "blocked": false,
+    "atr_5m_pct": 0.3817,
     "atr_threshold_pct": 0.45,
     "range_spike": false
   },
   "warnings": [
     "OKX BTC-USDT-SWAP is a separate exchange perpetual reference; confirm execution venue price and liquidity.",
-    "Directional entries blocked: AI must use verified perpetual Futures data AND pass the global walk-forward validation gate. Spot, unknown-source or failed-validation ML cannot authorize a Futures trade.",
-    "Volatility circuit breaker active: 5m ATR or candle range exceeded safety threshold."
+    "Directional entries blocked: AI must use verified perpetual Futures data AND pass the global walk-forward validation gate. Spot, unknown-source or failed-validation ML cannot authorize a Futures trade."
   ],
   "execution": "MANUAL_ONLY_NO_ORDERS"
 }
