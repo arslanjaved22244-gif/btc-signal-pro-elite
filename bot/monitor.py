@@ -199,30 +199,35 @@ def score_signal(m,paused):
  return "WAIT","Derivatives flow is mixed or squeeze/crowding filters are active"
 def main():
  state=load_state();m=market_data();news=news_scan();update_prediction_performance();current=now();pause_until=state.get("pause_until")
- # Build a genuine rolling 5-minute OI delta from consecutive public OI snapshots.
- # The GitHub Actions cache preserves this lightweight sample between runs.
+ # Prefer OKX's official 5-minute OI history. If unavailable, fall back to
+ # consecutive cached public OI samples with a 4-12 minute interval.
  oi_now=m.get("open_interest")
  if oi_now is not None:
-  try:
-   prev=state.get("oi_sample") or {}
-   prev_value=float(prev.get("value"));prev_time=datetime.fromisoformat(prev.get("time"))
-   age=(current-prev_time).total_seconds()
-   if 240<=age<=720 and prev_value:
-    m["oi_change_5m_pct"]=(float(oi_now)-prev_value)/prev_value*100
-    m["oi_change_sample_age_seconds"]=round(age,1)
-    state["oi_sample"]={"value":float(oi_now),"time":current.isoformat()}
-   elif age<240:
-    m["oi_change_5m_pct"]=None
-    m["oi_note"]="Waiting for the existing OI baseline to reach 4 minutes"
-    # Preserve the earlier baseline through frequent workflow triggers.
-   else:
-    m["oi_change_5m_pct"]=None
-    m["oi_note"]="Old OI baseline expired; collecting a fresh sample"
-    state["oi_sample"]={"value":float(oi_now),"time":current.isoformat()}
-  except Exception:
-   m["oi_change_5m_pct"]=None
-   m["oi_note"]="Collecting first OI baseline sample"
+  if m.get("oi_change_5m_pct") is not None:
    state["oi_sample"]={"value":float(oi_now),"time":current.isoformat()}
+   m["oi_change_source"]="OKX 5-minute OI history"
+  else:
+   try:
+    prev=state.get("oi_sample") or {}
+    prev_value=float(prev.get("value"));prev_time=datetime.fromisoformat(prev.get("time"))
+    age=(current-prev_time).total_seconds()
+    if 240<=age<=720 and prev_value:
+     m["oi_change_5m_pct"]=(float(oi_now)-prev_value)/prev_value*100
+     m["oi_change_sample_age_seconds"]=round(age,1)
+     m["oi_change_source"]="Consecutive public OI samples"
+     state["oi_sample"]={"value":float(oi_now),"time":current.isoformat()}
+    elif age<240:
+     m["oi_change_5m_pct"]=None
+     m["oi_note"]="Waiting for the existing OI baseline to reach 4 minutes"
+     # Preserve the earlier baseline through frequent workflow triggers.
+    else:
+     m["oi_change_5m_pct"]=None
+     m["oi_note"]="Old OI baseline expired; collecting a fresh sample"
+     state["oi_sample"]={"value":float(oi_now),"time":current.isoformat()}
+   except Exception:
+    m["oi_change_5m_pct"]=None
+    m["oi_note"]="Collecting first OI baseline sample"
+    state["oi_sample"]={"value":float(oi_now),"time":current.isoformat()}
 
  if news:
   try:old=datetime.fromisoformat(pause_until) if pause_until else current
