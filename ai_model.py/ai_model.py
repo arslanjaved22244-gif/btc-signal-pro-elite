@@ -1311,10 +1311,15 @@ def main():
         signal = "WAIT"
         temporal_veto = "Primary signal conflicts with the independently validated temporal neural model."
     valid_horizon_signals = {
-        timeframe: forecast.get("signal")
+        f"classic_{timeframe}": forecast.get("signal")
         for timeframe, forecast in horizon_forecasts.items()
         if isinstance(forecast, dict) and forecast.get("signal") in ("LONG", "SHORT")
     }
+    valid_horizon_signals.update({
+        f"temporal_{timeframe}": forecast.get("signal")
+        for timeframe, forecast in temporal_horizons.get("forecasts", {}).items()
+        if isinstance(forecast, dict) and forecast.get("signal") in ("LONG", "SHORT")
+    })
     opposite_horizon_signals = [
         timeframe for timeframe, forecast_signal in valid_horizon_signals.items()
         if signal in ("LONG", "SHORT") and forecast_signal != signal
