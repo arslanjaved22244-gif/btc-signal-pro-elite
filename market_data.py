@@ -561,6 +561,159 @@ def normalized_order_book_imbalance(bids, asks, depth=20):
     return round((bid_notional - ask_notional) / total, 6) if total else None
 
 
+def bitget_request(path, params=None, timeout=15):
+    query = urllib.parse.urlencode(params or {})
+    url = "https://api.bitget.com" + path + (("?" + query) if query else "")
+    req = urllib.request.Request(url, headers={"User-Agent": "BTC-Signal-Pro-Elite/6.0"})
+    with urllib.request.urlopen(req, timeout=timeout) as response:
+        payload = json.loads(response.read().decode("utf-8"))
+    if payload.get("code") != "00000":
+        raise RuntimeError("Bitget API error: " + str(payload.get("code")) + " " + str(payload.get("msg")))
+    return payload.get("data")
+
+
+def bitget_feed(name, path, params=None):
+    started = time.time()
+    try:
+        return {"ok": True, "data": bitget_request(path, params),
+                "latency_ms": round((time.time() - started) * 1000)}
+    except Exception as exc:
+        return {"ok": False, "error": str(exc), "latency_ms": round((time.time() - started) * 1000)}
+
+
+def bitget_candles(interval):
+    granularity = {"5m": "5m", "15m": "15m", "1h": "1H", "4h": "4H", "1d": "1D"}[interval]
+    duration = {"5m": 300000, "15m": 900000, "1h": 3600000, "4h": 14400000, "1d": 86400000}[interval]
+    raw = bitget_request("/api/v2/mix/market/candles", {
+        "symbol": SYMBOL, "productType": "USDT-FUTURES",
+        "granularity": granularity, "limit": "200"
+    })
+    now_ms = int(time.time() * 1000)
+    rows = []
+    for row in raw or []:
+        stamp = int(row[0])
+        if stamp + duration > now_ms:
+            continue
+        rows.append({
+            "time": stamp, "open": float(row[1]), "high": float(row[2]),
+            "low": float(row[3]), "close": float(row[4]),
+            "volume": float(row[5]), "quote_volume": float(row[6]) if len(row) > 6 else 0.0,
+            "trades": 0, "taker_buy_base": None, "taker_buy_quote": None
+        })
+    rows.sort(key=lambda item: item["time"])
+    if len(rows) < 50:
+        raise ValueError("Insufficient completed Bitget USDT Futures candles for " + interval)
+    return rows
+
+
+def collect_bitget():
+    generated = datetime.now(timezone.utc).isoformat()
+    result = {
+        "system": "BTC Signal Pro Elite Futures Data Engine",
+        "version": "6.0-bitget-usdt-futures-fallback",
+        "symbol": SYMBOL, "market_type": "BITGET_USDT_FUTURES",
+        "exchange": "Bitget", "generated_at": generated,
+        "source": "https://api.bitget.com/api/v2/mix/market (USDT-FUTURES)",
+        "timeframes": {}, "feeds": {}, "data_quality": {}
+    }
+    durations = {"5m":300000,"15m":900000,"1h":3600000,"4h":14400000,"1d":86400000}
+    for tf in TIMEFRAMES:
+        try:
+            rows = bitget_candles(tf)
+            result["timeframes"][tf] = {
+                "ok": True, "candles": rows, "last_closed_candle_time": rows[-1]["time"],
+                "age_seconds": max(0, int((time.time()*1000 - rows[-1]["time"] - durations[tf]) / 1000))
+            }
+        except Exception as exc:
+            result["timeframes"][tf] = {"ok": False, "error": str(exc)}
+
+    ticker = bitget_feed("ticker", "/api/v2/mix/market/ticker",
+                         {"productType":"USDT-FUTURES","symbol":SYMBOL})
+    if ticker["ok"]:
+        t = (ticker["data"] or [{}])[0]
+        ticker["data"] = {
+            "lastPrice": t.get("lastPr"), "markPrice": t.get("markPrice"),
+            "lastFundingRate": t.get("fundingRate")
+        }
+    result["feeds"]["mark_price_funding"] = ticker
+
+    oi = bitget_feed("open_interest", "/api/v2/mix/market/open-interest",
+                     {"productType":"USDT-FUTURES","symbol":SYMBOL})
+    if oi["ok"]:
+        values = (oi["data"] or {}).get("openInterestList", [])
+        oi["data"] = {"openInterest": values[0].get("size") if values else None}
+    result["feeds"]["open_interest_current"] = oi
+    result["feeds"]["open_interest_history_5m"] = {
+        "ok": False, "error": "Bitget historical OI series is not collected by this fallback; current OI only."
+    }
+
+    book = bitget_feed("order_book", "/api/v2/mix/market/merge-depth",
+                       {"productType":"USDT-FUTURES","symbol":SYMBOL,"limit":"50"})
+    if book["ok"]:
+        raw_book = book["data"] or {}
+        bids, asks = raw_book.get("bids", []), raw_book.get("asks", [])
+        book["data"] = {"bids": bids, "asks": asks}
+        bid_notional = sum(float(x[0])*float(x[1]) for x in bids[:20])
+        ask_notional = sum(float(x[0])*float(x[1]) for x in asks[:20])
+        result["derived"] = {
+            "visible_depth_bid_notional_usdt": round(bid_notional, 2),
+            "visible_depth_ask_notional_usdt": round(ask_notional, 2),
+            "order_book_imbalance": normalized_order_book_imbalance(bids, asks, depth=20),
+            "order_book_imbalance_method": "Top-20 visible levels; quote-notional (price × quantity); (bid-ask)/(bid+ask)"
+        }
+    else:
+        result["derived"] = {"cvd_base": None, "order_book_imbalance": None}
+
+    fills = bitget_feed("recent_fills", "/api/v2/mix/market/fills",
+                        {"productType":"USDT-FUTURES","symbol":SYMBOL,"limit":"100"})
+    if fills["ok"]:
+        normalized = []
+        buy_qty = sell_qty = 0.0
+        for item in fills["data"] or []:
+            qty = float(item.get("size", 0) or 0)
+            is_sell = str(item.get("side", "")).lower() == "sell"
+            sell_qty += qty if is_sell else 0.0
+            buy_qty += qty if not is_sell else 0.0
+            normalized.append({"q": qty, "m": is_sell, "price": item.get("price"), "time": item.get("ts")})
+        fills["data"] = normalized
+        result["derived"]["cvd_base"] = round(buy_qty - sell_qty, 8)
+        result["derived"]["aggressive_buy_base"] = round(buy_qty, 8)
+        result["derived"]["aggressive_sell_base"] = round(sell_qty, 8)
+        result["derived"]["trade_count"] = len(normalized)
+        result["feeds"]["taker_flow_5m"] = {
+            "ok": True, "data": [{"buySellRatio": buy_qty/sell_qty if sell_qty else None,
+                                    "buyVol": buy_qty, "sellVol": sell_qty}]
+        }
+    else:
+        result["derived"]["cvd_base"] = None
+        result["feeds"]["taker_flow_5m"] = fills
+    result["feeds"]["recent_agg_trades"] = fills
+    funding = bitget_feed("funding_history", "/api/v2/mix/market/current-fund-rate",
+                          {"productType":"USDT-FUTURES","symbol":SYMBOL})
+    result["feeds"]["funding_history"] = funding
+    if funding["ok"]:
+        rows = funding["data"] or []
+        if isinstance(rows, list):
+            rate = rows[0].get("fundingRate") if rows else None
+        else:
+            rate = rows.get("fundingRate")
+        result["feeds"]["mark_price_funding"]["data"]["lastFundingRate"] = rate
+    result["feeds"]["liquidations"] = {
+        "ok": False, "status": "not_collected",
+        "reason": "No Bitget liquidation stream is connected; Binance sampled forceOrder events are not substituted."
+    }
+    core = all(result["timeframes"].get(tf, {}).get("ok") for tf in TIMEFRAMES)
+    fresh = result["timeframes"].get("5m", {}).get("age_seconds", 999999) <= 600
+    result["data_quality"] = {
+        "core_timeframes_ok": core, "five_minute_data_fresh": fresh,
+        "futures_only": True, "status": "HEALTHY" if core and fresh else "DEGRADED",
+        "warnings": ["Bitget USDT-FUTURES is a separate venue; verify execution venue price and liquidity."]
+    }
+    if not core: result["data_quality"]["warnings"].append("One or more Bitget Futures candle timeframes failed.")
+    if not fresh: result["data_quality"]["warnings"].append("Bitget 5m Futures candle data is stale.")
+    return result
+
+
 def collect():
     primary=collect_binance()
     if primary.get("data_quality",{}).get("core_timeframes_ok") and primary.get("data_quality",{}).get("five_minute_data_fresh"):
@@ -579,10 +732,22 @@ def collect():
     except Exception as exc:
         failures.append("Bybit linear Futures fallback failed: "+str(exc))
 
+    bitget=None
+    try:
+        bitget=collect_bitget()
+        if bitget.get("data_quality",{}).get("core_timeframes_ok") and bitget.get("data_quality",{}).get("five_minute_data_fresh"):
+            bitget["fallback_from"]="Binance USD-M Futures and Bybit linear Futures"
+            bitget["prior_source_failures"]=failures
+            return bitget
+        bitget_errors={k:v.get("error") for k,v in bitget.get("timeframes",{}).items() if v.get("error")}
+        failures.append("Bitget fallback incomplete: "+str(bitget_errors))
+    except Exception as exc:
+        failures.append("Bitget USDT-FUTURES fallback failed: "+str(exc))
+
     try:
         okx=collect_okx()
         if okx.get("data_quality",{}).get("core_timeframes_ok") and okx.get("data_quality",{}).get("five_minute_data_fresh"):
-            okx["fallback_from"]="Binance USD-M Futures and Bybit linear Futures"
+            okx["fallback_from"]="Binance USD-M Futures, Bybit linear Futures and Bitget USDT-FUTURES"
             okx["prior_source_failures"]=failures
             return okx
         okx_errors={k:v.get("error") for k,v in okx.get("timeframes",{}).items() if v.get("error")}
@@ -593,6 +758,7 @@ def collect():
     primary["data_quality"]["warnings"]=failures
     primary["fallback_attempts"]={
         "bybit":{"attempted":True,"core_timeframes_ok":bool(bybit and bybit.get("data_quality",{}).get("core_timeframes_ok"))},
+        "bitget":{"attempted":True,"core_timeframes_ok":bool(bitget and bitget.get("data_quality",{}).get("core_timeframes_ok"))},
         "okx":{"attempted":True,"core_timeframes_ok":False}
     }
     return primary
