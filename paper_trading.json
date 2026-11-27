@@ -4,7 +4,7 @@
   "source": "Bitget public Futures 5m candles",
   "horizon_minutes": 15,
   "estimated_round_trip_cost_pct": 0.14,
-  "updated_at": "2026-11-27T20:31:06.803556+00:00",
+  "updated_at": "2026-11-27T20:32:14.893112+00:00",
   "current_signal": "WAIT",
   "current_signal_reason": null,
   "closed_trades": 0,
@@ -233,7 +233,7 @@
     },
     {
       "entry_candle_time": 1795811100000,
-      "recorded_at": "2026-11-27T20:31:06.803351+00:00",
+      "recorded_at": "2026-11-27T20:32:13.981796+00:00",
       "exchange": "Bitget",
       "side": "WAIT",
       "entry": 59776.2,
