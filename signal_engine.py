@@ -248,7 +248,8 @@ def run():
         warnings.append("Futures ML model disagrees with confluence direction; signal downgraded to WAIT.")
         signal = "WAIT"
     elif signal != "WAIT" and not model_is_futures:
-        warnings.append("ML model uses a non-Futures or unknown source; it is not used as confirmation.")
+        signal = "WAIT"
+        warnings.append("Directional entries blocked: AI training source is not verified perpetual Futures. Spot/unknown-source ML cannot authorize a Futures trade.")
 
     # Require the Futures ML model to agree directionally; disagreement or WAIT means no entry.
     if signal != "WAIT" and model_is_futures and ml_bias != signal:
