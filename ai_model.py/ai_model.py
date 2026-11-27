@@ -1395,8 +1395,125 @@ def update_prediction_feedback(data, result, path="prediction_feedback.json"):
         "note": "Live outcomes are tracked for evaluation; this does not silently retrain or alter model weights."
     }
 
+
+def fetch_futures_microstructure():
+    """Fetch public Binance USD-M Futures positioning and order-book context."""
+    base = "https://fapi.binance.com"
+    headers = {"User-Agent": "BTC-Signal-Pro-Elite/5.1"}
+    def get(path, params=""):
+        url = base + path + (("?" + params) if params else "")
+        request = urllib.request.Request(url, headers=headers)
+        with urllib.request.urlopen(request, timeout=12) as response:
+            return json.loads(response.read().decode("utf-8"))
+
+    result = {
+        "source": "Binance USD-M Futures public REST",
+        "status": "PARTIAL", "api_key_required": False, "features": {},
+        "limitations": [
+            "Current and short-lookback context only; not historical training features.",
+            "Taker buy/sell volume is a CVD proxy, not exchange-wide true CVD.",
+            "REST order book is a snapshot, not a live order-book feed."
+        ]
+    }
+    errors = []
+    now_ms = int(datetime.now(timezone.utc).timestamp() * 1000)
+    try:
+        funding = get("/fapi/v1/fundingRate", "symbol=BTCUSDT&limit=12")
+        if funding:
+            rates = [float(item["fundingRate"]) for item in funding]
+            rate = rates[-1]
+            result["features"]["funding"] = {
+                "latest_rate": rate, "latest_rate_pct": round(rate * 100, 5),
+                "latest_time": int(funding[-1]["fundingTime"]),
+                "latest_age_minutes": round((now_ms-int(funding[-1]["fundingTime"]))/60000, 1),
+                "mean_last_12": sum(rates)/len(rates),
+                "crowding": "LONGS_PAYING / LONG_CROWDING" if rate > 0.0001 else
+                            "SHORTS_PAYING / SHORT_CROWDING" if rate < -0.0001 else "NEUTRAL"
+            }
+    except Exception as exc:
+        errors.append("funding: " + str(exc)[:120])
+    try:
+        oi = get("/futures/data/openInterestHist", "symbol=BTCUSDT&period=5m&limit=30")
+        if oi:
+            values = [float(item["sumOpenInterestValue"]) for item in oi]
+            change = (values[-1]/values[0]-1)*100 if values[0] else 0.0
+            result["features"]["open_interest"] = {
+                "latest_usdt_value": values[-1], "change_approx_145m_pct": round(change, 4),
+                "direction": "RISING" if change > 0.25 else "FALLING" if change < -0.25 else "FLAT",
+                "samples": len(values)
+            }
+    except Exception as exc:
+        errors.append("open_interest_history: " + str(exc)[:120])
+    try:
+        taker = get("/futures/data/takerlongshortRatio", "symbol=BTCUSDT&period=5m&limit=30")
+        if taker:
+            buy = sum(float(item["buyVol"]) for item in taker)
+            sell = sum(float(item["sellVol"]) for item in taker)
+            ratio = buy/sell if sell > 0 else None
+            imbalance = (buy-sell)/(buy+sell) if buy+sell > 0 else 0.0
+            result["features"]["taker_flow"] = {
+                "buy_volume": buy, "sell_volume": sell,
+                "buy_sell_ratio": round(ratio, 4) if ratio is not None else None,
+                "cvd_proxy_base_btc": round(buy-sell, 4),
+                "buy_imbalance_pct": round(imbalance*100, 2),
+                "bias": "BUY_DOMINANT" if imbalance > 0.08 else "SELL_DOMINANT" if imbalance < -0.08 else "BALANCED",
+                "samples": len(taker)
+            }
+    except Exception as exc:
+        errors.append("taker_flow: " + str(exc)[:120])
+    try:
+        premium = get("/fapi/v1/premiumIndex", "symbol=BTCUSDT")
+        result["features"]["mark_premium"] = {
+            "mark_price": float(premium["markPrice"]), "index_price": float(premium["indexPrice"]),
+            "mark_index_basis_pct": round((float(premium["markPrice"])/float(premium["indexPrice"])-1)*100, 5),
+            "next_funding_time": int(premium["nextFundingTime"])
+        }
+    except Exception as exc:
+        errors.append("premium_index: " + str(exc)[:120])
+    try:
+        depth = get("/fapi/v1/depth", "symbol=BTCUSDT&limit=20")
+        bids = sum(float(level[1]) for level in depth.get("bids", []))
+        asks = sum(float(level[1]) for level in depth.get("asks", []))
+        total = bids+asks
+        imbalance = (bids-asks)/total if total else 0.0
+        result["features"]["orderbook_snapshot"] = {
+            "bid_quantity_top20": round(bids, 4), "ask_quantity_top20": round(asks, 4),
+            "bid_ask_imbalance_pct": round(imbalance*100, 2),
+            "bias": "BID_HEAVY" if imbalance > 0.12 else "ASK_HEAVY" if imbalance < -0.12 else "BALANCED",
+            "last_update_id": depth.get("lastUpdateId")
+        }
+    except Exception as exc:
+        errors.append("orderbook: " + str(exc)[:120])
+    features = result["features"]
+    oi_dir = features.get("open_interest", {}).get("direction")
+    flow_bias = features.get("taker_flow", {}).get("bias")
+    funding_bias = features.get("funding", {}).get("crowding")
+    if oi_dir == "RISING" and flow_bias == "BUY_DOMINANT":
+        squeeze = "POTENTIAL_LONG_BUILDUP"
+    elif oi_dir == "RISING" and flow_bias == "SELL_DOMINANT":
+        squeeze = "POTENTIAL_SHORT_BUILDUP"
+    elif oi_dir == "FALLING":
+        squeeze = "DELEVERAGING_OR_POSITION_CLOSING"
+    else:
+        squeeze = "NO_CLEAR_BUILDUP"
+    features["positioning_interpretation"] = {
+        "open_interest": oi_dir or "UNAVAILABLE",
+        "taker_flow": flow_bias or "UNAVAILABLE",
+        "funding_crowding": funding_bias or "UNAVAILABLE",
+        "squeeze_context": squeeze,
+        "note": "Position buildup is not proof of an imminent liquidation or squeeze."
+    }
+    result["errors"] = errors
+    result["status"] = "AVAILABLE" if len(features) >= 3 else "PARTIAL" if features else "UNAVAILABLE"
+    result["retrieved_at"] = datetime.now(timezone.utc).isoformat()
+    return result
+
+
+
 def main():
     print("BTC Signal Pro Elite - Advanced ML starting...")
+    futures_microstructure = fetch_futures_microstructure()
+    print("Futures microstructure status:", futures_microstructure.get("status"))
     data = {}
     source = "Binance USD-M Futures public klines"
     symbol = "BTC/USDT"
@@ -1541,6 +1658,7 @@ def main():
         "ensemble_configuration": {"models": ["full_history_logistic", "recent_regime_logistic", "nearest_centroid", "decision_stumps"], "weights": {"full_history_logistic": 0.35, "recent_regime_logistic": 0.20, "nearest_centroid": 0.20, "decision_stumps": 0.25}, "recent_training_window": final_model["recent_window"]},
         "walk_forward_metrics": validation,
         "validation_gate": {"passed": validation_gate, "minimum_accuracy_pct": 38.0, "minimum_macro_f1_pct": 30.0, "must_beat_majority_baseline": True, "decision": "directional signals allowed" if validation_gate else "WAIT only — historical validation too weak"},
+        "futures_microstructure": futures_microstructure,
         "advanced_intelligence": {"market_regime": regime_analysis, "multi_timeframe_trend_alignment": trend_alignment, "alignment_veto": alignment_veto, "multi_horizon_forecasts": horizon_forecasts, "multi_horizon_consensus": horizon_consensus, "temporal_sequence_model": temporal_model, "lstm_sequence_model": lstm_model, "temporal_sequence_horizons": temporal_horizons, "temporal_model_veto": temporal_veto, "lstm_model_veto": lstm_veto, "tree_ensemble": tree_ensemble, "tree_blend_applied_to_primary_signal": tree_blend_applied, "method": "2-layer recurrent PyTorch LSTM on 24 ordered candles + temporal MLP + four-horizon chronological ML + Random Forest + gradient boosting + neural MLP + XGBoost (when installed) + volatility regime + liquidity sweep detector"},
         "walk_forward_folds": folds,
         "training_samples": len(rows),
