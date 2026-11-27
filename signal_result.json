@@ -1,7 +1,7 @@
 {
   "system": "BTC Signal Pro Elite Hybrid Confluence Engine",
   "version": "4.1-hybrid-futures-confluence",
-  "generated_at": "2026-11-27T13:47:22.178840+00:00",
+  "generated_at": "2026-11-27T14:36:29.481935+00:00",
   "symbol": "BTCUSDT",
   "market_type": "OKX_BTC_USDT_SWAP",
   "market_exchange": "OKX",
@@ -13,10 +13,10 @@
     "direction": "WAIT",
     "status": "NO_CLEAR_EARLY_SETUP",
     "momentum_scores": {
-      "LONG": 3.0,
+      "LONG": 1.5,
       "SHORT": 3.5
     },
-    "momentum_margin": 0.5,
+    "momentum_margin": 2.0,
     "note": "Early setup is a watchlist hint only, not an entry signal. Confirm the main signal and manual risk levels before any trade."
   },
   "confidence_score": 31.71,
@@ -29,49 +29,49 @@
       "available": true,
       "bias": "NEUTRAL",
       "momentum_bias": "BEARISH",
-      "price": 61393.9,
-      "ema50": 61552.71,
-      "ema200": 61357.21,
-      "rsi14": 41.33,
-      "atr14": 123.55,
+      "price": 60788.5,
+      "ema50": 61487.94,
+      "ema200": 61358.1,
+      "rsi14": 21.91,
+      "atr14": 164.2,
       "macd": {
-        "line": -59.17048,
-        "signal": -48.9027,
-        "histogram": -10.26778
+        "line": -87.3563,
+        "signal": -49.70135,
+        "histogram": -37.65494
       },
-      "age_seconds": 114
+      "age_seconds": 61
     },
     "15m": {
       "available": true,
       "bias": "NEUTRAL",
       "momentum_bias": "BEARISH",
-      "price": 61393.9,
-      "ema50": 61450.65,
-      "ema200": 60749.84,
-      "rsi14": 40.04,
-      "atr14": 160.78,
+      "price": 61392.6,
+      "ema50": 61447.97,
+      "ema200": 60807.35,
+      "rsi14": 41.0,
+      "atr14": 172.07,
       "macd": {
-        "line": -23.2329,
-        "signal": 14.69312,
-        "histogram": -37.92602
+        "line": -39.56996,
+        "signal": -9.42143,
+        "histogram": -30.14853
       },
-      "age_seconds": 114
+      "age_seconds": 361
     },
     "1h": {
       "available": true,
       "bias": "NEUTRAL",
-      "momentum_bias": "BULLISH",
-      "price": 61610.1,
-      "ema50": 60786.42,
-      "ema200": 61048.45,
-      "rsi14": 65.64,
-      "atr14": 415.3,
+      "momentum_bias": "NEUTRAL",
+      "price": 61431.9,
+      "ema50": 60811.74,
+      "ema200": 61048.29,
+      "rsi14": 59.1,
+      "atr14": 425.03,
       "macd": {
-        "line": 325.55509,
-        "signal": 308.16238,
-        "histogram": 17.39271
+        "line": 299.85972,
+        "signal": 306.50185,
+        "histogram": -6.64212
       },
-      "age_seconds": 2814
+      "age_seconds": 2162
     },
     "4h": {
       "available": true,
@@ -87,7 +87,7 @@
         "signal": -82.33866,
         "histogram": 256.79631
       },
-      "age_seconds": 6415
+      "age_seconds": 9362
     },
     "1d": {
       "available": true,
@@ -103,16 +103,16 @@
         "signal": -4496.99009,
         "histogram": -173.08834
       },
-      "age_seconds": 78415
+      "age_seconds": 81362
     }
   },
   "order_flow": {
-    "cvd_base": -361.81,
-    "order_book_imbalance": -0.936419,
-    "funding_rate_pct": 0.001435,
+    "cvd_base": -105.39,
+    "order_book_imbalance": -0.375354,
+    "funding_rate_pct": 0.003507,
     "funding_crowding": "NEUTRAL",
-    "open_interest_change_30m_pct": 0.0924,
-    "taker_buy_sell_ratio": 0.607008797285104
+    "open_interest_change_30m_pct": -0.9431,
+    "taker_buy_sell_ratio": 0.6901716388992106
   },
   "ml_context": {
     "model_version": "4.1-volatility-adaptive-labels",
@@ -121,7 +121,7 @@
     "signal": "WAIT"
   },
   "risk_levels": {
-    "entry_reference": 61393.9,
+    "entry_reference": 60788.5,
     "stop_loss": null,
     "take_profit_1": null,
     "take_profit_2": null,
@@ -139,22 +139,27 @@
     "derivatives_confluence_status": "AVAILABLE"
   },
   "news_guard": {
-    "generated_at": "2026-11-27T13:46:56.945046+00:00",
-    "source": "Google News RSS public fallback",
+    "generated_at": "2026-11-27T14:36:04.361844+00:00",
+    "source": "Google News RSS public fallback + Trump's Truth independent archive (unofficial)",
     "available": true,
     "block": false,
     "block_until": null,
     "matched_events": [],
-    "warnings": []
+    "warnings": [],
+    "sources": [
+      "Google News RSS public fallback",
+      "Trump's Truth independent archive (unofficial)"
+    ]
   },
   "volatility_guard": {
-    "blocked": false,
-    "atr_5m_pct": 0.2012,
+    "blocked": true,
+    "atr_5m_pct": 0.2701,
     "atr_threshold_pct": 0.45,
-    "range_spike": false
+    "range_spike": true
   },
   "warnings": [
-    "OKX BTC-USDT-SWAP is a separate exchange perpetual reference; confirm execution venue price and liquidity."
+    "OKX BTC-USDT-SWAP is a separate exchange perpetual reference; confirm execution venue price and liquidity.",
+    "Volatility circuit breaker active: 5m ATR or candle range exceeded safety threshold."
   ],
   "execution": "MANUAL_ONLY_NO_ORDERS"
 }
