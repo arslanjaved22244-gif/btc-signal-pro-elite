@@ -227,7 +227,7 @@ def get_okx_data(interval):
     # Expand public history so walk-forward validation has enough genuinely
     # out-of-sample opportunities; keep slower timeframes sufficiently deep
     # for EMA-200 and regime context without requesting excessive daily bars.
-    pages = {"5m": 10, "15m": 8, "1h": 8, "4h": 8, "1d": 8}[interval]
+    pages = {"5m": 20, "15m": 16, "1h": 12, "4h": 10, "1d": 8}[interval]
     for _ in range(pages):
         params = {"instId": "BTC-USDT-SWAP", "bar": bar, "limit": "300"}
         if cursor is not None:
@@ -3074,7 +3074,7 @@ def main():
     result = {
         "system": "BTC Signal Pro Elite Advanced ML",
         "model": "Four-model vote: full-history logistic, recent-regime logistic, nearest-centroid and decision-stump ensemble",
-        "model_version": "4.4-validation-consistent",
+        "model_version": "4.5-expanded-futures-history",
         "data_source": source,
         "data_source_by_timeframe": data_source_by_tf,
         "symbol": "BTC/USD" if any("Spot" in item for item in used_sources) else symbol,
@@ -3122,6 +3122,7 @@ def main():
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "_feedback_training_sequence": [list(map(float, row)) for row in lstm_training_rows[-24:]] if len(lstm_training_rows) >= 24 else None,
         "_feedback_feature_mode": lstm_feature_mode,
+        "history_depth_pages": {"5m": 20, "15m": 16, "1h": 12, "4h": 10, "1d": 8},
         "limitations": [
             "The actual training venue is recorded in data_source and source_by_timeframe. Spot/proxy candles are not equivalent to perpetual Futures and cannot pass the Futures authorization gate. Funding, open interest, CVD, order book and liquidation remain separate confluence inputs.",
             "Class scores are model scores, not calibrated real-world win probabilities.",
