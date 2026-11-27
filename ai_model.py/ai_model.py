@@ -9,8 +9,8 @@ import math
 import urllib.request
 from datetime import datetime, timezone
 
-SYMBOL = "BTC/USD"
-DATA_SOURCE = "Kraken Spot"
+SYMBOL = "BTC/USDT"
+DATA_SOURCE = "Binance USD-M Futures public klines"
 INTERVALS = {"5m": 5, "15m": 15, "1h": 60, "4h": 240, "1d": 1440}
 FUTURE_CANDLES = 3
 MOVE_THRESHOLD = 0.0005
@@ -18,27 +18,37 @@ OUTPUT_FILE = "ai_result.json"
 CLASSES = ("SHORT", "WAIT", "LONG")
 
 
-def get_kraken_data(interval):
-    url = f"https://api.kraken.com/0/public/OHLC?pair=XBTUSD&interval={interval}"
-    request = urllib.request.Request(url, headers={"User-Agent": "BTC-Signal-Pro-Elite/2.0"})
-    with urllib.request.urlopen(request, timeout=25) as response:
-        raw = json.loads(response.read().decode("utf-8"))
-    errors = raw.get("error", [])
-    if errors:
-        raise RuntimeError("Kraken API error: " + ", ".join(errors))
-    result = raw.get("result", {})
-    pair_key = next((key for key in result if key != "last"), None)
-    if pair_key is None:
-        raise ValueError(f"Kraken returned no BTC/USD candles for {interval}.")
-    candles = [{
-        "time": int(float(row[0]) * 1000),
-        "open": float(row[1]), "high": float(row[2]),
-        "low": float(row[3]), "close": float(row[4]),
-        "volume": float(row[6])
-    } for row in result[pair_key]]
+def get_binance_data(interval):
+    # Public Binance USD-M Futures endpoint; no API key is required.
+    # Page backward to build a larger history than Kraken's 720-candle limit.
+    candles_by_time = {}
+    end_time = None
+    for _ in range(3):
+        query = f"symbol=BTCUSDT&interval={interval}&limit=1000"
+        if end_time is not None:
+            query += f"&endTime={end_time}"
+        url = "https://fapi.binance.com/fapi/v1/klines?" + query
+        request = urllib.request.Request(
+            url, headers={"User-Agent": "BTC-Signal-Pro-Elite/3.0"}
+        )
+        with urllib.request.urlopen(request, timeout=30) as response:
+            rows = json.loads(response.read().decode("utf-8"))
+        if not isinstance(rows, list) or not rows:
+            break
+        for row in rows:
+            candles_by_time[int(row[0])] = {
+                "time": int(row[0]), "open": float(row[1]),
+                "high": float(row[2]), "low": float(row[3]),
+                "close": float(row[4]), "volume": float(row[5])
+            }
+        oldest = min(int(row[0]) for row in rows)
+        if len(rows) < 1000 or oldest <= 0:
+            break
+        end_time = oldest - 1
+    candles = [candles_by_time[t] for t in sorted(candles_by_time)]
     candles = candles[:-1]  # discard the currently forming candle
     if len(candles) < 210:
-        raise ValueError(f"Not enough completed {interval} candles: {len(candles)}")
+        raise ValueError(f"Not enough completed Binance {interval} candles: {len(candles)}")
     return candles
 
 
@@ -160,10 +170,12 @@ def fit_scaler(rows):
     return means, scales
 
 
-def train_model(rows, labels, epochs=260, learning_rate=0.035, l2=0.002):
+def train_model(rows, labels, epochs=140, learning_rate=0.025, l2=0.01):
     means, scales = fit_scaler(rows)
     x = [[(v - means[j]) / scales[j] for j, v in enumerate(row)] for row in rows]
     n, p = len(x), len(x[0])
+    class_counts = [max(1, labels.count(k)) for k in range(len(CLASSES))]
+    class_weights = [min(2.5, n / (len(CLASSES) * count)) for count in class_counts]
     weights = [[0.0] * p for _ in CLASSES]
     biases = [0.0] * len(CLASSES)
     for _ in range(epochs):
@@ -175,7 +187,7 @@ def train_model(rows, labels, epochs=260, learning_rate=0.035, l2=0.002):
                 for k in range(len(CLASSES))
             ])
             for k in range(len(CLASSES)):
-                error = probs[k] - (1.0 if k == actual else 0.0)
+                error = (probs[k] - (1.0 if k == actual else 0.0)) * class_weights[actual]
                 grad_b[k] += error
                 for j in range(p):
                     grad_w[k][j] += error * row[j]
@@ -259,9 +271,9 @@ def walk_forward_validate(rows, labels):
 def main():
     print("BTC Signal Pro Elite - Advanced ML starting...")
     data = {}
-    for tf, minutes in INTERVALS.items():
-        print(f"Loading Kraken {tf} candles...")
-        data[tf] = get_kraken_data(minutes)
+    for tf in INTERVALS:
+        print(f"Loading Binance Futures {tf} candles...")
+        data[tf] = get_binance_data(tf)
     rows, labels = build_dataset(data)
     if len(rows) < 250:
         raise ValueError(f"Not enough aligned multi-timeframe samples: {len(rows)}")
@@ -278,7 +290,7 @@ def main():
     result = {
         "system": "BTC Signal Pro Elite Advanced ML",
         "model": "Multinomial Logistic Regression",
-        "model_version": "2.0-mtf-walkforward",
+        "model_version": "3.0-binance-mtf-balanced-walkforward",
         "data_source": DATA_SOURCE,
         "symbol": SYMBOL,
         "base_interval": "5m",
@@ -296,7 +308,7 @@ def main():
         "last_candle_time": data["5m"][-1]["time"],
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "limitations": [
-            "Uses Kraken Spot OHLCV only; Binance Futures CVD, open interest, funding, order book and liquidation feeds are not included yet.",
+            "Uses public Binance USD-M Futures OHLCV only; CVD, open interest, funding, order book and liquidation feeds are not model features yet.",
             "Class scores are model scores, not calibrated real-world win probabilities.",
             "Walk-forward metrics are historical diagnostics, not guarantees of future performance."
         ]
