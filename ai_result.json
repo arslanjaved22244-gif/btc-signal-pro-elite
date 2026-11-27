@@ -285,8 +285,24 @@
       "bybit_ticker: HTTP Error 403: Forbidden",
       "bybit_orderbook: HTTP Error 403: Forbidden"
     ],
-    "retrieved_at": "2026-11-27T13:20:24.258175+00:00"
+    "retrieved_at": "2026-11-27T13:23:14.091861+00:00"
   },
+  "macro_news_risk": {
+    "status": "UNAVAILABLE",
+    "provider": "GDELT DOC public API",
+    "lookback_minutes": 60,
+    "high_risk": false,
+    "block_minutes": 30,
+    "articles_checked": 0,
+    "matched_events": [],
+    "limitations": [
+      "News headlines only; not direct Trump/social-media post ingestion.",
+      "GDELT coverage and publication timestamps can be delayed or incomplete.",
+      "News risk is a WAIT veto, never a directional trading signal."
+    ],
+    "error": "<urlopen error _ssl.c:1001: The handshake operation timed out>"
+  },
+  "news_event_veto": null,
   "historical_derivatives_training": {
     "status": "FETCH ERROR",
     "provider": "Bybit public linear",
@@ -1408,7 +1424,7 @@
   "last_candle_time": 1795785300000,
   "data_freshness": {
     "status": "FRESH",
-    "latest_5m_candle_age_minutes": 5.57,
+    "latest_5m_candle_age_minutes": 8.58,
     "latest_5m_candle_time": "2026-11-27T13:15:00+00:00",
     "source_by_timeframe": {
       "5m": "Kraken BTC/USD",
@@ -1419,7 +1435,7 @@
     },
     "max_allowed_age_minutes": 15
   },
-  "generated_at": "2026-11-27T13:21:19.828890+00:00",
+  "generated_at": "2026-11-27T13:24:04.297695+00:00",
   "limitations": [
     "When Binance USD-M Futures is unavailable, Kraken BTC/USD spot OHLC is used as a proxy and is not equivalent to BTC/USDT Futures. Funding, open interest, CVD, order book and liquidation remain separate confluence inputs.",
     "Class scores are model scores, not calibrated real-world win probabilities.",
@@ -1440,7 +1456,12 @@
         "gross_average_trade_return_pct": null,
         "gross_compounded_return_pct": null,
         "gross_max_drawdown_pct": null,
-        "performance_note": "Directional returns are gross, before fees, funding, spread and slippage.",
+        "estimated_round_trip_cost_pct": 0.14,
+        "net_win_rate_pct": null,
+        "net_average_trade_return_pct": null,
+        "net_compounded_return_pct": null,
+        "net_max_drawdown_pct": null,
+        "performance_note": "Net estimate subtracts 0.05% taker fee and 0.02% slippage per side; funding is excluded and actual execution may differ.",
         "status": "COLLECTING LIVE OUTCOMES"
       },
       "classic_horizon_30m": {
@@ -1453,7 +1474,12 @@
         "gross_average_trade_return_pct": null,
         "gross_compounded_return_pct": null,
         "gross_max_drawdown_pct": null,
-        "performance_note": "Directional returns are gross, before fees, funding, spread and slippage.",
+        "estimated_round_trip_cost_pct": 0.14,
+        "net_win_rate_pct": null,
+        "net_average_trade_return_pct": null,
+        "net_compounded_return_pct": null,
+        "net_max_drawdown_pct": null,
+        "performance_note": "Net estimate subtracts 0.05% taker fee and 0.02% slippage per side; funding is excluded and actual execution may differ.",
         "status": "COLLECTING LIVE OUTCOMES"
       },
       "classic_horizon_4h": {
@@ -1466,7 +1492,12 @@
         "gross_average_trade_return_pct": null,
         "gross_compounded_return_pct": null,
         "gross_max_drawdown_pct": null,
-        "performance_note": "Directional returns are gross, before fees, funding, spread and slippage.",
+        "estimated_round_trip_cost_pct": 0.14,
+        "net_win_rate_pct": null,
+        "net_average_trade_return_pct": null,
+        "net_compounded_return_pct": null,
+        "net_max_drawdown_pct": null,
+        "performance_note": "Net estimate subtracts 0.05% taker fee and 0.02% slippage per side; funding is excluded and actual execution may differ.",
         "status": "COLLECTING LIVE OUTCOMES"
       },
       "classic_horizon_60m": {
@@ -1479,7 +1510,12 @@
         "gross_average_trade_return_pct": null,
         "gross_compounded_return_pct": null,
         "gross_max_drawdown_pct": null,
-        "performance_note": "Directional returns are gross, before fees, funding, spread and slippage.",
+        "estimated_round_trip_cost_pct": 0.14,
+        "net_win_rate_pct": null,
+        "net_average_trade_return_pct": null,
+        "net_compounded_return_pct": null,
+        "net_max_drawdown_pct": null,
+        "performance_note": "Net estimate subtracts 0.05% taker fee and 0.02% slippage per side; funding is excluded and actual execution may differ.",
         "status": "COLLECTING LIVE OUTCOMES"
       },
       "lstm_sequence_15m": {
@@ -1492,7 +1528,12 @@
         "gross_average_trade_return_pct": null,
         "gross_compounded_return_pct": null,
         "gross_max_drawdown_pct": null,
-        "performance_note": "Directional returns are gross, before fees, funding, spread and slippage.",
+        "estimated_round_trip_cost_pct": 0.14,
+        "net_win_rate_pct": null,
+        "net_average_trade_return_pct": null,
+        "net_compounded_return_pct": null,
+        "net_max_drawdown_pct": null,
+        "performance_note": "Net estimate subtracts 0.05% taker fee and 0.02% slippage per side; funding is excluded and actual execution may differ.",
         "status": "COLLECTING LIVE OUTCOMES"
       },
       "primary_ensemble": {
@@ -1505,7 +1546,12 @@
         "gross_average_trade_return_pct": null,
         "gross_compounded_return_pct": null,
         "gross_max_drawdown_pct": null,
-        "performance_note": "Directional returns are gross, before fees, funding, spread and slippage.",
+        "estimated_round_trip_cost_pct": 0.14,
+        "net_win_rate_pct": null,
+        "net_average_trade_return_pct": null,
+        "net_compounded_return_pct": null,
+        "net_max_drawdown_pct": null,
+        "performance_note": "Net estimate subtracts 0.05% taker fee and 0.02% slippage per side; funding is excluded and actual execution may differ.",
         "status": "COLLECTING LIVE OUTCOMES"
       },
       "temporal_sequence": {
@@ -1518,7 +1564,12 @@
         "gross_average_trade_return_pct": null,
         "gross_compounded_return_pct": null,
         "gross_max_drawdown_pct": null,
-        "performance_note": "Directional returns are gross, before fees, funding, spread and slippage.",
+        "estimated_round_trip_cost_pct": 0.14,
+        "net_win_rate_pct": null,
+        "net_average_trade_return_pct": null,
+        "net_compounded_return_pct": null,
+        "net_max_drawdown_pct": null,
+        "performance_note": "Net estimate subtracts 0.05% taker fee and 0.02% slippage per side; funding is excluded and actual execution may differ.",
         "status": "COLLECTING LIVE OUTCOMES"
       },
       "temporal_sequence_15m": {
@@ -1531,7 +1582,12 @@
         "gross_average_trade_return_pct": null,
         "gross_compounded_return_pct": null,
         "gross_max_drawdown_pct": null,
-        "performance_note": "Directional returns are gross, before fees, funding, spread and slippage.",
+        "estimated_round_trip_cost_pct": 0.14,
+        "net_win_rate_pct": null,
+        "net_average_trade_return_pct": null,
+        "net_compounded_return_pct": null,
+        "net_max_drawdown_pct": null,
+        "performance_note": "Net estimate subtracts 0.05% taker fee and 0.02% slippage per side; funding is excluded and actual execution may differ.",
         "status": "COLLECTING LIVE OUTCOMES"
       },
       "temporal_sequence_1h": {
@@ -1544,7 +1600,12 @@
         "gross_average_trade_return_pct": null,
         "gross_compounded_return_pct": null,
         "gross_max_drawdown_pct": null,
-        "performance_note": "Directional returns are gross, before fees, funding, spread and slippage.",
+        "estimated_round_trip_cost_pct": 0.14,
+        "net_win_rate_pct": null,
+        "net_average_trade_return_pct": null,
+        "net_compounded_return_pct": null,
+        "net_max_drawdown_pct": null,
+        "performance_note": "Net estimate subtracts 0.05% taker fee and 0.02% slippage per side; funding is excluded and actual execution may differ.",
         "status": "COLLECTING LIVE OUTCOMES"
       },
       "temporal_sequence_30m": {
@@ -1557,7 +1618,12 @@
         "gross_average_trade_return_pct": null,
         "gross_compounded_return_pct": null,
         "gross_max_drawdown_pct": null,
-        "performance_note": "Directional returns are gross, before fees, funding, spread and slippage.",
+        "estimated_round_trip_cost_pct": 0.14,
+        "net_win_rate_pct": null,
+        "net_average_trade_return_pct": null,
+        "net_compounded_return_pct": null,
+        "net_max_drawdown_pct": null,
+        "performance_note": "Net estimate subtracts 0.05% taker fee and 0.02% slippage per side; funding is excluded and actual execution may differ.",
         "status": "COLLECTING LIVE OUTCOMES"
       },
       "temporal_sequence_4h": {
@@ -1570,7 +1636,12 @@
         "gross_average_trade_return_pct": null,
         "gross_compounded_return_pct": null,
         "gross_max_drawdown_pct": null,
-        "performance_note": "Directional returns are gross, before fees, funding, spread and slippage.",
+        "estimated_round_trip_cost_pct": 0.14,
+        "net_win_rate_pct": null,
+        "net_average_trade_return_pct": null,
+        "net_compounded_return_pct": null,
+        "net_max_drawdown_pct": null,
+        "performance_note": "Net estimate subtracts 0.05% taker fee and 0.02% slippage per side; funding is excluded and actual execution may differ.",
         "status": "COLLECTING LIVE OUTCOMES"
       },
       "tree_ensemble_15m": {
@@ -1583,7 +1654,12 @@
         "gross_average_trade_return_pct": null,
         "gross_compounded_return_pct": null,
         "gross_max_drawdown_pct": null,
-        "performance_note": "Directional returns are gross, before fees, funding, spread and slippage.",
+        "estimated_round_trip_cost_pct": 0.14,
+        "net_win_rate_pct": null,
+        "net_average_trade_return_pct": null,
+        "net_compounded_return_pct": null,
+        "net_max_drawdown_pct": null,
+        "performance_note": "Net estimate subtracts 0.05% taker fee and 0.02% slippage per side; funding is excluded and actual execution may differ.",
         "status": "COLLECTING LIVE OUTCOMES"
       },
       "tree_ensemble_30m": {
@@ -1596,7 +1672,12 @@
         "gross_average_trade_return_pct": null,
         "gross_compounded_return_pct": null,
         "gross_max_drawdown_pct": null,
-        "performance_note": "Directional returns are gross, before fees, funding, spread and slippage.",
+        "estimated_round_trip_cost_pct": 0.14,
+        "net_win_rate_pct": null,
+        "net_average_trade_return_pct": null,
+        "net_compounded_return_pct": null,
+        "net_max_drawdown_pct": null,
+        "performance_note": "Net estimate subtracts 0.05% taker fee and 0.02% slippage per side; funding is excluded and actual execution may differ.",
         "status": "COLLECTING LIVE OUTCOMES"
       },
       "tree_ensemble_4h": {
@@ -1609,7 +1690,12 @@
         "gross_average_trade_return_pct": null,
         "gross_compounded_return_pct": null,
         "gross_max_drawdown_pct": null,
-        "performance_note": "Directional returns are gross, before fees, funding, spread and slippage.",
+        "estimated_round_trip_cost_pct": 0.14,
+        "net_win_rate_pct": null,
+        "net_average_trade_return_pct": null,
+        "net_compounded_return_pct": null,
+        "net_max_drawdown_pct": null,
+        "performance_note": "Net estimate subtracts 0.05% taker fee and 0.02% slippage per side; funding is excluded and actual execution may differ.",
         "status": "COLLECTING LIVE OUTCOMES"
       },
       "tree_ensemble_60m": {
@@ -1622,10 +1708,24 @@
         "gross_average_trade_return_pct": null,
         "gross_compounded_return_pct": null,
         "gross_max_drawdown_pct": null,
-        "performance_note": "Directional returns are gross, before fees, funding, spread and slippage.",
+        "estimated_round_trip_cost_pct": 0.14,
+        "net_win_rate_pct": null,
+        "net_average_trade_return_pct": null,
+        "net_compounded_return_pct": null,
+        "net_max_drawdown_pct": null,
+        "performance_note": "Net estimate subtracts 0.05% taker fee and 0.02% slippage per side; funding is excluded and actual execution may differ.",
         "status": "COLLECTING LIVE OUTCOMES"
       }
     },
     "note": "Live outcomes are tracked for evaluation; this does not silently retrain or alter model weights."
+  },
+  "feedback_adaptive_gate": {
+    "status": "NO DIRECTIONAL SIGNAL",
+    "minimum_completed_trades": 30,
+    "completed_trades": 0,
+    "net_average_trade_return_pct": null,
+    "net_win_rate_pct": null,
+    "weights_retrained": false,
+    "note": "Feedback changes risk permission only; it does not retrain neural-network weights."
   }
 }
