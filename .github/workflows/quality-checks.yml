@@ -10,6 +10,8 @@ on:
       - "signal_engine.py"
       - "paper_trader.py"
       - "institutional_intelligence.py"
+      - "news_guard.py"
+      - "live_runner.py"
       - ".github/workflows/quality-checks.yml"
 
 permissions:
@@ -34,7 +36,7 @@ jobs:
 
       - name: Compile all production modules
         run: |
-          python -m py_compile ai_model.py/ai_model.py market_data.py signal_engine.py paper_trader.py institutional_intelligence.py advanced_modules.py news_guard.py exchange_compare.py liquidation_monitor.py
+          python -m py_compile ai_model.py/ai_model.py market_data.py signal_engine.py paper_trader.py institutional_intelligence.py advanced_modules.py news_guard.py exchange_compare.py liquidation_monitor.py live_runner.py
 
       - name: Run complete unit test suite
         run: python -m unittest discover -s tests -v
