@@ -801,8 +801,20 @@ def derivatives_feed_score(payload):
             return False
         if "cross-venue" in note or "cross venue" in note:
             return False
-        data = feed.get("data")
-        return data is not None and data != [] and data != {}
+        def has_meaningful_value(value):
+            if value is None:
+                return False
+            if isinstance(value, str):
+                return bool(value.strip())
+            if isinstance(value, dict):
+                return any(has_meaningful_value(item) for item in value.values())
+            if isinstance(value, (list, tuple)):
+                return any(has_meaningful_value(item) for item in value)
+            if isinstance(value, (int, float, bool)):
+                return True
+            return False
+
+        return has_meaningful_value(feed.get("data"))
 
     return sum(1 for name in required if independently_verified(feeds.get(name)))
 
