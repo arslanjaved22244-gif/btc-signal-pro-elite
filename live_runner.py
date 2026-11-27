@@ -120,20 +120,39 @@ def dashboard_server():
     print("Dashboard and /healthz listening on", port, flush=True)
     server.serve_forever()
 
+def run_step(name, script, timeout=100):
+    result = subprocess.run([sys.executable, str(ROOT / script)], cwd=ROOT,
+                            timeout=timeout, capture_output=True, text=True)
+    if result.stdout:
+        print(name + " output:", result.stdout[-2500:], flush=True)
+    if result.returncode:
+        print(name + " failed:", (result.stderr or "unknown error")[-1500:], flush=True)
+        return False
+    print(name + " completed", flush=True)
+    return True
+
+
 def monitor_worker():
     while True:
         started = time.time()
+        # Refresh the actual market and signal snapshots in this persistent process.
+        # A failed market collection must never allow a stale snapshot to authorize a signal.
+        market_ok = False
         try:
-            result = subprocess.run([sys.executable, str(ROOT / "bot" / "monitor.py")],
-                                    cwd=ROOT, timeout=55, capture_output=True, text=True)
-            if result.stdout:
-                print(result.stdout[-4000:], flush=True)
-            if result.returncode:
-                print("Monitor error:", (result.stderr or "unknown error")[-1200:], flush=True)
-        except subprocess.TimeoutExpired:
-            print("Monitor timed out; next cycle will retry", flush=True)
+            market_ok = run_step("Futures market collection", "market_data.py", timeout=100)
+            if market_ok:
+                news_ok = run_step("News/event risk scan", "news_guard.py", timeout=60)
+                signal_ok = news_ok and run_step("Signal confluence engine", "signal_engine.py", timeout=45)
+                if signal_ok:
+                    run_step("Paper-trade journal (no orders)", "paper_trader.py", timeout=45)
+                    run_step("Advanced metrics", "advanced_modules.py", timeout=60)
+            else:
+                print("Signal update skipped: latest market collection failed; existing signal must be treated as stale.", flush=True)
+            run_step("Derivatives and news monitor", "bot/monitor.py", timeout=55)
+        except subprocess.TimeoutExpired as exc:
+            print("Live scan timed out:", str(exc), flush=True)
         except Exception as exc:
-            print("Monitor runner error:", str(exc), flush=True)
+            print("Live monitor runner error:", str(exc), flush=True)
         elapsed = time.time() - started
         time.sleep(max(5, 60 - elapsed))
 
