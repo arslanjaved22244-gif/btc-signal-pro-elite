@@ -1,7 +1,7 @@
 {
   "system": "BTC Signal Pro Elite Hybrid Confluence Engine",
   "version": "4.3-hybrid-sweep-validated-futures",
-  "generated_at": "2026-11-27T20:46:12.201201+00:00",
+  "generated_at": "2026-11-27T20:57:33.436291+00:00",
   "symbol": "BTCUSDT",
   "market_type": "BITGET_USDT_FUTURES",
   "market_exchange": "Bitget",
@@ -19,27 +19,27 @@
     "momentum_margin": 3.0,
     "note": "Early setup is a watchlist hint only, not an entry signal. Confirm the main signal and manual risk levels before any trade."
   },
-  "confidence_score": 78.26,
+  "confidence_score": 84.78,
   "scores": {
-    "LONG": 0.75,
-    "SHORT": 9.0
+    "LONG": 0.0,
+    "SHORT": 9.75
   },
   "timeframe_analysis": {
     "5m": {
       "available": true,
       "bias": "BEARISH",
       "momentum_bias": "BEARISH",
-      "price": 59801.8,
-      "ema50": 59932.9,
-      "ema200": 60572.67,
-      "rsi14": 46.73,
-      "atr14": 73.15,
+      "price": 59753.5,
+      "ema50": 59920.56,
+      "ema200": 60557.12,
+      "rsi14": 43.08,
+      "atr14": 75.64,
       "macd": {
-        "line": -34.89679,
-        "signal": -24.35127,
-        "histogram": -10.54553
+        "line": -34.68358,
+        "signal": -27.84365,
+        "histogram": -6.83993
       },
-      "age_seconds": 39
+      "age_seconds": 116
     },
     "15m": {
       "available": true,
@@ -55,7 +55,7 @@
         "signal": -284.6675,
         "histogram": 52.32315
       },
-      "age_seconds": 40
+      "age_seconds": 717
     },
     "1h": {
       "available": true,
@@ -71,7 +71,7 @@
         "signal": -13.28557,
         "histogram": -213.27674
       },
-      "age_seconds": 2740
+      "age_seconds": 3418
     },
     "4h": {
       "available": true,
@@ -87,7 +87,7 @@
         "signal": -28.7509,
         "histogram": 62.50666
       },
-      "age_seconds": 2741
+      "age_seconds": 3418
     },
     "1d": {
       "available": true,
@@ -103,7 +103,7 @@
         "signal": -4502.26763,
         "histogram": -20.97644
       },
-      "age_seconds": 17142
+      "age_seconds": 17819
     }
   },
   "liquidity_sweep": {
@@ -111,13 +111,13 @@
     "status": "NO_CONFIRMED_SWEEP"
   },
   "order_flow": {
-    "cvd_base": -2.2536,
-    "order_book_imbalance": 0.136171,
+    "cvd_base": -0.2057,
+    "order_book_imbalance": -0.262118,
     "order_book_imbalance_method": "Top-20 visible levels; quote-notional (price \u00d7 quantity); (bid-ask)/(bid+ask)",
-    "funding_rate_pct": 0.0049,
+    "funding_rate_pct": 0.0051,
     "funding_crowding": "NEUTRAL",
     "open_interest_change_30m_pct": null,
-    "taker_buy_sell_ratio": 0.18474839923307884
+    "taker_buy_sell_ratio": 0.6455281750818544
   },
   "ml_context": {
     "model_version": "4.5-expanded-futures-history",
@@ -128,18 +128,18 @@
     "market_alignment": {
       "passed": true,
       "type": "CROSS_VENUE_FUTURES",
-      "model_venue": "OKX BTC-USDT-SWAP Futures public OHLC candles",
+      "model_venue": "OKX BTC-USDT-SWAP Futures",
       "market_venue": "Bitget",
-      "basis_pct": 0.04498,
-      "candle_skew_minutes": 10.0,
+      "basis_pct": 0.05406,
+      "candle_skew_minutes": 5.0,
       "max_basis_pct": 0.25,
       "max_candle_skew_minutes": 15,
-      "reason": "Cross-venue perpetual prices and candle timestamps are aligned."
+      "reason": "Same-venue or cross-venue perpetual prices and 5m candle times are aligned."
     },
     "signal": "WAIT"
   },
   "risk_levels": {
-    "entry_reference": 59801.8,
+    "entry_reference": 59753.5,
     "stop_loss": null,
     "take_profit_1": null,
     "take_profit_2": null,
@@ -156,7 +156,7 @@
     ]
   },
   "news_guard": {
-    "generated_at": "2026-11-27T20:45:43.196116+00:00",
+    "generated_at": "2026-11-27T20:57:00.653934+00:00",
     "source": "Google News RSS public fallback + Trump's Truth independent archive (unofficial)",
     "available": true,
     "block": false,
@@ -170,7 +170,7 @@
   },
   "volatility_guard": {
     "blocked": false,
-    "atr_5m_pct": 0.1223,
+    "atr_5m_pct": 0.1266,
     "atr_threshold_pct": 0.45,
     "range_spike": false
   },
