@@ -20,12 +20,25 @@ jobs:
         run: python market_data.py
       - name: Scan public news and event risk
         run: python news_guard.py
+      - name: Install liquidation WebSocket dependency
+        run: python -m pip install websocket-client
+      - name: Sample Binance liquidation stream
+        run: python liquidation_monitor.py
       - name: Build hybrid AI confluence signal
         run: python signal_engine.py
+      - name: Calculate MACD, market structure, backtest and 10x risk
+        run: python advanced_modules.py
+      - name: Send optional Telegram manual signal alert
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          RISK_EQUITY_USDT: ${{ secrets.RISK_EQUITY_USDT }}
+          RISK_FRACTION: "0.01"
+        run: python telegram_alerts.py
       - name: Publish market and signal snapshots
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add market_data.json event_guard.json signal_result.json
+          git add market_data.json event_guard.json signal_result.json advanced_metrics.json liquidation_data.json alert_state.json alert_status.json
           git diff --cached --quiet || git commit -m "Refresh Futures data and AI signal"
           git push
