@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "last_updated": "2026-11-27T13:15:09.523599+00:00",
+  "last_updated": "2026-11-27T13:18:08.722895+00:00",
   "scoring_rule": "Each forecast is scored at its own horizon using a prediction-time ATR-scaled neutral threshold",
   "predictions": [
     {
@@ -128,7 +128,14 @@
         "WAIT": 0.07,
         "LONG": 0.0
       },
-      "status": "PENDING"
+      "status": "EVALUATED",
+      "actual_class": "SHORT",
+      "actual_return_pct": -0.06004,
+      "actual_close": 61425.3,
+      "evaluated_at_candle_time": 1795785000000,
+      "correct": true,
+      "approved_trade_return_gross_pct": null,
+      "approved_trade_won": null
     },
     {
       "id": "temporal_sequence_1h:1795783200000:1795786800000",
@@ -201,7 +208,14 @@
         "WAIT": 31.46,
         "LONG": 33.07
       },
-      "status": "PENDING"
+      "status": "EVALUATED",
+      "actual_class": "SHORT",
+      "actual_return_pct": -0.06004,
+      "actual_close": 61425.3,
+      "evaluated_at_candle_time": 1795785000000,
+      "correct": true,
+      "approved_trade_return_gross_pct": null,
+      "approved_trade_won": null
     },
     {
       "id": "classic_horizon_60m:1795783200000:1795786800000",
@@ -274,7 +288,14 @@
         "WAIT": 11.73,
         "LONG": 24.53
       },
-      "status": "PENDING"
+      "status": "EVALUATED",
+      "actual_class": "SHORT",
+      "actual_return_pct": -0.06004,
+      "actual_close": 61425.3,
+      "evaluated_at_candle_time": 1795785000000,
+      "correct": true,
+      "approved_trade_return_gross_pct": null,
+      "approved_trade_won": null
     },
     {
       "id": "tree_ensemble_60m:1795783200000:1795786800000",
@@ -871,7 +892,14 @@
         "WAIT": 33.11,
         "LONG": 29.25
       },
-      "status": "PENDING"
+      "status": "EVALUATED",
+      "actual_class": "SHORT",
+      "actual_return_pct": -0.21735,
+      "actual_close": 61425.3,
+      "evaluated_at_candle_time": 1795785000000,
+      "correct": true,
+      "approved_trade_return_gross_pct": null,
+      "approved_trade_won": null
     },
     {
       "id": "temporal_sequence_15m:1795784100000:1795785000000",
@@ -888,7 +916,14 @@
         "WAIT": 0.0,
         "LONG": 0.0
       },
-      "status": "PENDING"
+      "status": "EVALUATED",
+      "actual_class": "SHORT",
+      "actual_return_pct": -0.21735,
+      "actual_close": 61425.3,
+      "evaluated_at_candle_time": 1795785000000,
+      "correct": true,
+      "approved_trade_return_gross_pct": null,
+      "approved_trade_won": null
     },
     {
       "id": "temporal_sequence_30m:1795784100000:1795785900000",
@@ -956,7 +991,14 @@
         "WAIT": 44.61,
         "LONG": 22.79
       },
-      "status": "PENDING"
+      "status": "EVALUATED",
+      "actual_class": "SHORT",
+      "actual_return_pct": -0.21735,
+      "actual_close": 61425.3,
+      "evaluated_at_candle_time": 1795785000000,
+      "correct": false,
+      "approved_trade_return_gross_pct": null,
+      "approved_trade_won": null
     },
     {
       "id": "classic_horizon_30m:1795784100000:1795785900000",
@@ -1024,7 +1066,14 @@
         "WAIT": 24.23,
         "LONG": 17.17
       },
-      "status": "PENDING"
+      "status": "EVALUATED",
+      "actual_class": "SHORT",
+      "actual_return_pct": -0.21735,
+      "actual_close": 61425.3,
+      "evaluated_at_candle_time": 1795785000000,
+      "correct": true,
+      "approved_trade_return_gross_pct": null,
+      "approved_trade_won": null
     },
     {
       "id": "tree_ensemble_30m:1795784100000:1795785900000",
@@ -1092,7 +1141,14 @@
         "WAIT": 38.96,
         "LONG": 29.96
       },
-      "status": "PENDING"
+      "status": "EVALUATED",
+      "actual_class": "SHORT",
+      "actual_return_pct": -0.21735,
+      "actual_close": 61425.3,
+      "evaluated_at_candle_time": 1795785000000,
+      "correct": false,
+      "approved_trade_return_gross_pct": null,
+      "approved_trade_won": null
     },
     {
       "id": "primary_ensemble:1795784400000:1795785300000",
@@ -1567,6 +1623,244 @@
         "SHORT": 67.64,
         "WAIT": 17.95,
         "LONG": 14.42
+      },
+      "status": "PENDING"
+    },
+    {
+      "id": "primary_ensemble:1795785000000:1795785900000",
+      "model": "primary_ensemble",
+      "prediction_time": 1795785000000,
+      "target_time": 1795785900000,
+      "horizon_minutes": 15,
+      "reference_price": 61425.3,
+      "threshold_pct": 0.00035,
+      "predicted_class": "LONG",
+      "approved_signal": "WAIT",
+      "scores": {
+        "SHORT": 29.16,
+        "WAIT": 34.0,
+        "LONG": 36.84
+      },
+      "status": "PENDING"
+    },
+    {
+      "id": "lstm_sequence_15m:1795785000000:1795785900000",
+      "model": "lstm_sequence_15m",
+      "prediction_time": 1795785000000,
+      "target_time": 1795785900000,
+      "horizon_minutes": 15,
+      "reference_price": 61425.3,
+      "threshold_pct": 0.00035,
+      "predicted_class": "WAIT",
+      "approved_signal": "WAIT",
+      "scores": {
+        "SHORT": 35.02,
+        "WAIT": 38.73,
+        "LONG": 26.25
+      },
+      "status": "PENDING"
+    },
+    {
+      "id": "temporal_sequence_15m:1795785000000:1795785900000",
+      "model": "temporal_sequence_15m",
+      "prediction_time": 1795785000000,
+      "target_time": 1795785900000,
+      "horizon_minutes": 15,
+      "reference_price": 61425.3,
+      "threshold_pct": 0.00035,
+      "predicted_class": "SHORT",
+      "approved_signal": "WAIT",
+      "scores": {
+        "SHORT": 99.97,
+        "WAIT": 0.01,
+        "LONG": 0.02
+      },
+      "status": "PENDING"
+    },
+    {
+      "id": "temporal_sequence_30m:1795785000000:1795786800000",
+      "model": "temporal_sequence_30m",
+      "prediction_time": 1795785000000,
+      "target_time": 1795786800000,
+      "horizon_minutes": 30,
+      "reference_price": 61425.3,
+      "threshold_pct": 0.00042027403087288237,
+      "predicted_class": "SHORT",
+      "approved_signal": "WAIT",
+      "scores": {
+        "SHORT": 99.95,
+        "WAIT": 0.05,
+        "LONG": 0.0
+      },
+      "status": "PENDING"
+    },
+    {
+      "id": "temporal_sequence_1h:1795785000000:1795788600000",
+      "model": "temporal_sequence_1h",
+      "prediction_time": 1795785000000,
+      "target_time": 1795788600000,
+      "horizon_minutes": 60,
+      "reference_price": 61425.3,
+      "threshold_pct": 0.0005943572343736391,
+      "predicted_class": "SHORT",
+      "approved_signal": "WAIT",
+      "scores": {
+        "SHORT": 100.0,
+        "WAIT": 0.0,
+        "LONG": 0.0
+      },
+      "status": "PENDING"
+    },
+    {
+      "id": "temporal_sequence_4h:1795785000000:1795799400000",
+      "model": "temporal_sequence_4h",
+      "prediction_time": 1795785000000,
+      "target_time": 1795799400000,
+      "horizon_minutes": 240,
+      "reference_price": 61425.3,
+      "threshold_pct": 0.0011887144687472782,
+      "predicted_class": "SHORT",
+      "approved_signal": "WAIT",
+      "scores": {
+        "SHORT": 99.99,
+        "WAIT": 0.01,
+        "LONG": 0.0
+      },
+      "status": "PENDING"
+    },
+    {
+      "id": "classic_horizon_15m:1795785000000:1795785900000",
+      "model": "classic_horizon_15m",
+      "prediction_time": 1795785000000,
+      "target_time": 1795785900000,
+      "horizon_minutes": 15,
+      "reference_price": 61425.3,
+      "threshold_pct": 0.00035,
+      "predicted_class": "WAIT",
+      "approved_signal": "WAIT",
+      "scores": {
+        "SHORT": 31.54,
+        "WAIT": 41.55,
+        "LONG": 26.91
+      },
+      "status": "PENDING"
+    },
+    {
+      "id": "classic_horizon_30m:1795785000000:1795786800000",
+      "model": "classic_horizon_30m",
+      "prediction_time": 1795785000000,
+      "target_time": 1795786800000,
+      "horizon_minutes": 30,
+      "reference_price": 61425.3,
+      "threshold_pct": 0.00042027403087288237,
+      "predicted_class": "SHORT",
+      "approved_signal": "WAIT",
+      "scores": {
+        "SHORT": 39.14,
+        "WAIT": 30.31,
+        "LONG": 30.54
+      },
+      "status": "PENDING"
+    },
+    {
+      "id": "classic_horizon_60m:1795785000000:1795788600000",
+      "model": "classic_horizon_60m",
+      "prediction_time": 1795785000000,
+      "target_time": 1795788600000,
+      "horizon_minutes": 60,
+      "reference_price": 61425.3,
+      "threshold_pct": 0.0005943572343736391,
+      "predicted_class": "SHORT",
+      "approved_signal": "WAIT",
+      "scores": {
+        "SHORT": 43.12,
+        "WAIT": 30.96,
+        "LONG": 25.93
+      },
+      "status": "PENDING"
+    },
+    {
+      "id": "classic_horizon_4h:1795785000000:1795799400000",
+      "model": "classic_horizon_4h",
+      "prediction_time": 1795785000000,
+      "target_time": 1795799400000,
+      "horizon_minutes": 240,
+      "reference_price": 61425.3,
+      "threshold_pct": 0.0011887144687472782,
+      "predicted_class": "SHORT",
+      "approved_signal": "WAIT",
+      "scores": {
+        "SHORT": 70.98,
+        "WAIT": 23.35,
+        "LONG": 5.67
+      },
+      "status": "PENDING"
+    },
+    {
+      "id": "tree_ensemble_15m:1795785000000:1795785900000",
+      "model": "tree_ensemble_15m",
+      "prediction_time": 1795785000000,
+      "target_time": 1795785900000,
+      "horizon_minutes": 15,
+      "reference_price": 61425.3,
+      "threshold_pct": 0.00035,
+      "predicted_class": "SHORT",
+      "approved_signal": "WAIT",
+      "scores": {
+        "SHORT": 38.83,
+        "WAIT": 27.1,
+        "LONG": 34.07
+      },
+      "status": "PENDING"
+    },
+    {
+      "id": "tree_ensemble_30m:1795785000000:1795786800000",
+      "model": "tree_ensemble_30m",
+      "prediction_time": 1795785000000,
+      "target_time": 1795786800000,
+      "horizon_minutes": 30,
+      "reference_price": 61425.3,
+      "threshold_pct": 0.00042027403087288237,
+      "predicted_class": "SHORT",
+      "approved_signal": "WAIT",
+      "scores": {
+        "SHORT": 73.71,
+        "WAIT": 9.24,
+        "LONG": 17.05
+      },
+      "status": "PENDING"
+    },
+    {
+      "id": "tree_ensemble_60m:1795785000000:1795788600000",
+      "model": "tree_ensemble_60m",
+      "prediction_time": 1795785000000,
+      "target_time": 1795788600000,
+      "horizon_minutes": 60,
+      "reference_price": 61425.3,
+      "threshold_pct": 0.0005943572343736391,
+      "predicted_class": "SHORT",
+      "approved_signal": "WAIT",
+      "scores": {
+        "SHORT": 59.39,
+        "WAIT": 14.48,
+        "LONG": 26.13
+      },
+      "status": "PENDING"
+    },
+    {
+      "id": "tree_ensemble_4h:1795785000000:1795799400000",
+      "model": "tree_ensemble_4h",
+      "prediction_time": 1795785000000,
+      "target_time": 1795799400000,
+      "horizon_minutes": 240,
+      "reference_price": 61425.3,
+      "threshold_pct": 0.0011887144687472782,
+      "predicted_class": "SHORT",
+      "approved_signal": "WAIT",
+      "scores": {
+        "SHORT": 45.35,
+        "WAIT": 14.91,
+        "LONG": 39.74
       },
       "status": "PENDING"
     }
