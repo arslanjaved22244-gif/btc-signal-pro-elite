@@ -31,8 +31,8 @@ This is an installable web app (PWA), not an App Store listing. The app shell ca
 - Max leverage guidance is 10x only as a ceiling, not a recommendation. Leverage magnifies losses; fees, funding, slippage and liquidation can make outcomes worse.
 - No model accuracy or profit is guaranteed. Review all signals manually and use independent risk controls.
 
-## Telegram alerts
-Optional signal-only Telegram alerts are supported. Add two repository Actions secrets: `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID`. Never put these values in source code or send them in chat. In GitHub, open Settings → Secrets and variables → Actions → New repository secret. The dashboard shows the latest alert status in the derivatives/news panel. See `TELEGRAM_SETUP.md`.
+## Alerts
+Telegram integration is intentionally not part of this setup. The dashboard remains signal-only and does not require bot tokens, exchange API keys, or paid alert services.
 
 ## 24/7 hosting
 `live_runner.py` provides a persistent liquidation WebSocket and a periodic monitor, but it must run on an always-on host. See `DEPLOY_VPS.md`. GitHub Actions schedules are best-effort and do not provide a guaranteed 5-second backend. The current live runner polls the REST/news monitor about once per minute to avoid excessive public API requests; the dashboard price itself refreshes every 5 seconds in an open browser.
