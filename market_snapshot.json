@@ -1,15 +1,15 @@
 {
-  "price": 59862.7,
-  "funding_rate": 9.4613561238e-06,
-  "funding_percent": 0.00094613561238,
-  "open_interest": 3183793.2600000137,
-  "oi_change_5m_pct": 0.06279953093296571,
+  "price": 59823.2,
+  "funding_rate": 8.488087631e-06,
+  "funding_percent": 0.0008488087631,
+  "open_interest": 3182780.060000013,
+  "oi_change_5m_pct": 0.0,
   "oi_history": [
     {
       "timestamp": "1795804200000",
-      "oi_contracts": "3183779.38000001349",
-      "oi_coin": "31837.7938000001349",
-      "oi_usd": "1905119456.74254807218667"
+      "oi_contracts": "3183531.59000001452",
+      "oi_coin": "31835.3159000001452",
+      "oi_usd": "1903923801.52586868374408"
     },
     {
       "timestamp": "1795803900000",
@@ -18,23 +18,23 @@
       "oi_usd": "1903923801.52586868374408"
     }
   ],
-  "orderbook_imbalance": -0.16585331297947653,
-  "cvd_proxy": 0.03773307657208347,
-  "taker_buy_ratio": 0.5188665382860418,
+  "orderbook_imbalance": 0.20703226265864022,
+  "cvd_proxy": 0.5268412911057001,
+  "taker_buy_ratio": 0.76342064555285,
   "large_trades": [],
   "data_source": "OKX public BTC-USDT-SWAP perpetual API",
-  "as_of": "2026-11-27T18:33:55.841880+00:00",
+  "as_of": "2026-11-27T18:36:14.150114+00:00",
   "oi_note": "OKX public 5-minute open-interest history when available",
-  "atr_5m_pct": 0.25336,
-  "latest_range_atr_ratio": 0.505,
+  "atr_5m_pct": 0.23998,
+  "latest_range_atr_ratio": 0.443,
   "volatility_status": "NORMAL",
   "volatility_source": "Bybit/OKX completed BTC perpetual 5m candles",
   "oi_change_source": "OKX 5-minute OI history",
-  "signal": "WAIT",
-  "reason": "Derivatives flow is mixed or squeeze/crowding filters are active",
+  "signal": "LONG",
+  "reason": "Positive taker flow, CVD and order-book imbalance",
   "news_pause_active": false,
   "pause_until": "2026-11-27T18:13:05.922760+00:00",
   "news_alerts": [],
-  "updated_at": "2026-11-27T18:33:57.541825+00:00",
+  "updated_at": "2026-11-27T18:36:15.861522+00:00",
   "safety_note": "Signal-only; manual trading only. Large trades are trade-size alerts, not verified whale identities. Trump social posts are monitored through a third-party archive RSS, not an official API."
 }
