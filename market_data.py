@@ -277,13 +277,25 @@ def collect_bybit():
         result["feeds"]["open_interest_history_5m"]["data"]=[
             {"sumOpenInterest":x.get("openInterest",0),"timestamp":x.get("timestamp")}
             for x in result["feeds"]["open_interest_history_5m"]["data"].get("list",[])]
-    result["feeds"]["taker_flow_5m"]=bybit_feed(
+    # Bybit account-ratio is long/short account positioning, NOT executed
+    # taker buy/sell volume. Keep it separately labelled and never feed it to
+    # the taker-flow signal feature.
+    account_ratio = bybit_feed(
         "/v5/market/account-ratio",{"category":"linear","symbol":SYMBOL,"period":"5min","limit":"30"})
-    if result["feeds"]["taker_flow_5m"]["ok"]:
-        result["feeds"]["taker_flow_5m"]["data"]=[
-            {"buySellRatio":(float(x.get("buyRatio",0) or 0)/float(x.get("sellRatio",1) or 1)),
-             "buyRatio":x.get("buyRatio"),"sellRatio":x.get("sellRatio"),"timestamp":x.get("timestamp")}
-            for x in result["feeds"]["taker_flow_5m"]["data"].get("list",[])]
+    if account_ratio["ok"]:
+        account_ratio["data"] = [
+            {"long_short_account_ratio": (
+                float(x.get("buyRatio", 0) or 0) / float(x.get("sellRatio", 1) or 1)
+                if float(x.get("sellRatio", 0) or 0) > 0 else None
+             ), "long_account_ratio": x.get("buyRatio"),
+             "short_account_ratio": x.get("sellRatio"), "timestamp": x.get("timestamp")}
+            for x in account_ratio["data"].get("list", [])
+        ]
+    result["feeds"]["account_position_ratio_5m"] = account_ratio
+    result["feeds"]["taker_flow_5m"] = {
+        "ok": False,
+        "error": "Bybit account-ratio measures account positioning, not executed taker buy/sell volume; excluded from taker-flow signals."
+    }
     result["feeds"]["order_book"]=bybit_feed(
         "/v5/market/orderbook",{"category":"linear","symbol":SYMBOL,"limit":"50"})
     if result["feeds"]["order_book"]["ok"]:
