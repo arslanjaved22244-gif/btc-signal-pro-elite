@@ -2645,13 +2645,19 @@ def main():
             "Walk-forward metrics are historical diagnostics, not guarantees of future performance."
         ]
     }
-    result["prediction_feedback"] = update_prediction_feedback(data, result)
+    # Resolve matured feedback first without recording the current primary
+    # forecast as a trade. Then apply the adaptive gate and persist the final
+    # approved signal, so blocked entries are never counted as executed trades.
+    feedback_preview = dict(result)
+    feedback_preview["class_scores"] = {}
+    feedback_preview["signal"] = "WAIT"
+    feedback_summary = update_prediction_feedback(data, feedback_preview)
     signal_before_feedback_gate = result.get("signal", "WAIT")
     feedback_signal, feedback_gate = apply_feedback_risk_gate(
-        signal_before_feedback_gate, result["prediction_feedback"]
+        signal_before_feedback_gate, feedback_summary
     )
-    if feedback_signal != signal_before_feedback_gate:
-        result["signal"] = feedback_signal
+    result["signal"] = feedback_signal
+    result["prediction_feedback"] = update_prediction_feedback(data, result)
     result["feedback_adaptive_gate"] = feedback_gate
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
         json.dump(result, f, indent=2)
