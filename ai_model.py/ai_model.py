@@ -222,7 +222,9 @@ def get_okx_data(interval):
     now_ms = int(datetime.now(timezone.utc).timestamp() * 1000)
     candles_by_time = {}
     cursor = None
-    pages = 2 if interval == "5m" else 1
+    # Pull several public history pages so the slow 1d timeframe does not
+    # cap the aligned training set at roughly 300 examples.
+    pages = {"5m": 4, "15m": 3, "1h": 3, "4h": 3, "1d": 3}[interval]
     for _ in range(pages):
         params = {"instId": "BTC-USDT-SWAP", "bar": bar, "limit": "300"}
         if cursor is not None:
