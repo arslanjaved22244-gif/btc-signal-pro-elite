@@ -1,32 +1,32 @@
 {
-  "price": 59769.5,
-  "funding_rate": 1.57128388777e-05,
-  "funding_percent": 0.00157128388777,
-  "open_interest": 3229328.950000016,
-  "oi_change_5m_pct": 0.023558249687746953,
+  "price": 59774.5,
+  "funding_rate": 1.55064871183e-05,
+  "funding_percent": 0.0015506487118299998,
+  "open_interest": 3229370.140000016,
+  "oi_change_5m_pct": 0.0,
   "oi_history": [
     {
-      "timestamp": "1795811100000",
-      "oi_contracts": "3226244.6700000158",
-      "oi_coin": "32262.446700000158",
-      "oi_usd": "1927494390.80583954713914"
+      "timestamp": "1795811400000",
+      "oi_contracts": "3228934.62000001619",
+      "oi_coin": "32289.3462000001619",
+      "oi_usd": "1930173163.53588967796106"
     },
     {
-      "timestamp": "1795810800000",
-      "oi_contracts": "3226176.54000001607",
-      "oi_coin": "32261.7654000001607",
-      "oi_usd": "1927040413.81356959883598"
+      "timestamp": "1795811100000",
+      "oi_contracts": "3228934.62000001619",
+      "oi_coin": "32289.3462000001619",
+      "oi_usd": "1930173163.53588967796106"
     }
   ],
-  "orderbook_imbalance": 0.9609733215531518,
-  "cvd_proxy": -0.8255317137725683,
-  "taker_buy_ratio": 0.08723414311371587,
+  "orderbook_imbalance": -0.5751305442832522,
+  "cvd_proxy": 0.8059197715175912,
+  "taker_buy_ratio": 0.9029598857587956,
   "large_trades": [],
   "data_source": "OKX public BTC-USDT-SWAP perpetual API",
-  "as_of": "2026-11-27T20:29:12.796155+00:00",
+  "as_of": "2026-11-27T20:32:33.037661+00:00",
   "oi_note": "OKX public 5-minute open-interest history when available",
-  "atr_5m_pct": 0.12393,
-  "latest_range_atr_ratio": 0.777,
+  "atr_5m_pct": 0.11242,
+  "latest_range_atr_ratio": 0.853,
   "volatility_status": "NORMAL",
   "volatility_source": "Bybit/OKX completed BTC perpetual 5m candles",
   "oi_change_source": "OKX 5-minute OI history",
@@ -35,6 +35,6 @@
   "news_pause_active": false,
   "pause_until": "2026-11-27T18:13:05.922760+00:00",
   "news_alerts": [],
-  "updated_at": "2026-11-27T20:29:14.344353+00:00",
+  "updated_at": "2026-11-27T20:32:50.473200+00:00",
   "safety_note": "Signal-only; manual trading only. Large trades are trade-size alerts, not verified whale identities. Trump social posts are monitored through a third-party archive RSS, not an official API."
 }

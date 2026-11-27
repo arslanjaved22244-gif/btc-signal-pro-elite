@@ -1,18 +1,18 @@
 {
   "source": "OKX BTC-USDT-SWAP public ticker; same-exchange reference and evaluation; directional close comparison only",
-  "updated_at": "2026-11-27T20:29:14.343520+00:00",
+  "updated_at": "2026-11-27T20:32:50.211310+00:00",
   "model_generated_at": "2026-11-27T20:26:48.407125+00:00",
-  "current_price": 59769.6,
+  "current_price": 59774.9,
   "stats": {
     "15m": {
-      "evaluated": 14,
+      "evaluated": 15,
       "directional_calls": 1,
       "correct": 1,
       "directional_accuracy_pct": 100.0,
       "raw_directional_calls": 0,
       "raw_correct": 0,
       "raw_directional_accuracy_pct": null,
-      "wait_abstentions": 13,
+      "wait_abstentions": 14,
       "excluded_legacy_source_mismatch": 4
     },
     "30m": {
@@ -27,14 +27,14 @@
       "excluded_legacy_source_mismatch": 4
     },
     "60m": {
-      "evaluated": 12,
+      "evaluated": 13,
       "directional_calls": 0,
       "correct": 0,
       "directional_accuracy_pct": null,
       "raw_directional_calls": 0,
       "raw_correct": 0,
       "raw_directional_accuracy_pct": null,
-      "wait_abstentions": 12,
+      "wait_abstentions": 13,
       "excluded_legacy_source_mismatch": 4
     },
     "4h": {
@@ -1189,11 +1189,11 @@
       "model_source": "OKX BTC-USDT-SWAP Futures public OHLC candles",
       "reference_price": 59925.7,
       "reference_exchange": "OKX BTC-USDT-SWAP",
-      "outcome": null,
-      "evaluated_at": null,
-      "realized_change_pct": null,
+      "outcome": "ABSTAINED",
+      "evaluated_at": "2026-11-27T20:32:50.211310+00:00",
+      "realized_change_pct": -0.25148,
       "correct": null,
-      "raw_correct": null,
+      "raw_correct": true,
       "validation_status": "WEAK EDGE \u2014 WAIT"
     },
     {
@@ -1297,11 +1297,11 @@
       "model_source": "OKX BTC-USDT-SWAP Futures public OHLC candles",
       "reference_price": 59745.0,
       "reference_exchange": "OKX BTC-USDT-SWAP",
-      "outcome": null,
-      "evaluated_at": null,
-      "realized_change_pct": null,
+      "outcome": "ABSTAINED",
+      "evaluated_at": "2026-11-27T20:32:50.211310+00:00",
+      "realized_change_pct": 0.05021,
       "correct": null,
-      "raw_correct": null,
+      "raw_correct": true,
       "validation_status": "VALIDATED TREE ENSEMBLE"
     },
     {
