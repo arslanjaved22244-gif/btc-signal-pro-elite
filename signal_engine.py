@@ -21,6 +21,21 @@ def load(path):
         return {}
 
 
+def news_snapshot_is_fresh(news, now=None, max_age_minutes=15):
+    """Require a timestamped, recent event scan; stale 'available' flags are not trusted."""
+    if not isinstance(news, dict) or news.get("available") is not True:
+        return False
+    try:
+        generated = datetime.fromisoformat(str(news.get("generated_at", "")).replace("Z", "+00:00"))
+        if generated.tzinfo is None:
+            generated = generated.replace(tzinfo=timezone.utc)
+        current = now or datetime.now(timezone.utc)
+        age = (current - generated.astimezone(timezone.utc)).total_seconds()
+        return -60 <= age <= max_age_minutes * 60
+    except (TypeError, ValueError):
+        return False
+
+
 def fresh_5m_derivative_rows(rows, now_ms=None, max_age_minutes=15):
     """Return only timestamped 5m derivative observations within the freshness window."""
     if not isinstance(rows, list) or not rows:
@@ -226,6 +241,9 @@ def run():
     quality = market.get("data_quality", {})
     analyses = {tf: timeframe_analysis(market.get("timeframes", {}).get(tf, {})) for tf in TIMEFRAMES}
     warnings = list(quality.get("warnings", []))
+    news_fresh = news_snapshot_is_fresh(news)
+    if news.get("available") and not news_fresh:
+        warnings.append("News monitor snapshot is stale or has no valid timestamp; treated as unavailable.")
     derived = market.get("derived", {})
     premium = feed_data(market, "mark_price_funding") or {}
     oi_hist_raw = feed_data(market, "open_interest_history_5m") or []
@@ -349,8 +367,8 @@ def run():
     if news.get("block"):
         signal = "WAIT"
         warnings.append("High-risk news lock active; entries blocked until the event lock expires.")
-    elif not news.get("available"):
-        # Missing headlines are not proof of an active event. Keep the signal
+    elif not news_fresh:
+        # Missing or stale headlines are not proof of an active event. Keep the signal
         # conservative by demanding stronger independent price/flow confluence.
         if signal != "WAIT" and (confidence < 55 or margin < 3.5):
             signal = "WAIT"
@@ -395,7 +413,7 @@ def run():
     watch_signal = "WAIT"
     watch_status = "NO_CLEAR_EARLY_SETUP"
     if (quality.get("status") == "HEALTHY" and quality.get("five_minute_data_fresh")
-            and not news.get("block") and not volatility_block
+            and news_fresh and not news.get("block") and not volatility_block
             and max(momentum_scores.values()) >= 3.5 and momentum_margin >= 1.5):
         watch_signal = momentum_leader
         watch_status = "EARLY_SETUP_ONLY_NOT_ENTRY"
