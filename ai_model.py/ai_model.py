@@ -54,7 +54,8 @@ def get_binance_data(interval):
                     candles_by_time[timestamp] = {
                         "time": timestamp, "open": float(row[1]),
                         "high": float(row[2]), "low": float(row[3]),
-                        "close": float(row[4]), "volume": float(row[5])
+                        "close": float(row[4]), "volume": float(row[5]),
+                        "taker_buy_volume": float(row[9]) if len(row) > 9 else None
                     }
         except Exception as exc:
             # The current month's archive may not yet be published; older months
@@ -85,7 +86,8 @@ def get_binance_data(interval):
             candles_by_time[timestamp] = {
                 "time": timestamp, "open": float(row[1]),
                 "high": float(row[2]), "low": float(row[3]),
-                "close": float(row[4]), "volume": float(row[5])
+                "close": float(row[4]), "volume": float(row[5]),
+                "taker_buy_volume": float(row[9]) if len(row) > 9 else None
             }
     except Exception as exc:
         print(f"Latest Binance Futures REST candles unavailable for {interval}: {exc}")
@@ -823,25 +825,28 @@ def advanced_horizon_models(data, prepared):
 
 def build_lstm_tradeflow_dataset(data, prepared, days=3):
     """
-    Fetch public Binance USD-M daily aggTrade archives and build timestamp-
-    aligned 5m taker-buy/taker-sell flow features. No API key required.
-    Only complete archived days are used; missing buckets are never imputed.
+    Build a full-length LSTM dataset with timestamp-aligned historical
+    aggTrade flow where available, and exchange-kline taker-buy volume for
+    recent/current candles. An explicit availability flag marks missing flow.
     """
     result = {
-        "status": "UNAVAILABLE", "provider": "Binance Vision USD-M daily aggTrades",
+        "status": "UNAVAILABLE", "provider": "Binance Vision USD-M aggTrades + Binance kline taker-buy volume",
         "days_requested": days, "days_loaded": 0, "trade_records": 0,
         "covered_samples": 0,
         "features": ["taker_delta_pct", "taker_buy_ratio",
-                     "log_trade_count", "taker_volume_to_candle_volume"],
+                     "log_trade_count", "taker_volume_to_candle_volume",
+                     "tradeflow_available"],
         "limitations": [
-            "Taker delta is a BTCUSDT aggTrade proxy, not exchange-wide CVD.",
-            "Only complete daily archives are used; missing 5m buckets are excluded.",
+            "AggTrade-derived delta is a BTCUSDT taker-flow proxy, not exchange-wide true CVD.",
+            "Kline taker-buy volume is used when an aggTrade bucket is unavailable.",
+            "Missing flow is explicitly marked unavailable; no future observations are joined.",
             "Historical OI, funding and order-book depth are not included in this dataset."
         ]
     }
     try:
         flow_by_bucket = {}
         now = datetime.now(timezone.utc)
+        loaded_sources = set()
         for offset in range(1, max(1, min(int(days), 5)) + 1):
             day = (now.date() - timedelta(days=offset)).isoformat()
             url = (
@@ -849,7 +854,7 @@ def build_lstm_tradeflow_dataset(data, prepared, days=3):
                 f"BTCUSDT/BTCUSDT-aggTrades-{day}.zip"
             )
             request = urllib.request.Request(
-                url, headers={"User-Agent": "BTC-Signal-Pro-Elite/5.4"}
+                url, headers={"User-Agent": "BTC-Signal-Pro-Elite/5.5"}
             )
             try:
                 with urllib.request.urlopen(request, timeout=60) as response:
@@ -868,7 +873,7 @@ def build_lstm_tradeflow_dataset(data, prepared, days=3):
                         if quantity <= 0:
                             continue
                         stats = flow_by_bucket.setdefault(bucket, [0.0, 0.0, 0])
-                        # Buyer is maker => aggressive taker was selling.
+                        # isBuyerMaker=True means the aggressive taker was selling.
                         if row[6].strip().lower() == "true":
                             stats[1] += quantity
                         else:
@@ -878,56 +883,81 @@ def build_lstm_tradeflow_dataset(data, prepared, days=3):
                 if day_records:
                     result["days_loaded"] += 1
                     result["trade_records"] += day_records
+                    loaded_sources.add("AGGTRADES")
                 print(f"Loaded {day_records} Binance Futures aggTrades for {day}")
             except Exception as exc:
                 print(f"Binance Vision aggTrades unavailable for {day}: {exc}")
 
         candles = data["5m"]
         rows, labels = [], []
-        matched_buckets = 0
+        aggtrade_samples = 0
+        kline_samples = 0
         for index in range(200, len(candles) - FUTURE_CANDLES):
             candle = candles[index]
             bucket = (int(candle["time"]) // 300_000) * 300_000
             stats = flow_by_bucket.get(bucket)
-            if not stats:
-                continue
-            buy_volume, sell_volume, trade_count = stats
-            total = buy_volume + sell_volume
-            candle_volume = max(float(candle.get("volume", 0.0)), 1e-12)
-            if total <= 0:
-                continue
+            total = 0.0
+            trade_count = 0
+            available = 0.0
+            if stats and stats[0] + stats[1] > 0:
+                buy_volume, sell_volume, trade_count = stats
+                total = buy_volume + sell_volume
+                available = 1.0
+                aggtrade_samples += 1
+            else:
+                volume = float(candle.get("volume", 0.0))
+                taker_buy = candle.get("taker_buy_volume")
+                if taker_buy is not None and volume > 0:
+                    buy_volume = max(0.0, min(float(taker_buy), volume))
+                    sell_volume = max(0.0, volume - buy_volume)
+                    total = buy_volume + sell_volume
+                    available = 1.0
+                    kline_samples += 1
+                else:
+                    buy_volume = sell_volume = 0.0
+
+            if available:
+                delta = (buy_volume - sell_volume) / max(total, 1e-12)
+                buy_ratio = buy_volume / max(total, 1e-12)
+                log_count = math.log1p(trade_count)
+                volume_ratio = total / max(float(candle.get("volume", 0.0)), 1e-12)
+            else:
+                delta, buy_ratio, log_count, volume_ratio = 0.0, 0.5, 0.0, 0.0
+
             base = combined_features(data, index, prepared)
             if base is None:
                 continue
-            flow_features = [
-                (buy_volume - sell_volume) / total,
-                buy_volume / total,
-                math.log1p(trade_count),
-                total / candle_volume
-            ]
+            rows.append(base + [delta, buy_ratio, log_count, volume_ratio, available])
             move = candles[index + FUTURE_CANDLES]["close"] / candle["close"] - 1.0
             threshold = adaptive_move_threshold(candles, index, FUTURE_CANDLES)
-            label = 2 if move > threshold else 0 if move < -threshold else 1
-            rows.append(base + flow_features)
-            labels.append(label)
-            matched_buckets += 1
+            labels.append(2 if move > threshold else 0 if move < -threshold else 1)
 
-        result["covered_samples"] = matched_buckets
+        eligible = max(1, len(candles) - 203)
+        result["covered_samples"] = aggtrade_samples + kline_samples
+        result["aggtrade_samples"] = aggtrade_samples
+        result["kline_taker_samples"] = kline_samples
         result["coverage_pct_of_eligible_candles"] = round(
-            matched_buckets / max(1, len(candles) - 203) * 100.0, 2
+            result["covered_samples"] / eligible * 100.0, 2
         )
-        if matched_buckets < 440:
-            result["status"] = "INSUFFICIENT FLOW HISTORY"
-            return [], [], result
-        result["status"] = "READY"
         result["samples"] = len(rows)
-        result["note"] = "Four historical taker-flow features are appended to the market feature vector."
+        if len(rows) < 250:
+            result["status"] = "INSUFFICIENT MARKET HISTORY"
+            return [], [], result
+        if aggtrade_samples:
+            result["status"] = "READY" if result["coverage_pct_of_eligible_candles"] >= 90 else "PARTIAL"
+            result["note"] = "Full chronological dataset retained; aggTrade features override kline taker-buy proxy where available."
+        elif kline_samples:
+            result["status"] = "KLINE TAKER-FLOW FALLBACK"
+            result["note"] = "Historical aggTrade archive unavailable; Binance kline taker-buy volume is used where present."
+        else:
+            result["status"] = "MARKET ONLY — FLOW UNAVAILABLE"
+            result["note"] = "Flow fields are explicitly flagged unavailable; no synthetic flow values are treated as observed."
+        result["sources_used"] = sorted(loaded_sources | ({"KLINE_TAKER_BUY"} if kline_samples else set()))
         return rows, labels, result
     except Exception as exc:
         result["status"] = "FETCH ERROR"
         result["error"] = str(exc)[:240]
         return [], [], result
-
 
 def build_lstm_derivatives_dataset(data, prepared, oi_pages=12):
     """
@@ -2113,12 +2143,9 @@ def main():
     if lstm_rows:
         lstm_feature_mode = "HISTORICAL_OI_FUNDING_PLUS_MARKET"
         lstm_training_rows, lstm_training_labels = lstm_rows, lstm_labels
-    elif tradeflow_rows:
-        lstm_feature_mode = "HISTORICAL_TAKER_FLOW_PLUS_MARKET"
-        lstm_training_rows, lstm_training_labels = tradeflow_rows, tradeflow_labels
     else:
-        lstm_feature_mode = "MARKET_ONLY_DERIVATIVES_UNAVAILABLE"
-        lstm_training_rows, lstm_training_labels = rows, labels
+        lstm_feature_mode = "MARKET_PLUS_TAKER_FLOW_FEATURES"
+        lstm_training_rows, lstm_training_labels = tradeflow_rows, tradeflow_labels
     lstm_model = lstm_sequence_forecast(lstm_training_rows, lstm_training_labels, sequence_length=24)
     lstm_model["feature_mode"] = lstm_feature_mode
     lstm_model["derivatives_dataset_status"] = historical_derivatives.get("status")
