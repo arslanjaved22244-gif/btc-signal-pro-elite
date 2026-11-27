@@ -1,0 +1,9 @@
+services:
+  btc-signal-pro:
+    build: .
+    container_name: btc-signal-pro
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    init: true
+    stop_grace_period: 20s
