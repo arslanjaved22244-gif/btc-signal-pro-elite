@@ -263,7 +263,12 @@ def run():
         "system": "BTC Signal Pro Elite Hybrid Confluence Engine",
         "version": "4.1-hybrid-futures-confluence",
         "generated_at": datetime.now(timezone.utc).isoformat(),
-        "symbol": "BTCUSDT", "market_type": "BINANCE_USDM_FUTURES",
+        "symbol": "BTCUSDT",
+        "market_type": market.get("market_type", "UNKNOWN"),
+        "market_exchange": market.get("exchange", "Binance" if "BINANCE" in str(market.get("market_type", "")) else "Unknown"),
+        "market_instrument": market.get("symbol", "BTCUSDT"),
+        "market_source": market.get("source", "Unknown"),
+        "execution_price_note": "Use this exchange feed as the analysis reference only; verify the live Binance Futures execution price and spread before any manual entry.",
         "signal": signal,
         "early_setup": {
             "direction": watch_signal, "status": watch_status,
