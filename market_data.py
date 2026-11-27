@@ -316,13 +316,17 @@ def collect_bybit():
         result["derived"]={"cvd_base":None,"note":"CVD unavailable because Bybit recent trades failed."}
     book=result["feeds"]["order_book"]
     if book["ok"]:
-        bids=sum(float(x[1]) for x in book["data"].get("bids",[]))
-        asks=sum(float(x[1]) for x in book["data"].get("asks",[]))
-        total=bids+asks
-        result["derived"].update({"visible_depth_bid_base":round(bids,8),
-            "visible_depth_ask_base":round(asks,8),
-            "order_book_imbalance":round((bids-asks)/total,6) if total else None,
-            "order_book_note":"Bybit top-50 visible levels only; depth changes rapidly."})
+        bids=book["data"].get("bids",[])
+        asks=book["data"].get("asks",[])
+        bid_notional=sum(float(x[0])*float(x[1]) for x in bids[:20])
+        ask_notional=sum(float(x[0])*float(x[1]) for x in asks[:20])
+        result["derived"].update({
+            "visible_depth_bid_notional_usdt":round(bid_notional,2),
+            "visible_depth_ask_notional_usdt":round(ask_notional,2),
+            "order_book_imbalance":normalized_order_book_imbalance(bids,asks,depth=20),
+            "order_book_imbalance_method":"Top-20 visible levels; quote-notional (price × quantity); (bid-ask)/(bid+ask)",
+            "order_book_note":"Bybit top-20 visible quote-notional depth; rapidly changing snapshot."
+        })
 
     result["feeds"]["liquidations"]={"ok":False,"status":"not_collected",
         "reason":"The existing Binance force-order WebSocket is not a Bybit liquidation feed; no cross-exchange substitution is made."}
@@ -512,12 +516,17 @@ def collect_okx():
     else:
         result["derived"]={"cvd_base":None,"note":"OKX trade feed unavailable."}
     if book["ok"]:
-        bids=sum(float(x[1]) for x in book["data"].get("bids",[]))
-        asks=sum(float(x[1]) for x in book["data"].get("asks",[]))
-        total=bids+asks
-        result["derived"].update({"visible_depth_bid_base":round(bids,8),
-            "visible_depth_ask_base":round(asks,8),
-            "order_book_imbalance":round((bids-asks)/total,6) if total else None})
+        bids=book["data"].get("bids",[])
+        asks=book["data"].get("asks",[])
+        bid_notional=sum(float(x[0])*float(x[1]) for x in bids[:20])
+        ask_notional=sum(float(x[0])*float(x[1]) for x in asks[:20])
+        result["derived"].update({
+            "visible_depth_bid_notional_usdt":round(bid_notional,2),
+            "visible_depth_ask_notional_usdt":round(ask_notional,2),
+            "order_book_imbalance":normalized_order_book_imbalance(bids,asks,depth=20),
+            "order_book_imbalance_method":"Top-20 visible levels; quote-notional (price × quantity); (bid-ask)/(bid+ask)",
+            "order_book_note":"OKX top-20 visible quote-notional depth; rapidly changing snapshot."
+        })
 
     result["feeds"]["liquidations"]={"ok":False,"status":"not_collected",
         "reason":"No OKX liquidation stream is connected; Binance liquidation sample is not reused."}
