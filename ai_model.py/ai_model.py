@@ -988,6 +988,30 @@ def main():
     elif signal == "SHORT" and trend_alignment["bullish_timeframes"] >= 3 and trend_alignment["bullish_timeframes"] > trend_alignment["bearish_timeframes"]:
         signal = "WAIT"
         alignment_veto = "SHORT blocked: at least 3 timeframes have bullish EMA structure."
+    valid_horizon_signals = {
+        timeframe: forecast.get("signal")
+        for timeframe, forecast in horizon_forecasts.items()
+        if isinstance(forecast, dict) and forecast.get("signal") in ("LONG", "SHORT")
+    }
+    opposite_horizon_signals = [
+        timeframe for timeframe, forecast_signal in valid_horizon_signals.items()
+        if signal in ("LONG", "SHORT") and forecast_signal != signal
+    ]
+    horizon_consensus_veto = None
+    if signal in ("LONG", "SHORT") and len(opposite_horizon_signals) >= 2:
+        signal = "WAIT"
+        horizon_consensus_veto = (
+            "Directional signal blocked: at least two independently validated "
+            "forecast horizons disagree."
+        )
+    horizon_consensus = {
+        "validated_directional_forecasts": valid_horizon_signals,
+        "opposite_horizons_to_primary": opposite_horizon_signals,
+        "opposite_horizon_count": len(opposite_horizon_signals),
+        "veto_threshold": 2,
+        "veto_reason": horizon_consensus_veto,
+        "note": "Only horizons passing their own validation gate are counted; this is a conflict filter, not a guarantee."
+    }
     model_probabilities = {
         "full_history_logistic": predict(final_model["full_history"], latest),
         "recent_regime_logistic": predict(final_model["recent_regime"], latest),
@@ -1015,7 +1039,7 @@ def main():
         "ensemble_configuration": {"models": ["full_history_logistic", "recent_regime_logistic", "nearest_centroid", "decision_stumps"], "weights": {"full_history_logistic": 0.35, "recent_regime_logistic": 0.20, "nearest_centroid": 0.20, "decision_stumps": 0.25}, "recent_training_window": final_model["recent_window"]},
         "walk_forward_metrics": validation,
         "validation_gate": {"passed": validation_gate, "minimum_accuracy_pct": 38.0, "minimum_macro_f1_pct": 30.0, "must_beat_majority_baseline": True, "decision": "directional signals allowed" if validation_gate else "WAIT only — historical validation too weak"},
-        "advanced_intelligence": {"market_regime": regime_analysis, "multi_timeframe_trend_alignment": trend_alignment, "alignment_veto": alignment_veto, "multi_horizon_forecasts": horizon_forecasts, "tree_ensemble": tree_ensemble, "tree_blend_applied_to_primary_signal": tree_blend_applied, "method": "four-horizon chronological ML + Random Forest + gradient boosting + neural MLP + XGBoost (when installed) + volatility regime + liquidity sweep detector"},
+        "advanced_intelligence": {"market_regime": regime_analysis, "multi_timeframe_trend_alignment": trend_alignment, "alignment_veto": alignment_veto, "multi_horizon_forecasts": horizon_forecasts, "multi_horizon_consensus": horizon_consensus, "tree_ensemble": tree_ensemble, "tree_blend_applied_to_primary_signal": tree_blend_applied, "method": "four-horizon chronological ML + Random Forest + gradient boosting + neural MLP + XGBoost (when installed) + volatility regime + liquidity sweep detector"},
         "walk_forward_folds": folds,
         "training_samples": len(rows),
         "label_distribution": {name: labels.count(i) for i, name in enumerate(CLASSES)},
