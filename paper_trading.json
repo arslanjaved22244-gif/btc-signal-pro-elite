@@ -4,7 +4,7 @@
   "source": "OKX public Futures 5m candles",
   "horizon_minutes": 15,
   "estimated_round_trip_cost_pct": 0.14,
-  "updated_at": "2026-11-27T18:18:03.198875+00:00",
+  "updated_at": "2026-11-27T18:19:55.575857+00:00",
   "current_signal": "WAIT",
   "current_signal_reason": null,
   "closed_trades": 0,
@@ -15,7 +15,20 @@
   "win_rate_pct": null,
   "net_return_pct_compounded": 0.0,
   "max_drawdown_pct": 0.0,
-  "limitations": "15m fixed-close simulation only. Estimated 0.14% round-trip costs; no stop/target, funding, liquidation, intrabar fills or live order execution. Historical results are not predictive.",
+  "shadow_evaluation": {
+    "mode": "NON_ACTIONABLE_RAW_MODEL_FORECASTS",
+    "closed_forecasts": 0,
+    "pending_forecasts": 1,
+    "abstentions": 0,
+    "wins": 0,
+    "losses": 0,
+    "directional_accuracy_pct": null,
+    "average_net_return_pct": null,
+    "net_return_pct_compounded": 0.0,
+    "validation_gate_passed_now": false,
+    "note": "Research-only forecast tracking. Includes model directions blocked by validation; never treat as an entry signal."
+  },
+  "limitations": "15m fixed-close simulation only. Estimated 0.14% round-trip costs; no stop/target, funding, liquidation, intrabar fills or live order execution. Shadow forecasts are non-actionable. Historical results are not predictive.",
   "records": [
     {
       "entry_candle_time": 1795802400000,
@@ -49,6 +62,20 @@
       "exit": null,
       "gross_return_pct": null,
       "net_return_pct": null
+    }
+  ],
+  "shadow_forecasts": [
+    {
+      "entry_candle_time": 1795803000000,
+      "recorded_at": "2026-11-27T18:19:55.575683+00:00",
+      "exchange": "OKX",
+      "side": "LONG",
+      "entry": 59889.3,
+      "status": "PENDING",
+      "actionable": false,
+      "validation_gate_passed": false,
+      "model_version": "4.3-profitability-gated",
+      "note": "Shadow-only raw ML forecast. Not a trading signal; validation gate may have failed."
     }
   ]
 }
