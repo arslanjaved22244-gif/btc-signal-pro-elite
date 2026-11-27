@@ -58,7 +58,8 @@ class FuturesSourceSafetyTests(unittest.TestCase):
         payloads = {
             ENGINE.MARKET_FILE: market,
             ENGINE.MODEL_FILE: model,
-            ENGINE.NEWS_FILE: {"available": True, "block": False},
+            ENGINE.NEWS_FILE: {"available": True, "block": False,
+                               "generated_at": __import__("datetime").datetime.now(__import__("datetime").timezone.utc).isoformat()},
             ENGINE.INTELLIGENCE_FILE: {"signal_quality_gate": {"passed": True, "status": "PASSED"}}
         }
         with patch.object(ENGINE, "load", side_effect=lambda path: payloads[path]):
@@ -94,7 +95,8 @@ class FuturesSourceSafetyTests(unittest.TestCase):
         }
         payloads = {
             ENGINE.MARKET_FILE: market, ENGINE.MODEL_FILE: model,
-            ENGINE.NEWS_FILE: {"available": True, "block": False},
+            ENGINE.NEWS_FILE: {"available": True, "block": False,
+                               "generated_at": __import__("datetime").datetime.now(__import__("datetime").timezone.utc).isoformat()},
             ENGINE.INTELLIGENCE_FILE: {"signal_quality_gate": {"passed": True}}
         }
         with patch.object(ENGINE, "load", side_effect=lambda path: payloads[path]):
@@ -146,6 +148,32 @@ class FuturesSourceSafetyTests(unittest.TestCase):
         alignment = ENGINE.validate_model_market_alignment(model, market)
         self.assertFalse(alignment["passed"])
         self.assertEqual(alignment["type"], "BLOCKED")
+
+
+    def test_stale_news_snapshot_is_treated_as_unavailable_and_blocks_directional_entry(self):
+        market = make_market()
+        model = {
+            "data_source": "Bybit linear Futures public OHLC candles",
+            "data_source_by_timeframe": {"5m": "Bybit linear Futures"},
+            "last_price": market["timeframes"]["5m"]["candles"][-1]["close"],
+            "last_candle_time": market["timeframes"]["5m"]["candles"][-1]["time"],
+            "symbol": "BTC/USDT",
+            "class_scores": {"LONG": 0.95, "SHORT": 0.02, "WAIT": 0.03},
+            "validation_gate": {"passed": True, "futures_source_passed": True}
+        }
+        stale = {"available": True, "block": False, "generated_at": "2020-01-01T00:00:00+00:00"}
+        payloads = {
+            ENGINE.MARKET_FILE: market, ENGINE.MODEL_FILE: model,
+            ENGINE.NEWS_FILE: stale,
+            ENGINE.INTELLIGENCE_FILE: {"signal_quality_gate": {"passed": True}}
+        }
+        with patch.object(ENGINE, "load", side_effect=lambda path: payloads[path]):
+            result = ENGINE.run()
+        self.assertEqual(result["signal"], "WAIT")
+        self.assertTrue(any("News monitor snapshot is stale" in x for x in result["warnings"]))
+
+    def test_news_snapshot_requires_timestamp(self):
+        self.assertFalse(ENGINE.news_snapshot_is_fresh({"available": True, "block": False}))
 
     def test_institutional_quality_gate_blocks_directional_signal(self):
         market = make_market()
