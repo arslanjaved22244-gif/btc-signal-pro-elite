@@ -36,6 +36,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
+      - name: Compile market and intelligence modules
+        run: python -m py_compile market_data.py signal_engine.py institutional_intelligence.py paper_trader.py advanced_modules.py
       - name: Collect public Futures data
         run: python market_data.py
       - name: Scan public news and event risk
