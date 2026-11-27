@@ -448,6 +448,41 @@ def classification_metrics(actual, predicted):
     }
 
 
+def predict_with_wait_threshold(probs, wait_threshold):
+    # Keep WAIT as a first-class outcome instead of allowing directional
+    # classes to dominate whenever their scores are only marginally higher.
+    if probs[1] >= wait_threshold:
+        return 1
+    return 0 if probs[0] >= probs[2] else 2
+
+
+def tune_wait_threshold(rows, labels):
+    # Tune only on a chronological calibration tail inside the training data.
+    # The outer walk-forward test window is never used to choose this value.
+    n = len(rows)
+    split = int(n * 0.80)
+    calibration_start = split + FUTURE_CANDLES
+    if split < 150 or calibration_start >= n - 30:
+        return 0.30
+    calibration_model = train_model(rows[:split], labels[:split])
+    actual = labels[calibration_start:]
+    probability_rows = [
+        predict(calibration_model, row) for row in rows[calibration_start:]
+    ]
+    best_threshold, best_f1 = 0.30, -1.0
+    for step in range(9):
+        threshold = 0.20 + step * 0.05
+        predicted = [
+            predict_with_wait_threshold(probs, threshold)
+            for probs in probability_rows
+        ]
+        score = classification_metrics(actual, predicted)["macro_f1"]
+        if score > best_f1:
+            best_f1 = score
+            best_threshold = threshold
+    return best_threshold
+
+
 def walk_forward_validate(rows, labels):
     n = len(rows)
     test_size = n // 6
@@ -460,16 +495,19 @@ def walk_forward_validate(rows, labels):
         train_end = test_start - FUTURE_CANDLES  # purge overlapping future labels
         if train_end < 150 or test_end <= test_start:
             continue
+        wait_threshold = tune_wait_threshold(rows[:train_end], labels[:train_end])
         model = train_model(rows[:train_end], labels[:train_end])
         fold_actual, fold_predicted = [], []
         for row, actual in zip(rows[test_start:test_end], labels[test_start:test_end]):
             probs = predict(model, row)
             fold_actual.append(actual)
-            fold_predicted.append(max(range(3), key=lambda k: probs[k]))
+            fold_predicted.append(predict_with_wait_threshold(probs, wait_threshold))
         fold_metrics = classification_metrics(fold_actual, fold_predicted)
         fold_results.append({
             "fold": fold + 1, "train_samples": train_end,
-            "test_samples": len(fold_actual), "metrics": fold_metrics
+            "test_samples": len(fold_actual),
+            "wait_threshold": wait_threshold,
+            "metrics": fold_metrics
         })
         actual_all.extend(fold_actual)
         predicted_all.extend(fold_predicted)
@@ -525,6 +563,7 @@ def main():
     if len(rows) < 250:
         raise ValueError(f"Not enough aligned multi-timeframe samples: {len(rows)}")
     validation, folds = walk_forward_validate(rows, labels)
+    final_wait_threshold = tune_wait_threshold(rows, labels)
     final_model = train_model(rows, labels)
     class_counts = [max(1, labels.count(k)) for k in range(len(CLASSES))]
     class_weights = [min(2.5, len(labels) / (len(CLASSES) * count)) for count in class_counts]
@@ -535,11 +574,12 @@ def main():
     best = max(range(3), key=lambda k: scores[k])
     ordered = sorted(scores, reverse=True)
     margin = ordered[0] - ordered[1]
-    signal = CLASSES[best] if best == 1 or (scores[best] >= 0.48 and margin >= 0.10) else "WAIT"
+    calibrated_class = predict_with_wait_threshold(scores, final_wait_threshold)
+    signal = CLASSES[calibrated_class] if calibrated_class == 1 or (scores[calibrated_class] >= 0.48 and margin >= 0.10) else "WAIT"
     result = {
         "system": "BTC Signal Pro Elite Advanced ML",
         "model": "Multinomial Logistic Regression",
-        "model_version": "3.6-recency-weighted-walkforward",
+        "model_version": "3.7-inner-calibrated-wait-threshold",
         "data_source": source,
         "symbol": symbol,
         "base_interval": "5m",
@@ -548,6 +588,7 @@ def main():
         "class_scores": {name: round(scores[i] * 100, 2) for i, name in enumerate(CLASSES)},
         "confidence_score": round(scores[best] * 100, 2),
         "confidence_margin": round(margin * 100, 2),
+        "wait_probability_threshold": final_wait_threshold,
         "walk_forward_metrics": validation,
         "walk_forward_folds": folds,
         "training_samples": len(rows),
