@@ -21,6 +21,27 @@ def load(path):
         return {}
 
 
+def fresh_5m_derivative_rows(rows, now_ms=None, max_age_minutes=15):
+    """Return only timestamped 5m derivative observations within the freshness window."""
+    if not isinstance(rows, list) or not rows:
+        return []
+    now_ms = int(now_ms if now_ms is not None else datetime.now(timezone.utc).timestamp() * 1000)
+    fresh = []
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        try:
+            stamp = int(row.get("timestamp"))
+            if stamp < 10_000_000_000:
+                stamp *= 1000
+        except (TypeError, ValueError):
+            continue
+        age_ms = now_ms - stamp
+        if -60_000 <= age_ms <= max_age_minutes * 60_000:
+            fresh.append(row)
+    return fresh
+
+
 def ema(values, period):
     if not values:
         return []
@@ -207,8 +228,14 @@ def run():
     warnings = list(quality.get("warnings", []))
     derived = market.get("derived", {})
     premium = feed_data(market, "mark_price_funding") or {}
-    oi_hist = feed_data(market, "open_interest_history_5m") or []
-    taker_hist = feed_data(market, "taker_flow_5m") or []
+    oi_hist_raw = feed_data(market, "open_interest_history_5m") or []
+    taker_hist_raw = feed_data(market, "taker_flow_5m") or []
+    oi_hist = fresh_5m_derivative_rows(oi_hist_raw)
+    taker_hist = fresh_5m_derivative_rows(taker_hist_raw)
+    if oi_hist_raw and not oi_hist:
+        warnings.append("Open-interest history is stale or missing timestamps; excluded from signal scoring.")
+    if taker_hist_raw and not taker_hist:
+        warnings.append("Taker-flow history is stale or missing timestamps; excluded from signal scoring.")
     liquidity_sweep = detect_recent_liquidity_sweep(market)
 
     votes = {"LONG": 0.0, "SHORT": 0.0}
