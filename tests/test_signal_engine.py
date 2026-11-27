@@ -77,6 +77,43 @@ class FuturesSourceSafetyTests(unittest.TestCase):
         result = self.run_with_source("Bybit linear Futures public OHLC candles")
         self.assertEqual(result["signal"], "LONG")
 
+    def test_cross_venue_futures_model_requires_price_and_time_alignment(self):
+        market = make_market()
+        last = market["timeframes"]["5m"]["candles"][-1]
+        model = {
+            "data_source": "OKX BTC-USDT-SWAP Futures public OHLC candles",
+            "symbol": "BTC/USDT",
+            "last_price": last["close"] * 1.001,
+            "last_candle_time": last["time"],
+            "class_scores": {"LONG": 0.95, "SHORT": 0.02, "WAIT": 0.03},
+            "validation_gate": {"passed": True}
+        }
+        payloads = {
+            ENGINE.MARKET_FILE: market, ENGINE.MODEL_FILE: model,
+            ENGINE.NEWS_FILE: {"available": True, "block": False},
+            ENGINE.INTELLIGENCE_FILE: {"signal_quality_gate": {"passed": True}}
+        }
+        with patch.object(ENGINE, "load", side_effect=lambda path: payloads[path]):
+            result = ENGINE.run()
+        self.assertEqual(result["signal"], "WAIT")
+        self.assertFalse(result["ml_context"]["futures_source"])
+        self.assertEqual(result["ml_context"]["market_alignment"]["type"], "BLOCKED")
+
+    def test_cross_venue_futures_model_passes_only_when_price_and_time_align(self):
+        market = make_market()
+        last = market["timeframes"]["5m"]["candles"][-1]
+        model = {
+            "data_source": "OKX BTC-USDT-SWAP Futures public OHLC candles",
+            "symbol": "BTC/USDT",
+            "last_price": last["close"] * 1.0005,
+            "last_candle_time": last["time"],
+            "class_scores": {"LONG": 0.95, "SHORT": 0.02, "WAIT": 0.03},
+            "validation_gate": {"passed": True}
+        }
+        alignment = ENGINE.validate_model_market_alignment(model, market)
+        self.assertTrue(alignment["passed"])
+        self.assertEqual(alignment["type"], "CROSS_VENUE_FUTURES")
+
     def test_institutional_quality_gate_blocks_directional_signal(self):
         market = make_market()
         model = {"data_source": "Bybit linear Futures public OHLC candles",
