@@ -1,29 +1,29 @@
 {
-  "price": 59860.3,
-  "funding_rate": 3.75749302752e-05,
-  "funding_percent": 0.0037574930275200004,
-  "open_interest": 3184562.820000012,
-  "oi_change_5m_pct": 0.0,
+  "price": 60125.1,
+  "funding_rate": 1.60685937601e-05,
+  "funding_percent": 0.0016068593760099998,
+  "open_interest": 3200659.940000013,
+  "oi_change_5m_pct": 0.08255206550959336,
   "oi_history": [
     {
-      "timestamp": "1795790400000",
-      "oi_contracts": "3200803.10000001092",
-      "oi_coin": "32008.0310000001092",
-      "oi_usd": "1934328534.21060659923992"
+      "timestamp": "1795793700000",
+      "oi_contracts": "3216663.3500000125",
+      "oi_coin": "32180.7685000001271",
+      "oi_usd": "1928762811.2736074952"
     },
     {
-      "timestamp": "1795790100000",
-      "oi_contracts": "3200803.10000001092",
-      "oi_coin": "32008.0310000001092",
-      "oi_usd": "1934328534.21060659923992"
+      "timestamp": "1795793400000",
+      "oi_contracts": "3219524.40000001278",
+      "oi_coin": "32195.2440000001278",
+      "oi_usd": "1927171891.07160764996742"
     }
   ],
-  "orderbook_imbalance": -0.6755026088207301,
-  "cvd_proxy": -0.1988324853074597,
-  "taker_buy_ratio": 0.40058375734627016,
+  "orderbook_imbalance": -0.8917040820148746,
+  "cvd_proxy": -0.6219598316431737,
+  "taker_buy_ratio": 0.1890200841784132,
   "large_trades": [],
   "data_source": "OKX public BTC-USDT-SWAP perpetual API",
-  "as_of": "2026-11-27T14:43:11.399436+00:00",
+  "as_of": "2026-11-27T15:37:04.347142+00:00",
   "oi_note": "OKX public 5-minute open-interest history when available",
   "oi_change_source": "OKX 5-minute OI history",
   "signal": "SHORT",
@@ -31,6 +31,6 @@
   "news_pause_active": false,
   "pause_until": "2026-11-27T12:18:09.994355+00:00",
   "news_alerts": [],
-  "updated_at": "2026-11-27T14:43:14.035646+00:00",
+  "updated_at": "2026-11-27T15:37:06.356975+00:00",
   "safety_note": "Signal-only; manual trading only. Large trades are trade-size alerts, not verified whale identities. Trump social posts are monitored through a third-party archive RSS, not an official API."
 }
