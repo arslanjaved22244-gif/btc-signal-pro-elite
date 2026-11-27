@@ -18,10 +18,12 @@ jobs:
           python-version: "3.11"
       - name: Collect public Futures data
         run: python market_data.py
-      - name: Publish latest market snapshot
+      - name: Build hybrid AI confluence signal
+        run: python signal_engine.py
+      - name: Publish market and signal snapshots
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add market_data.json
-          git diff --cached --quiet || git commit -m "Refresh Futures market data"
+          git add market_data.json signal_result.json
+          git diff --cached --quiet || git commit -m "Refresh Futures data and AI signal"
           git push
