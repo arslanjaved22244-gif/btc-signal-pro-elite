@@ -3068,7 +3068,7 @@ def main():
         "_feedback_training_sequence": [list(map(float, row)) for row in lstm_training_rows[-24:]] if len(lstm_training_rows) >= 24 else None,
         "_feedback_feature_mode": lstm_feature_mode,
         "limitations": [
-            "When Binance USD-M Futures is unavailable, Kraken BTC/USD spot OHLC is used as a proxy and is not equivalent to BTC/USDT Futures. Funding, open interest, CVD, order book and liquidation remain separate confluence inputs.",
+            "The actual training venue is recorded in data_source and source_by_timeframe. Spot/proxy candles are not equivalent to perpetual Futures and cannot pass the Futures authorization gate. Funding, open interest, CVD, order book and liquidation remain separate confluence inputs.",
             "Class scores are model scores, not calibrated real-world win probabilities.",
             "Walk-forward metrics are historical diagnostics, not guarantees of future performance."
         ]
