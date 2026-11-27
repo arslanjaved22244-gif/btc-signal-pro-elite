@@ -1,44 +1,36 @@
 {
-  "price": 59545.9,
-  "funding_rate": 4.3798092339e-06,
-  "funding_percent": 0.00043798092339,
-  "open_interest": 3196285.920000015,
-  "oi_change_5m_pct": 0.0960629387619421,
+  "price": 59826.2,
+  "funding_rate": 1.18846704159e-05,
+  "funding_percent": 0.00118846704159,
+  "open_interest": 3193040.6800000137,
+  "oi_change_5m_pct": 0.15048286442988584,
   "oi_history": [
     {
-      "timestamp": "1795801200000",
-      "oi_contracts": "3196014.37000001441",
-      "oi_coin": "31959.7040000001446",
-      "oi_usd": "1905521295.65266859150138"
+      "timestamp": "1795802400000",
+      "oi_contracts": "3193909.38000001348",
+      "oi_coin": "31963.6541000001431",
+      "oi_usd": "1913448752.19234807577364"
     },
     {
-      "timestamp": "1795800900000",
-      "oi_contracts": "3195970.40000001446",
-      "oi_coin": "31959.7040000001446",
-      "oi_usd": "1903692552.64160861315684"
+      "timestamp": "1795802100000",
+      "oi_contracts": "3195911.91000001411",
+      "oi_coin": "31959.1191000001411",
+      "oi_usd": "1910573666.21238843521198"
     }
   ],
-  "orderbook_imbalance": 0.7376287432394156,
-  "cvd_proxy": 0.4110853994490348,
-  "taker_buy_ratio": 0.7055426997245174,
+  "orderbook_imbalance": 0.746983283609557,
+  "cvd_proxy": -0.3210686417140578,
+  "taker_buy_ratio": 0.3394656791429711,
   "large_trades": [],
   "data_source": "OKX public BTC-USDT-SWAP perpetual API",
-  "as_of": "2026-11-27T17:43:04.217474+00:00",
+  "as_of": "2026-11-27T18:02:43.927279+00:00",
   "oi_note": "OKX public 5-minute open-interest history when available",
   "oi_change_source": "OKX 5-minute OI history",
   "signal": "WAIT",
   "reason": "News safety pause active (minimum 30 minutes)",
   "news_pause_active": true,
   "pause_until": "2026-11-27T18:13:05.922760+00:00",
-  "news_alerts": [
-    {
-      "title": "Trump Says US Has \u2018Best Economy,\u2019 Cites 88 Stock Market Record Highs - bloomingbit",
-      "published": "2026-11-27T16:21:03+00:00",
-      "age_minutes": 82.0,
-      "source": "Google News RSS",
-      "url": "https://news.google.com/rss/articles/CBMiVEFVX3lxTFBEbF9UNWNibVQtRUY1cXk1RnQ3OTBtZ3FEcVQxcGV3U1ltUm1ZMXBZZE5Jby1UblJTWjZzVzFXT0o2SFMtVVI4ZGU3aWQ3SmxpS0JBdw?oc=5"
-    }
-  ],
-  "updated_at": "2026-11-27T17:43:05.922760+00:00",
+  "news_alerts": [],
+  "updated_at": "2026-11-27T18:02:45.715159+00:00",
   "safety_note": "Signal-only; manual trading only. Large trades are trade-size alerts, not verified whale identities. Trump social posts are monitored through a third-party archive RSS, not an official API."
 }
