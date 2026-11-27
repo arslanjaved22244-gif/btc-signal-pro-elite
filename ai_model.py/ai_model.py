@@ -446,6 +446,40 @@ def precompute_candle_features(candles):
         span = max(candle["high"] - candle["low"], 0.0)
         def ret(period):
             return closes[i] / closes[i - period] - 1.0 if i >= period and closes[i - period] else 0.0
+        # Causal market context: this candle and prior candles only.
+        recent20 = candles[max(0, i - 19):i + 1]
+        recent14 = candles[max(0, i - 13):i + 1]
+        range_high = max(item["high"] for item in recent20)
+        range_low = min(item["low"] for item in recent20)
+        rolling_range = max(range_high - range_low, 1e-12)
+        true_ranges = []
+        for k, item in enumerate(recent14):
+            previous_close = candles[max(0, i - 13 + k - 1)]["close"]
+            true_ranges.append(max(item["high"] - item["low"],
+                                   abs(item["high"] - previous_close),
+                                   abs(item["low"] - previous_close)))
+        atr_pct = (sum(true_ranges) / max(1, len(true_ranges))) / price
+        body = abs(candle["close"] - candle["open"])
+        upper_wick = max(0.0, candle["high"] - max(candle["open"], candle["close"]))
+        lower_wick = max(0.0, min(candle["open"], candle["close"]) - candle["low"])
+        def realized_vol(period):
+            start = max(1, i - period + 1)
+            changes = [math.log(closes[k] / closes[k - 1]) for k in range(start, i + 1)
+                       if closes[k] > 0 and closes[k - 1] > 0]
+            if len(changes) < 2:
+                return 0.0
+            mean = sum(changes) / len(changes)
+            return math.sqrt(sum((value - mean) ** 2 for value in changes) / len(changes))
+        prior_volume = sum(volumes[max(0, i - 19):i + 1]) / min(20, i + 1)
+        recent_volume = sum(volumes[max(0, i - 4):i + 1]) / min(5, i + 1)
+        context = [
+            atr_pct, rolling_range / price, (price - range_low) / rolling_range,
+            body / span if span > 0 else 0.0,
+            upper_wick / span if span > 0 else 0.0,
+            lower_wick / span if span > 0 else 0.0,
+            realized_vol(12), realized_vol(24),
+            recent_volume / prior_volume - 1.0 if prior_volume > 0 else 0.0
+        ]
         result[i] = [
             ret(1), ret(3), ret(6), ret(12), ret(24), rsi_values[i] / 100.0,
             e9 / e21 - 1.0 if e21 else 0.0,
@@ -455,7 +489,7 @@ def precompute_candle_features(candles):
             min(volumes[i] / avg_vol, 5.0) if avg_vol > 0 else 1.0,
             span / price, (candle["close"] - candle["open"]) / price,
             (candle["close"] - candle["low"]) / span if span > 0 else 0.5
-        ]
+        ] + context
     return result
 
 
@@ -477,6 +511,7 @@ def combined_features(data, base_index, prepared):
             values[0], values[2], values[5], values[6],
             values[7], values[8], values[9], values[10]
         ])
+        features.extend(values[14:])
     return features
 
 
@@ -658,7 +693,17 @@ def predict_ensemble(ensemble,row):
     b=predict(ensemble["recent_regime"],row)
     c=predict_centroid(ensemble["centroid"],row)
     d=predict_stumps(ensemble["stumps"],row)
-    return [0.35*a[k]+0.20*b[k]+0.20*c[k]+0.25*d[k] for k in range(3)]
+    weights = ensemble.get("weights") or {
+        "full_history_logistic": 0.35, "recent_regime_logistic": 0.20,
+        "nearest_centroid": 0.20, "decision_stumps": 0.25
+    }
+    components = {"full_history_logistic": a, "recent_regime_logistic": b,
+                  "nearest_centroid": c, "decision_stumps": d}
+    total = sum(max(0.0, float(weights.get(name, 0.0))) for name in components)
+    if total <= 0:
+        raise ValueError("Ensemble weights must have a positive total.")
+    return [sum(components[name][k] * max(0.0, float(weights.get(name, 0.0)))
+                for name in components) / total for k in range(3)]
 
 
 def classification_metrics(actual, predicted):
@@ -3009,10 +3054,17 @@ def main():
     adaptive_weights, adaptive_learning = adaptive_component_weights(
         market_regime=regime_analysis.get("regime")
     )
-    scores = [
-        sum(model_probabilities[name][k] * adaptive_weights[name] for name in adaptive_weights)
-        for k in range(len(CLASSES))
-    ]
+    production_weights = {
+        "full_history_logistic": 0.35, "recent_regime_logistic": 0.20,
+        "nearest_centroid": 0.20, "decision_stumps": 0.25
+    }
+    # Production and walk-forward validation must use identical ensemble weights.
+    # Feedback-derived weights stay diagnostic until chronologically validated.
+    scores = predict_ensemble(final_model, latest)
+    adaptive_learning["application_status"] = (
+        "CANDIDATE ONLY — adaptive weights are not applied until their "
+        "chronological walk-forward performance is validated."
+    )
     breakout_squeeze_analysis = advanced_breakout_squeeze(data)
     horizon_forecasts = advanced_horizon_models(data, prepared)
     temporal_model = temporal_sequence_forecast(rows, labels, sequence_length=12)
@@ -3117,7 +3169,7 @@ def main():
     result = {
         "system": "BTC Signal Pro Elite Advanced ML",
         "model": "Four-model vote: full-history logistic, recent-regime logistic, nearest-centroid and decision-stump ensemble",
-        "model_version": "4.5-expanded-futures-history",
+        "model_version": "4.6-causal-market-context",
         "data_source": source,
         "data_source_by_timeframe": data_source_by_tf,
         "symbol": "BTC/USD" if any("Spot" in item for item in used_sources) else symbol,
@@ -3131,7 +3183,7 @@ def main():
         "confidence_score": round(scores[best] * 100, 2),
         "confidence_margin": round(margin * 100, 2),
         "wait_probability_threshold": final_wait_threshold,
-        "ensemble_configuration": {"models": ["full_history_logistic", "recent_regime_logistic", "nearest_centroid", "decision_stumps"], "weights": adaptive_weights, "recent_training_window": final_model["recent_window"]},
+        "ensemble_configuration": {"models": ["full_history_logistic", "recent_regime_logistic", "nearest_centroid", "decision_stumps"], "weights": production_weights, "candidate_adaptive_weights": adaptive_weights, "adaptive_weights_applied": False, "recent_training_window": final_model["recent_window"]},
         "adaptive_learning": adaptive_learning,
         "walk_forward_metrics": validation,
         "validation_gate": {"passed": validation_gate, "futures_source_required": True, "minimum_accuracy_pct": 38.0, "minimum_macro_f1_pct": 30.0, "must_beat_majority_baseline": True, "profitability_evidence_required": True, **validation_gate_report},
@@ -3148,6 +3200,7 @@ def main():
         "future_horizon": f"{FUTURE_CANDLES} candles / 15 minutes",
         "neutral_threshold_pct": MOVE_THRESHOLD * 100,
         "labeling_method": "volatility-adaptive ATR neutral band",
+        "feature_engineering": {"version": "causal-context-v2", "added_features_per_timeframe": ["ATR percent", "20-candle range percent", "20-candle close location", "candle body/range", "upper wick/range", "lower wick/range", "12-candle realized volatility", "24-candle realized volatility", "recent-vs-baseline volume acceleration"], "lookahead_free": True},
         "label_threshold": {
             "formula": "max(0.18%, 20% of trailing 14-candle ATR as a fraction of price)",
             "horizon_candles": FUTURE_CANDLES,
