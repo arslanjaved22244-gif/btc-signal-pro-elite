@@ -227,6 +227,6 @@ def main():
  except Exception:paused=False
  signal,reason=score_signal(m,paused)
  m.update({"signal":signal,"reason":reason,"news_pause_active":paused,"pause_until":pause_until,"news_alerts":news[:8],"updated_at":current.isoformat(),"safety_note":"Signal-only; manual trading only. Large trades are trade-size alerts, not verified whale identities. Trump social posts are monitored through a third-party archive RSS, not an official API."})
- save_json(OUT,m);save_json(STATE,{"pause_until":pause_until,"pause_reason":state.get("pause_reason"),"last_check":current.isoformat(),"last_signal":signal})
+ save_json(OUT,m);save_json(STATE,{"pause_until":pause_until,"pause_reason":state.get("pause_reason"),"last_check":current.isoformat(),"last_signal":signal,"oi_sample":state.get("oi_sample")})
  print(json.dumps(m,indent=2))
 if __name__=="__main__":main()
