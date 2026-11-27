@@ -1,15 +1,15 @@
 {
-  "generated_at": "2026-11-27T15:43:46.177745+00:00",
+  "generated_at": "2026-11-27T15:47:03.711063+00:00",
   "timeframe_indicators": {
     "5m": {
       "available": true,
-      "ema50": 60737.79,
-      "ema200": 61146.45,
-      "rsi14": 44.42,
+      "ema50": 60713.81,
+      "ema200": 61135.92,
+      "rsi14": 45.46,
       "macd": {
-        "macd": -413.6748,
-        "signal": -465.9565,
-        "histogram": 52.2817,
+        "macd": -363.9365,
+        "signal": -445.5525,
+        "histogram": 81.616,
         "bullish": true,
         "cross_up": false,
         "cross_down": false
@@ -21,18 +21,18 @@
         "last_swing_low": 58729.6,
         "note": "Confirmed pivots use candles on both sides; most recent pivot is delayed by the confirmation window."
       },
-      "volatility_atr14": 489.45,
-      "atr_pct": 0.8146
+      "volatility_atr14": 449.18,
+      "atr_pct": 0.7471
     },
     "15m": {
       "available": true,
-      "ema50": 61188.26,
-      "ema200": 60767.13,
-      "rsi14": 27.2,
+      "ema50": 61146.61,
+      "ema200": 60733.6,
+      "rsi14": 35.19,
       "macd": {
-        "macd": -432.9534,
-        "signal": -204.3502,
-        "histogram": -228.6032,
+        "macd": -439.5113,
+        "signal": -251.3824,
+        "histogram": -188.1289,
         "bullish": false,
         "cross_up": false,
         "cross_down": false
@@ -44,8 +44,8 @@
         "last_swing_low": 61270.0,
         "note": "Confirmed pivots use candles on both sides; most recent pivot is delayed by the confirmation window."
       },
-      "volatility_atr14": 432.03,
-      "atr_pct": 0.7227
+      "volatility_atr14": 457.82,
+      "atr_pct": 0.7614
     },
     "1h": {
       "available": true,
@@ -122,12 +122,12 @@
     "method": "Chronological 60/20/20 split; reported trades only in final 20% holdout",
     "total_candles": 599,
     "test_candles": 240,
-    "test_start_time": 1795722000000,
+    "test_start_time": 1795722300000,
     "trades": 12,
-    "win_rate_pct": 25.0,
-    "net_return_pct": -2.85,
-    "profit_factor": 0.08,
-    "max_drawdown_pct": 2.97,
+    "win_rate_pct": 16.67,
+    "net_return_pct": -2.99,
+    "profit_factor": 0.039,
+    "max_drawdown_pct": 2.99,
     "fee_per_side_pct": 0.05,
     "slippage_per_side_pct": 0.02,
     "round_trip_cost_pct": 0.13999999999999999,
