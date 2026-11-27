@@ -215,6 +215,8 @@ button{background:#f5b942;color:#111;border:0;padding:12px 18px;border-radius:8p
 <h3>Liquidity Sweep Detection</h3>
 <div class="price yellow" id="sweep">Analyzing...</div>
 <p id="sweepText"></p>
+<button id="enableSweepAlerts" onclick="enableSweepAlerts()">ENABLE SWEEP ALERTS</button>
+<p class="note" id="sweepAlertStatus">On-screen alerts work while the dashboard is open. Browser notifications require permission.</p>
 </div>
 
 <div class="card">
@@ -472,6 +474,30 @@ try{localStorage.setItem(k,JSON.stringify(a))}catch(e){}
 function setText(id,v){$(id).textContent=v}
 function setPriceClass(id,cls){$(id).className="price "+cls}
 
+let lastSweepAlertKey="";
+function enableSweepAlerts(){
+ if(!("Notification" in window)){
+  setText("sweepAlertStatus","This browser does not support notifications. Keep dashboard open for on-screen alerts.");
+  return;
+ }
+ Notification.requestPermission().then(permission=>{
+  setText("sweepAlertStatus",permission==="granted"?"Browser sweep notifications enabled. Keep this app open for live detection.": "Notifications not enabled. On-screen alerts remain available.");
+ });
+}
+function notifySweepOnce(event){
+ const key=event.type+":"+event.candle.t+":"+event.level;
+ if(key===lastSweepAlertKey)return;
+ lastSweepAlertKey=key;
+ const age=Date.now()-event.candle.t;
+ if(age<30*60*1000 && "Notification" in window && Notification.permission==="granted"){
+  try{
+   new Notification("BTC liquidity sweep detected",{
+    body:(event.type==="BULLISH"?"Lower-side liquidity swept and reclaimed.":"Upper-side liquidity swept and rejected.")+
+     " Level: $"+fmt(event.level)+". Check dashboard confirmation."
+   });
+  }catch(e){}
+ }
+}
 async function loadPrice(){
 let d=await get("/fapi/v1/ticker/price?symbol=BTCUSDT");
 M.price=+d.price;
@@ -509,20 +535,47 @@ let pHigh=Math.max(...prior.map(x=>x.h));
 let vol=avg(prior.map(x=>x.v)),vr=vol?last.v/vol:0;
 
 let sweep="NO CLEAR SWEEP";
-let swText="No recent sweep pattern detected.";
+let swText="No confirmed sweep in the latest eight closed 15-minute candles.";
 let fake="NO FAKE BREAKOUT";
 let fakeText="No false breakout detected.";
 
-if(last.l<pLow&&last.c>pLow){
-sweep="BULLISH LIQUIDITY SWEEP";
-swText="Price moved below recent lows and closed back above.";
-fake="BULLISH FAKE BREAKOUT";
-fakeText="Price broke below range but closed back above.";
-}else if(last.h>pHigh&&last.c<pHigh){
-sweep="BEARISH LIQUIDITY SWEEP";
-swText="Price moved above recent highs and closed back below.";
-fake="BEARISH FAKE BREAKOUT";
-fakeText="Price broke above range but closed back below.";
+// Scan recent closed candles, not only the newest candle. A sweep needs a wick
+// beyond the prior 20-candle extreme and a close back inside the prior range.
+let recentSweep=null;
+for(let i=cs.length-1;i>=Math.max(20,cs.length-8);i--){
+ const priorRange=cs.slice(i-20,i);
+ const priorLow=Math.min(...priorRange.map(x=>x.l));
+ const priorHigh=Math.max(...priorRange.map(x=>x.h));
+ const candle=cs[i];
+ if(candle.l<priorLow&&candle.c>priorLow){
+  recentSweep={type:"BULLISH",candle,level:priorLow,extreme:candle.l};
+  break;
+ }
+ if(candle.h>priorHigh&&candle.c<priorHigh){
+  recentSweep={type:"BEARISH",candle,level:priorHigh,extreme:candle.h};
+  break;
+ }
+}
+if(recentSweep){
+ const when=new Date(recentSweep.candle.t).toLocaleString();
+ if(recentSweep.type==="BULLISH"){
+  sweep="BULLISH LIQUIDITY SWEEP";
+  swText="Recent confirmed 15m sweep below "+fmt(recentSweep.level)+
+   " and reclaim close at "+fmt(recentSweep.candle.c)+
+   ". Wick low "+fmt(recentSweep.extreme)+". Candle: "+when+
+   ". This is a past event, not an entry signal.";
+  fake="BULLISH FAKE BREAKOUT";
+  fakeText="Price swept below the prior 20-candle low and closed back above.";
+ }else{
+  sweep="BEARISH LIQUIDITY SWEEP";
+  swText="Recent confirmed 15m sweep above "+fmt(recentSweep.level)+
+   " and rejection close at "+fmt(recentSweep.candle.c)+
+   ". Wick high "+fmt(recentSweep.extreme)+". Candle: "+when+
+   ". This is a past event, not an entry signal.";
+  fake="BEARISH FAKE BREAKOUT";
+  fakeText="Price swept above the prior 20-candle high and closed back below.";
+ }
+ notifySweepOnce(recentSweep);
 }
 
 let bull=last.c>last.o&&last.c>e9;
