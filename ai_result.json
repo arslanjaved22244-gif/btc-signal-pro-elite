@@ -120,71 +120,215 @@
     "multi_horizon_forecasts": {
       "15m": {
         "signal": "WAIT",
-        "raw_model_class": "LONG",
+        "raw_model_class": "SHORT",
         "scores": {
-          "SHORT": 29.14,
-          "WAIT": 29.71,
-          "LONG": 41.15
+          "SHORT": 34.11,
+          "WAIT": 32.63,
+          "LONG": 33.26
         },
-        "confidence_margin": 11.44,
-        "holdout_accuracy": 35.96,
-        "macro_f1": 17.63,
-        "training_samples": 2074,
-        "validation_samples": 520,
+        "confidence_margin": 0.86,
+        "holdout_accuracy": 35.0,
+        "macro_f1": 28.59,
+        "training_samples": 1114,
+        "validation_samples": 280,
         "status": "WEAK EDGE \u2014 WAIT"
       },
       "30m": {
         "signal": "WAIT",
-        "raw_model_class": "LONG",
+        "raw_model_class": "WAIT",
         "scores": {
-          "SHORT": 28.36,
-          "WAIT": 32.34,
-          "LONG": 39.29
+          "SHORT": 31.71,
+          "WAIT": 37.77,
+          "LONG": 30.51
         },
-        "confidence_margin": 6.95,
-        "holdout_accuracy": 35.26,
-        "macro_f1": 17.38,
-        "training_samples": 2069,
-        "validation_samples": 519,
+        "confidence_margin": 6.06,
+        "holdout_accuracy": 25.09,
+        "macro_f1": 13.9,
+        "training_samples": 1109,
+        "validation_samples": 279,
         "status": "WEAK EDGE \u2014 WAIT"
       },
       "60m": {
         "signal": "WAIT",
-        "raw_model_class": "LONG",
+        "raw_model_class": "SHORT",
         "scores": {
-          "SHORT": 28.74,
-          "WAIT": 22.48,
-          "LONG": 48.78
+          "SHORT": 42.12,
+          "WAIT": 28.67,
+          "LONG": 29.22
         },
-        "confidence_margin": 20.04,
-        "holdout_accuracy": 36.49,
-        "macro_f1": 17.82,
-        "training_samples": 2058,
-        "validation_samples": 518,
+        "confidence_margin": 12.9,
+        "holdout_accuracy": 39.57,
+        "macro_f1": 20.01,
+        "training_samples": 1098,
+        "validation_samples": 278,
         "status": "WEAK EDGE \u2014 WAIT"
       },
       "4h": {
-        "signal": "LONG",
-        "raw_model_class": "LONG",
+        "signal": "WAIT",
+        "raw_model_class": "SHORT",
         "scores": {
-          "SHORT": 3.01,
-          "WAIT": 19.73,
-          "LONG": 77.26
+          "SHORT": 46.21,
+          "WAIT": 38.92,
+          "LONG": 14.88
         },
-        "confidence_margin": 57.53,
-        "holdout_accuracy": 41.29,
-        "macro_f1": 19.48,
-        "training_samples": 1993,
-        "validation_samples": 511,
-        "status": "VALIDATED HOLDOUT"
+        "confidence_margin": 7.29,
+        "holdout_accuracy": 26.2,
+        "macro_f1": 15.51,
+        "training_samples": 1033,
+        "validation_samples": 271,
+        "status": "WEAK EDGE \u2014 WAIT"
       }
     },
     "tree_ensemble": {
-      "status": "DEPENDENCY ERROR",
-      "detail": "No module named 'numpy'",
-      "forecasts": {}
+      "status": "READY",
+      "algorithms": [
+        "Random Forest",
+        "Histogram Gradient Boosting",
+        "Neural MLP",
+        "XGBoost"
+      ],
+      "forecasts": {
+        "15m": {
+          "signal": "WAIT",
+          "raw_model_class": "SHORT",
+          "scores": {
+            "SHORT": 50.05,
+            "WAIT": 16.74,
+            "LONG": 33.21
+          },
+          "confidence_margin": 16.84,
+          "holdout_accuracy": 32.5,
+          "macro_f1": 24.53,
+          "training_samples": 1194,
+          "validation_samples": 300,
+          "models": {
+            "random_forest": {
+              "holdout_accuracy": 30.67,
+              "macro_f1": 21.23
+            },
+            "gradient_boosting": {
+              "holdout_accuracy": 35.33,
+              "macro_f1": 32.38
+            },
+            "neural_mlp": {
+              "holdout_accuracy": 30.33,
+              "macro_f1": 18.13
+            },
+            "xgboost": {
+              "holdout_accuracy": 33.67,
+              "macro_f1": 26.39
+            }
+          },
+          "model_count": 4,
+          "status": "WEAK EDGE \u2014 WAIT"
+        },
+        "30m": {
+          "signal": "WAIT",
+          "raw_model_class": "SHORT",
+          "scores": {
+            "SHORT": 55.51,
+            "WAIT": 13.53,
+            "LONG": 30.96
+          },
+          "confidence_margin": 24.55,
+          "holdout_accuracy": 39.21,
+          "macro_f1": 24.99,
+          "training_samples": 1189,
+          "validation_samples": 299,
+          "models": {
+            "random_forest": {
+              "holdout_accuracy": 38.13,
+              "macro_f1": 28.99
+            },
+            "gradient_boosting": {
+              "holdout_accuracy": 46.15,
+              "macro_f1": 34.51
+            },
+            "neural_mlp": {
+              "holdout_accuracy": 36.45,
+              "macro_f1": 17.81
+            },
+            "xgboost": {
+              "holdout_accuracy": 36.12,
+              "macro_f1": 18.66
+            }
+          },
+          "model_count": 4,
+          "status": "WEAK EDGE \u2014 WAIT"
+        },
+        "60m": {
+          "signal": "WAIT",
+          "raw_model_class": "SHORT",
+          "scores": {
+            "SHORT": 64.35,
+            "WAIT": 7.01,
+            "LONG": 28.63
+          },
+          "confidence_margin": 35.72,
+          "holdout_accuracy": 37.08,
+          "macro_f1": 20.56,
+          "training_samples": 1178,
+          "validation_samples": 298,
+          "models": {
+            "random_forest": {
+              "holdout_accuracy": 37.25,
+              "macro_f1": 19.49
+            },
+            "gradient_boosting": {
+              "holdout_accuracy": 37.58,
+              "macro_f1": 25.52
+            },
+            "neural_mlp": {
+              "holdout_accuracy": 37.25,
+              "macro_f1": 19.49
+            },
+            "xgboost": {
+              "holdout_accuracy": 36.24,
+              "macro_f1": 17.73
+            }
+          },
+          "model_count": 4,
+          "status": "WEAK EDGE \u2014 WAIT"
+        },
+        "4h": {
+          "signal": "WAIT",
+          "raw_model_class": "LONG",
+          "scores": {
+            "SHORT": 32.46,
+            "WAIT": 15.31,
+            "LONG": 52.23
+          },
+          "confidence_margin": 19.78,
+          "holdout_accuracy": 34.11,
+          "macro_f1": 23.45,
+          "training_samples": 1113,
+          "validation_samples": 291,
+          "models": {
+            "random_forest": {
+              "holdout_accuracy": 25.77,
+              "macro_f1": 15.34
+            },
+            "gradient_boosting": {
+              "holdout_accuracy": 28.52,
+              "macro_f1": 24.44
+            },
+            "neural_mlp": {
+              "holdout_accuracy": 57.39,
+              "macro_f1": 39.77
+            },
+            "xgboost": {
+              "holdout_accuracy": 24.74,
+              "macro_f1": 14.25
+            }
+          },
+          "model_count": 4,
+          "status": "WEAK EDGE \u2014 WAIT"
+        }
+      },
+      "validation": "chronological holdout with horizon purge; scores are not calibrated win probabilities"
     },
-    "method": "four-horizon chronological ML + Random Forest + gradient boosting + XGBoost (when installed) + volatility regime + liquidity sweep detector"
+    "tree_blend_applied_to_primary_signal": false,
+    "method": "four-horizon chronological ML + Random Forest + gradient boosting + neural MLP + XGBoost (when installed) + volatility regime + liquidity sweep detector"
   },
   "walk_forward_folds": [
     {
@@ -354,7 +498,7 @@
   "neutral_threshold_pct": 0.05,
   "last_price": 77522.6,
   "last_candle_time": 1793490900000,
-  "generated_at": "2026-11-27T11:15:04.636708+00:00",
+  "generated_at": "2026-11-27T11:23:41.578220+00:00",
   "limitations": [
     "Training is strictly Binance USD-M Futures OHLCV. If Futures endpoints fail, training fails closed and never substitutes Spot data. CVD, open interest, funding, order book and liquidation remain separate confluence inputs.",
     "Class scores are model scores, not calibrated real-world win probabilities.",
