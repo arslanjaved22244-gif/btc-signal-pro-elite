@@ -1,44 +1,44 @@
 {
-  "price": 61749.2,
-  "funding_rate": -1.62498395841e-05,
-  "funding_percent": -0.00162498395841,
-  "open_interest": 3217731.930000011,
-  "oi_change_5m_pct": 0.14742963174039814,
+  "price": 61786.5,
+  "funding_rate": -1.62307352366e-05,
+  "funding_percent": -0.0016230735236600002,
+  "open_interest": 3217897.2300000107,
+  "oi_change_5m_pct": 0.019175935648491498,
   "oi_history": [
     {
-      "timestamp": "1795779300000",
-      "oi_contracts": "3217584.86000001163",
-      "oi_coin": "32175.8486000001163",
-      "oi_usd": "1985359256.50524717610542"
+      "timestamp": "1795779600000",
+      "oi_contracts": "3217778.56000001114",
+      "oi_coin": "32177.7856000001114",
+      "oi_usd": "1986604998.48704687765776"
     },
     {
-      "timestamp": "1795779000000",
-      "oi_contracts": "3210142.85000001104",
-      "oi_coin": "32101.4285000001104",
-      "oi_usd": "1982436557.58890681779616"
+      "timestamp": "1795779300000",
+      "oi_contracts": "3217828.78000001144",
+      "oi_coin": "32178.2878000001144",
+      "oi_usd": "1986224121.42768706140864"
     }
   ],
-  "orderbook_imbalance": 0.4314843031517927,
-  "cvd_proxy": 0.5374833623425811,
-  "taker_buy_ratio": 0.7687416811712906,
+  "orderbook_imbalance": -0.11025565789648052,
+  "cvd_proxy": 0.2852831099843046,
+  "taker_buy_ratio": 0.6426415549921523,
   "large_trades": [],
   "data_source": "OKX public BTC-USDT-SWAP perpetual API",
-  "as_of": "2026-11-27T11:40:15.193954+00:00",
+  "as_of": "2026-11-27T11:41:03.913512+00:00",
   "oi_note": "OKX public 5-minute open-interest history when available",
   "oi_change_source": "OKX 5-minute OI history",
   "signal": "WAIT",
   "reason": "News safety pause active (minimum 30 minutes)",
   "news_pause_active": true,
-  "pause_until": "2026-11-27T12:10:16.242984+00:00",
+  "pause_until": "2026-11-27T12:11:05.375035+00:00",
   "news_alerts": [
     {
       "title": "We support Iraqi Prime Minister Ali al-Zaidi\u2019s efforts to assert state authority throughout Iraq, stop the smuggling of Iraqi oil, end corruption, and bring all weapons under the exclusive control of the state.We support Prime Minister al-Zaidi\u2019s efforts to build a united, prospe",
       "published": "2026-11-27T10:23:58+00:00",
-      "age_minutes": 76.3,
+      "age_minutes": 77.1,
       "source": "Trump's Truth archive RSS (third-party)",
       "url": "https://www.trumpstruth.org/statuses/43750"
     }
   ],
-  "updated_at": "2026-11-27T11:40:16.242984+00:00",
+  "updated_at": "2026-11-27T11:41:05.375035+00:00",
   "safety_note": "Signal-only; manual trading only. Large trades are trade-size alerts, not verified whale identities. Trump social posts are monitored through a third-party archive RSS, not an official API."
 }
