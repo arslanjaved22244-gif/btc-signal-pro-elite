@@ -40,8 +40,12 @@ jobs:
         run: python -m pip install websocket-client
       - name: Sample Binance liquidation stream
         run: python liquidation_monitor.py
+      - name: Compare Binance, Bybit and OKX perpetual prices
+        run: python exchange_compare.py
       - name: Build hybrid AI confluence signal
         run: python signal_engine.py
+      - name: Run fee-aware paper trading (no orders)
+        run: python paper_trader.py
       - name: Calculate MACD, market structure, backtest and 10x risk
         run: python advanced_modules.py
       - name: Publish market and signal snapshots
@@ -52,7 +56,7 @@ jobs:
           # Keep this run's generated JSON, but base its commit on the newest main.
           # This avoids rebase conflicts when scheduled runs overlap with code deploys.
           git reset --mixed origin/main
-          git add market_data.json event_guard.json event_guard_state.json signal_result.json advanced_metrics.json liquidation_data.json alert_state.json alert_status.json
+          git add market_data.json event_guard.json event_guard_state.json signal_result.json advanced_metrics.json liquidation_data.json alert_state.json alert_status.json exchange_comparison.json paper_trading.json
           if ! git diff --cached --quiet; then
             git commit -m "Refresh Futures data and AI signal"
           fi
