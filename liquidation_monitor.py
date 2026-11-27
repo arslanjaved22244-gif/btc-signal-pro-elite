@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 import websocket
 
 URL="wss://fstream.binance.com/ws/btcusdt@forceOrder"
-WINDOW=int(__import__("os").getenv("LIQUIDATION_SAMPLE_SECONDS","45"))
+WINDOW=int(__import__("os").getenv("LIQUIDATION_SAMPLE_SECONDS","10"))
 events=[]
 errors=[]
 connected=False
@@ -27,11 +27,12 @@ def on_error(ws, error):
 ws=websocket.WebSocketApp(URL,on_open=on_open,on_message=on_message,on_error=on_error)
 def run():
     import threading
-    t=threading.Thread(target=lambda:ws.run_forever(ping_interval=15,ping_timeout=8),daemon=True); t.start()
+    t=threading.Thread(target=lambda:ws.run_forever(ping_interval=0,timeout=5),daemon=True); t.start()
     deadline=time.time()+WINDOW
     while time.time()<deadline and t.is_alive(): time.sleep(.5)
     try: ws.close()
     except Exception: pass
+    t.join(timeout=3)
     longs=sum(x["notional_usdt"] for x in events if x["side"]=="SELL")
     shorts=sum(x["notional_usdt"] for x in events if x["side"]=="BUY")
     out={"available":connected,"source":"Binance USD-M forceOrder WebSocket",
