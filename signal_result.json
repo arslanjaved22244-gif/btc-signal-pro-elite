@@ -1,7 +1,7 @@
 {
   "system": "BTC Signal Pro Elite Hybrid Confluence Engine",
   "version": "4.1-hybrid-futures-confluence",
-  "generated_at": "2026-11-27T13:36:39.960191+00:00",
+  "generated_at": "2026-11-27T13:37:46.171526+00:00",
   "symbol": "BTCUSDT",
   "market_type": "BINANCE_USDM_FUTURES",
   "signal": "WAIT",
@@ -24,7 +24,7 @@
         "signal": -43.15201,
         "histogram": -15.43115
       },
-      "age_seconds": 74
+      "age_seconds": 138
     },
     "15m": {
       "available": true,
@@ -39,7 +39,7 @@
         "signal": 24.17463,
         "histogram": -34.79265
       },
-      "age_seconds": 374
+      "age_seconds": 438
     },
     "1h": {
       "available": true,
@@ -54,7 +54,7 @@
         "signal": 308.16238,
         "histogram": 17.39271
       },
-      "age_seconds": 2174
+      "age_seconds": 2238
     },
     "4h": {
       "available": true,
@@ -69,7 +69,7 @@
         "signal": -82.33866,
         "histogram": 256.79631
       },
-      "age_seconds": 5775
+      "age_seconds": 5839
     },
     "1d": {
       "available": true,
@@ -84,15 +84,15 @@
         "signal": -4496.99009,
         "histogram": -173.08834
       },
-      "age_seconds": 77775
+      "age_seconds": 77839
     }
   },
   "order_flow": {
-    "cvd_base": 183.99,
-    "order_book_imbalance": 0.445199,
+    "cvd_base": 62.41,
+    "order_book_imbalance": 0.751025,
     "funding_rate_pct": 0.00088,
     "funding_crowding": "NEUTRAL",
-    "open_interest_change_30m_pct": -0.0875,
+    "open_interest_change_30m_pct": -0.0227,
     "taker_buy_sell_ratio": null
   },
   "ml_context": {
@@ -122,7 +122,7 @@
     "derivatives_confluence_status": "PARTIAL"
   },
   "news_guard": {
-    "generated_at": "2026-11-27T13:36:17.129254+00:00",
+    "generated_at": "2026-11-27T13:37:21.231968+00:00",
     "source": "Google News RSS public fallback",
     "available": true,
     "block": false,
