@@ -1,0 +1,7 @@
+services:
+  - type: web
+    name: btc-signal-pro-elite
+    runtime: docker
+    plan: free
+    healthCheckPath: /
+    autoDeploy: true
