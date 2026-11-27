@@ -83,7 +83,7 @@ class FuturesSourceSafetyTests(unittest.TestCase):
         model = {
             "data_source": "OKX BTC-USDT-SWAP Futures public OHLC candles",
             "symbol": "BTC/USDT",
-            "last_price": last["close"] * 1.001,
+            "last_price": last["close"] * 1.003,
             "last_candle_time": last["time"],
             "class_scores": {"LONG": 0.95, "SHORT": 0.02, "WAIT": 0.03},
             "validation_gate": {"passed": True}
