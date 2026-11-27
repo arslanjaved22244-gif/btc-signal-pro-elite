@@ -1,7 +1,7 @@
 {
   "system": "BTC Signal Pro Elite Advanced ML",
-  "model": "Multinomial Logistic Regression",
-  "model_version": "3.7-inner-calibrated-wait-threshold",
+  "model": "Temporal Ensemble (full-history + recent-regime logistic experts)",
+  "model_version": "3.8-temporal-ensemble-regime-specialist",
   "data_source": "Coinbase Exchange public candles (fallback)",
   "symbol": "BTC/USD",
   "base_interval": "5m",
@@ -14,53 +14,58 @@
   ],
   "signal": "WAIT",
   "class_scores": {
-    "SHORT": 32.86,
-    "WAIT": 30.87,
-    "LONG": 36.27
+    "SHORT": 32.47,
+    "WAIT": 33.36,
+    "LONG": 34.17
   },
-  "confidence_score": 36.27,
-  "confidence_margin": 3.41,
-  "wait_probability_threshold": 0.30000000000000004,
+  "confidence_score": 34.17,
+  "confidence_margin": 0.81,
+  "wait_probability_threshold": 0.35000000000000003,
+  "ensemble_configuration": {
+    "full_history_weight": 0.65,
+    "recent_regime_weight": 0.35,
+    "recent_training_window": 3000
+  },
   "walk_forward_metrics": {
-    "accuracy": 34.17,
-    "macro_precision": 33.92,
-    "macro_recall": 33.91,
-    "macro_f1": 32.7,
+    "accuracy": 33.64,
+    "macro_precision": 33.71,
+    "macro_recall": 33.68,
+    "macro_f1": 32.37,
     "per_class": {
       "SHORT": {
-        "precision": 45.11,
-        "recall": 28.16,
-        "f1": 34.67,
+        "precision": 44.71,
+        "recall": 27.83,
+        "f1": 34.31,
         "support": 1836
       },
       "WAIT": {
-        "precision": 18.52,
-        "recall": 31.06,
-        "f1": 23.2,
-        "support": 747
+        "precision": 18.17,
+        "recall": 32.22,
+        "f1": 23.24,
+        "support": 748
       },
       "LONG": {
-        "precision": 38.14,
-        "recall": 42.53,
-        "f1": 40.21,
-        "support": 1599
+        "precision": 38.24,
+        "recall": 40.99,
+        "f1": 39.57,
+        "support": 1598
       }
     },
     "confusion_matrix": [
       [
-        517,
-        523,
-        796
+        511,
+        552,
+        773
       ],
       [
-        208,
-        232,
-        307
+        222,
+        241,
+        285
       ],
       [
-        421,
-        498,
-        680
+        410,
+        533,
+        655
       ]
     ]
   },
@@ -71,45 +76,45 @@
       "test_samples": 1394,
       "wait_threshold": 0.4,
       "metrics": {
-        "accuracy": 39.1,
-        "macro_precision": 41.59,
-        "macro_recall": 34.71,
-        "macro_f1": 22.79,
+        "accuracy": 39.53,
+        "macro_precision": 38.99,
+        "macro_recall": 34.84,
+        "macro_f1": 24.67,
         "per_class": {
           "SHORT": {
-            "precision": 58.11,
-            "recall": 6.78,
-            "f1": 12.15,
+            "precision": 50.0,
+            "recall": 11.04,
+            "f1": 18.09,
             "support": 634
           },
           "WAIT": {
             "precision": 28.57,
-            "recall": 0.83,
-            "f1": 1.61,
-            "support": 242
+            "recall": 0.82,
+            "f1": 1.6,
+            "support": 243
           },
           "LONG": {
-            "precision": 38.08,
-            "recall": 96.53,
-            "f1": 54.61,
-            "support": 518
+            "precision": 38.41,
+            "recall": 92.65,
+            "f1": 54.31,
+            "support": 517
           }
         },
         "confusion_matrix": [
           [
-            43,
+            70,
             4,
-            587
+            560
           ],
           [
-            14,
+            33,
             2,
-            226
+            208
           ],
           [
-            17,
+            37,
             1,
-            500
+            479
           ]
         ]
       }
@@ -118,17 +123,17 @@
       "fold": 2,
       "train_samples": 5573,
       "test_samples": 1394,
-      "wait_threshold": 0.35000000000000003,
+      "wait_threshold": 0.30000000000000004,
       "metrics": {
-        "accuracy": 42.68,
-        "macro_precision": 27.7,
-        "macro_recall": 33.9,
-        "macro_f1": 30.05,
+        "accuracy": 42.11,
+        "macro_precision": 27.34,
+        "macro_recall": 33.45,
+        "macro_f1": 29.65,
         "per_class": {
           "SHORT": {
-            "precision": 44.95,
-            "recall": 66.99,
-            "f1": 53.8,
+            "precision": 44.3,
+            "recall": 66.03,
+            "f1": 53.02,
             "support": 624
           },
           "WAIT": {
@@ -138,27 +143,27 @@
             "support": 260
           },
           "LONG": {
-            "precision": 38.15,
-            "recall": 34.71,
-            "f1": 36.34,
+            "precision": 37.72,
+            "recall": 34.31,
+            "f1": 35.93,
             "support": 510
           }
         },
         "confusion_matrix": [
           [
-            418,
+            412,
             0,
-            206
+            212
           ],
           [
-            179,
+            183,
             0,
-            81
+            77
           ],
           [
-            333,
+            335,
             0,
-            177
+            175
           ]
         ]
       }
@@ -169,45 +174,45 @@
       "test_samples": 1394,
       "wait_threshold": 0.2,
       "metrics": {
-        "accuracy": 20.73,
-        "macro_precision": 35.97,
-        "macro_recall": 34.7,
-        "macro_f1": 15.82,
+        "accuracy": 19.3,
+        "macro_precision": 35.95,
+        "macro_recall": 34.25,
+        "macro_f1": 13.27,
         "per_class": {
           "SHORT": {
-            "precision": 39.44,
-            "recall": 9.69,
-            "f1": 15.56,
+            "precision": 39.73,
+            "recall": 5.02,
+            "f1": 8.91,
             "support": 578
           },
           "WAIT": {
-            "precision": 18.46,
-            "recall": 93.88,
-            "f1": 30.85,
+            "precision": 18.12,
+            "recall": 97.55,
+            "f1": 30.56,
             "support": 245
           },
           "LONG": {
             "precision": 50.0,
-            "recall": 0.53,
-            "f1": 1.04,
+            "recall": 0.18,
+            "f1": 0.35,
             "support": 571
           }
         },
         "confusion_matrix": [
           [
-            56,
-            519,
-            3
+            29,
+            548,
+            1
           ],
           [
-            15,
-            230,
+            6,
+            239,
             0
           ],
           [
-            71,
-            497,
-            3
+            38,
+            532,
+            1
           ]
         ]
       }
@@ -215,14 +220,14 @@
   ],
   "training_samples": 8365,
   "label_distribution": {
-    "SHORT": 3359,
+    "SHORT": 3360,
     "WAIT": 2059,
-    "LONG": 2947
+    "LONG": 2946
   },
   "training_class_weights": {
-    "SHORT": 0.8301081671132281,
+    "SHORT": 0.8298611111111112,
     "WAIT": 1.3542172575683988,
-    "LONG": 0.946159936658749
+    "LONG": 0.9464811043222449
   },
   "recency_weighting": {
     "method": "exponential",
@@ -232,7 +237,7 @@
   "neutral_threshold_pct": 0.05,
   "last_price": 60605.43,
   "last_candle_time": 1795740300000,
-  "generated_at": "2026-11-27T00:53:58.711058+00:00",
+  "generated_at": "2026-11-27T00:57:35.433373+00:00",
   "limitations": [
     "Uses one consistent OHLCV source across all timeframes. Source fallback order is Binance USD-M Futures, Binance Spot, Coinbase Exchange, then Kraken Spot. Coinbase 4h candles are aggregated from 1h candles. Coinbase 5m history is expanded to 9000 candles. Spot sources are not Futures data; CVD, open interest, funding, order book and liquidation feeds are not model features yet.",
     "Class scores are model scores, not calibrated real-world win probabilities.",
