@@ -32,10 +32,10 @@ def main():
     elif token and chat and early_side in ("LONG","SHORT") and state.get("last_early_setup")!=early_side:
         scores=early.get("momentum_scores",{})
         msg=("BTC/USDT EARLY SETUP WATCH: "+early_side+
-             "\\nStatus: WATCH ONLY — NOT AN ENTRY SIGNAL"+
-             "\\nMomentum scores: LONG "+str(scores.get("LONG"))+" | SHORT "+str(scores.get("SHORT"))+
-             "\\nEntry reference: "+str(sig.get("risk_levels",{}).get("entry_reference"))+
-             "\\nWait for the main confirmed signal and risk levels. No orders are placed.")
+             "\nStatus: WATCH ONLY — NOT AN ENTRY SIGNAL"+
+             "\nMomentum scores: LONG "+str(scores.get("LONG"))+" | SHORT "+str(scores.get("SHORT"))+
+             "\nEntry reference: "+str(sig.get("risk_levels",{}).get("entry_reference"))+
+             "\nWait for the main confirmed signal and risk levels. No orders are placed.")
         url="https://api.telegram.org/bot"+token+"/sendMessage"
         data=urllib.parse.urlencode({"chat_id":chat,"text":msg}).encode()
         req=urllib.request.Request(url,data=data)
