@@ -186,11 +186,26 @@ def run():
     elif signal != "WAIT" and not model_is_futures:
         warnings.append("ML model uses a non-Futures or unknown source; it is not used as confirmation.")
 
+    # Require the Futures ML model to agree directionally; disagreement or WAIT means no entry.
+    if signal != "WAIT" and model_is_futures and ml_bias != signal:
+        signal = "WAIT"
+        warnings.append("Four-model Futures ML vote does not confirm the confluence direction; WAIT enforced.")
     if news.get("block"):
         signal = "WAIT"
-        warnings.append("High-risk news detected in the last 30 minutes; entries blocked.")
+        warnings.append("High-risk news lock active; entries blocked until the event lock expires.")
     elif not news.get("available"):
         warnings.append("News monitor unavailable; verify major headlines manually before any trade.")
+    # Volatility circuit breaker: block extreme 5m ATR or an unusually large latest candle.
+    five = market.get("timeframes", {}).get("5m", {}).get("candles", [])
+    atr_pct = (float(atr_value) / float(price) * 100.0) if price and atr_value else 0.0
+    range_spike = False
+    if len(five) >= 2 and atr_value:
+        latest_candle = five[-1]
+        range_spike = (float(latest_candle.get("high", 0))-float(latest_candle.get("low", 0))) > 2.5*float(atr_value)
+    volatility_block = atr_pct >= 0.45 or range_spike
+    if volatility_block:
+        signal = "WAIT"
+        warnings.append("Volatility circuit breaker active: 5m ATR or candle range exceeded safety threshold.")
 
     price = analyses.get("5m", {}).get("price")
     atr_value = analyses.get("5m", {}).get("atr14")
@@ -228,6 +243,7 @@ def run():
         "risk_levels": risk,
         "data_quality": quality,
         "news_guard": news,
+        "volatility_guard": {"blocked": volatility_block, "atr_5m_pct": round(atr_pct, 4), "atr_threshold_pct": 0.45, "range_spike": range_spike},
         "warnings": warnings,
         "execution": "MANUAL_ONLY_NO_ORDERS"
     }
