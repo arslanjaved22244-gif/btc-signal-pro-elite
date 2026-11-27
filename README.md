@@ -25,7 +25,7 @@ This is an installable web app (PWA), not an App Store listing. The app shell ca
 - Full dashboard indicators refresh every 30 seconds, while the published server-side AI output follows GitHub Actions on a best-effort 15-minute market-data schedule (AI retraining runs separately) and can be delayed.
 
 ## Important limitations
-- Derivatives data comes from public exchange endpoints (Bybit with OKX fallback); individual fields can be unavailable during API outages or when the provider does not publish the requested history.
+- Derivatives data uses public perpetual-Futures exchange endpoints with provider fallback (Binance, Bybit, Bitget and OKX where reachable); the selected venue can vary by runner-region access and field availability. Verify the displayed source and compare with Binance execution price/liquidity.
 - Large trades are size alerts, not verified whale identities.
 - CVD is an estimate from recent public trades, not exchange-wide consolidated order flow.
 - Experimental AI forecasts may return WAIT frequently when validation quality is weak. That is intentional.
@@ -39,7 +39,7 @@ Telegram integration is intentionally not part of this setup. The dashboard rema
 `live_runner.py` provides a persistent liquidation WebSocket and a periodic monitor, but it must run on an always-on host. See `DEPLOY_VPS.md`. GitHub Actions schedules are best-effort and do not provide a guaranteed 5-second backend. The current live runner polls the REST/news monitor about once per minute to avoid excessive public API requests; the dashboard price itself refreshes every 5 seconds in an open browser. The 11-point health panel distinguishes a short GitHub Actions sample from a genuinely connected, recently active continuous liquidation stream.
 
 ## Automation
-GitHub Actions refreshes the advanced AI output and public market snapshot on best-effort schedules (normally 5 minutes). You can inspect run history in the repository's **Actions** tab.
+GitHub Actions publishes the public market snapshot on a best-effort 15-minute schedule; AI training runs separately. These schedules can be delayed. You can inspect run history in the repository's **Actions** tab.
 
 
 ## Institutional Intelligence (v6 layer)
