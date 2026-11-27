@@ -678,6 +678,18 @@ def predict_with_wait_threshold(probs, wait_threshold):
     return 0 if probs[0] >= probs[2] else 2
 
 
+def predict_actionable_class(probs, wait_threshold, min_direction_score=0.48, min_margin=0.10):
+    """Apply the exact directional confidence rules used by the live signal to backtests."""
+    candidate = predict_with_wait_threshold(probs, wait_threshold)
+    if candidate == 1:
+        return 1
+    ordered = sorted((float(value) for value in probs), reverse=True)
+    margin = ordered[0] - ordered[1]
+    if float(probs[candidate]) < min_direction_score or margin < min_margin:
+        return 1
+    return candidate
+
+
 def tune_wait_threshold(rows, labels):
     # Tune only on a chronological calibration tail inside the training data.
     # The outer walk-forward test window is never used to choose this value.
@@ -695,7 +707,7 @@ def tune_wait_threshold(rows, labels):
     for step in range(9):
         threshold = 0.20 + step * 0.05
         predicted = [
-            predict_with_wait_threshold(probs, threshold)
+            predict_actionable_class(probs, threshold)
             for probs in probability_rows
         ]
         score = classification_metrics(actual, predicted)["macro_f1"]
@@ -731,7 +743,7 @@ def walk_forward_validate(rows, labels, forward_returns=None, round_trip_cost_pc
         for row_index in range(test_start, test_end):
             row, actual = rows[row_index], labels[row_index]
             probs = predict_ensemble(model, row)
-            predicted = predict_with_wait_threshold(probs, wait_threshold)
+            predicted = predict_actionable_class(probs, wait_threshold)
             fold_actual.append(actual)
             fold_predicted.append(predicted)
             fold_regimes.append(classify_feature_regime(row))
@@ -2952,17 +2964,12 @@ def main():
     best = max(range(3), key=lambda k: scores[k])
     ordered = sorted(scores, reverse=True)
     margin = ordered[0] - ordered[1]
-    calibrated_class = predict_with_wait_threshold(scores, final_wait_threshold)
+    calibrated_class = predict_actionable_class(scores, final_wait_threshold)
     # Never publish a BTC/USDT Futures directional call from Spot-proxy training data.
     futures_source_gate = "Futures" in str(source) and "Spot" not in str(source)
     validation_gate, validation_gate_report = evaluate_validation_gate(validation, futures_source_gate)
-    signal = (
-        CLASSES[calibrated_class]
-        if validation_gate and calibrated_class == 1
-        else CLASSES[calibrated_class]
-        if validation_gate and scores[calibrated_class] >= 0.48 and margin >= 0.10
-        else "WAIT"
-    )
+    # Backtest, calibration and live output now share one actionable decision rule.
+    signal = CLASSES[calibrated_class] if validation_gate else "WAIT"
     trend_alignment = multi_timeframe_trend_alignment(data)
     alignment_veto = None
     if signal == "LONG" and trend_alignment["bearish_timeframes"] >= 3 and trend_alignment["bearish_timeframes"] > trend_alignment["bullish_timeframes"]:
