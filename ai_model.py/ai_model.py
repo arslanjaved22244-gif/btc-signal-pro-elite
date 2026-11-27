@@ -1075,10 +1075,25 @@ def lstm_sequence_forecast(rows, labels, sequence_length=24):
         ordered = sorted(float(value) for value in latest_probs)
         margin = ordered[-1] - ordered[-2]
         candidate = CLASSES[int(np.argmax(latest_probs))]
+        directional_coverage = {
+            name: float(np.mean(np.asarray(predicted) == k))
+            for k, name in enumerate(CLASSES) if name in ("LONG", "SHORT")
+        }
+        directional_recall = {
+            name: float(metrics["per_class"].get(name, {}).get("recall", 0.0))
+            for name in ("LONG", "SHORT")
+        }
+        # A model that ignores either direction is not a usable directional forecaster.
+        both_directions_tested = all(
+            directional_coverage.get(name, 0.0) >= 0.05
+            and directional_recall.get(name, 0.0) >= 10.0
+            for name in ("LONG", "SHORT")
+        )
         passed = (
             metrics["accuracy"] >= 40.0
             and metrics["accuracy"] >= majority + 2.0
             and metrics["macro_f1"] >= 30.0
+            and both_directions_tested
             and margin >= 0.12
             and float(max(latest_probs)) >= 0.50
             and candidate != "WAIT"
@@ -1096,6 +1111,9 @@ def lstm_sequence_forecast(rows, labels, sequence_length=24):
             "confusion_matrix": metrics["confusion_matrix"],
             "predicted_class_distribution_pct": predicted_distribution,
             "actual_holdout_class_distribution_pct": actual_distribution,
+            "directional_coverage_pct": {name: round(value*100.0, 2) for name, value in directional_coverage.items()},
+            "directional_recall_pct": {name: round(value, 2) for name, value in directional_recall.items()},
+            "both_directions_tested": both_directions_tested,
             "class_balancing": "sqrt inverse-frequency weighted sampling + capped class-weighted loss",
             "training_samples": len(x_fit),
             "early_stop_validation_samples": len(x_val),
@@ -1817,7 +1835,12 @@ def main():
     regime_analysis = advanced_regime(data)
     horizon_forecasts = advanced_horizon_models(data, prepared)
     temporal_model = temporal_sequence_forecast(rows, labels, sequence_length=12)
-    lstm_model = lstm_sequence_forecast(lstm_rows, lstm_labels, sequence_length=24) if lstm_rows else {"signal": "WAIT", "status": "HISTORICAL DERIVATIVES DATA UNAVAILABLE"}
+    lstm_feature_mode = "HISTORICAL_OI_FUNDING_PLUS_MARKET" if lstm_rows else "MARKET_ONLY_DERIVATIVES_UNAVAILABLE"
+    lstm_training_rows = lstm_rows if lstm_rows else rows
+    lstm_training_labels = lstm_labels if lstm_rows else labels
+    lstm_model = lstm_sequence_forecast(lstm_training_rows, lstm_training_labels, sequence_length=24)
+    lstm_model["feature_mode"] = lstm_feature_mode
+    lstm_model["derivatives_dataset_status"] = historical_derivatives.get("status")
     temporal_horizons = temporal_sequence_horizon_forecasts(data, prepared, sequence_length=12)
     tree_ensemble = advanced_tree_ensemble(data, prepared)
     tree_blend_applied = False
