@@ -46,6 +46,23 @@ class PaperTraderTests(unittest.TestCase):
         self.assertEqual(result["wins"], 1)
         self.assertAlmostEqual(result["records"][0]["net_return_pct"], 2.86, places=2)
 
+    def test_failed_validation_raw_direction_is_tracked_as_non_actionable_shadow(self):
+        self.write_inputs(self.candles([100, 100, 100]), "WAIT")
+        with open("ai_result.json", "w") as f:
+            json.dump({
+                "data_source": "OKX BTC-USDT-SWAP Futures public OHLC candles",
+                "data_source_by_timeframe": {"5m": "OKX BTC-USDT-SWAP Futures"},
+                "class_scores": {"LONG": 70, "SHORT": 10, "WAIT": 20},
+                "validation_gate": {"passed": False},
+                "model_version": "test"
+            }, f)
+        result = PAPER.run()
+        shadow = result["shadow_forecasts"][0]
+        self.assertEqual(shadow["side"], "LONG")
+        self.assertEqual(shadow["status"], "PENDING")
+        self.assertFalse(shadow["actionable"])
+        self.assertFalse(shadow["validation_gate_passed"])
+
     def test_wait_is_recorded_as_abstention_not_trade(self):
         self.write_inputs(self.candles([100, 100, 100]), "WAIT")
         result = PAPER.run()
