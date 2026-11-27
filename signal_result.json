@@ -1,7 +1,7 @@
 {
   "system": "BTC Signal Pro Elite Hybrid Confluence Engine",
   "version": "4.3-hybrid-sweep-validated-futures",
-  "generated_at": "2026-11-27T23:15:42.551445+00:00",
+  "generated_at": "2026-11-27T23:17:07.223702+00:00",
   "symbol": "BTCUSDT",
   "market_type": "OKX_BTC_USDT_SWAP",
   "market_exchange": "OKX",
@@ -19,10 +19,10 @@
     "momentum_margin": 2.0,
     "note": "Early setup is a watchlist hint only, not an entry signal. Confirm the main signal and manual risk levels before any trade."
   },
-  "confidence_score": 78.26,
+  "confidence_score": 76.09,
   "scores": {
-    "LONG": 0.75,
-    "SHORT": 9.0
+    "LONG": 1.0,
+    "SHORT": 8.75
   },
   "timeframe_analysis": {
     "5m": {
@@ -39,7 +39,7 @@
         "signal": -13.01433,
         "histogram": 12.22927
       },
-      "age_seconds": 11
+      "age_seconds": 97
     },
     "15m": {
       "available": true,
@@ -55,7 +55,7 @@
         "signal": -178.77592,
         "histogram": 38.01833
       },
-      "age_seconds": 11
+      "age_seconds": 98
     },
     "1h": {
       "available": true,
@@ -71,7 +71,7 @@
         "signal": -149.00652,
         "histogram": -160.73515
       },
-      "age_seconds": 911
+      "age_seconds": 998
     },
     "4h": {
       "available": true,
@@ -87,7 +87,7 @@
         "signal": -29.54687,
         "histogram": 61.90847
       },
-      "age_seconds": 11711
+      "age_seconds": 11798
     },
     "1d": {
       "available": true,
@@ -103,7 +103,7 @@
         "signal": -4502.17037,
         "histogram": -20.72115
       },
-      "age_seconds": 26111
+      "age_seconds": 26198
     }
   },
   "liquidity_sweep": {
@@ -111,12 +111,12 @@
     "status": "NO_CONFIRMED_SWEEP"
   },
   "order_flow": {
-    "cvd_base": -4.81,
-    "order_book_imbalance": 0.704937,
+    "cvd_base": 338.0,
+    "order_book_imbalance": -0.536989,
     "order_book_imbalance_method": "Top-20 visible levels; quote-notional (price \u00d7 quantity); (bid-ask)/(bid+ask)",
-    "funding_rate_pct": 0.004787,
+    "funding_rate_pct": 0.004818,
     "funding_crowding": "NEUTRAL",
-    "open_interest_change_30m_pct": -0.0939,
+    "open_interest_change_30m_pct": -0.1501,
     "taker_buy_sell_ratio": 0.6901466693299141
   },
   "ml_context": {
@@ -158,7 +158,7 @@
     "derivatives_confluence_status": "AVAILABLE"
   },
   "news_guard": {
-    "generated_at": "2026-11-27T23:15:13.352830+00:00",
+    "generated_at": "2026-11-27T23:16:40.321956+00:00",
     "source": "Google News RSS public fallback + Trump's Truth independent archive (unofficial)",
     "available": true,
     "block": false,
