@@ -819,6 +819,124 @@ def advanced_horizon_models(data, prepared):
 
 
 
+
+def build_lstm_derivatives_dataset(data, prepared, oi_pages=12):
+    """
+    Build a recent, timestamp-aligned LSTM-only dataset enriched with public
+    Bybit historical OI and funding. Every feature is backward-as-of joined;
+    no future derivatives observation is used for an earlier candle.
+    """
+    result = {
+        "status": "UNAVAILABLE", "provider": "Bybit public linear",
+        "oi_points": 0, "funding_points": 0, "samples": 0,
+        "features": ["oi_change_1h_pct", "oi_change_4h_pct",
+                     "funding_rate", "oi_available", "funding_available"],
+        "limitations": [
+            "Historical derivatives features are currently OI and funding only.",
+            "Taker-flow/CVD history and historical order-book snapshots are not yet integrated.",
+            "Coverage is limited to the fetched public OI history window."
+        ]
+    }
+    try:
+        def bybit_get(path, params):
+            query = urllib.parse.urlencode(params)
+            request = urllib.request.Request(
+                "https://api.bybit.com" + path + "?" + query,
+                headers={"User-Agent": "BTC-Signal-Pro-Elite/5.3"}
+            )
+            with urllib.request.urlopen(request, timeout=15) as response:
+                payload = json.loads(response.read().decode("utf-8"))
+            if payload.get("retCode") != 0:
+                raise ValueError(str(payload.get("retMsg", "Bybit API error")))
+            return payload.get("result", {})
+
+        oi_by_time = {}
+        end_time = int(datetime.now(timezone.utc).timestamp() * 1000)
+        for _ in range(max(1, min(oi_pages, 20))):
+            payload = bybit_get("/v5/market/open-interest", {
+                "category": "linear", "symbol": "BTCUSDT",
+                "intervalTime": "5min", "limit": 200, "endTime": end_time
+            })
+            items = payload.get("list", [])
+            if not items:
+                break
+            oldest = None
+            for item in items:
+                stamp = int(item["timestamp"])
+                oi_by_time[stamp] = float(item["openInterest"])
+                oldest = stamp if oldest is None else min(oldest, stamp)
+            if oldest is None or oldest <= 0 or oldest >= end_time:
+                break
+            end_time = oldest - 1
+            time.sleep(0.08)
+
+        funding_by_time = {}
+        payload = bybit_get("/v5/market/funding/history", {
+            "category": "linear", "symbol": "BTCUSDT", "limit": 200
+        })
+        for item in payload.get("list", []):
+            stamp = int(item["fundingRateTimestamp"])
+            funding_by_time[stamp] = float(item["fundingRate"])
+
+        oi_times = sorted(oi_by_time)
+        funding_times = sorted(funding_by_time)
+        result["oi_points"] = len(oi_times)
+        result["funding_points"] = len(funding_times)
+        if len(oi_times) < 120:
+            result["status"] = "INSUFFICIENT HISTORICAL OI"
+            return [], [], result
+
+        candles = data["5m"]
+        base_rows, base_labels = [], []
+        oi_1h_index = 12
+        oi_4h_index = 48
+        for i in range(200, len(candles) - FUTURE_CANDLES):
+            stamp = int(candles[i]["time"])
+            oi_idx = bisect.bisect_right(oi_times, stamp) - 1
+            if oi_idx < oi_4h_index:
+                continue
+            oi_stamp = oi_times[oi_idx]
+            # Reject stale derivatives data rather than silently forward filling.
+            if stamp - oi_stamp > 10 * 60 * 1000:
+                continue
+            old_1h = oi_by_time[oi_times[oi_idx - oi_1h_index]]
+            old_4h = oi_by_time[oi_times[oi_idx - oi_4h_index]]
+            current_oi = oi_by_time[oi_stamp]
+            if old_1h <= 0 or old_4h <= 0:
+                continue
+            oi_change_1h = (current_oi / old_1h - 1.0) * 100.0
+            oi_change_4h = (current_oi / old_4h - 1.0) * 100.0
+            funding_idx = bisect.bisect_right(funding_times, stamp) - 1
+            funding_available = funding_idx >= 0
+            funding_rate = funding_by_time[funding_times[funding_idx]] if funding_available else 0.0
+            base = combined_features(data, i, prepared)
+            if base is None:
+                continue
+            move = candles[i + FUTURE_CANDLES]["close"] / candles[i]["close"] - 1.0
+            threshold = adaptive_move_threshold(candles, i, FUTURE_CANDLES)
+            label = 2 if move > threshold else 0 if move < -threshold else 1
+            derivatives = [
+                max(-25.0, min(25.0, oi_change_1h)),
+                max(-40.0, min(40.0, oi_change_4h)),
+                max(-0.01, min(0.01, funding_rate)),
+                1.0,
+                1.0 if funding_available else 0.0
+            ]
+            base_rows.append(base + derivatives)
+            base_labels.append(label)
+
+        result["samples"] = len(base_rows)
+        result["coverage_start"] = datetime.fromtimestamp(oi_times[0]/1000, timezone.utc).isoformat()
+        result["coverage_end"] = datetime.fromtimestamp(oi_times[-1]/1000, timezone.utc).isoformat()
+        result["status"] = "AVAILABLE" if len(base_rows) >= 500 else "LIMITED COVERAGE"
+        return base_rows, base_labels, result
+    except Exception as exc:
+        result["status"] = "FETCH ERROR"
+        result["error"] = str(exc)[:220]
+        return [], [], result
+
+
+
 def lstm_sequence_forecast(rows, labels, sequence_length=24):
     """
     True recurrent sequence model: PyTorch LSTM reads ordered 5m feature vectors.
@@ -1683,6 +1801,8 @@ def main():
         raise ValueError(f"STALE DATA BLOCK: 5m model input is {data_age_minutes} minutes old")
     prepared = {tf: precompute_candle_features(candles) for tf, candles in data.items()}
     rows, labels = build_dataset(data, prepared)
+    lstm_rows, lstm_labels, historical_derivatives = build_lstm_derivatives_dataset(data, prepared)
+    print("Historical derivatives LSTM dataset:", historical_derivatives.get("status"), historical_derivatives.get("samples"))
     if len(rows) < 250:
         raise ValueError(f"Not enough aligned multi-timeframe samples: {len(rows)}")
     validation, folds = walk_forward_validate(rows, labels)
@@ -1697,7 +1817,7 @@ def main():
     regime_analysis = advanced_regime(data)
     horizon_forecasts = advanced_horizon_models(data, prepared)
     temporal_model = temporal_sequence_forecast(rows, labels, sequence_length=12)
-    lstm_model = lstm_sequence_forecast(rows, labels, sequence_length=24)
+    lstm_model = lstm_sequence_forecast(lstm_rows, lstm_labels, sequence_length=24) if lstm_rows else {"signal": "WAIT", "status": "HISTORICAL DERIVATIVES DATA UNAVAILABLE"}
     temporal_horizons = temporal_sequence_horizon_forecasts(data, prepared, sequence_length=12)
     tree_ensemble = advanced_tree_ensemble(data, prepared)
     tree_blend_applied = False
@@ -1795,6 +1915,7 @@ def main():
         "walk_forward_metrics": validation,
         "validation_gate": {"passed": validation_gate, "minimum_accuracy_pct": 38.0, "minimum_macro_f1_pct": 30.0, "must_beat_majority_baseline": True, "decision": "directional signals allowed" if validation_gate else "WAIT only — historical validation too weak"},
         "futures_microstructure": futures_microstructure,
+        "historical_derivatives_training": historical_derivatives,
         "advanced_intelligence": {"market_regime": regime_analysis, "multi_timeframe_trend_alignment": trend_alignment, "alignment_veto": alignment_veto, "multi_horizon_forecasts": horizon_forecasts, "multi_horizon_consensus": horizon_consensus, "temporal_sequence_model": temporal_model, "lstm_sequence_model": lstm_model, "temporal_sequence_horizons": temporal_horizons, "temporal_model_veto": temporal_veto, "lstm_model_veto": lstm_veto, "tree_ensemble": tree_ensemble, "tree_blend_applied_to_primary_signal": tree_blend_applied, "method": "2-layer recurrent PyTorch LSTM on 24 ordered candles + temporal MLP + four-horizon chronological ML + Random Forest + gradient boosting + neural MLP + XGBoost (when installed) + volatility regime + liquidity sweep detector"},
         "walk_forward_folds": folds,
         "training_samples": len(rows),
