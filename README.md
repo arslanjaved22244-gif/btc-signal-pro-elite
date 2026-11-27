@@ -10,8 +10,8 @@ GitHub Pages: https://arslanjaved22244-gif.github.io/btc-signal-pro-elite/
 - Experimental ML forecasts for 15m, 30m, 1h and 4h, including a Random Forest, gradient-boosting, neural MLP and optional XGBoost ensemble.
 - Chronological holdout validation and conservative WAIT gates. Model scores are not calibrated win probabilities and are not guarantees of future performance.
 - Public derivatives monitor: funding, open interest where available, CVD proxy, taker buy ratio, order-book imbalance and large-trade size alerts.
-- Headline-based news safety pause of at least 30 minutes. Headlines can extend the pause while they remain in the recent feed. This is not a direct Trump/X feed and cannot guarantee detection of every breaking event or public post.
-- Dashboard BTC price refreshes in the open browser every 5 seconds; this is a client-side price refresh, not a 5-second AI retraining or server-side signal cycle.
+- Market-risk headline scanning plus an independent archive RSS of public @realDonaldTrump Truth Social posts (`trumpstruth.org/feed`). Relevant posts/headlines trigger at least a 30-minute WAIT lock. The archive is third-party, not an official Truth Social API; it may lag or omit deleted/visual-only content.
+- Dashboard BTC price refreshes in the open browser every 5 seconds. This is client-side price refresh only; it is not a 5-second AI retraining or server-side signal cycle.
 - Full dashboard indicators refresh every 30 seconds, while the published server-side AI output follows GitHub Actions on a best-effort 5-minute schedule and can be delayed.
 
 ## Important limitations
@@ -22,5 +22,11 @@ GitHub Pages: https://arslanjaved22244-gif.github.io/btc-signal-pro-elite/
 - Max leverage guidance is 10x only as a ceiling, not a recommendation. Leverage magnifies losses; fees, funding, slippage and liquidation can make outcomes worse.
 - No model accuracy or profit is guaranteed. Review all signals manually and use independent risk controls.
 
+## Telegram alerts
+Optional signal-only Telegram alerts are supported. Add two repository Actions secrets: `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID`. Never put these values in source code or send them in chat. In GitHub, open Settings → Secrets and variables → Actions → New repository secret. The dashboard shows the latest alert status in the derivatives/news panel. See `TELEGRAM_SETUP.md`.
+
+## 24/7 hosting
+`live_runner.py` provides a persistent liquidation WebSocket and a periodic monitor, but it must run on an always-on host. See `DEPLOY_VPS.md`. GitHub Actions schedules are best-effort and do not provide a guaranteed 5-second backend. The current live runner polls the REST/news monitor about once per minute to avoid excessive public API requests; the dashboard price itself refreshes every 5 seconds in an open browser.
+
 ## Automation
-The repository uses GitHub Actions to refresh the AI output and public market snapshot. You can inspect run history in the repository's **Actions** tab. No Telegram setup is required for the dashboard.
+GitHub Actions refreshes the advanced AI output and public market snapshot on best-effort schedules (normally 5 minutes). You can inspect run history in the repository's **Actions** tab.
