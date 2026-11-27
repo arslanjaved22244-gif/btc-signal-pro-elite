@@ -6,6 +6,7 @@ on:
       - "market_data.py"
       - "news_guard.py"
       - "signal_engine.py"
+      - "ai_result.json"
       - "advanced_modules.py"
       - "liquidation_monitor.py"
       - "telegram_alerts.py"
