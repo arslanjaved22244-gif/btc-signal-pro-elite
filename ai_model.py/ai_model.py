@@ -452,6 +452,8 @@ def main():
         raise ValueError(f"Not enough aligned multi-timeframe samples: {len(rows)}")
     validation, folds = walk_forward_validate(rows, labels)
     final_model = train_model(rows, labels)
+    class_counts = [max(1, labels.count(k)) for k in range(len(CLASSES))]
+    class_weights = [min(2.5, len(labels) / (len(CLASSES) * count)) for count in class_counts]
     latest = combined_features(data, len(data["5m"]) - 1)
     if latest is None:
         raise ValueError("Could not build latest multi-timeframe features.")
