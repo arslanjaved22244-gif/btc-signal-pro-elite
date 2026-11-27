@@ -224,7 +224,7 @@ def get_okx_data(interval):
     cursor = None
     # Pull several public history pages so the slow 1d timeframe does not
     # cap the aligned training set at roughly 300 examples.
-    pages = {"5m": 4, "15m": 3, "1h": 3, "4h": 3, "1d": 3}[interval]
+    # Expand public history so walk-forward validation has enough genuinely\n    # out-of-sample opportunities; keep slower timeframes sufficiently deep\n    # for EMA-200 and regime context without requesting excessive daily bars.\n    pages = {"5m": 10, "15m": 8, "1h": 8, "4h": 8, "1d": 8}[interval]
     for _ in range(pages):
         params = {"instId": "BTC-USDT-SWAP", "bar": bar, "limit": "300"}
         if cursor is not None:
