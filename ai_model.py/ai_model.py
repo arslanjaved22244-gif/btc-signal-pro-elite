@@ -12,7 +12,7 @@ import json
 import math
 import time
 import urllib.request
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 SYMBOL = "BTC/USDT"
 DATA_SOURCE = "Binance USD-M Futures public klines"
@@ -818,6 +818,115 @@ def advanced_horizon_models(data, prepared):
 
 
 
+
+
+
+def build_lstm_tradeflow_dataset(data, prepared, days=3):
+    """
+    Fetch public Binance USD-M daily aggTrade archives and build timestamp-
+    aligned 5m taker-buy/taker-sell flow features. No API key required.
+    Only complete archived days are used; missing buckets are never imputed.
+    """
+    result = {
+        "status": "UNAVAILABLE", "provider": "Binance Vision USD-M daily aggTrades",
+        "days_requested": days, "days_loaded": 0, "trade_records": 0,
+        "covered_samples": 0,
+        "features": ["taker_delta_pct", "taker_buy_ratio",
+                     "log_trade_count", "taker_volume_to_candle_volume"],
+        "limitations": [
+            "Taker delta is a BTCUSDT aggTrade proxy, not exchange-wide CVD.",
+            "Only complete daily archives are used; missing 5m buckets are excluded.",
+            "Historical OI, funding and order-book depth are not included in this dataset."
+        ]
+    }
+    try:
+        flow_by_bucket = {}
+        now = datetime.now(timezone.utc)
+        for offset in range(1, max(1, min(int(days), 5)) + 1):
+            day = (now.date() - timedelta(days=offset)).isoformat()
+            url = (
+                "https://data.binance.vision/data/futures/um/daily/aggTrades/"
+                f"BTCUSDT/BTCUSDT-aggTrades-{day}.zip"
+            )
+            request = urllib.request.Request(
+                url, headers={"User-Agent": "BTC-Signal-Pro-Elite/5.4"}
+            )
+            try:
+                with urllib.request.urlopen(request, timeout=60) as response:
+                    archive = zipfile.ZipFile(io.BytesIO(response.read()))
+                if not archive.namelist():
+                    continue
+                day_records = 0
+                with archive.open(archive.namelist()[0]) as csv_file:
+                    reader = csv.reader(io.TextIOWrapper(csv_file, encoding="utf-8"))
+                    for row in reader:
+                        if len(row) < 7 or not row[0].isdigit():
+                            continue
+                        stamp = int(row[5])
+                        bucket = (stamp // 300_000) * 300_000
+                        quantity = float(row[2])
+                        if quantity <= 0:
+                            continue
+                        stats = flow_by_bucket.setdefault(bucket, [0.0, 0.0, 0])
+                        # Buyer is maker => aggressive taker was selling.
+                        if row[6].strip().lower() == "true":
+                            stats[1] += quantity
+                        else:
+                            stats[0] += quantity
+                        stats[2] += 1
+                        day_records += 1
+                if day_records:
+                    result["days_loaded"] += 1
+                    result["trade_records"] += day_records
+                print(f"Loaded {day_records} Binance Futures aggTrades for {day}")
+            except Exception as exc:
+                print(f"Binance Vision aggTrades unavailable for {day}: {exc}")
+
+        candles = data["5m"]
+        rows, labels = [], []
+        matched_buckets = 0
+        for index in range(200, len(candles) - FUTURE_CANDLES):
+            candle = candles[index]
+            bucket = (int(candle["time"]) // 300_000) * 300_000
+            stats = flow_by_bucket.get(bucket)
+            if not stats:
+                continue
+            buy_volume, sell_volume, trade_count = stats
+            total = buy_volume + sell_volume
+            candle_volume = max(float(candle.get("volume", 0.0)), 1e-12)
+            if total <= 0:
+                continue
+            base = combined_features(data, index, prepared)
+            if base is None:
+                continue
+            flow_features = [
+                (buy_volume - sell_volume) / total,
+                buy_volume / total,
+                math.log1p(trade_count),
+                total / candle_volume
+            ]
+            move = candles[index + FUTURE_CANDLES]["close"] / candle["close"] - 1.0
+            threshold = adaptive_move_threshold(candles, index, FUTURE_CANDLES)
+            label = 2 if move > threshold else 0 if move < -threshold else 1
+            rows.append(base + flow_features)
+            labels.append(label)
+            matched_buckets += 1
+
+        result["covered_samples"] = matched_buckets
+        result["coverage_pct_of_eligible_candles"] = round(
+            matched_buckets / max(1, len(candles) - 203) * 100.0, 2
+        )
+        if matched_buckets < 440:
+            result["status"] = "INSUFFICIENT FLOW HISTORY"
+            return [], [], result
+        result["status"] = "READY"
+        result["samples"] = len(rows)
+        result["note"] = "Four historical taker-flow features are appended to the market feature vector."
+        return rows, labels, result
+    except Exception as exc:
+        result["status"] = "FETCH ERROR"
+        result["error"] = str(exc)[:240]
+        return [], [], result
 
 
 def build_lstm_derivatives_dataset(data, prepared, oi_pages=12):
@@ -1983,6 +2092,10 @@ def main():
     rows, labels = build_dataset(data, prepared)
     lstm_rows, lstm_labels, historical_derivatives = build_lstm_derivatives_dataset(data, prepared)
     print("Historical derivatives LSTM dataset:", historical_derivatives.get("status"), historical_derivatives.get("samples"))
+    tradeflow_rows, tradeflow_labels, historical_tradeflow = build_lstm_tradeflow_dataset(
+        data, prepared, days=3
+    )
+    print("Historical taker-flow LSTM dataset:", historical_tradeflow.get("status"), historical_tradeflow.get("samples"))
     if len(rows) < 250:
         raise ValueError(f"Not enough aligned multi-timeframe samples: {len(rows)}")
     validation, folds = walk_forward_validate(rows, labels)
@@ -1997,12 +2110,20 @@ def main():
     regime_analysis = advanced_regime(data)
     horizon_forecasts = advanced_horizon_models(data, prepared)
     temporal_model = temporal_sequence_forecast(rows, labels, sequence_length=12)
-    lstm_feature_mode = "HISTORICAL_OI_FUNDING_PLUS_MARKET" if lstm_rows else "MARKET_ONLY_DERIVATIVES_UNAVAILABLE"
-    lstm_training_rows = lstm_rows if lstm_rows else rows
-    lstm_training_labels = lstm_labels if lstm_rows else labels
+    if lstm_rows:
+        lstm_feature_mode = "HISTORICAL_OI_FUNDING_PLUS_MARKET"
+        lstm_training_rows, lstm_training_labels = lstm_rows, lstm_labels
+    elif tradeflow_rows:
+        lstm_feature_mode = "HISTORICAL_TAKER_FLOW_PLUS_MARKET"
+        lstm_training_rows, lstm_training_labels = tradeflow_rows, tradeflow_labels
+    else:
+        lstm_feature_mode = "MARKET_ONLY_DERIVATIVES_UNAVAILABLE"
+        lstm_training_rows, lstm_training_labels = rows, labels
     lstm_model = lstm_sequence_forecast(lstm_training_rows, lstm_training_labels, sequence_length=24)
     lstm_model["feature_mode"] = lstm_feature_mode
     lstm_model["derivatives_dataset_status"] = historical_derivatives.get("status")
+    lstm_model["historical_tradeflow_dataset"] = historical_tradeflow
+    lstm_model["historical_tradeflow_dataset_status"] = historical_tradeflow.get("status")
     lstm_model["walk_forward_validation"] = lstm_walk_forward_validate(
         lstm_training_rows, lstm_training_labels, sequence_length=24, folds=2
     )
