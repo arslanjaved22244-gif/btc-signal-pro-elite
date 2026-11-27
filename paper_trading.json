@@ -1,10 +1,10 @@
 {
   "status": "ACTIVE",
   "mode": "PAPER_ONLY_NO_ORDERS",
-  "source": "Bitget public Futures 5m candles",
+  "source": "OKX public Futures 5m candles",
   "horizon_minutes": 15,
   "estimated_round_trip_cost_pct": 0.14,
-  "updated_at": "2026-11-27T23:14:39.189254+00:00",
+  "updated_at": "2026-11-27T23:15:41.402109+00:00",
   "current_signal": "WAIT",
   "current_signal_reason": null,
   "closed_trades": 0,
@@ -17,11 +17,11 @@
   "max_drawdown_pct": 0.0,
   "shadow_evaluation": {
     "mode": "NON_ACTIONABLE_RAW_MODEL_FORECASTS",
-    "closed_forecasts": 9,
-    "evaluated_forecasts": 9,
-    "classification_accuracy_pct": 88.89,
-    "classification_correct": 8,
-    "majority_class_baseline_pct": 88.89,
+    "closed_forecasts": 15,
+    "evaluated_forecasts": 15,
+    "classification_accuracy_pct": 60.0,
+    "classification_correct": 9,
+    "majority_class_baseline_pct": 86.67,
     "beats_majority_baseline": false,
     "class_recall": {
       "SHORT": {
@@ -29,16 +29,16 @@
         "recall_pct": 0.0
       },
       "WAIT": {
-        "actual_samples": 8,
-        "recall_pct": 100.0
+        "actual_samples": 13,
+        "recall_pct": 61.54
       },
       "LONG": {
-        "actual_samples": 0,
-        "recall_pct": null
+        "actual_samples": 1,
+        "recall_pct": 100.0
       }
     },
     "pending_forecasts": 0,
-    "abstentions": 11,
+    "abstentions": 10,
     "wins": 1,
     "losses": 5,
     "directional_accuracy_pct": 33.33,
@@ -47,18 +47,18 @@
     "average_net_return_pct": -0.15159,
     "net_return_pct_compounded": -0.9064,
     "validation_gate_passed_now": false,
-    "latest_model_timestamp": "2026-11-27T23:12:12.988871+00:00",
-    "latest_model_fresh": true,
+    "latest_model_timestamp": "2026-11-27T23:02:03.566883+00:00",
+    "latest_model_fresh": false,
     "latest_venue_alignment": {
-      "compatible": true,
-      "type": "CROSS_VENUE_FUTURES",
+      "compatible": false,
+      "type": "BLOCKED",
       "ai_venue": "OKX BTC-USDT-SWAP Futures",
-      "market_venue": "Bitget",
-      "basis_pct": 0.13012,
-      "candle_skew_minutes": 10.0,
+      "market_venue": "OKX",
+      "basis_pct": 0.03846,
+      "candle_skew_minutes": 20.0,
       "max_basis_pct": 0.25,
       "max_candle_skew_minutes": 15,
-      "reason": "Same-venue or cross-venue BTC perpetual prices and 5m candle times are aligned."
+      "reason": "Perpetual price basis or 5m candle-time skew exceeds the safety tolerance."
     },
     "note": "Research-only forecast tracking. Each fresh model generation is counted once; same-venue Futures or cross-venue Futures with <=0.25% price basis and <=15-minute candle skew may be scored. Spot, stale, mismatched or unaligned feeds are abstentions. Forecasts never authorize trades."
   },
@@ -395,11 +395,11 @@
       "net_return_pct": null
     },
     {
-      "entry_candle_time": 1795820700000,
-      "recorded_at": "2026-11-27T23:14:38.309167+00:00",
-      "exchange": "Bitget",
+      "entry_candle_time": 1795821000000,
+      "recorded_at": "2026-11-27T23:15:40.086335+00:00",
+      "exchange": "OKX",
       "side": "WAIT",
-      "entry": 59792.7,
+      "entry": 59797.0,
       "status": "ABSTAINED",
       "exit": null,
       "gross_return_pct": null,
@@ -421,7 +421,13 @@
       "exit": 59807.9,
       "exit_candle_time": 1795803900000,
       "gross_return_pct": -0.13592,
-      "net_return_pct": -0.27592
+      "net_return_pct": -0.27592,
+      "classification_status": "EVALUATED",
+      "actual_class": "WAIT",
+      "classification_correct": false,
+      "realized_move_pct": -0.13592,
+      "label_threshold_pct": 0.18,
+      "classification_exit_candle_time": 1795803900000
     },
     {
       "entry_candle_time": 1795803300000,
@@ -437,7 +443,13 @@
       "exit": 59807.7,
       "exit_candle_time": 1795804200000,
       "gross_return_pct": -0.08687,
-      "net_return_pct": -0.22687
+      "net_return_pct": -0.22687,
+      "classification_status": "EVALUATED",
+      "actual_class": "WAIT",
+      "classification_correct": false,
+      "realized_move_pct": -0.08687,
+      "label_threshold_pct": 0.18,
+      "classification_exit_candle_time": 1795804200000
     },
     {
       "entry_candle_time": 1795803600000,
@@ -454,7 +466,13 @@
       "exit": 59823.8,
       "exit_candle_time": 1795804500000,
       "gross_return_pct": -0.0254,
-      "net_return_pct": -0.1654
+      "net_return_pct": -0.1654,
+      "classification_status": "EVALUATED",
+      "actual_class": "WAIT",
+      "classification_correct": false,
+      "realized_move_pct": -0.0254,
+      "label_threshold_pct": 0.18,
+      "classification_exit_candle_time": 1795804500000
     },
     {
       "entry_candle_time": 1795803900000,
@@ -471,7 +489,13 @@
       "exit": 59774.9,
       "exit_candle_time": 1795804800000,
       "gross_return_pct": -0.05518,
-      "net_return_pct": -0.19518
+      "net_return_pct": -0.19518,
+      "classification_status": "EVALUATED",
+      "actual_class": "WAIT",
+      "classification_correct": false,
+      "realized_move_pct": -0.05518,
+      "label_threshold_pct": 0.18,
+      "classification_exit_candle_time": 1795804800000
     },
     {
       "entry_candle_time": 1795804200000,
@@ -488,7 +512,13 @@
       "exit": 59836.6,
       "exit_candle_time": 1795805100000,
       "gross_return_pct": 0.04832,
-      "net_return_pct": -0.09168
+      "net_return_pct": -0.09168,
+      "classification_status": "EVALUATED",
+      "actual_class": "WAIT",
+      "classification_correct": false,
+      "realized_move_pct": 0.04832,
+      "label_threshold_pct": 0.18,
+      "classification_exit_candle_time": 1795805100000
     },
     {
       "entry_candle_time": 1795804800000,
@@ -505,7 +535,13 @@
       "exit": 59885.8,
       "exit_candle_time": 1795805700000,
       "gross_return_pct": 0.18553,
-      "net_return_pct": 0.04553
+      "net_return_pct": 0.04553,
+      "classification_status": "EVALUATED",
+      "actual_class": "LONG",
+      "classification_correct": true,
+      "realized_move_pct": 0.18553,
+      "label_threshold_pct": 0.18,
+      "classification_exit_candle_time": 1795805700000
     },
     {
       "entry_candle_time": 1795805400000,
@@ -518,7 +554,13 @@
       "actionable": false,
       "validation_gate_passed": false,
       "model_version": "4.4-validation-consistent",
-      "note": "Shadow-only raw ML forecast. Not a trading signal; validation gate may have failed."
+      "note": "Shadow-only raw ML forecast. Not a trading signal; validation gate may have failed.",
+      "classification_status": "EVALUATED",
+      "actual_class": "WAIT",
+      "classification_correct": true,
+      "realized_move_pct": -0.08183,
+      "label_threshold_pct": 0.18,
+      "classification_exit_candle_time": 1795806300000
     },
     {
       "entry_candle_time": 1795807500000,
@@ -738,37 +780,6 @@
         "ai_venue": "OKX BTC-USDT-SWAP Futures",
         "market_venue": "Bitget",
         "basis_pct": 0.0362,
-        "candle_skew_minutes": 10.0,
-        "max_basis_pct": 0.25,
-        "max_candle_skew_minutes": 15,
-        "reason": "Same-venue or cross-venue BTC perpetual prices and 5m candle times are aligned."
-      },
-      "note": "Shadow-only raw ML forecast. Not a trading signal; validation gate may have failed. Cross-venue records are accepted only when both perpetual Futures feeds pass price-basis and candle-time checks.",
-      "classification_status": "EVALUATED",
-      "actual_class": "WAIT",
-      "classification_correct": true,
-      "realized_move_pct": 0.07055,
-      "label_threshold_pct": 0.18,
-      "classification_exit_candle_time": 1795818900000
-    },
-    {
-      "entry_candle_time": 1795820700000,
-      "model_generated_at": "2026-11-27T23:12:12.988871+00:00",
-      "recorded_at": "2026-11-27T23:14:38.309207+00:00",
-      "exchange": "Bitget",
-      "side": "WAIT",
-      "entry": 59792.7,
-      "status": "ABSTAINED",
-      "actionable": false,
-      "validation_gate_passed": false,
-      "model_version": "4.6-causal-market-context",
-      "model_source": "OKX BTC-USDT-SWAP Futures public OHLC candles",
-      "venue_alignment": {
-        "compatible": true,
-        "type": "CROSS_VENUE_FUTURES",
-        "ai_venue": "OKX BTC-USDT-SWAP Futures",
-        "market_venue": "Bitget",
-        "basis_pct": 0.13012,
         "candle_skew_minutes": 10.0,
         "max_basis_pct": 0.25,
         "max_candle_skew_minutes": 15,
