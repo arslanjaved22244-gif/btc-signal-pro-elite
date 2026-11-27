@@ -4,6 +4,7 @@ import json
 import time
 import urllib.parse
 import urllib.request
+import urllib.error
 from datetime import datetime, timezone
 
 BASES = ["https://fapi.binance.com", "https://fapi1.binance.com", "https://fapi2.binance.com", "https://fapi3.binance.com", "https://fapi4.binance.com"]
@@ -22,9 +23,22 @@ def request_json(path, params=None, timeout=15):
         req = urllib.request.Request(url, headers={"User-Agent": "BTC-Signal-Pro-Elite/4.1"})
         try:
             with urllib.request.urlopen(req, timeout=timeout) as response:
-                data = json.loads(response.read().decode("utf-8"))
+                raw = response.read()
+                if not raw.strip():
+                    raise ValueError(f"Empty response from {host} (HTTP {response.status})")
+                try:
+                    data = json.loads(raw.decode("utf-8"))
+                except (UnicodeDecodeError, json.JSONDecodeError) as exc:
+                    preview = raw[:180].decode("utf-8", errors="replace").replace("\\n", " ")
+                    raise ValueError(f"Invalid JSON from {host}: {exc}; body={preview!r}") from exc
                 BASE = host
                 return data
+        except urllib.error.HTTPError as exc:
+            try:
+                body = exc.read(180).decode("utf-8", errors="replace")
+            except Exception:
+                body = ""
+            last_error = RuntimeError(f"HTTP {exc.code} from {host}: {body[:180]}")
         except Exception as exc:
             last_error = exc
     raise last_error
