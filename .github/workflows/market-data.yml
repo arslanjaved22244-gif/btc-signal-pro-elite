@@ -18,6 +18,8 @@ jobs:
           python-version: "3.11"
       - name: Collect public Futures data
         run: python market_data.py
+      - name: Scan public news and event risk
+        run: python news_guard.py
       - name: Build hybrid AI confluence signal
         run: python signal_engine.py
       - name: Publish market and signal snapshots
