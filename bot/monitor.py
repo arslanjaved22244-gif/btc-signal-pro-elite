@@ -251,3 +251,5 @@ def main():
  save_json(OUT,m);save_json(STATE,{"pause_until":pause_until,"pause_reason":state.get("pause_reason"),"last_check":current.isoformat(),"last_signal":signal,"oi_sample":state.get("oi_sample")})
  print(json.dumps(m,indent=2))
 if __name__=="__main__":main()
+
+# Deployment check: trigger the scheduled GitHub Actions monitor after dashboard publish.
