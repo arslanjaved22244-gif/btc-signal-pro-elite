@@ -28,6 +28,9 @@ jobs:
         with:
           python-version: "3.11"
 
+      - name: Install advanced ML libraries
+        run: python -m pip install --upgrade pip numpy scikit-learn xgboost
+
       - name: Run BTC AI model
         run: python ai_model.py/ai_model.py
 
