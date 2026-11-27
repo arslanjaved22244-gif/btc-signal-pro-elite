@@ -13,16 +13,37 @@ def get(url):
         return json.loads(r.read().decode("utf-8"))
 
 
+def first_success(urls):
+    errors = []
+    for url in urls:
+        try:
+            return get(url), url, errors
+        except Exception as exc:
+            errors.append(url.split("/")[2] + ": " + str(exc)[:100])
+    raise RuntimeError(" | ".join(errors))
+
+
 def main():
     venues = {}
-    urls = {
-        "Binance USD-M Futures": "https://fapi.binance.com/fapi/v1/ticker/price?symbol=BTCUSDT",
-        "Bybit linear perpetual": "https://api.bybit.com/v5/market/tickers?category=linear&symbol=BTCUSDT",
-        "OKX BTC-USDT-SWAP": "https://www.okx.com/api/v5/market/ticker?instId=BTC-USDT-SWAP",
+    sources = {
+        "Binance USD-M Futures": [
+            "https://fapi.binance.com/fapi/v1/ticker/price?symbol=BTCUSDT",
+            "https://fapi1.binance.com/fapi/v1/ticker/price?symbol=BTCUSDT",
+            "https://fapi2.binance.com/fapi/v1/ticker/price?symbol=BTCUSDT",
+            "https://fapi3.binance.com/fapi/v1/ticker/price?symbol=BTCUSDT",
+            "https://fapi4.binance.com/fapi/v1/ticker/price?symbol=BTCUSDT"
+        ],
+        "Bybit linear perpetual": [
+            "https://api.bybit.com/v5/market/tickers?category=linear&symbol=BTCUSDT",
+            "https://api.bytick.com/v5/market/tickers?category=linear&symbol=BTCUSDT"
+        ],
+        "OKX BTC-USDT-SWAP": [
+            "https://www.okx.com/api/v5/market/ticker?instId=BTC-USDT-SWAP"
+        ]
     }
-    for name, url in urls.items():
+    for name, urls in sources.items():
         try:
-            data = get(url)
+            data, endpoint, errors = first_success(urls)
             if name.startswith("Binance"):
                 price = float(data["price"])
             elif name.startswith("Bybit"):
@@ -31,9 +52,10 @@ def main():
                 price = float(data["result"]["list"][0]["lastPrice"])
             else:
                 price = float(data["data"][0]["last"])
-            venues[name] = {"available": True, "price": price}
+            venues[name] = {"available": True, "price": price, "endpoint": endpoint,
+                            "fallback_errors": errors}
         except Exception as exc:
-            venues[name] = {"available": False, "error": str(exc)[:180]}
+            venues[name] = {"available": False, "error": str(exc)[:500]}
     available = [(k, v["price"]) for k, v in venues.items() if v.get("available")]
     reference_name, reference = next(((k, p) for k, p in available if k.startswith("OKX")),
                                      available[0] if available else (None, None))
