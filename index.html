@@ -257,12 +257,12 @@ button{background:#f5b942;color:#111;border:0;padding:12px 18px;border-radius:8p
 
 <div class="card">
 <h3>Next Movement AI — BTC Forecast</h3>
-<div class="note">Separate machine-learning forecasts from the main trading signal. Uses completed 15M Binance Futures candles and three independently trained horizon models.</div>
+<div class="note">Separate machine-learning forecasts from the main trading signal. Uses completed public perpetual Futures candles; the actual exchange source is shown in the AI report.</div>
 <div class="scoregrid">
 <div class="scoretile">Next 15 minutes<b id="nextMove15">WAIT</b><small id="nextMove15Meta">Training...</small></div>
 <div class="scoretile">Next 30 minutes<b id="nextMove30">WAIT</b><small id="nextMove30Meta">Training...</small></div>
 <div class="scoretile">Next 60 minutes<b id="nextMove60">WAIT</b><small id="nextMove60Meta">Training...</small></div>
-<div class="scoretile">AI data freshness<b id="nextMoveFresh">--</b><small id="nextMoveStatus">Waiting for Binance data</small></div>
+<div class="scoretile">AI data freshness<b id="nextMoveFresh">--</b><small id="nextMoveStatus">Waiting for Futures data</small></div>
 </div>
 <div class="metric"><span>Forecast explanation</span><b id="nextMoveReason">Waiting for model validation.</b></div>
 <p class="note" id="nextMoveNote">UP/DOWN scores are model outputs, not calibrated probabilities. WAIT is shown when the model is weak or validation accuracy is poor. This forecast cannot know the future and does not place orders.</p>
