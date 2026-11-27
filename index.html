@@ -1529,14 +1529,14 @@ async function loadHybridSignal(force=false){
   const locks=[];
   if(d.news_guard?.block)locks.push("NEWS BLOCK");
   if(d.volatility_guard?.blocked)locks.push("VOLATILITY BLOCK");
-  if(d.ml_context?.futures_source!==true)locks.push("ML SOURCE NOT FUTURES");
+  if(d.ml_context?.futures_source!==true)locks.push("ML SOURCE / VALIDATION GATE BLOCKED");
   if(d.data_quality?.core_timeframes_ok!==true)locks.push("CORE DATA NOT READY");
   setText("hybridLocks",locks.join(" • ")||"No active hard lock");
   const updated=d.generated_at?new Date(d.generated_at):null;
   const age=updated?Math.max(0,(Date.now()-updated.getTime())/60000):null;
   setText("hybridUpdated",age==null?"TIME UNKNOWN":age<10?"FRESH • "+age.toFixed(1)+" min":"STALE • "+age.toFixed(1)+" min");
   const warnings=(d.warnings||[]).slice(0,4);
-  const gateText=d.ml_context?.futures_source===true?"Futures ML source confirmed":"ML confirmation disabled: source is not verified Futures";
+  const gateText=d.ml_context?.futures_source===true?"Futures ML source and validation confirmed":"ML confirmation blocked: Futures source or validation gate not passed";
   setText("hybridWarnings",gateText+(warnings.length?" • "+warnings.join(" | "):"")+(age!=null&&age>=10?" • Snapshot is stale.":""));
   hybridSignalLast=Date.now();
  }catch(e){setText("hybridSignal","WAIT");setText("hybridWarnings","Hybrid signal unavailable: "+e.message);}
