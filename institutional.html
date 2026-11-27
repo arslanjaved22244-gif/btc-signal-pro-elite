@@ -7,6 +7,7 @@
 <p><a href="./index.html">← Back to main dashboard</a> · <button onclick="refresh()">Refresh now</button> <span id="updated" class="muted">Loading...</span></p>
 <div class="card"><h2>Signal Quality Gate</h2><div class="value yellow" id="gate">WAIT / LOADING</div><p id="gatePolicy" class="note">Directional entries remain blocked until evidence thresholds pass.</p><div class="grid" id="checks"></div></div>
 <div class="card"><h2>Live Data Feed Health • 11 Checks</h2><div class="value yellow" id="feedStatus">Checking sources...</div><div class="grid" id="feedChecks"></div><p class="note" id="feedNote">Source availability and freshness only; not proof of prediction accuracy.</p></div>
+<div class="card"><h2>Live Liquidation Stream • Browser Session</h2><div class="value yellow" id="liqWsStatus">Connecting...</div><div class="grid"><div class="tile"><span class="muted">Long liquidation notional</span><div class="value red" id="liqLong">$0</div></div><div class="tile"><span class="muted">Short liquidation notional</span><div class="value green" id="liqShort">$0</div></div><div class="tile"><span class="muted">Events received</span><div class="value" id="liqCount">0</div></div></div><div id="liqEvents" class="note">Waiting for Binance USD-M Futures force-order events...</div><p class="note">Live only while this dashboard remains open. Browser WebSocket session is not a 24/7 server feed and does not change the server-side continuous-stream health check.</p></div>
 <div class="grid">
 <div class="card"><h2>Market Regime AI</h2><div class="value" id="regime">--</div><div class="note" id="regimeMeta">--</div></div>
 <div class="card"><h2>Volume Profile + VWAP</h2><div class="row"><span>POC</span><b id="poc">--</b></div><div class="row"><span>Value Area High</span><b id="vah">--</b></div><div class="row"><span>Value Area Low</span><b id="val">--</b></div><div class="row"><span>VWAP</span><b id="vwap">--</b></div><div class="note" id="profileNote">--</div></div>
@@ -32,5 +33,33 @@ const s=d.next_move_scenarios||{};$("scenarios").innerHTML=Object.entries(s).map
 const o=d.options||{};$("pc").textContent=fmt(o.put_call_open_interest_ratio);$("oi").textContent=fmt(o.call_open_interest)+" / "+fmt(o.put_open_interest);$("vol").textContent=fmt(o.call_volume_24h)+" / "+fmt(o.put_volume_24h);$("iv").textContent=fmt(o.average_call_mark_iv_pct)+"% / "+fmt(o.average_put_mark_iv_pct)+"%";$("pain").textContent=o.approx_max_pain_strike?"$"+fmt(o.approx_max_pain_strike):"--";$("optionsNote").textContent=o.status==="AVAILABLE"?o.note:(o.reason||"Options feed unavailable");
 const mc=d.macro_correlations||{},c=mc.correlations_vs_btc||{};$("macro").innerHTML=Object.entries(c).map(([k,v])=>'<div class="row"><span>'+k+'</span><b class="'+(v.correlation==null?"yellow":v.correlation>0?"green":"red")+'">'+(v.correlation==null?(v.status||"--"):v.correlation+" • n="+v.samples)+'</b></div>').join("")||"Unavailable";$("macroNote").textContent=mc.note||mc.reason||mc.status||"--";
 }catch(e){$("gate").textContent="WAIT • "+e.message;$("gate").className="value yellow";}}
+let liqSocket=null,liqReconnect=null,liqEvents=0,liqLongTotal=0,liqShortTotal=0;
+function connectLiquidations(){
+ try{
+  if(liqSocket && (liqSocket.readyState===WebSocket.OPEN||liqSocket.readyState===WebSocket.CONNECTING))return;
+  $("liqWsStatus").textContent="Connecting to Binance Futures...";
+  liqSocket=new WebSocket("wss://fstream.binance.com/ws/btcusdt@forceOrder");
+  liqSocket.onopen=()=>{$("liqWsStatus").textContent="CONNECTED • live while page is open";$("liqWsStatus").className="value green";};
+  liqSocket.onmessage=e=>{
+   try{
+    const d=JSON.parse(e.data),o=d.o||{},side=o.S||"",price=Number(o.ap||o.p||0),qty=Number(o.z||o.q||0),notional=price*qty;
+    if(!notional)return;
+    liqEvents++;
+    if(side==="SELL")liqLongTotal+=notional;
+    else if(side==="BUY")liqShortTotal+=notional;
+    $("liqCount").textContent=liqEvents;
+    $("liqLong").textContent="$"+fmt(liqLongTotal);
+    $("liqShort").textContent="$"+fmt(liqShortTotal);
+    const line=new Date().toLocaleTimeString()+" • "+(side==="SELL"?"LONG LIQUIDATED":"SHORT LIQUIDATED")+" • $"+fmt(notional);
+    $("liqEvents").textContent=line+"\n"+$("liqEvents").textContent.split("\n").slice(0,7).join("\n");
+    $("liqEvents").style.whiteSpace="pre-line";
+   }catch(_){}
+  };
+  liqSocket.onerror=()=>{$("liqWsStatus").textContent="Connection error • retrying";$("liqWsStatus").className="value yellow";};
+  liqSocket.onclose=()=>{$("liqWsStatus").textContent="DISCONNECTED • reconnecting";$("liqWsStatus").className="value yellow";clearTimeout(liqReconnect);liqReconnect=setTimeout(connectLiquidations,5000);};
+ }catch(e){$("liqWsStatus").textContent="Unavailable • "+e.message;$("liqWsStatus").className="value red";clearTimeout(liqReconnect);liqReconnect=setTimeout(connectLiquidations,10000);}
+}
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)connectLiquidations();});
+connectLiquidations();
 refresh();setInterval(refresh,60000);
 </script></body></html>
