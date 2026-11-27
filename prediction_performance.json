@@ -1,8 +1,8 @@
 {
   "source": "OKX BTC-USDT-SWAP public ticker; directional close comparison only",
-  "updated_at": "2026-11-27T13:50:51.310648+00:00",
-  "model_generated_at": "2026-11-27T13:32:38.364405+00:00",
-  "current_price": 61509.7,
+  "updated_at": "2026-11-27T14:43:13.459403+00:00",
+  "model_generated_at": "2026-11-27T14:35:23.294802+00:00",
+  "current_price": 59848.1,
   "stats": {
     "15m": {
       "evaluated": 3,
@@ -15,24 +15,24 @@
       "wait_abstentions": 3
     },
     "30m": {
-      "evaluated": 2,
+      "evaluated": 3,
       "directional_calls": 0,
       "correct": 0,
       "directional_accuracy_pct": null,
-      "raw_directional_calls": 1,
-      "raw_correct": 1,
+      "raw_directional_calls": 2,
+      "raw_correct": 2,
       "raw_directional_accuracy_pct": 100.0,
-      "wait_abstentions": 2
+      "wait_abstentions": 3
     },
     "60m": {
-      "evaluated": 2,
+      "evaluated": 3,
       "directional_calls": 0,
       "correct": 0,
       "directional_accuracy_pct": null,
-      "raw_directional_calls": 1,
-      "raw_correct": 1,
+      "raw_directional_calls": 2,
+      "raw_correct": 2,
       "raw_directional_accuracy_pct": 100.0,
-      "wait_abstentions": 2
+      "wait_abstentions": 3
     },
     "4h": {
       "evaluated": 0,
@@ -184,11 +184,11 @@
       "direction": "WAIT",
       "raw_direction": "SHORT",
       "reference_price": 61371.7,
-      "outcome": null,
-      "evaluated_at": null,
-      "realized_change_pct": null,
+      "outcome": "ABSTAINED",
+      "evaluated_at": "2026-11-27T14:43:13.459403+00:00",
+      "realized_change_pct": -2.48844,
       "correct": null,
-      "raw_correct": null,
+      "raw_correct": true,
       "validation_status": "WEAK EDGE \u2014 WAIT"
     },
     {
@@ -199,11 +199,11 @@
       "direction": "WAIT",
       "raw_direction": "SHORT",
       "reference_price": 61371.7,
-      "outcome": null,
-      "evaluated_at": null,
-      "realized_change_pct": null,
+      "outcome": "ABSTAINED",
+      "evaluated_at": "2026-11-27T14:43:13.459403+00:00",
+      "realized_change_pct": -2.48844,
       "correct": null,
-      "raw_correct": null,
+      "raw_correct": true,
       "validation_status": "WEAK EDGE \u2014 WAIT"
     },
     {
@@ -220,6 +220,66 @@
       "correct": null,
       "raw_correct": null,
       "validation_status": "WEAK EDGE \u2014 WAIT"
+    },
+    {
+      "model_generated_at": "2026-11-27T14:35:23.294802+00:00",
+      "logged_at": "2026-11-27T14:35:23.294802+00:00",
+      "horizon": "15m",
+      "horizon_minutes": 15,
+      "direction": "LONG",
+      "raw_direction": "LONG",
+      "reference_price": 61347.3,
+      "outcome": null,
+      "evaluated_at": null,
+      "realized_change_pct": null,
+      "correct": null,
+      "raw_correct": null,
+      "validation_status": "VALIDATED TREE ENSEMBLE"
+    },
+    {
+      "model_generated_at": "2026-11-27T14:35:23.294802+00:00",
+      "logged_at": "2026-11-27T14:35:23.294802+00:00",
+      "horizon": "30m",
+      "horizon_minutes": 30,
+      "direction": "WAIT",
+      "raw_direction": "LONG",
+      "reference_price": 61347.3,
+      "outcome": null,
+      "evaluated_at": null,
+      "realized_change_pct": null,
+      "correct": null,
+      "raw_correct": null,
+      "validation_status": "WEAK EDGE \u2014 WAIT"
+    },
+    {
+      "model_generated_at": "2026-11-27T14:35:23.294802+00:00",
+      "logged_at": "2026-11-27T14:35:23.294802+00:00",
+      "horizon": "60m",
+      "horizon_minutes": 60,
+      "direction": "WAIT",
+      "raw_direction": "SHORT",
+      "reference_price": 61347.3,
+      "outcome": null,
+      "evaluated_at": null,
+      "realized_change_pct": null,
+      "correct": null,
+      "raw_correct": null,
+      "validation_status": "WEAK EDGE \u2014 WAIT"
+    },
+    {
+      "model_generated_at": "2026-11-27T14:35:23.294802+00:00",
+      "logged_at": "2026-11-27T14:35:23.294802+00:00",
+      "horizon": "4h",
+      "horizon_minutes": 240,
+      "direction": "LONG",
+      "raw_direction": "LONG",
+      "reference_price": 61347.3,
+      "outcome": null,
+      "evaluated_at": null,
+      "realized_change_pct": null,
+      "correct": null,
+      "raw_correct": null,
+      "validation_status": "VALIDATED TREE ENSEMBLE"
     }
   ],
   "limitations": "Not a trade P&L, win-rate guarantee, or stop/target simulation. LONG/SHORT accuracy is directional only; WAIT is counted as abstention."
