@@ -676,6 +676,9 @@ def advanced_tree_ensemble(data, prepared):
     try:
         import numpy as np
         from sklearn.ensemble import RandomForestClassifier, HistGradientBoostingClassifier
+        from sklearn.pipeline import make_pipeline
+        from sklearn.preprocessing import StandardScaler
+        from sklearn.neural_network import MLPClassifier
     except Exception as exc:
         return {"status":"DEPENDENCY ERROR","detail":str(exc),"forecasts":{}}
     try:
@@ -709,7 +712,11 @@ def advanced_tree_ensemble(data, prepared):
             "random_forest":RandomForestClassifier(n_estimators=60,max_depth=8,min_samples_leaf=12,
                 class_weight="balanced_subsample",n_jobs=2,random_state=42),
             "gradient_boosting":HistGradientBoostingClassifier(max_iter=100,learning_rate=0.06,
-                max_leaf_nodes=15,l2_regularization=1.0,random_state=42)
+                max_leaf_nodes=15,l2_regularization=1.0,random_state=42),
+            "neural_mlp":make_pipeline(StandardScaler(),MLPClassifier(hidden_layer_sizes=(48,24),
+                activation="relu",solver="adam",alpha=0.01,batch_size=64,learning_rate_init=0.001,
+                max_iter=60,early_stopping=True,validation_fraction=0.15,n_iter_no_change=8,
+                random_state=42))
         }
         if xgb_available:
             models["xgboost"]=XGBClassifier(n_estimators=60,max_depth=3,learning_rate=0.04,
@@ -750,7 +757,7 @@ def advanced_tree_ensemble(data, prepared):
             "models":model_metrics,"model_count":len(all_probs),
             "status":"VALIDATED TREE ENSEMBLE" if signal!="WAIT" else "WEAK EDGE — WAIT"}
     return {"status":"READY" if output else "NO FORECASTS",
-            "algorithms":["Random Forest","Histogram Gradient Boosting"]+(["XGBoost"] if xgb_available else []),
+            "algorithms":["Random Forest","Histogram Gradient Boosting","Neural MLP"]+(["XGBoost"] if xgb_available else []),
             "forecasts":output,
             "validation":"chronological holdout with horizon purge; scores are not calibrated win probabilities"}
 
