@@ -275,7 +275,7 @@
   "neutral_threshold_pct": 0.05,
   "last_price": 77522.6,
   "last_candle_time": 1793490900000,
-  "generated_at": "2026-11-27T05:02:25.905543+00:00",
+  "generated_at": "2026-11-27T06:07:36.917313+00:00",
   "limitations": [
     "Training is strictly Binance USD-M Futures OHLCV. If Futures endpoints fail, training fails closed and never substitutes Spot data. CVD, open interest, funding, order book and liquidation remain separate confluence inputs.",
     "Class scores are model scores, not calibrated real-world win probabilities.",
