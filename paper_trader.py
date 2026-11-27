@@ -16,26 +16,24 @@ MAX_CROSS_VENUE_CANDLE_SKEW_MINUTES = 15
 
 
 def assess_venue_alignment(ai, market, market_price, market_candle_time):
-    """Allow cross-venue shadow scoring only for fresh, close-aligned BTC perpetual feeds."""
+    """Require exact 5m Futures venue, price and candle-time alignment for shadow scoring."""
     ai_source = str(ai.get("data_source", ""))
-    ai_tf_source = str(ai.get("data_source_by_timeframe", {}).get("5m", ""))
+    ai_tf_source = str(ai.get("data_source_by_timeframe", {}).get("5m") or ai_source)
     exchange = str(market.get("exchange", ""))
-    source_text = (ai_source + " " + ai_tf_source).lower()
+    ai_source_lower = ai_tf_source.lower()
     market_text = (exchange + " " + str(market.get("market_type", "")) + " " +
                    str(market.get("source", ""))).lower()
-    same_venue = bool(exchange) and exchange.lower() in source_text
-    ai_is_futures = "futures" in source_text and "spot" not in source_text
+    same_venue = bool(exchange) and exchange.lower() in ai_source_lower
+    ai_is_futures = "futures" in ai_source_lower and "spot" not in ai_source_lower
     market_is_futures = market.get("data_quality", {}).get("futures_only") is True
-    if same_venue and ai_is_futures and market_is_futures:
-        return {"compatible": True, "type": "SAME_VENUE", "basis_pct": 0.0,
-                "candle_skew_minutes": 0.0, "reason": "Both feeds identify the same perpetual Futures venue."}
     if not (ai_is_futures and market_is_futures):
         return {"compatible": False, "type": "BLOCKED",
-                "reason": "Both AI and evaluation feeds must be verified perpetual Futures."}
+                "reason": "Both AI 5m input and evaluation feed must be verified perpetual Futures."}
     ai_symbol = str(ai.get("symbol", "BTC/USDT")).upper().replace("/", "").replace("-", "")
     market_symbol = str(market.get("symbol", "BTCUSDT")).upper().replace("/", "").replace("-", "")
     if "BTC" not in ai_symbol or "USDT" not in ai_symbol or "BTC" not in market_symbol or "USDT" not in market_symbol:
-        return {"compatible": False, "type": "BLOCKED", "reason": "Cross-venue shadow scoring is restricted to BTC/USDT perpetuals."}
+        return {"compatible": False, "type": "BLOCKED",
+                "reason": "Shadow scoring is restricted to BTC/USDT perpetual Futures."}
     try:
         ai_price = float(ai.get("last_price"))
         market_price = float(market_price)
@@ -47,19 +45,19 @@ def assess_venue_alignment(ai, market, market_price, market_candle_time):
         skew_minutes = abs(ai_time - market_time) / 60000.0
     except (TypeError, ValueError):
         return {"compatible": False, "type": "BLOCKED",
-                "reason": "Cross-venue scoring requires valid AI and market prices plus candle timestamps."}
+                "reason": "Shadow scoring requires valid AI and market prices plus 5m candle timestamps."}
     compatible = (basis_pct <= MAX_CROSS_VENUE_BASIS_PCT and
                   skew_minutes <= MAX_CROSS_VENUE_CANDLE_SKEW_MINUTES)
     return {
         "compatible": compatible,
-        "type": "CROSS_VENUE_FUTURES" if compatible else "BLOCKED",
-        "ai_venue": ai_source, "market_venue": exchange or market_text[:80],
+        "type": ("SAME_VENUE" if same_venue else "CROSS_VENUE_FUTURES") if compatible else "BLOCKED",
+        "ai_venue": ai_tf_source, "market_venue": exchange or market_text[:80],
         "basis_pct": round(basis_pct, 5),
         "candle_skew_minutes": round(skew_minutes, 2),
         "max_basis_pct": MAX_CROSS_VENUE_BASIS_PCT,
         "max_candle_skew_minutes": MAX_CROSS_VENUE_CANDLE_SKEW_MINUTES,
-        "reason": ("Cross-venue BTC perpetual prices and candle times are within safety tolerances."
-                   if compatible else "Cross-venue basis or candle-time skew exceeds the safety tolerance.")
+        "reason": ("Same-venue or cross-venue BTC perpetual prices and 5m candle times are aligned."
+                   if compatible else "Perpetual price basis or 5m candle-time skew exceeds the safety tolerance.")
     }
 
 
