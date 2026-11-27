@@ -52,6 +52,39 @@ def get_binance_data(interval):
     return candles
 
 
+def get_binance_spot_data(interval):
+    # Public Binance Spot klines are a fallback when Futures is region-blocked.
+    candles_by_time = {}
+    end_time = None
+    for _ in range(3):
+        query = f"symbol=BTCUSDT&interval={interval}&limit=1000"
+        if end_time is not None:
+            query += f"&endTime={end_time}"
+        url = "https://api.binance.com/api/v3/klines?" + query
+        request = urllib.request.Request(
+            url, headers={"User-Agent": "BTC-Signal-Pro-Elite/3.1"}
+        )
+        with urllib.request.urlopen(request, timeout=30) as response:
+            rows = json.loads(response.read().decode("utf-8"))
+        if not isinstance(rows, list) or not rows:
+            break
+        for row in rows:
+            candles_by_time[int(row[0])] = {
+                "time": int(row[0]), "open": float(row[1]),
+                "high": float(row[2]), "low": float(row[3]),
+                "close": float(row[4]), "volume": float(row[5])
+            }
+        oldest = min(int(row[0]) for row in rows)
+        if len(rows) < 1000 or oldest <= 0:
+            break
+        end_time = oldest - 1
+    candles = [candles_by_time[t] for t in sorted(candles_by_time)]
+    candles = candles[:-1]  # discard the currently forming candle
+    if len(candles) < 210:
+        raise ValueError(f"Not enough completed Binance Spot {interval} candles: {len(candles)}")
+    return candles
+
+
 def get_kraken_data(interval_minutes):
     # Geographic restrictions can block Binance Futures API requests on CI runners.
     url = f"https://api.kraken.com/0/public/OHLC?pair=XBTUSD&interval={interval_minutes}"
@@ -300,14 +333,23 @@ def main():
         for tf in INTERVALS:
             print(f"Loading Binance Futures {tf} candles...")
             data[tf] = get_binance_data(tf)
-    except Exception as exc:
-        print(f"Binance Futures data unavailable ({exc}); switching all timeframes to Kraken Spot.")
+    except Exception as futures_exc:
+        print(f"Binance Futures unavailable ({futures_exc}); trying Binance Spot.")
         data = {}
-        source = "Kraken Spot public OHLC (fallback)"
-        symbol = "BTC/USD"
-        for tf, minutes in INTERVALS.items():
-            print(f"Loading Kraken Spot {tf} candles...")
-            data[tf] = get_kraken_data(minutes)
+        try:
+            for tf in INTERVALS:
+                print(f"Loading Binance Spot {tf} candles...")
+                data[tf] = get_binance_spot_data(tf)
+            source = "Binance Spot public klines (fallback)"
+            symbol = "BTC/USDT"
+        except Exception as spot_exc:
+            print(f"Binance Spot unavailable ({spot_exc}); switching all timeframes to Kraken Spot.")
+            data = {}
+            source = "Kraken Spot public OHLC (fallback)"
+            symbol = "BTC/USD"
+            for tf, minutes in INTERVALS.items():
+                print(f"Loading Kraken Spot {tf} candles...")
+                data[tf] = get_kraken_data(minutes)
     rows, labels = build_dataset(data)
     if len(rows) < 250:
         raise ValueError(f"Not enough aligned multi-timeframe samples: {len(rows)}")
@@ -324,7 +366,7 @@ def main():
     result = {
         "system": "BTC Signal Pro Elite Advanced ML",
         "model": "Multinomial Logistic Regression",
-        "model_version": "3.0-binance-mtf-balanced-walkforward",
+        "model_version": "3.1-multi-source-mtf-balanced-walkforward",
         "data_source": source,
         "symbol": symbol,
         "base_interval": "5m",
@@ -342,7 +384,7 @@ def main():
         "last_candle_time": data["5m"][-1]["time"],
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "limitations": [
-            "Uses one consistent OHLCV source across all timeframes. Kraken fallback is spot data, not Binance Futures data; CVD, open interest, funding, order book and liquidation feeds are not model features yet.",
+            "Uses one consistent OHLCV source across all timeframes. Source fallback order is Binance USD-M Futures, Binance Spot, then Kraken Spot. When a spot source is used, it is not Futures data; CVD, open interest, funding, order book and liquidation feeds are not model features yet.",
             "Class scores are model scores, not calibrated real-world win probabilities.",
             "Walk-forward metrics are historical diagnostics, not guarantees of future performance."
         ]
