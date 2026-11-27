@@ -1,30 +1,30 @@
 {
   "system": "BTC Signal Pro Elite Hybrid Confluence Engine",
   "version": "4.1-hybrid-futures-confluence",
-  "generated_at": "2026-11-27T13:37:46.171526+00:00",
+  "generated_at": "2026-11-27T13:40:44.383803+00:00",
   "symbol": "BTCUSDT",
   "market_type": "BINANCE_USDM_FUTURES",
   "signal": "WAIT",
-  "confidence_score": 17.07,
+  "confidence_score": 19.51,
   "scores": {
-    "LONG": 1.75,
-    "SHORT": 1.0
+    "LONG": 1.25,
+    "SHORT": 2.0
   },
   "timeframe_analysis": {
     "5m": {
       "available": true,
       "bias": "NEUTRAL",
-      "price": 61344.5,
-      "ema50": 61565.74,
-      "ema200": 61355.99,
-      "rsi14": 36.93,
-      "atr14": 114.93,
+      "price": 61398.8,
+      "ema50": 61559.19,
+      "ema200": 61356.8,
+      "rsi14": 41.63,
+      "atr14": 123.21,
       "macd": {
-        "line": -58.58315,
-        "signal": -43.15201,
-        "histogram": -15.43115
+        "line": -59.07075,
+        "signal": -46.33575,
+        "histogram": -12.735
       },
-      "age_seconds": 138
+      "age_seconds": 14
     },
     "15m": {
       "available": true,
@@ -39,7 +39,7 @@
         "signal": 24.17463,
         "histogram": -34.79265
       },
-      "age_seconds": 438
+      "age_seconds": 614
     },
     "1h": {
       "available": true,
@@ -54,7 +54,7 @@
         "signal": 308.16238,
         "histogram": 17.39271
       },
-      "age_seconds": 2238
+      "age_seconds": 2414
     },
     "4h": {
       "available": true,
@@ -69,7 +69,7 @@
         "signal": -82.33866,
         "histogram": 256.79631
       },
-      "age_seconds": 5839
+      "age_seconds": 6014
     },
     "1d": {
       "available": true,
@@ -84,16 +84,16 @@
         "signal": -4496.99009,
         "histogram": -173.08834
       },
-      "age_seconds": 77839
+      "age_seconds": 78015
     }
   },
   "order_flow": {
-    "cvd_base": 62.41,
-    "order_book_imbalance": 0.751025,
-    "funding_rate_pct": 0.00088,
+    "cvd_base": -1945.57,
+    "order_book_imbalance": 0.319329,
+    "funding_rate_pct": 0.001045,
     "funding_crowding": "NEUTRAL",
-    "open_interest_change_30m_pct": -0.0227,
-    "taker_buy_sell_ratio": null
+    "open_interest_change_30m_pct": 0.1224,
+    "taker_buy_sell_ratio": 1.6962944416848715
   },
   "ml_context": {
     "model_version": "4.1-volatility-adaptive-labels",
@@ -102,7 +102,7 @@
     "signal": "WAIT"
   },
   "risk_levels": {
-    "entry_reference": 61344.5,
+    "entry_reference": 61398.8,
     "stop_loss": null,
     "take_profit_1": null,
     "take_profit_2": null,
@@ -115,14 +115,12 @@
     "futures_only": true,
     "status": "HEALTHY",
     "warnings": [
-      "Some derivatives confluence feeds are unavailable; signals rely more heavily on verified multi-timeframe Futures candles and available flow data.",
-      "taker_flow_5m feed unavailable: HTTP Error 400: Bad Request",
       "OKX BTC-USDT-SWAP is a separate exchange perpetual reference; confirm execution venue price and liquidity."
     ],
-    "derivatives_confluence_status": "PARTIAL"
+    "derivatives_confluence_status": "AVAILABLE"
   },
   "news_guard": {
-    "generated_at": "2026-11-27T13:37:21.231968+00:00",
+    "generated_at": "2026-11-27T13:40:16.880789+00:00",
     "source": "Google News RSS public fallback",
     "available": true,
     "block": false,
@@ -132,13 +130,11 @@
   },
   "volatility_guard": {
     "blocked": false,
-    "atr_5m_pct": 0.1874,
+    "atr_5m_pct": 0.2007,
     "atr_threshold_pct": 0.45,
     "range_spike": false
   },
   "warnings": [
-    "Some derivatives confluence feeds are unavailable; signals rely more heavily on verified multi-timeframe Futures candles and available flow data.",
-    "taker_flow_5m feed unavailable: HTTP Error 400: Bad Request",
     "OKX BTC-USDT-SWAP is a separate exchange perpetual reference; confirm execution venue price and liquidity."
   ],
   "execution": "MANUAL_ONLY_NO_ORDERS"
