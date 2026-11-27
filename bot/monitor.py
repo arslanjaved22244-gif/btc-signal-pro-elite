@@ -210,13 +210,19 @@ def main():
    if 240<=age<=720 and prev_value:
     m["oi_change_5m_pct"]=(float(oi_now)-prev_value)/prev_value*100
     m["oi_change_sample_age_seconds"]=round(age,1)
+    state["oi_sample"]={"value":float(oi_now),"time":current.isoformat()}
+   elif age<240:
+    m["oi_change_5m_pct"]=None
+    m["oi_note"]="Waiting for the existing OI baseline to reach 4 minutes"
+    # Preserve the earlier baseline through frequent workflow triggers.
    else:
     m["oi_change_5m_pct"]=None
-    m["oi_note"]="Waiting for a valid 4-12 minute OI sample pair"
+    m["oi_note"]="Old OI baseline expired; collecting a fresh sample"
+    state["oi_sample"]={"value":float(oi_now),"time":current.isoformat()}
   except Exception:
    m["oi_change_5m_pct"]=None
    m["oi_note"]="Collecting first OI baseline sample"
-  state["oi_sample"]={"value":float(oi_now),"time":current.isoformat()}
+   state["oi_sample"]={"value":float(oi_now),"time":current.isoformat()}
 
  if news:
   try:old=datetime.fromisoformat(pause_until) if pause_until else current
