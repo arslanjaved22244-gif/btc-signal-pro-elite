@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0b1020"><title>BTC Signal Pro Elite • Institutional Intelligence</title>
+<style>
+*{box-sizing:border-box}body{margin:0;padding:18px;background:#0b1020;color:#eef2ff;font:14px Arial,sans-serif;max-width:1100px;margin:auto}h1{color:#f5b942;font-size:23px}h2{font-size:17px;margin:0 0 12px}.muted,.note{color:#9eabc4}.note{font-size:12px;line-height:1.5}.card{background:#171f35;padding:16px;border-radius:14px;margin:13px 0;overflow:hidden}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}.tile{background:#222e49;padding:12px;border-radius:9px}.value{font-size:20px;font-weight:bold;margin-top:8px;overflow-wrap:anywhere}.green{color:#35d39a}.red{color:#ff647c}.yellow{color:#f5b942}.row{padding:9px 0;border-bottom:1px solid #303b55;display:flex;justify-content:space-between;gap:10px}.row b{text-align:right}button{background:#f5b942;border:0;border-radius:8px;padding:11px 16px;font-weight:bold}a{color:#f5b942}
+</style></head><body>
+<h1>₿ BTC Signal Pro Elite</h1><p class="muted">INSTITUTIONAL INTELLIGENCE • PUBLIC DATA • MANUAL TRADING ONLY</p>
+<p><a href="./index.html">← Back to main dashboard</a> · <button onclick="refresh()">Refresh now</button> <span id="updated" class="muted">Loading...</span></p>
+<div class="card"><h2>Signal Quality Gate</h2><div class="value yellow" id="gate">WAIT / LOADING</div><p id="gatePolicy" class="note">Directional entries remain blocked until evidence thresholds pass.</p><div class="grid" id="checks"></div></div>
+<div class="grid">
+<div class="card"><h2>Market Regime AI</h2><div class="value" id="regime">--</div><div class="note" id="regimeMeta">--</div></div>
+<div class="card"><h2>Volume Profile + VWAP</h2><div class="row"><span>POC</span><b id="poc">--</b></div><div class="row"><span>Value Area High</span><b id="vah">--</b></div><div class="row"><span>Value Area Low</span><b id="val">--</b></div><div class="row"><span>VWAP</span><b id="vwap">--</b></div><div class="note" id="profileNote">--</div></div>
+</div>
+<div class="card"><h2>Liquidity & False Breakout Detection</h2><div class="value yellow" id="liquidity">--</div><p class="note" id="liquidityNote">--</p></div>
+<div class="card"><h2>Next Move Scenarios (Research Only)</h2><div class="grid" id="scenarios"></div><p class="note">Scenario scores are heuristics, not calibrated probabilities or trade entries.</p></div>
+<div class="grid">
+<div class="card"><h2>BTC Options Intelligence</h2><div class="row"><span>Put / Call OI ratio</span><b id="pc">--</b></div><div class="row"><span>Call / Put open interest</span><b id="oi">--</b></div><div class="row"><span>Call / Put 24h volume</span><b id="vol">--</b></div><div class="row"><span>Average call / put IV</span><b id="iv">--</b></div><div class="row"><span>Approx. max pain</span><b id="pain">--</b></div><p class="note" id="optionsNote">--</p></div>
+<div class="card"><h2>Global Market Correlation</h2><div id="macro">Loading...</div><p class="note" id="macroNote">--</p></div>
+</div>
+<p class="note">Public research data only. Options and macro feeds may be unavailable. Correlations are historical relationships, not causal signals. No automatic orders are ever placed.</p>
+<script>
+const $=id=>document.getElementById(id),fmt=x=>x==null?"--":Number(x).toLocaleString(undefined,{maximumFractionDigits:2});
+async function refresh(){try{const r=await fetch("./institutional_intelligence.json?ts="+Date.now(),{cache:"no-store"});if(!r.ok)throw Error("Snapshot not published yet");const d=await r.json();
+$("updated").textContent="Updated "+new Date(d.generated_at).toLocaleString();
+const g=d.signal_quality_gate||{};$("gate").textContent=(g.status||"UNKNOWN")+" • "+(g.passed_checks||0)+"/"+(g.total_checks||0)+" checks";$("gate").className="value "+(g.passed?"green":"red");$("gatePolicy").textContent=g.policy||g.note||"";
+$("checks").innerHTML=Object.entries(g.checks||{}).map(([k,v])=>'<div class="tile"><b class="'+(v?"green":"red")+'">'+(v?"PASS":"BLOCKED")+'</b><div>'+k.replaceAll("_"," ")+'</div></div>').join("");
+const m=d.market_regime||{};$("regime").textContent=m.regime||m.status||"--";$("regimeMeta").textContent="EMA spread "+fmt(m.ema50_200_spread_pct)+"% • 6h slope "+fmt(m.ema50_slope_6h_pct)+"% • ATR "+fmt(m.atr_pct)+"%";
+const p=d.volume_profile||{};$("poc").textContent="$"+fmt(p.poc);$("vah").textContent="$"+fmt(p.value_area_high);$("val").textContent="$"+fmt(p.value_area_low);$("vwap").textContent="$"+fmt(p.vwap);$("profileNote").textContent=p.note||p.status||"--";
+const l=d.liquidity_structure||{};$("liquidity").textContent=l.status||"--";$("liquidityNote").textContent=(l.note||"")+" "+(l.level?"Level $"+fmt(l.level):"");
+const s=d.next_move_scenarios||{};$("scenarios").innerHTML=Object.entries(s).map(([h,x])=>'<div class="tile"><b>'+h+'</b><div class="value yellow">'+(x.scenario||"WAIT")+'</div><div>Score: '+fmt(x.directional_score)+'</div><div>Momentum: '+fmt(x.recent_momentum_pct)+'%</div><small>'+((x.status)||"")+'</small></div>').join("");
+const o=d.options||{};$("pc").textContent=fmt(o.put_call_open_interest_ratio);$("oi").textContent=fmt(o.call_open_interest)+" / "+fmt(o.put_open_interest);$("vol").textContent=fmt(o.call_volume_24h)+" / "+fmt(o.put_volume_24h);$("iv").textContent=fmt(o.average_call_mark_iv_pct)+"% / "+fmt(o.average_put_mark_iv_pct)+"%";$("pain").textContent=o.approx_max_pain_strike?"$"+fmt(o.approx_max_pain_strike):"--";$("optionsNote").textContent=o.status==="AVAILABLE"?o.note:(o.reason||"Options feed unavailable");
+const mc=d.macro_correlations||{},c=mc.correlations_vs_btc||{};$("macro").innerHTML=Object.entries(c).map(([k,v])=>'<div class="row"><span>'+k+'</span><b class="'+(v.correlation==null?"yellow":v.correlation>0?"green":"red")+'">'+(v.correlation==null?(v.status||"--"):v.correlation+" • n="+v.samples)+'</b></div>').join("")||"Unavailable";$("macroNote").textContent=mc.note||mc.reason||mc.status||"--";
+}catch(e){$("gate").textContent="WAIT • "+e.message;$("gate").className="value yellow";}}
+refresh();setInterval(refresh,60000);
+</script></body></html>
