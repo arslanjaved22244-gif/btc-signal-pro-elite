@@ -5,6 +5,7 @@ from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from datetime import datetime, timezone
 from pathlib import Path
 import websocket
+from runner_safety import publish_wait_override
 
 ROOT = Path(__file__).resolve().parent
 OUT = ROOT / "liquidation_data.json"
@@ -154,13 +155,23 @@ def monitor_worker():
                 if signal_ok:
                     run_step("Paper-trade journal (no orders)", "paper_trader.py", timeout=45)
                     run_step("Advanced metrics", "advanced_modules.py", timeout=60)
+                else:
+                    publish_wait_override(ROOT / "signal_result.json", "NEWS_SCAN", "News/event-risk scan failed; directional signals disabled.")
+                if signal_ok:
+                    run_step("Paper-trade journal (no orders)", "paper_trader.py", timeout=45)
+                    run_step("Advanced metrics", "advanced_modules.py", timeout=60)
+                else:
+                    publish_wait_override(ROOT / "signal_result.json", "SIGNAL_ENGINE", "Signal engine failed; directional signals disabled.")
             else:
-                print("Signal update skipped: latest market collection failed; existing signal must be treated as stale.", flush=True)
+                publish_wait_override(ROOT / "signal_result.json", "MARKET_DATA", "Latest Futures market collection failed; prior snapshots are stale.")
+                print("Signal update skipped: latest market collection failed; published signal forced to WAIT.", flush=True)
             run_step("Derivatives and news monitor", "bot/monitor.py", timeout=55)
         except subprocess.TimeoutExpired as exc:
-            print("Live scan timed out:", str(exc), flush=True)
+            publish_wait_override(ROOT / "signal_result.json", "RUNNER_TIMEOUT", str(exc))
+            print("Live scan timed out; signal forced to WAIT:", str(exc), flush=True)
         except Exception as exc:
-            print("Live monitor runner error:", str(exc), flush=True)
+            publish_wait_override(ROOT / "signal_result.json", "RUNNER_EXCEPTION", str(exc))
+            print("Live monitor runner error; signal forced to WAIT:", str(exc), flush=True)
         elapsed = time.time() - started
         time.sleep(max(5, 60 - elapsed))
 
