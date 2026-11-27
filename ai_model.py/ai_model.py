@@ -2812,8 +2812,11 @@ def main():
     ordered = sorted(scores, reverse=True)
     margin = ordered[0] - ordered[1]
     calibrated_class = predict_with_wait_threshold(scores, final_wait_threshold)
+    # Never publish a BTC/USDT Futures directional call from Spot-proxy training data.
+    futures_source_gate = "Futures" in str(source) and "Spot" not in str(source)
     validation_gate = (
-        validation.get("accuracy", 0) >= 38.0
+        futures_source_gate
+        and validation.get("accuracy", 0) >= 38.0
         and validation.get("macro_f1", 0) >= 30.0
         and validation.get("accuracy", 0) > validation.get("majority_class_baseline_pct", 100)
     )
@@ -2897,7 +2900,7 @@ def main():
         "ensemble_configuration": {"models": ["full_history_logistic", "recent_regime_logistic", "nearest_centroid", "decision_stumps"], "weights": adaptive_weights, "recent_training_window": final_model["recent_window"]},
         "adaptive_learning": adaptive_learning,
         "walk_forward_metrics": validation,
-        "validation_gate": {"passed": validation_gate, "minimum_accuracy_pct": 38.0, "minimum_macro_f1_pct": 30.0, "must_beat_majority_baseline": True, "decision": "directional signals allowed" if validation_gate else "WAIT only — historical validation too weak"},
+        "validation_gate": {"passed": validation_gate, "futures_source_required": True, "futures_source_passed": futures_source_gate, "minimum_accuracy_pct": 38.0, "minimum_macro_f1_pct": 30.0, "must_beat_majority_baseline": True, "decision": "directional signals allowed" if validation_gate else ("WAIT only — training source is not Binance Futures" if not futures_source_gate else "WAIT only — historical validation too weak")},
         "futures_microstructure": futures_microstructure,
         "macro_news_risk": macro_news_risk,
         "news_event_veto": news_event_veto,
