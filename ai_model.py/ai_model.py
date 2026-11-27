@@ -63,10 +63,43 @@ def get_binance_data(interval):
         month -= 1
         if month == 0:
             month, year = 12, year - 1
+    # Monthly archives can lag during the current month. Always merge the
+    # latest public USD-M Futures REST candles so forecasts use current data.
+    recent_url = (
+        "https://fapi.binance.com/fapi/v1/klines?"
+        f"symbol=BTCUSDT&interval={interval}&limit=1500"
+    )
+    recent_request = urllib.request.Request(
+        recent_url, headers={"User-Agent": "BTC-Signal-Pro-Elite/5.0"}
+    )
+    try:
+        with urllib.request.urlopen(recent_request, timeout=30) as response:
+            recent_rows = json.loads(response.read().decode("utf-8"))
+        if not isinstance(recent_rows, list):
+            raise ValueError(f"Unexpected Binance Futures klines response: {recent_rows}")
+        for row in recent_rows:
+            timestamp = int(row[0])
+            close_time = int(row[6])
+            if close_time >= int(now.timestamp() * 1000):
+                continue
+            candles_by_time[timestamp] = {
+                "time": timestamp, "open": float(row[1]),
+                "high": float(row[2]), "low": float(row[3]),
+                "close": float(row[4]), "volume": float(row[5])
+            }
+    except Exception as exc:
+        print(f"Latest Binance Futures REST candles unavailable for {interval}: {exc}")
     candles = [candles_by_time[t] for t in sorted(candles_by_time)]
     if len(candles) < 210:
         raise ValueError(
-            f"Insufficient Binance USD-M Futures archive candles for {interval}: {len(candles)}"
+            f"Insufficient Binance USD-M Futures candles for {interval}: {len(candles)}"
+        )
+    max_age_ms = max(15 * 60 * 1000, INTERVALS[interval] * 60 * 1000 * 2)
+    age_ms = int(now.timestamp() * 1000) - candles[-1]["time"]
+    if age_ms > max_age_ms:
+        raise ValueError(
+            f"STALE DATA BLOCK: latest {interval} Futures candle is "
+            f"{age_ms / 60000:.1f} minutes old; maximum allowed is {max_age_ms / 60000:.1f} minutes"
         )
     return candles
 
@@ -815,8 +848,12 @@ def main():
     source = "Binance USD-M Futures public klines"
     symbol = "BTC/USDT"
     for tf in INTERVALS:
-        print(f"Loading Binance USD-M Futures {tf} candles...")
+        print(f"Loading latest Binance USD-M Futures {tf} candles...")
         data[tf] = get_binance_data(tf)
+    latest_candle_time = data["5m"][-1]["time"]
+    data_age_minutes = round((datetime.now(timezone.utc).timestamp() * 1000 - latest_candle_time) / 60000, 2)
+    if data_age_minutes > 15:
+        raise ValueError(f"STALE DATA BLOCK: 5m model input is {data_age_minutes} minutes old")
     prepared = {tf: precompute_candle_features(candles) for tf, candles in data.items()}
     rows, labels = build_dataset(data, prepared)
     if len(rows) < 250:
@@ -890,6 +927,13 @@ def main():
         "neutral_threshold_pct": MOVE_THRESHOLD * 100,
         "last_price": data["5m"][-1]["close"],
         "last_candle_time": data["5m"][-1]["time"],
+        "data_freshness": {
+            "status": "FRESH",
+            "latest_5m_candle_age_minutes": data_age_minutes,
+            "latest_5m_candle_time": datetime.fromtimestamp(latest_candle_time / 1000, timezone.utc).isoformat(),
+            "source": "Binance USD-M Futures REST klines merged with historical monthly archives",
+            "max_allowed_age_minutes": 15
+        },
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "limitations": [
             "Training is strictly Binance USD-M Futures OHLCV. If Futures endpoints fail, training fails closed and never substitutes Spot data. CVD, open interest, funding, order book and liquidation remain separate confluence inputs.",
