@@ -155,9 +155,9 @@ def update_prediction_performance():
    if direction not in ("LONG","SHORT","WAIT"): direction="WAIT"
    raw_direction=fc.get("raw_model_class",direction)
    if raw_direction not in ("LONG","SHORT","WAIT"): raw_direction=direction
-   records.append({"model_generated_at":generated,"logged_at":now().isoformat(),"horizon":horizon,
+   records.append({"model_generated_at":generated,"logged_at":generated,"horizon":horizon,
     "horizon_minutes":mins,"direction":direction,"raw_direction":raw_direction,
-    "reference_price":price,"outcome":None,"evaluated_at":None,"realized_change_pct":None,
+    "reference_price":float(model.get("last_price") or price),"outcome":None,"evaluated_at":None,"realized_change_pct":None,
     "correct":None,"raw_correct":None,"validation_status":fc.get("status","unknown")})
  # Score only after each forecast horizon has elapsed. Directional hit rate excludes WAIT calls.
  current=now()
