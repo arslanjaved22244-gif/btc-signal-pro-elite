@@ -1505,6 +1505,121 @@ def fetch_futures_microstructure():
         }
     except Exception as exc:
         errors.append("orderbook: " + str(exc)[:120])
+    # Binance REST may be region-blocked (HTTP 451). Fill missing fields
+    # from Bybit's public linear BTCUSDT endpoints; no credentials required.
+    if len(result["features"]) < 5:
+        def bybit_get(path, params):
+            query = urllib.parse.urlencode(params)
+            request = urllib.request.Request(
+                "https://api.bybit.com" + path + "?" + query,
+                headers={"User-Agent": "BTC-Signal-Pro-Elite/5.2"}
+            )
+            with urllib.request.urlopen(request, timeout=12) as response:
+                payload = json.loads(response.read().decode("utf-8"))
+            if payload.get("retCode") != 0:
+                raise ValueError("Bybit API: " + str(payload.get("retMsg", "unknown error")))
+            return payload.get("result", {})
+
+        try:
+            if "funding" not in result["features"]:
+                payload = bybit_get("/v5/market/funding/history", {
+                    "category": "linear", "symbol": "BTCUSDT", "limit": 12
+                })
+                items = list(reversed(payload.get("list", [])))
+                if items:
+                    rates = [float(item["fundingRate"]) for item in items]
+                    rate = rates[-1]
+                    result["features"]["funding"] = {
+                        "latest_rate": rate, "latest_rate_pct": round(rate*100, 5),
+                        "latest_time": int(items[-1]["fundingRateTimestamp"]),
+                        "mean_last_12": sum(rates)/len(rates),
+                        "crowding": "LONGS_PAYING / LONG_CROWDING" if rate > 0.0001 else
+                                    "SHORTS_PAYING / SHORT_CROWDING" if rate < -0.0001 else "NEUTRAL",
+                        "provider": "Bybit public linear"
+                    }
+        except Exception as exc:
+            errors.append("bybit_funding: " + str(exc)[:120])
+        try:
+            if "open_interest" not in result["features"]:
+                payload = bybit_get("/v5/market/open-interest", {
+                    "category": "linear", "symbol": "BTCUSDT",
+                    "intervalTime": "5min", "limit": 30
+                })
+                items = list(reversed(payload.get("list", [])))
+                if items:
+                    values = [float(item["openInterest"]) for item in items]
+                    change = (values[-1]/values[0]-1)*100 if values[0] else 0.0
+                    result["features"]["open_interest"] = {
+                        "latest_contracts": values[-1],
+                        "change_approx_145m_pct": round(change, 4),
+                        "direction": "RISING" if change > 0.25 else "FALLING" if change < -0.25 else "FLAT",
+                        "samples": len(values), "provider": "Bybit public linear"
+                    }
+        except Exception as exc:
+            errors.append("bybit_open_interest: " + str(exc)[:120])
+        try:
+            if "taker_flow" not in result["features"]:
+                payload = bybit_get("/v5/market/recent-trade", {
+                    "category": "linear", "symbol": "BTCUSDT", "limit": 1000
+                })
+                trades = payload.get("list", [])
+                buy = sum(float(item["size"]) for item in trades if item.get("side") == "Buy")
+                sell = sum(float(item["size"]) for item in trades if item.get("side") == "Sell")
+                total = buy + sell
+                imbalance = (buy-sell)/total if total else 0.0
+                result["features"]["taker_flow"] = {
+                    "buy_volume": buy, "sell_volume": sell,
+                    "cvd_proxy_base_btc": round(buy-sell, 4),
+                    "buy_imbalance_pct": round(imbalance*100, 2),
+                    "bias": "BUY_DOMINANT" if imbalance > 0.08 else "SELL_DOMINANT" if imbalance < -0.08 else "BALANCED",
+                    "samples": len(trades), "window": "latest 1000 public trades",
+                    "provider": "Bybit public linear"
+                }
+        except Exception as exc:
+            errors.append("bybit_taker_flow: " + str(exc)[:120])
+        try:
+            if "mark_premium" not in result["features"]:
+                payload = bybit_get("/v5/market/tickers", {
+                    "category": "linear", "symbol": "BTCUSDT"
+                })
+                items = payload.get("list", [])
+                if items:
+                    item = items[0]
+                    mark, index = float(item["markPrice"]), float(item["indexPrice"])
+                    result["features"]["mark_premium"] = {
+                        "mark_price": mark, "index_price": index,
+                        "mark_index_basis_pct": round((mark/index-1)*100, 5) if index else None,
+                        "funding_rate": float(item.get("fundingRate", 0)),
+                        "provider": "Bybit public linear"
+                    }
+        except Exception as exc:
+            errors.append("bybit_ticker: " + str(exc)[:120])
+        try:
+            if "orderbook_snapshot" not in result["features"]:
+                payload = bybit_get("/v5/market/orderbook", {
+                    "category": "linear", "symbol": "BTCUSDT", "limit": 50
+                })
+                book = payload
+                bids = sum(float(level[1]) for level in book.get("b", []))
+                asks = sum(float(level[1]) for level in book.get("a", []))
+                total = bids + asks
+                imbalance = (bids-asks)/total if total else 0.0
+                result["features"]["orderbook_snapshot"] = {
+                    "bid_quantity_top50": round(bids, 4),
+                    "ask_quantity_top50": round(asks, 4),
+                    "bid_ask_imbalance_pct": round(imbalance*100, 2),
+                    "bias": "BID_HEAVY" if imbalance > 0.12 else "ASK_HEAVY" if imbalance < -0.12 else "BALANCED",
+                    "provider": "Bybit public linear"
+                }
+        except Exception as exc:
+            errors.append("bybit_orderbook: " + str(exc)[:120])
+
+    providers = sorted({
+        value.get("provider", "Binance public USD-M")
+        for key, value in result["features"].items()
+        if isinstance(value, dict) and key != "positioning_interpretation"
+    })
+    result["source"] = " + ".join(providers) if providers else "Public derivatives APIs unavailable"
     features = result["features"]
     oi_dir = features.get("open_interest", {}).get("direction")
     flow_bias = features.get("taker_flow", {}).get("bias")
@@ -1525,7 +1640,7 @@ def fetch_futures_microstructure():
         "note": "Position buildup is not proof of an imminent liquidation or squeeze."
     }
     result["errors"] = errors
-    result["status"] = "AVAILABLE" if len(features) >= 3 else "PARTIAL" if features else "UNAVAILABLE"
+    result["status"] = "AVAILABLE" if len(features) >= 5 else "PARTIAL" if len(features) > 1 else "UNAVAILABLE"
     result["retrieved_at"] = datetime.now(timezone.utc).isoformat()
     return result
 
