@@ -7,7 +7,13 @@ import websocket
 URL="wss://fstream.binance.com/ws/btcusdt@forceOrder"
 WINDOW=int(__import__("os").getenv("LIQUIDATION_SAMPLE_SECONDS","45"))
 events=[]
+errors=[]
+connected=False
 start=time.time()
+def on_open(ws):
+    global connected
+    connected=True
+
 def on_message(ws, message):
     try:
         x=json.loads(message).get("o",{})
@@ -15,8 +21,10 @@ def on_message(ws, message):
                        "quantity":float(x.get("q",0) or 0),
                        "notional_usdt":float(x.get("ap",0) or 0)*float(x.get("q",0) or 0)})
     except Exception: pass
-def on_error(ws, error): print("Liquidation websocket warning:",str(error)[:180])
-ws=websocket.WebSocketApp(URL,on_message=on_message,on_error=on_error)
+def on_error(ws, error):
+    errors.append(str(error)[:180])
+    print("Liquidation websocket warning:",str(error)[:180])
+ws=websocket.WebSocketApp(URL,on_open=on_open,on_message=on_message,on_error=on_error)
 def run():
     import threading
     t=threading.Thread(target=lambda:ws.run_forever(ping_interval=15,ping_timeout=8),daemon=True); t.start()
@@ -26,11 +34,11 @@ def run():
     except Exception: pass
     longs=sum(x["notional_usdt"] for x in events if x["side"]=="SELL")
     shorts=sum(x["notional_usdt"] for x in events if x["side"]=="BUY")
-    out={"available":True,"source":"Binance USD-M forceOrder WebSocket",
+    out={"available":connected,"source":"Binance USD-M forceOrder WebSocket",
          "generated_at":datetime.now(timezone.utc).isoformat(),"sample_window_seconds":WINDOW,
-         "continuous":False,"event_count":len(events),"long_liquidation_notional_usdt":round(longs,2),
+         "continuous":False,"connected":connected,"errors":errors,"event_count":len(events),"long_liquidation_notional_usdt":round(longs,2),
          "short_liquidation_notional_usdt":round(shorts,2),"events":events[-100:],
-         "warning":"Only events observed during this short GitHub Actions sample are included; this is not continuous market-wide liquidation coverage."}
+         "warning":"Only events observed during this short GitHub Actions sample are included; this is not continuous market-wide liquidation coverage." if connected else "WebSocket did not connect; liquidation data is unavailable."}
     with open("liquidation_data.json","w") as f: json.dump(out,f,indent=2)
     print(json.dumps({k:out[k] for k in ("event_count","sample_window_seconds","long_liquidation_notional_usdt","short_liquidation_notional_usdt")},indent=2))
 if __name__=="__main__": run()
