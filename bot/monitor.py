@@ -50,8 +50,9 @@ def market_data_bybit():
   else:sell+=qty
   if qty>=10:large.append({"side":t["side"].upper(),"qty_btc":round(qty,3),"price":float(t["price"]),"time":int(t["time"])})
  cvd=(buy-sell)/(buy+sell) if buy+sell else 0
- candle=api("/v5/market/kline",{"category":"linear","symbol":"BTCUSDT","interval":"5","limit":2})["result"]["list"][0]
- total=float(candle[5]);taker_buy=float(candle[6]);taker=taker_buy/total if total else .5
+ # Use recent trade-side volume for taker ratio. Bybit kline turnover is quote
+ # notional, not taker-buy volume, so mixing it with base volume is invalid.
+ taker=buy/(buy+sell) if buy+sell else .5
  return {"price":price,"funding_rate":funding,"funding_percent":funding*100,"open_interest":float(oi[0]["openInterest"]) if oi else None,"oi_change_5m_pct":oi_change,"orderbook_imbalance":imbalance,"cvd_proxy":cvd,"taker_buy_ratio":taker,"large_trades":sorted(large,key=lambda x:x["qty_btc"],reverse=True)[:8],"data_source":"Bybit public linear perpetual market API","as_of":now().isoformat()}
 
 def market_data_okx():
