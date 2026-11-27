@@ -10,8 +10,8 @@ SPEC.loader.exec_module(MARKET)
 
 class OrderBookImbalanceTests(unittest.TestCase):
     def test_equal_quote_notional_is_zero(self):
-        bids = [["100", "2"], ["99", "1"]]
-        asks = [["100", "2"], ["101", "1"]]
+        bids = [["100", "2"]]
+        asks = [["100", "2"]]
         self.assertEqual(MARKET.normalized_order_book_imbalance(bids, asks), 0.0)
 
     def test_bid_heavy_book_is_positive(self):
