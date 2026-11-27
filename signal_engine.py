@@ -6,7 +6,8 @@ from datetime import datetime, timezone
 
 MARKET_FILE = "market_data.json"
 MODEL_FILE = "ai_result.json"
-OUTPUT_FILE = "signal_result.json"\nNEWS_FILE = "event_guard.json"
+OUTPUT_FILE = "signal_result.json"
+NEWS_FILE = "event_guard.json"
 TIMEFRAMES = ("5m", "15m", "1h", "4h", "1d")
 
 
@@ -214,6 +215,7 @@ def run():
                        "signal": ml_bias},
         "risk_levels": risk,
         "data_quality": quality,
+        "news_guard": news,
         "warnings": warnings,
         "execution": "MANUAL_ONLY_NO_ORDERS"
     }
