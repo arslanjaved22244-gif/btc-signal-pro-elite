@@ -1,28 +1,22 @@
 {
-  "price": 61669.8,
+  "price": 61649.7,
   "funding_rate": -1.53520365868e-05,
   "funding_percent": -0.00153520365868,
-  "open_interest": 3211484.200000012,
+  "open_interest": 3211258.630000012,
   "oi_change_5m_pct": null,
   "oi_history": [],
-  "orderbook_imbalance": 0.03904990419393822,
-  "cvd_proxy": 0.42085736792620676,
-  "taker_buy_ratio": 0.7104286839631034,
+  "orderbook_imbalance": 0.3106320212051129,
+  "cvd_proxy": 0.13351234060261255,
+  "taker_buy_ratio": 0.5667561703013063,
   "large_trades": [],
   "data_source": "OKX public BTC-USDT-SWAP perpetual API",
-  "as_of": "2026-11-27T11:29:22.517253+00:00",
+  "as_of": "2026-11-27T11:30:10.458683+00:00",
   "oi_note": "OKX public 5-minute open-interest history when available",
   "signal": "WAIT",
   "reason": "News safety pause active (minimum 30 minutes)",
   "news_pause_active": true,
   "pause_until": "2026-11-27T11:59:23.443889+00:00",
-  "news_alerts": [
-    {
-      "title": "Rep. Maxine Waters Vows to Stop \"Trump's Crypto Corruption\" in New Congress - CoinCodex",
-      "published": "2026-11-27T10:40:00+00:00",
-      "age_minutes": 49.4
-    }
-  ],
-  "updated_at": "2026-11-27T11:29:23.443889+00:00",
+  "news_alerts": [],
+  "updated_at": "2026-11-27T11:30:11.594513+00:00",
   "safety_note": "Signal-only; manual trading only. Large trades are trade-size alerts, not verified whale identities."
 }
