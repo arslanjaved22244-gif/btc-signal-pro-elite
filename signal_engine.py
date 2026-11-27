@@ -76,11 +76,19 @@ def timeframe_analysis(item):
     r = rsi(closes)
     price = closes[-1]
     bias = "BULLISH" if price > e50 > e200 else "BEARISH" if price < e50 < e200 else "NEUTRAL"
+    macd_value = macd(closes) or {}
+    histogram = float(macd_value.get("histogram", 0.0))
+    # Faster momentum context complements (but does not replace) EMA structure.
+    momentum_bias = (
+        "BULLISH" if price > e50 and histogram > 0 else
+        "BEARISH" if price < e50 and histogram < 0 else "NEUTRAL"
+    )
     return {
-        "available": True, "bias": bias, "price": round(price, 2),
+        "available": True, "bias": bias, "momentum_bias": momentum_bias,
+        "price": round(price, 2),
         "ema50": round(e50, 2), "ema200": round(e200, 2),
         "rsi14": round(r, 2), "atr14": round(atr(rows) or 0, 2),
-        "macd": {k: round(v, 5) for k,v in (macd(closes) or {}).items()},
+        "macd": {k: round(v, 5) for k,v in macd_value.items()},
         "age_seconds": item.get("age_seconds")
     }
 
@@ -216,6 +224,26 @@ def run():
         signal = "WAIT"
         warnings.append("Volatility circuit breaker active: 5m ATR or candle range exceeded safety threshold.")
 
+    # A separate early-setup readout makes developing direction visible without
+    # mislabeling a weak setup as an actionable LONG/SHORT entry.
+    momentum_weights = {"5m": 1.0, "15m": 2.0, "1h": 1.5, "4h": 1.5, "1d": 0.5}
+    momentum_scores = {"LONG": 0.0, "SHORT": 0.0}
+    for tf, item in analyses.items():
+        if item.get("available"):
+            direction = item.get("momentum_bias")
+            if direction == "BULLISH":
+                momentum_scores["LONG"] += momentum_weights[tf]
+            elif direction == "BEARISH":
+                momentum_scores["SHORT"] += momentum_weights[tf]
+    momentum_margin = abs(momentum_scores["LONG"] - momentum_scores["SHORT"])
+    momentum_leader = max(momentum_scores, key=momentum_scores.get)
+    watch_signal = "WAIT"
+    watch_status = "NO_CLEAR_EARLY_SETUP"
+    if (quality.get("status") == "HEALTHY" and quality.get("five_minute_data_fresh")
+            and not news.get("block") and not volatility_block
+            and max(momentum_scores.values()) >= 3.5 and momentum_margin >= 1.5):
+        watch_signal = momentum_leader
+        watch_status = "EARLY_SETUP_ONLY_NOT_ENTRY"
     risk = {"entry_reference": price, "stop_loss": None, "take_profit_1": None,
             "take_profit_2": None, "risk_reward": "1:1.5 and 1:2.5", "method": "1.5x 5m ATR stop"}
     if signal in ("LONG", "SHORT") and price and atr_value and atr_value > 0:
@@ -237,6 +265,12 @@ def run():
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "symbol": "BTCUSDT", "market_type": "BINANCE_USDM_FUTURES",
         "signal": signal,
+        "early_setup": {
+            "direction": watch_signal, "status": watch_status,
+            "momentum_scores": {k: round(v, 2) for k, v in momentum_scores.items()},
+            "momentum_margin": round(momentum_margin, 2),
+            "note": "Early setup is a watchlist hint only, not an entry signal. Confirm the main signal and manual risk levels before any trade."
+        },
         "confidence_score": round(confidence, 2),
         "scores": {"LONG": round(long_score, 2), "SHORT": round(short_score, 2)},
         "timeframe_analysis": analyses,
