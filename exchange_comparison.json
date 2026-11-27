@@ -1,6 +1,12 @@
 {
-  "generated_at": "2026-11-27T19:23:42.163190+00:00",
+  "generated_at": "2026-11-27T19:30:43.132874+00:00",
   "symbol": "BTCUSDT perpetual contracts only",
+  "venues_checked": [
+    "Binance USD-M Futures",
+    "Bybit linear perpetual",
+    "Bitget USDT-FUTURES",
+    "OKX BTC-USDT-SWAP"
+  ],
   "reference": "OKX BTC-USDT-SWAP",
   "venues": {
     "Binance USD-M Futures": {
@@ -11,15 +17,23 @@
       "available": false,
       "error": "api.bybit.com: HTTP Error 403: Forbidden | api.bytick.com: HTTP Error 403: Forbidden"
     },
+    "Bitget USDT-FUTURES": {
+      "available": true,
+      "price": 59934.6,
+      "endpoint": "https://api.bitget.com/api/v2/mix/market/ticker?productType=USDT-FUTURES&symbol=BTCUSDT",
+      "fallback_errors": [],
+      "difference_usdt": 4.6,
+      "difference_pct": 0.00768
+    },
     "OKX BTC-USDT-SWAP": {
       "available": true,
-      "price": 59914.1,
+      "price": 59930.0,
       "endpoint": "https://www.okx.com/api/v5/market/ticker?instId=BTC-USDT-SWAP",
       "fallback_errors": [],
       "difference_usdt": 0.0,
       "difference_pct": 0.0
     }
   },
-  "status": "PARTIAL_OR_UNAVAILABLE",
+  "status": "COMPARISON_AVAILABLE",
   "warning": "Venue price differences are normal. Compare execution price, spread, mark price and funding on the exchange where you trade. Binance Futures is never replaced with Spot data."
 }
