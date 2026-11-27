@@ -1080,7 +1080,7 @@
   "last_candle_time": 1795782900000,
   "data_freshness": {
     "status": "FRESH",
-    "latest_5m_candle_age_minutes": 6.17,
+    "latest_5m_candle_age_minutes": 8.97,
     "latest_5m_candle_time": "2026-11-27T12:35:00+00:00",
     "source_by_timeframe": {
       "5m": "Kraken BTC/USD",
@@ -1091,10 +1091,39 @@
     },
     "max_allowed_age_minutes": 15
   },
-  "generated_at": "2026-11-27T12:41:32.448078+00:00",
+  "generated_at": "2026-11-27T12:44:20.450476+00:00",
   "limitations": [
     "When Binance USD-M Futures is unavailable, Kraken BTC/USD spot OHLC is used as a proxy and is not equivalent to BTC/USDT Futures. Funding, open interest, CVD, order book and liquidation remain separate confluence inputs.",
     "Class scores are model scores, not calibrated real-world win probabilities.",
     "Walk-forward metrics are historical diagnostics, not guarantees of future performance."
-  ]
+  ],
+  "prediction_feedback": {
+    "status": "ACTIVE",
+    "method": "matured forecast vs subsequent closed 5m candle",
+    "history_retained": 3,
+    "models": {
+      "primary_ensemble": {
+        "evaluated_predictions": 0,
+        "pending_predictions": 1,
+        "realized_accuracy_pct": null,
+        "realized_macro_f1_pct": null,
+        "status": "COLLECTING LIVE OUTCOMES"
+      },
+      "temporal_sequence": {
+        "evaluated_predictions": 0,
+        "pending_predictions": 1,
+        "realized_accuracy_pct": null,
+        "realized_macro_f1_pct": null,
+        "status": "COLLECTING LIVE OUTCOMES"
+      },
+      "tree_ensemble_15m": {
+        "evaluated_predictions": 0,
+        "pending_predictions": 1,
+        "realized_accuracy_pct": null,
+        "realized_macro_f1_pct": null,
+        "status": "COLLECTING LIVE OUTCOMES"
+      }
+    },
+    "note": "Live outcomes are tracked for evaluation; this does not silently retrain or alter model weights."
+  }
 }

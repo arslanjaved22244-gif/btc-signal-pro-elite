@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "last_updated": "2026-11-27T12:44:20.450590+00:00",
+  "scoring_rule": "15m realized return classified using the prediction-time ATR neutral threshold",
+  "predictions": [
+    {
+      "id": "primary_ensemble:1795782900000:1795783800000",
+      "model": "primary_ensemble",
+      "prediction_time": 1795782900000,
+      "target_time": 1795783800000,
+      "horizon_minutes": 15,
+      "reference_price": 61469.2,
+      "threshold_pct": 0.00035079124411668225,
+      "predicted_class": "WAIT",
+      "approved_signal": "WAIT",
+      "scores": {
+        "SHORT": 28.23,
+        "WAIT": 36.09,
+        "LONG": 35.68
+      },
+      "status": "PENDING"
+    },
+    {
+      "id": "temporal_sequence:1795782900000:1795783800000",
+      "model": "temporal_sequence",
+      "prediction_time": 1795782900000,
+      "target_time": 1795783800000,
+      "horizon_minutes": 15,
+      "reference_price": 61469.2,
+      "threshold_pct": 0.00035079124411668225,
+      "predicted_class": "SHORT",
+      "approved_signal": "WAIT",
+      "scores": {
+        "SHORT": 97.61,
+        "WAIT": 2.39,
+        "LONG": 0.0
+      },
+      "status": "PENDING"
+    },
+    {
+      "id": "tree_ensemble_15m:1795782900000:1795783800000",
+      "model": "tree_ensemble_15m",
+      "prediction_time": 1795782900000,
+      "target_time": 1795783800000,
+      "horizon_minutes": 15,
+      "reference_price": 61469.2,
+      "threshold_pct": 0.00035079124411668225,
+      "predicted_class": "SHORT",
+      "approved_signal": "WAIT",
+      "scores": {
+        "SHORT": 54.49,
+        "WAIT": 16.79,
+        "LONG": 28.72
+      },
+      "status": "PENDING"
+    }
+  ]
+}
