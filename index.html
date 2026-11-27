@@ -1489,7 +1489,7 @@ async function loadAdvancedIntelligence(force=false){
   setText("advTreeForecast",["15m","30m","60m","4h"].map(h=>{const x=tf[h]||{};const side=globalGatePassed&&!(x.macro_f1!=null&&x.macro_f1<25)?(x.signal||"WAIT"):"WAIT";return h+": "+side+(x.holdout_accuracy!=null?" • "+x.holdout_accuracy+"% holdout":"");}).join(" | ")||"Tree forecasts unavailable");
   const vm=data.walk_forward_metrics||{};
   setText("advSource",data.data_source||"Unknown");
-  setText("advSourceGate",gate.futures_source_passed===true?"BINANCE FUTURES SOURCE CONFIRMED":"NOT FUTURES — WAIT ONLY");
+  setText("advSourceGate",gate.futures_source_passed===true?"PERPETUAL FUTURES SOURCE CONFIRMED":"NOT FUTURES — WAIT ONLY");
   const sourceGateEl=$("advSourceGate");if(sourceGateEl)sourceGateEl.className=gate.futures_source_passed===true?"green":"red";
   setText("advValidationGate",gate.passed===true?"PASSED":gate.passed===false?"FAILED — WAIT ONLY":"NOT AVAILABLE");
   setText("advValidationScores",(vm.accuracy??"--")+"% accuracy • "+(vm.macro_f1??"--")+"% macro F1");
@@ -1505,7 +1505,7 @@ async function loadAdvancedIntelligence(force=false){
   const fresh=data.data_freshness||{};setText("advFreshness",fresh.status==="FRESH"?"FRESH • "+(fresh.latest_5m_candle_age_minutes??"--")+" min old":fresh.status||"NOT REPORTED");
   const freshEl=$("advFreshness");if(freshEl)freshEl.className=fresh.status==="FRESH"?"green":"yellow";
   setText("advUpdated",data.generated_at?new Date(data.generated_at).toLocaleString():"--");
-  setText("advAiNote",globalGatePassed?("Method: "+(a.method||"Advanced AI")+". Scores are not calibrated win probabilities."):"SAFETY GATE BLOCKED: source is not verified Binance USD-M Futures or validation failed. Raw model directions are suppressed; WAIT only.");
+  setText("advAiNote",globalGatePassed?("Method: "+(a.method||"Advanced AI")+". Scores are not calibrated win probabilities."):"SAFETY GATE BLOCKED: source is not verified perpetual Futures or validation failed. Raw model directions are suppressed; WAIT only.");
   advancedAiLastLoad=Date.now();
  }catch(e){setText("advAiNote","Advanced AI data unavailable: "+e.message+".");}
  finally{advancedAiBusy=false;}
