@@ -1,15 +1,15 @@
 {
-  "price": 59845.0,
-  "funding_rate": 9.9940639715e-06,
-  "funding_percent": 0.0009994063971500002,
-  "open_interest": 3184079.230000014,
-  "oi_change_5m_pct": 0.0,
+  "price": 59862.7,
+  "funding_rate": 9.4613561238e-06,
+  "funding_percent": 0.00094613561238,
+  "open_interest": 3183793.2600000137,
+  "oi_change_5m_pct": 0.06279953093296571,
   "oi_history": [
     {
       "timestamp": "1795804200000",
-      "oi_contracts": "3183531.59000001452",
-      "oi_coin": "31836.4419000001408",
-      "oi_usd": "1903923801.52586868374408"
+      "oi_contracts": "3183779.38000001349",
+      "oi_coin": "31837.7938000001349",
+      "oi_usd": "1905119456.74254807218667"
     },
     {
       "timestamp": "1795803900000",
@@ -18,12 +18,12 @@
       "oi_usd": "1903923801.52586868374408"
     }
   ],
-  "orderbook_imbalance": 0.4533570099175129,
-  "cvd_proxy": 0.10474407890000637,
-  "taker_buy_ratio": 0.5523720394500031,
+  "orderbook_imbalance": -0.16585331297947653,
+  "cvd_proxy": 0.03773307657208347,
+  "taker_buy_ratio": 0.5188665382860418,
   "large_trades": [],
   "data_source": "OKX public BTC-USDT-SWAP perpetual API",
-  "as_of": "2026-11-27T18:31:49.483259+00:00",
+  "as_of": "2026-11-27T18:33:55.841880+00:00",
   "oi_note": "OKX public 5-minute open-interest history when available",
   "atr_5m_pct": 0.25336,
   "latest_range_atr_ratio": 0.505,
@@ -31,18 +31,10 @@
   "volatility_source": "Bybit/OKX completed BTC perpetual 5m candles",
   "oi_change_source": "OKX 5-minute OI history",
   "signal": "WAIT",
-  "reason": "News safety pause active (minimum 30 minutes)",
-  "news_pause_active": true,
-  "pause_until": "2026-11-27T19:01:50.869343+00:00",
-  "news_alerts": [
-    {
-      "title": "Joe Rogan on TRUMP Coin: 'It's Legal, but It's Crazy' - FinanceFeeds",
-      "published": "2026-11-27T18:21:50+00:00",
-      "age_minutes": 10.0,
-      "source": "Google News RSS",
-      "url": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE1HTWZkYlZweVlGTmJMRWI5bVpENFo5ZEN3QTk4enVaVVppTTlQOV91X25yc0M0UkhMWGZPN1RRRElsa0NUQ0JxXzg0ckx0c013ZHB0azRVYW4yS1Z0akRHYjdRLWY?oc=5"
-    }
-  ],
-  "updated_at": "2026-11-27T18:31:50.869343+00:00",
+  "reason": "Derivatives flow is mixed or squeeze/crowding filters are active",
+  "news_pause_active": false,
+  "pause_until": "2026-11-27T18:13:05.922760+00:00",
+  "news_alerts": [],
+  "updated_at": "2026-11-27T18:33:57.541825+00:00",
   "safety_note": "Signal-only; manual trading only. Large trades are trade-size alerts, not verified whale identities. Trump social posts are monitored through a third-party archive RSS, not an official API."
 }
