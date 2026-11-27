@@ -1,7 +1,7 @@
 {
   "system": "BTC Signal Pro Elite Institutional Intelligence",
   "version": "1.0-six-upgrades",
-  "generated_at": "2026-11-27T23:23:26.897745+00:00",
+  "generated_at": "2026-11-27T23:24:36.317006+00:00",
   "market_regime": {
     "status": "AVAILABLE",
     "regime": "BEAR_TREND",
@@ -30,14 +30,14 @@
     "status": "AVAILABLE",
     "venue": "Deribit public BTC options",
     "put_call_open_interest_ratio": 0.8109,
-    "call_open_interest": 190576.3,
-    "put_open_interest": 154547.3,
+    "call_open_interest": 190585.8,
+    "put_open_interest": 154545.8,
     "call_volume_24h": 13712.2,
     "put_volume_24h": 15233.9,
     "average_call_mark_iv_pct": 54.73,
     "average_put_mark_iv_pct": 54.73,
     "approx_max_pain_strike": 68000.0,
-    "btc_index_price": 59761.68,
+    "btc_index_price": 59780.22,
     "instruments_sampled": 960,
     "note": "Aggregated listed BTC options snapshot; max-pain is an approximation across returned instruments, not a price target."
   },
@@ -168,7 +168,7 @@
       {
         "name": "5m_futures_candles",
         "passed": true,
-        "detail": "candle age 178s"
+        "detail": "candle age 244s"
       },
       {
         "name": "all_five_timeframes",
@@ -183,7 +183,7 @@
       {
         "name": "open_interest_data",
         "passed": true,
-        "detail": "historical OI latest row age 3.46m"
+        "detail": "historical OI latest row age 4.62m"
       },
       {
         "name": "executed_taker_flow",
@@ -203,7 +203,7 @@
       {
         "name": "fresh_news_scan",
         "passed": true,
-        "detail": "news snapshot age 0.45m"
+        "detail": "news snapshot age 0.51m"
       },
       {
         "name": "trump_public_post_archive",
@@ -221,7 +221,7 @@
         "detail": "not connected / no recent message"
       }
     ],
-    "market_snapshot_age_minutes": 0.51,
+    "market_snapshot_age_minutes": 0.57,
     "note": "A feed marked unavailable is not guessed or replaced. This audit reports source presence and freshness, not signal accuracy. GitHub Actions sampled liquidation data does not count as a continuous stream."
   },
   "execution": "MANUAL_ONLY_NO_ORDERS",

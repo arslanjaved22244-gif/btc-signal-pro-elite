@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-27T23:23:25.788435+00:00",
+  "generated_at": "2026-11-27T23:24:34.998267+00:00",
   "symbol": "BTCUSDT perpetual contracts only",
   "venues_checked": [
     "Binance USD-M Futures",
@@ -19,15 +19,15 @@
     },
     "Bitget USDT-FUTURES": {
       "available": true,
-      "price": 59794.9,
+      "price": 59816.2,
       "endpoint": "https://api.bitget.com/api/v2/mix/market/ticker?productType=USDT-FUTURES&symbol=BTCUSDT",
       "fallback_errors": [],
-      "difference_usdt": -5.2,
-      "difference_pct": -0.0087
+      "difference_usdt": -2.6,
+      "difference_pct": -0.00435
     },
     "OKX BTC-USDT-SWAP": {
       "available": true,
-      "price": 59800.1,
+      "price": 59818.8,
       "endpoint": "https://www.okx.com/api/v5/market/ticker?instId=BTC-USDT-SWAP",
       "fallback_errors": [],
       "difference_usdt": 0.0,
