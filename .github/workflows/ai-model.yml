@@ -14,7 +14,7 @@ permissions:
 
 concurrency:
   group: btc-signal-publish
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   train-ai:
