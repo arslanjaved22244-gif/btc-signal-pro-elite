@@ -1,18 +1,18 @@
 {
   "source": "OKX BTC-USDT-SWAP public ticker; directional close comparison only",
-  "updated_at": "2026-11-27T11:41:05.374644+00:00",
+  "updated_at": "2026-11-27T11:48:09.765925+00:00",
   "model_generated_at": "2026-11-27T11:23:41.578220+00:00",
-  "current_price": 61784.2,
+  "current_price": 61499.7,
   "stats": {
     "15m": {
-      "evaluated": 0,
+      "evaluated": 1,
       "directional_calls": 0,
       "correct": 0,
       "directional_accuracy_pct": null,
       "raw_directional_calls": 0,
       "raw_correct": 0,
       "raw_directional_accuracy_pct": null,
-      "wait_abstentions": 0
+      "wait_abstentions": 1
     },
     "30m": {
       "evaluated": 0,
@@ -53,11 +53,12 @@
       "horizon_minutes": 15,
       "direction": "WAIT",
       "reference_price": 61651.9,
-      "outcome": null,
-      "evaluated_at": null,
-      "realized_change_pct": null,
+      "outcome": "ABSTAINED",
+      "evaluated_at": "2026-11-27T11:48:09.765925+00:00",
+      "realized_change_pct": -0.24687,
       "correct": null,
-      "validation_status": "WEAK EDGE \u2014 WAIT"
+      "validation_status": "WEAK EDGE \u2014 WAIT",
+      "raw_correct": null
     },
     {
       "model_generated_at": "2026-11-27T11:23:41.578220+00:00",
