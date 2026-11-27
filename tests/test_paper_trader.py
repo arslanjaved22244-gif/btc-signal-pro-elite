@@ -170,5 +170,29 @@ class PaperTraderTests(unittest.TestCase):
         self.assertEqual(result["closed_trades"], 0)
 
 
+    def test_shadow_wait_forecast_is_evaluated_as_a_class_not_trade(self):
+        self.write_inputs(self.candles([100, 100, 100]), "WAIT")
+        self.write_ai(datetime_now())
+        result = PAPER.run()
+        self.assertEqual(result["shadow_forecasts"][0]["side"], "LONG")
+        # Force a WAIT raw model prediction for a flat 15m outcome.
+        with open("ai_result.json", "r", encoding="utf-8") as f:
+            ai = json.load(f)
+        ai["class_scores"] = {"LONG": 10, "SHORT": 10, "WAIT": 80}
+        with open("ai_result.json", "w", encoding="utf-8") as f:
+            json.dump(ai, f)
+        self.write_inputs(self.candles([100, 100, 100, 100, 100, 100]), "WAIT")
+        with open("ai_result.json", "w", encoding="utf-8") as f:
+            json.dump(ai, f)
+        result = PAPER.run()
+        shadow = result["shadow_forecasts"][0]
+        self.assertEqual(shadow["classification_status"], "EVALUATED")
+        self.assertEqual(shadow["actual_class"], "WAIT")
+        self.assertTrue(shadow["classification_correct"])
+        self.assertEqual(result["shadow_evaluation"]["closed_forecasts"], 1)
+        self.assertEqual(result["shadow_evaluation"]["classification_accuracy_pct"], 100.0)
+        self.assertEqual(result["shadow_evaluation"]["net_win_rate_pct"], 0.0)
+
+
 if __name__ == "__main__":
     unittest.main()
