@@ -241,6 +241,19 @@ button{background:#f5b942;color:#111;border:0;padding:12px 18px;border-radius:8p
 </div>
 
 <div class="card">
+<h3>Next Movement AI — BTC Forecast</h3>
+<div class="note">Separate machine-learning forecasts from the main trading signal. Uses completed 15M Binance Futures candles and three independently trained horizon models.</div>
+<div class="scoregrid">
+<div class="scoretile">Next 15 minutes<b id="nextMove15">WAIT</b><small id="nextMove15Meta">Training...</small></div>
+<div class="scoretile">Next 30 minutes<b id="nextMove30">WAIT</b><small id="nextMove30Meta">Training...</small></div>
+<div class="scoretile">Next 60 minutes<b id="nextMove60">WAIT</b><small id="nextMove60Meta">Training...</small></div>
+<div class="scoretile">AI data freshness<b id="nextMoveFresh">--</b><small id="nextMoveStatus">Waiting for Binance data</small></div>
+</div>
+<div class="metric"><span>Forecast explanation</span><b id="nextMoveReason">Waiting for model validation.</b></div>
+<p class="note" id="nextMoveNote">UP/DOWN scores are model outputs, not calibrated probabilities. WAIT is shown when the model is weak or validation accuracy is poor. This forecast cannot know the future and does not place orders.</p>
+<button onclick="loadNextMoveAI()">UPDATE AI FORECAST</button>
+</div>
+<div class="card">
 <h3>Experimental ML Forecast</h3>
 <div class="note">Browser-trained logistic regression using historical Binance 15M candles. Experimental estimate, not guaranteed prediction.</div>
 <div class="scoregrid">
@@ -1276,6 +1289,58 @@ renderHistory();
 
 /* Experimental browser-side ML forecast, backtest and risk tools */
 let mlLastRun=0;
+/* Multi-horizon next-move forecasting: independent 15m / 30m / 60m classifiers */
+let nextMoveLastRun=0,nextMoveBusy=false;
+function nextMoveFeatureRows(cs,horizon){
+ const close=cs.map(x=>x.c),volumes=cs.map(x=>x.v);
+ const e9=ema(close,9),e21=ema(close,21),e50=ema(close,50),e200=ema(close,200),rows=[];
+ for(let i=205;i<cs.length-horizon;i++){
+  const slice=close.slice(0,i+1),mm=macd(slice),aa=atr(cs.slice(0,i+1));
+  const av=avg(volumes.slice(Math.max(0,i-20),i)),vr=av?volumes[i]/av:1;
+  const x=[(e9[i]-e21[i])/close[i],(e50[i]-e200[i])/close[i],(rsi(slice)-50)/50,mm.h/close[i],(close[i]-close[i-1])/close[i-1],(close[i]-close[i-4])/close[i-4],vr-1,aa/close[i]];
+  const move=close[i+horizon]-close[i],threshold=aa*.20*Math.sqrt(horizon);
+  if(!threshold||!x.every(Number.isFinite))continue;
+  if(move>threshold)rows.push({x,y:1,i});
+  else if(move< -threshold)rows.push({x,y:0,i});
+ }
+ return rows;
+}
+function nextMoveCurrentFeatures(cs){
+ const close=cs.map(x=>x.c),volumes=cs.map(x=>x.v),i=cs.length-1;
+ const mm=macd(close),aa=atr(cs),e9=ema(close,9),e21=ema(close,21),e50=ema(close,50),e200=ema(close,200);
+ const av=avg(volumes.slice(-21,-1)),vr=av?volumes[i]/av:1;
+ return [(e9[i]-e21[i])/close[i],(e50[i]-e200[i])/close[i],(rsi(close)-50)/50,mm.h/close[i],(close[i]-close[i-1])/close[i-1],(close[i]-close[i-4])/close[i-4],vr-1,aa/close[i]];
+}
+async function loadNextMoveAI(){
+ if(nextMoveBusy)return;
+ nextMoveBusy=true;
+ setText("nextMoveStatus","Training 3 forecast horizons...");
+ try{
+  const raw=await get("/fapi/v1/klines?symbol=BTCUSDT&interval=15m&limit=1000");
+  const cs=candles(raw).slice(0,-1);
+  if(cs.length<300)throw Error("Not enough completed 15M candles");
+  const horizons=[1,2,4],ids=["15","30","60"],results=[];
+  for(let n=0;n<horizons.length;n++){
+   const h=horizons[n],rows=nextMoveFeatureRows(cs,h),model=trainLogistic(rows),p=model.predict(nextMoveCurrentFeatures(cs));
+   const accuracy=model.accuracy,side=(accuracy>=52&&p>=.60)?"UP":(accuracy>=52&&p<=.40)?"DOWN":"WAIT";
+   results.push({h,side,p,accuracy,samples:model.test.length});
+   setText("nextMove"+ids[n],side);
+   $("nextMove"+ids[n]).className=side==="UP"?"green":side==="DOWN"?"red":"yellow";
+   setText("nextMove"+ids[n]+"Meta","UP "+Math.round(p*100)+" / DOWN "+Math.round((1-p)*100)+" • test accuracy "+accuracy.toFixed(1)+"% • n="+model.test.length);
+  }
+  const same=results.every(x=>x.side===results[0].side)&&results[0].side!=="WAIT";
+  setText("nextMoveReason",same?"All 3 horizons lean "+results[0].side+". Wait for live price/volume confirmation.":"Timeframes disagree or model edge is weak — no clear next move.");
+  setText("nextMoveFresh",new Date().toLocaleTimeString());
+  setText("nextMoveStatus","UPDATED • 15M completed-candle data");
+  setText("nextMoveNote","Forecast labels compare future close movement with an ATR-based threshold. UP/DOWN scores are model outputs, not calibrated probabilities; historical accuracy is a chronological holdout, not a promise of future performance. Forecast is informational only.");
+  nextMoveLastRun=Date.now();
+ }catch(e){
+  setText("nextMoveStatus","NOT READY");
+  setText("nextMoveReason","No reliable forecast available.");
+  setText("nextMoveNote","AI forecast unavailable: "+e.message+". Dashboard will retry when Binance data is available.");
+ }finally{nextMoveBusy=false;}
+}
+
 function sigmoid(z){return 1/(1+Math.exp(-Math.max(-30,Math.min(30,z))))}
 function mlFeatures(cs){
  const close=cs.map(x=>x.c),volumes=cs.map(x=>x.v);
@@ -1377,6 +1442,7 @@ heatmap();
 renderLiveCVD();
 engine();
 if(Date.now()-mlLastRun>15*60000)loadML();
+if(Date.now()-nextMoveLastRun>5*60000)loadNextMoveAI();
 setText("status","Data updated • "+new Date().toLocaleTimeString());
 
 }catch(e){
