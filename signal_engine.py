@@ -194,7 +194,8 @@ def run():
         signal = "WAIT"
         warnings.append("High-risk news lock active; entries blocked until the event lock expires.")
     elif not news.get("available"):
-        warnings.append("News monitor unavailable; verify major headlines manually before any trade.")
+        signal = "WAIT"
+        warnings.append("News monitor unavailable; fail-closed safety lock forces WAIT until monitoring recovers.")
     price = analyses.get("5m", {}).get("price")
     atr_value = analyses.get("5m", {}).get("atr14")
 
