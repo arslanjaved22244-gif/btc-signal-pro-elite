@@ -44,6 +44,10 @@ class FuturesSourceSafetyTests(unittest.TestCase):
             validation_passed = source_is_futures
         model = {
             "data_source": source,
+            "data_source_by_timeframe": {"5m": source},
+            "last_price": market["timeframes"]["5m"]["candles"][-1]["close"],
+            "last_candle_time": market["timeframes"]["5m"]["candles"][-1]["time"],
+            "symbol": "BTC/USDT",
             "class_scores": {"LONG": 0.95, "SHORT": 0.02, "WAIT": 0.03},
             "validation_gate": {
                 "passed": validation_passed,
