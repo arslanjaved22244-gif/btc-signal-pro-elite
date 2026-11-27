@@ -275,6 +275,7 @@ button{background:#f5b942;color:#111;border:0;padding:12px 18px;border-radius:8p
 <div class="metric"><span>Regime-specific validation</span><b id="advRegimeMetrics">Collecting</b></div>
 <div class="metric"><span>Liquidity sweep detector</span><b id="advSweep">--</b></div>
 <div class="metric"><span>Regime explanation</span><b id="advRegimeWhy">Waiting for analysis</b></div>
+<div class="metric"><span>Training data freshness</span><b id="advFreshness">Checking...</b></div>
 <div class="metric"><span>Model update</span><b id="advUpdated">Waiting...</b></div>
 <p class="note" id="advAiNote">Forecast scores are model outputs, not guaranteed probabilities. WAIT is retained when validation edge is weak.</p>
 <button onclick="loadAdvancedIntelligence(true)">REFRESH ADVANCED AI</button>
@@ -1424,6 +1425,8 @@ async function loadAdvancedIntelligence(force=false){
   const r=a.market_regime||{};
   setText("advRegime",r.regime||"--");setText("advVolatility","ATR ratio: "+(r.atr_ratio??"--"));
   setText("advSweep",r.liquidity_sweep||"NONE");setText("advRegimeWhy",r.explanation||"--");
+  const fresh=data.data_freshness||{};setText("advFreshness",fresh.status==="FRESH"?"FRESH • "+(fresh.latest_5m_candle_age_minutes??"--")+" min old":fresh.status||"NOT REPORTED");
+  const freshEl=$("advFreshness");if(freshEl)freshEl.className=fresh.status==="FRESH"?"green":"yellow";
   setText("advUpdated",data.generated_at?new Date(data.generated_at).toLocaleString():"--");
   setText("advAiNote","Method: "+(a.method||"Advanced AI")+". Scores are not calibrated win probabilities.");
   advancedAiLastLoad=Date.now();
