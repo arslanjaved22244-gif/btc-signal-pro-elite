@@ -47,6 +47,7 @@ def publish_wait_override(signal_path, stage, reason, now=None):
             "take_profit_2": None,
             "method": "No levels while runner safety override is active",
         })
+    payload["risk_levels"] = risk
     quality = payload.get("data_quality")
     if not isinstance(quality, dict):
         quality = {}
