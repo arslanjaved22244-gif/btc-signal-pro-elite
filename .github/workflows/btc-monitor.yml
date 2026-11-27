@@ -33,14 +33,6 @@ jobs:
           restore-keys: |
             btc-monitor-state-
 
-      - name: Install liquidation stream dependency
-        run: python3 -m pip install --disable-pip-version-check websocket-client
-
-      - name: Sample Binance liquidation stream
-        env:
-          LIQUIDATION_SAMPLE_SECONDS: "20"
-        run: python3 liquidation_monitor.py
-
       - name: Run BTC monitor
         run: python3 bot/monitor.py
 
@@ -48,7 +40,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add market_snapshot.json prediction_performance.json liquidation_data.json
+          git add market_snapshot.json prediction_performance.json
           git diff --cached --quiet || git commit -m "Update derivatives and news snapshot"
           git pull --rebase origin main
           git push
