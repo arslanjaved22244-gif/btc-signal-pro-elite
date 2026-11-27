@@ -1384,7 +1384,7 @@ async function loadAdvancedIntelligence(force=false){
   const data=await response.json(),a=data.advanced_intelligence;
   if(!a)throw Error("Advanced AI model output not published yet");
   for(const [h,id] of [["15m","adv15"],["30m","adv30"],["60m","adv60"],["4h","adv4h"]]){
-   const x=a.multi_horizon_forecasts?.[h]||{},el=$(id),side=x.signal||"WAIT";
+   const x=a.multi_horizon_forecasts?.[h]||{},el=$(id),side=(x.macro_f1!=null&&x.macro_f1<25)?"WAIT":(x.signal||"WAIT");
    setText(id,side);if(el)el.className=side==="LONG"?"green":side==="SHORT"?"red":"yellow";
    setText(id+"Meta",x.holdout_accuracy!=null?"Holdout "+x.holdout_accuracy+"% • n="+(x.validation_samples||0):x.status||"Not ready");
   }
@@ -1392,7 +1392,7 @@ async function loadAdvancedIntelligence(force=false){
   setText("advTreeStatus",tree.status||"NOT READY");
   setText("advTreeModels",(tree.algorithms||[]).join(" • ")||"Models unavailable");
   const tf=tree.forecasts||{};
-  setText("advTreeForecast",["15m","30m","60m","4h"].map(h=>{const x=tf[h]||{};return h+": "+(x.signal||"WAIT")+(x.holdout_accuracy!=null?" • "+x.holdout_accuracy+"% holdout":"");}).join(" | ")||"Tree forecasts unavailable");
+  setText("advTreeForecast",["15m","30m","60m","4h"].map(h=>{const x=tf[h]||{};return h+": "+((x.macro_f1!=null&&x.macro_f1<25)?"WAIT":(x.signal||"WAIT"))+(x.holdout_accuracy!=null?" • "+x.holdout_accuracy+"% holdout":"");}).join(" | ")||"Tree forecasts unavailable");
   const r=a.market_regime||{};
   setText("advRegime",r.regime||"--");setText("advVolatility","ATR ratio: "+(r.atr_ratio??"--"));
   setText("advSweep",r.liquidity_sweep||"NONE");setText("advRegimeWhy",r.explanation||"--");
