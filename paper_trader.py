@@ -98,6 +98,75 @@ def resolve_records(records, candles, source, key, direction_key):
         })
 
 
+def resolve_shadow_classifications(records, candles, source):
+    """Score every fresh LONG/SHORT/WAIT forecast against its 15m class label."""
+    by_time = {int(item.get("time", 0)): item for item in candles}
+    times = sorted(by_time)
+    for item in records:
+        if item.get("classification_status") == "EVALUATED":
+            continue
+        if item.get("exchange") != source:
+            continue
+        try:
+            entry_time = int(item["entry_candle_time"])
+            pos = times.index(entry_time)
+            exit_pos = pos + HORIZON_BARS
+            if exit_pos >= len(times):
+                continue
+            entry_candle = by_time[entry_time]
+            exit_candle = by_time[times[exit_pos]]
+            entry = float(entry_candle["close"])
+            exit_price = float(exit_candle["close"])
+            if entry <= 0:
+                continue
+            move = exit_price / entry - 1.0
+            # Match ai_model.adaptive_move_threshold using only information
+            # available at the forecast candle (14-bar ATR and 0.18% floor).
+            start = max(0, pos - 13)
+            true_ranges = []
+            for index in range(start, pos + 1):
+                candle = by_time[times[index]]
+                previous_close = float(by_time[times[index - 1]]["close"]) if index > 0 else float(candle["open"])
+                true_ranges.append(max(
+                    float(candle["high"]) - float(candle["low"]),
+                    abs(float(candle["high"]) - previous_close),
+                    abs(float(candle["low"]) - previous_close)
+                ))
+            atr_pct = (sum(true_ranges) / max(1, len(true_ranges))) / entry
+            threshold = max(0.0018, atr_pct * 0.20)
+            actual = "LONG" if move > threshold else "SHORT" if move < -threshold else "WAIT"
+            predicted = item.get("side", "WAIT")
+            item.update({
+                "classification_status": "EVALUATED",
+                "actual_class": actual,
+                "classification_correct": predicted == actual,
+                "realized_move_pct": round(move * 100.0, 5),
+                "label_threshold_pct": round(threshold * 100.0, 5),
+                "classification_exit_candle_time": times[exit_pos]
+            })
+        except (KeyError, TypeError, ValueError, ZeroDivisionError):
+            continue
+
+
+def shadow_classification_metrics(records):
+    evaluated = [item for item in records if item.get("classification_status") == "EVALUATED"]
+    correct = sum(bool(item.get("classification_correct")) for item in evaluated)
+    by_class = {}
+    for side in ("SHORT", "WAIT", "LONG"):
+        subset = [item for item in evaluated if item.get("actual_class") == side]
+        by_class[side] = {
+            "actual_samples": len(subset),
+            "recall_pct": round(sum(bool(x.get("classification_correct")) for x in subset) / len(subset) * 100.0, 2) if subset else None
+        }
+    return {
+        "evaluated": len(evaluated),
+        "correct": correct,
+        "accuracy_pct": round(correct / len(evaluated) * 100.0, 2) if evaluated else None,
+        "class_recall": by_class,
+        "note": "Includes LONG, SHORT and WAIT forecasts. Labels use the same 15m volatility-adaptive neutral band as the AI training target."
+    }
+
+
 def performance(records):
     done = [x for x in records if x.get("status") in TRADE_STATUSES]
     wins = sum(x.get("status") == "WIN" for x in done)
@@ -206,11 +275,13 @@ def run():
 
     resolve_records(records, closed, source, "records", "side")
     resolve_records(shadow, closed, source, "shadow_forecasts", "side")
+    resolve_shadow_classifications(shadow, closed, source)
     records = records[-2000:]
     shadow = shadow[-2000:]
 
     stats = performance(records)
     shadow_stats = performance(shadow)
+    shadow_classification = shadow_classification_metrics(shadow)
     pending = sum(x.get("status") == "PENDING" for x in records)
     abstained = sum(x.get("status") == "ABSTAINED" for x in records)
     shadow_pending = sum(x.get("status") == "PENDING" for x in shadow)
@@ -228,11 +299,16 @@ def run():
         "max_drawdown_pct": stats["max_drawdown_pct"],
         "shadow_evaluation": {
             "mode": "NON_ACTIONABLE_RAW_MODEL_FORECASTS",
-            "closed_forecasts": shadow_stats["closed"],
+            "closed_forecasts": shadow_classification["evaluated"],
+            "evaluated_forecasts": shadow_classification["evaluated"],
+            "classification_accuracy_pct": shadow_classification["accuracy_pct"],
+            "classification_correct": shadow_classification["correct"],
+            "class_recall": shadow_classification["class_recall"],
             "pending_forecasts": shadow_pending,
             "abstentions": shadow_abstained,
             "wins": shadow_stats["wins"], "losses": shadow_stats["losses"],
             "directional_accuracy_pct": shadow_stats["gross_directional_accuracy_pct"],
+            "classification_note": shadow_classification["note"],
             "net_win_rate_pct": shadow_stats["win_rate_pct"],
             "average_net_return_pct": shadow_stats["average_net_return_pct"],
             "net_return_pct_compounded": shadow_stats["net_return_pct_compounded"],
