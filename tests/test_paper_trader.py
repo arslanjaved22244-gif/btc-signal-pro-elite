@@ -190,7 +190,7 @@ class PaperTraderTests(unittest.TestCase):
         self.assertTrue(shadow["classification_correct"])
         self.assertEqual(result["shadow_evaluation"]["closed_forecasts"], 1)
         self.assertEqual(result["shadow_evaluation"]["classification_accuracy_pct"], 100.0)
-        self.assertEqual(result["shadow_evaluation"]["net_win_rate_pct"], 0.0)
+        self.assertIsNone(result["shadow_evaluation"]["net_win_rate_pct"])
 
 
 if __name__ == "__main__":
