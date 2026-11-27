@@ -3000,12 +3000,15 @@ def main():
     )
     temporal_horizons = temporal_sequence_horizon_forecasts(data, prepared, sequence_length=12)
     tree_ensemble = advanced_tree_ensemble(data, prepared)
+    # Keep the primary decision path identical to the one measured by
+    # walk_forward_validate(). The tree ensemble is displayed as an independent
+    # forecast only until it is included in the same chronological backtest.
     tree_blend_applied = False
-    tree_primary = tree_ensemble.get("forecasts", {}).get("15m", {})
-    if tree_primary.get("signal") in ("LONG", "SHORT") and tree_primary.get("macro_f1", 0) >= 25.0:
-        tree_scores = [float(tree_primary.get("scores", {}).get(name, 0)) / 100.0 for name in CLASSES]
-        scores = [0.65 * scores[k] + 0.35 * tree_scores[k] for k in range(3)]
-        tree_blend_applied = True
+    tree_blend_status = (
+        "DISABLED: tree forecasts are shown separately and are not blended into "
+        "the primary signal because the current primary walk-forward backtest "
+        "does not evaluate that blend."
+    )
     best = max(range(3), key=lambda k: scores[k])
     ordered = sorted(scores, reverse=True)
     margin = ordered[0] - ordered[1]
@@ -3071,7 +3074,7 @@ def main():
     result = {
         "system": "BTC Signal Pro Elite Advanced ML",
         "model": "Four-model vote: full-history logistic, recent-regime logistic, nearest-centroid and decision-stump ensemble",
-        "model_version": "4.3-profitability-gated",
+        "model_version": "4.4-validation-consistent",
         "data_source": source,
         "data_source_by_timeframe": data_source_by_tf,
         "symbol": "BTC/USD" if any("Spot" in item for item in used_sources) else symbol,
@@ -3093,7 +3096,7 @@ def main():
         "macro_news_risk": macro_news_risk,
         "news_event_veto": news_event_veto,
         "historical_derivatives_training": historical_derivatives,
-        "advanced_intelligence": {"market_regime": regime_analysis, "breakout_squeeze_analysis": breakout_squeeze_analysis, "multi_timeframe_trend_alignment": trend_alignment, "alignment_veto": alignment_veto, "multi_horizon_forecasts": horizon_forecasts, "multi_horizon_consensus": horizon_consensus, "temporal_sequence_model": temporal_model, "lstm_sequence_model": lstm_model, "temporal_sequence_horizons": temporal_horizons, "temporal_model_veto": temporal_veto, "lstm_model_veto": lstm_veto, "tree_ensemble": tree_ensemble, "tree_blend_applied_to_primary_signal": tree_blend_applied, "method": "2-layer recurrent PyTorch LSTM on 24 ordered candles + temporal MLP + four-horizon chronological ML + Random Forest + gradient boosting + neural MLP + XGBoost (when installed) + volatility regime + liquidity sweep detector"},
+        "advanced_intelligence": {"market_regime": regime_analysis, "breakout_squeeze_analysis": breakout_squeeze_analysis, "multi_timeframe_trend_alignment": trend_alignment, "alignment_veto": alignment_veto, "multi_horizon_forecasts": horizon_forecasts, "multi_horizon_consensus": horizon_consensus, "temporal_sequence_model": temporal_model, "lstm_sequence_model": lstm_model, "temporal_sequence_horizons": temporal_horizons, "temporal_model_veto": temporal_veto, "lstm_model_veto": lstm_veto, "tree_ensemble": tree_ensemble, "tree_blend_applied_to_primary_signal": tree_blend_applied, "tree_blend_status": tree_blend_status, "method": "2-layer recurrent PyTorch LSTM on 24 ordered candles + temporal MLP + four-horizon chronological ML + Random Forest + gradient boosting + neural MLP + XGBoost (when installed) + volatility regime + liquidity sweep detector"},
         "walk_forward_folds": folds,
         "training_samples": len(rows),
         "label_distribution": {name: labels.count(i) for i, name in enumerate(CLASSES)},
