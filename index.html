@@ -1684,7 +1684,23 @@ async function loadDerivativesIntelligence(force=false){
  try{
   const r=await fetch("./market_snapshot.json?ts="+Date.now(),{cache:"no-store"});
   if(!r.ok)throw Error("Market snapshot HTTP "+r.status);
-  const d=await r.json(),sig=d.signal||"WAIT",se=$("derivSignal");
+  const d=await r.json();
+  const stamp=Date.parse(d.updated_at||"");
+  const ageMs=Date.now()-stamp;
+  const fresh=Number.isFinite(stamp)&&ageMs>=-60000&&ageMs<=20*60*1000;
+  const se=$("derivSignal");
+  if(!fresh){
+   setText("derivSignal","WAIT");if(se)se.className="yellow";
+   for(const id of ["derivFunding","derivOILevel","derivOI","derivCVD","derivTaker","derivBook","derivLarge"])setText(id,"--");
+   setText("derivNewsPause","UNVERIFIED • WAIT");
+   setText("derivVolatility","UNVERIFIED • WAIT");
+   setText("derivReason","STALE SNAPSHOT — directional status and old metrics suppressed. Waiting for a fresh published Futures/news snapshot.");
+   setText("derivSource","STALE / UNVERIFIED • last update: "+(Number.isFinite(stamp)?new Date(stamp).toLocaleString():"timestamp missing")+(Number.isFinite(ageMs)?" • "+Math.max(0,Math.round(ageMs/60000))+" min old":""));
+   setText("derivNewsItems","Old news/event data is not current. Do not infer that the event-risk window is clear.");
+   derivativesLastLoad=Date.now();
+   return;
+  }
+  const sig=d.signal||"WAIT";
   setText("derivSignal",sig);if(se)se.className=sig==="LONG"?"green":sig==="SHORT"?"red":"yellow";
   setText("derivFunding",d.funding_percent!=null?Number(d.funding_percent).toFixed(4)+"%":"--");
   setText("derivOILevel",d.open_interest!=null?Number(d.open_interest).toLocaleString():"--");
@@ -1696,7 +1712,7 @@ async function loadDerivativesIntelligence(force=false){
   setText("derivVolatility",d.volatility_status==="NORMAL"?"NORMAL • ATR "+Number(d.atr_5m_pct||0).toFixed(3)+"%":(d.volatility_status||"UNVERIFIED")+" • WAIT");
   setText("derivLarge",String((d.large_trades||[]).length));
   setText("derivReason",d.reason||"--");
-  setText("derivSource",(d.data_source||"Public market feed")+" • "+(d.oi_change_source||d.oi_note||"OI source unavailable")+" • "+(d.updated_at?new Date(d.updated_at).toLocaleString():"time unavailable"));
+  setText("derivSource",(d.data_source||"Public market feed")+" • "+(d.oi_change_source||d.oi_note||"OI source unavailable")+" • "+new Date(stamp).toLocaleString()+" • FRESH");
   setText("derivNewsItems",(d.news_alerts||[]).slice(0,5).map(x=>"["+((x.source)||"News")+"] "+x.title+" ("+x.age_minutes+"m)").join(" | ")||"No qualifying market-risk headlines or Trump posts in the monitoring window.");
   derivativesLastLoad=Date.now();
  }catch(e){setText("derivReason","Derivatives snapshot unavailable: "+e.message);}
