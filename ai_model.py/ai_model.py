@@ -2977,7 +2977,7 @@ def main():
         "ensemble_configuration": {"models": ["full_history_logistic", "recent_regime_logistic", "nearest_centroid", "decision_stumps"], "weights": adaptive_weights, "recent_training_window": final_model["recent_window"]},
         "adaptive_learning": adaptive_learning,
         "walk_forward_metrics": validation,
-        "validation_gate": {"passed": validation_gate, "futures_source_required": True, "futures_source_passed": futures_source_gate, "minimum_accuracy_pct": 38.0, "minimum_macro_f1_pct": 30.0, "must_beat_majority_baseline": True, "decision": "directional signals allowed" if validation_gate else ("WAIT only — training source is not Binance Futures" if not futures_source_gate else "WAIT only — historical validation too weak")},
+        "validation_gate": {"passed": validation_gate, "futures_source_required": True, "futures_source_passed": futures_source_gate, "minimum_accuracy_pct": 38.0, "minimum_macro_f1_pct": 30.0, "must_beat_majority_baseline": True, "decision": "directional signals allowed" if validation_gate else ("WAIT only — training source is not verified perpetual Futures" if not futures_source_gate else "WAIT only — historical validation too weak")},
         "futures_microstructure": futures_microstructure,
         "macro_news_risk": macro_news_risk,
         "news_event_veto": news_event_veto,
