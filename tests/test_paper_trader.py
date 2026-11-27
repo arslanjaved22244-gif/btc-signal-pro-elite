@@ -173,14 +173,13 @@ class PaperTraderTests(unittest.TestCase):
     def test_shadow_wait_forecast_is_evaluated_as_a_class_not_trade(self):
         self.write_inputs(self.candles([100, 100, 100]), "WAIT")
         self.write_ai(datetime_now())
-        result = PAPER.run()
-        self.assertEqual(result["shadow_forecasts"][0]["side"], "LONG")
-        # Force a WAIT raw model prediction for a flat 15m outcome.
         with open("ai_result.json", "r", encoding="utf-8") as f:
             ai = json.load(f)
         ai["class_scores"] = {"LONG": 10, "SHORT": 10, "WAIT": 80}
         with open("ai_result.json", "w", encoding="utf-8") as f:
             json.dump(ai, f)
+        result = PAPER.run()
+        self.assertEqual(result["shadow_forecasts"][0]["side"], "WAIT")
         self.write_inputs(self.candles([100, 100, 100, 100, 100, 100]), "WAIT")
         with open("ai_result.json", "w", encoding="utf-8") as f:
             json.dump(ai, f)
