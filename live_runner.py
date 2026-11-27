@@ -144,27 +144,22 @@ def run_step(name, script, timeout=100):
 def monitor_worker():
     while True:
         started = time.time()
-        # Refresh the actual market and signal snapshots in this persistent process.
-        # A failed market collection must never allow a stale snapshot to authorize a signal.
-        market_ok = False
         try:
             market_ok = run_step("Futures market collection", "market_data.py", timeout=100)
-            if market_ok:
-                news_ok = run_step("News/event risk scan", "news_guard.py", timeout=60)
-                signal_ok = news_ok and run_step("Signal confluence engine", "signal_engine.py", timeout=45)
-                if signal_ok:
-                    run_step("Paper-trade journal (no orders)", "paper_trader.py", timeout=45)
-                    run_step("Advanced metrics", "advanced_modules.py", timeout=60)
-                else:
-                    publish_wait_override(ROOT / "signal_result.json", "NEWS_SCAN", "News/event-risk scan failed; directional signals disabled.")
-                if signal_ok:
-                    run_step("Paper-trade journal (no orders)", "paper_trader.py", timeout=45)
-                    run_step("Advanced metrics", "advanced_modules.py", timeout=60)
-                else:
-                    publish_wait_override(ROOT / "signal_result.json", "SIGNAL_ENGINE", "Signal engine failed; directional signals disabled.")
-            else:
+            if not market_ok:
                 publish_wait_override(ROOT / "signal_result.json", "MARKET_DATA", "Latest Futures market collection failed; prior snapshots are stale.")
-                print("Signal update skipped: latest market collection failed; published signal forced to WAIT.", flush=True)
+                print("Market collection failed; published signal forced to WAIT.", flush=True)
+            else:
+                news_ok = run_step("News/event risk scan", "news_guard.py", timeout=60)
+                if not news_ok:
+                    publish_wait_override(ROOT / "signal_result.json", "NEWS_SCAN", "News/event-risk scan failed; directional signals disabled.")
+                else:
+                    signal_ok = run_step("Signal confluence engine", "signal_engine.py", timeout=45)
+                    if not signal_ok:
+                        publish_wait_override(ROOT / "signal_result.json", "SIGNAL_ENGINE", "Signal engine failed; directional signals disabled.")
+                    else:
+                        run_step("Paper-trade journal (no orders)", "paper_trader.py", timeout=45)
+                        run_step("Advanced metrics", "advanced_modules.py", timeout=60)
             run_step("Derivatives and news monitor", "bot/monitor.py", timeout=55)
         except subprocess.TimeoutExpired as exc:
             publish_wait_override(ROOT / "signal_result.json", "RUNNER_TIMEOUT", str(exc))
