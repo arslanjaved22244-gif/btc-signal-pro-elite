@@ -1,16 +1,16 @@
 {
-  "generated_at": "2026-11-27T21:12:55.899923+00:00",
+  "generated_at": "2026-11-27T21:20:58.468797+00:00",
   "timeframe_indicators": {
     "5m": {
       "available": true,
-      "ema50": 59904.71,
-      "ema200": 60534.5,
-      "rsi14": 47.12,
+      "ema50": 59899.19,
+      "ema200": 60520.87,
+      "rsi14": 52.04,
       "macd": {
-        "macd": -29.9528,
-        "signal": -29.8043,
-        "histogram": -0.1485,
-        "bullish": false,
+        "macd": -19.3697,
+        "signal": -26.9518,
+        "histogram": 7.5821,
+        "bullish": true,
         "cross_up": false,
         "cross_down": false
       },
@@ -21,18 +21,18 @@
         "last_swing_low": 59694.1,
         "note": "Confirmed pivots use candles on both sides; most recent pivot is delayed by the confirmation window."
       },
-      "volatility_atr14": 76.76,
-      "atr_pct": 0.1284
+      "volatility_atr14": 75.55,
+      "atr_pct": 0.1262
     },
     "15m": {
       "available": true,
-      "ema50": 60419.52,
-      "ema200": 60607.69,
-      "rsi14": 39.72,
+      "ema50": 60396.14,
+      "ema200": 60599.47,
+      "rsi14": 41.56,
       "macd": {
-        "macd": -222.7191,
-        "signal": -272.2778,
-        "histogram": 49.5587,
+        "macd": -208.7311,
+        "signal": -259.5685,
+        "histogram": 50.8374,
         "bullish": true,
         "cross_up": false,
         "cross_down": false
@@ -44,8 +44,8 @@
         "last_swing_low": 59679.9,
         "note": "Confirmed pivots use candles on both sides; most recent pivot is delayed by the confirmation window."
       },
-      "volatility_atr14": 172.62,
-      "atr_pct": 0.2888
+      "volatility_atr14": 164.11,
+      "atr_pct": 0.2743
     },
     "1h": {
       "available": true,
@@ -122,7 +122,7 @@
     "method": "Chronological 60/20/20 split; reported trades only in final 20% holdout",
     "total_candles": 599,
     "test_candles": 240,
-    "test_start_time": 1795741500000,
+    "test_start_time": 1795742100000,
     "trades": 11,
     "win_rate_pct": 18.18,
     "net_return_pct": -2.86,
