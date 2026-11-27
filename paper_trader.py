@@ -60,9 +60,11 @@ def performance(records):
         peak = max(peak, equity)
         max_dd = max(max_dd, (peak - equity) / peak if peak else 0)
     returns = [float(x.get("net_return_pct", 0)) for x in done]
+    directional_hits = sum(float(x.get("gross_return_pct", 0)) > 0 for x in done)
     return {
         "closed": len(done), "wins": wins, "losses": losses,
         "win_rate_pct": round(wins / len(done) * 100, 2) if done else None,
+        "gross_directional_accuracy_pct": round(directional_hits / len(done) * 100, 2) if done else None,
         "net_return_pct_compounded": round((equity - 1) * 100, 4),
         "average_net_return_pct": round(sum(returns) / len(returns), 5) if returns else None,
         "max_drawdown_pct": round(max_dd * 100, 4)
@@ -163,7 +165,8 @@ def run():
             "pending_forecasts": shadow_pending,
             "abstentions": shadow_abstained,
             "wins": shadow_stats["wins"], "losses": shadow_stats["losses"],
-            "directional_accuracy_pct": shadow_stats["win_rate_pct"],
+            "directional_accuracy_pct": shadow_stats["gross_directional_accuracy_pct"],
+            "net_win_rate_pct": shadow_stats["win_rate_pct"],
             "average_net_return_pct": shadow_stats["average_net_return_pct"],
             "net_return_pct_compounded": shadow_stats["net_return_pct_compounded"],
             "validation_gate_passed_now": ai.get("validation_gate", {}).get("passed") is True,
