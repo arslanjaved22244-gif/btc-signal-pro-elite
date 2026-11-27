@@ -6,8 +6,9 @@ import urllib.request
 from datetime import datetime, timezone, timedelta
 
 OUT = "event_guard.json"
+STATE = "event_guard_state.json"
 BASE = "https://api.gdeltproject.org/api/v2/doc/doc"
-QUERY = '(bitcoin OR BTC OR cryptocurrency OR crypto) AND (Trump OR tariff OR Federal Reserve OR Fed OR inflation OR interest rate OR war OR attack OR missile OR Iran OR Israel OR Ukraine OR Russia OR China OR sanctions OR election OR central bank OR recession)'
+QUERY = '(bitcoin OR BTC OR cryptocurrency OR crypto OR markets OR Federal Reserve OR Trump) AND (Trump OR tariff OR Federal Reserve OR Fed OR inflation OR CPI OR NFP OR payroll OR FOMC OR Powell OR interest rate OR war OR attack OR missile OR Iran OR Israel OR Ukraine OR Russia OR China OR sanctions OR election OR central bank OR recession OR hack OR outage)'
 RISK_TERMS = (
     "war", "attack", "missile", "strike", "invasion", "sanction", "emergency",
     "tariff", "trade war", "federal reserve", "interest rate", "rate decision",
@@ -21,6 +22,12 @@ def collect():
     params = {"query": QUERY, "mode": "ArtList", "format": "json",
               "maxrecords": "50", "sort": "DateDesc"}
     url = BASE + "?" + urllib.parse.urlencode(params)
+    try:
+        with open(STATE, "r", encoding="utf-8") as f:
+            prior = json.load(f)
+    except (OSError, ValueError):
+        prior = {}
+    prior_until = prior.get("block_until")
     result = {"generated_at": now.isoformat(), "source": "GDELT DOC public API",
               "available": False, "block": False, "block_until": None,
               "matched_events": [], "warnings": []}
@@ -52,10 +59,21 @@ def collect():
                 "matched_terms": matched[:8]
             })
         if result["matched_events"]:
-            result["block"] = True
-            # Initial block is 30 minutes from latest qualifying report.
+            # Keep the lock for 30 minutes after the newest qualifying report.
             newest = max(datetime.fromisoformat(x["published_at"]) for x in result["matched_events"])
-            result["block_until"] = (newest + timedelta(minutes=30)).isoformat()
+            fresh_until = (newest + timedelta(minutes=30)).isoformat()
+            result["block_until"] = max([x for x in (prior_until, fresh_until) if x], default=None)
+    if prior_until:
+        try:
+            if datetime.fromisoformat(prior_until) > now:
+                result["block_until"] = max(prior_until, result.get("block_until") or prior_until)
+        except ValueError:
+            pass
+    if result.get("block_until"):
+        try:
+            result["block"] = datetime.fromisoformat(result["block_until"]) > now
+        except ValueError:
+            result["block"] = False
     except Exception as exc:
         result["warnings"].append("News feed unavailable: " + str(exc))
     return result
@@ -65,4 +83,6 @@ if __name__ == "__main__":
     data = collect()
     with open(OUT, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2)
+    with open(STATE, "w", encoding="utf-8") as f:
+        json.dump({"block_until": data.get("block_until")}, f, indent=2)
     print(json.dumps({k: data[k] for k in ("available", "block", "block_until", "matched_events", "warnings")}, indent=2))
