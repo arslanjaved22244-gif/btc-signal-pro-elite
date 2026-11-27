@@ -1,0 +1,21 @@
+{
+  "price": 61595.7,
+  "funding_rate": -1.43965463068e-05,
+  "funding_percent": -0.00143965463068,
+  "open_interest": 3213359.5700000115,
+  "oi_change_5m_pct": null,
+  "orderbook_imbalance": -0.9309580168435517,
+  "cvd_proxy": 0.5341582262130643,
+  "taker_buy_ratio": 0.7670791131065322,
+  "large_trades": [],
+  "data_source": "OKX public BTC-USDT-SWAP perpetual API",
+  "as_of": "2026-11-27T11:13:52.478350+00:00",
+  "oi_note": "Current open interest available; 5-minute change not supplied by fallback feed",
+  "signal": "WAIT",
+  "reason": "Derivatives flow is mixed or squeeze/crowding filters are active",
+  "news_pause_active": false,
+  "pause_until": null,
+  "news_alerts": [],
+  "updated_at": "2026-11-27T11:13:53.328833+00:00",
+  "safety_note": "Signal-only; manual trading only. Large trades are trade-size alerts, not verified whale identities."
+}
