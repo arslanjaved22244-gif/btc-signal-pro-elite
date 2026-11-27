@@ -2963,7 +2963,7 @@ def main():
         "model_version": "4.1-volatility-adaptive-labels",
         "data_source": source,
         "data_source_by_timeframe": data_source_by_tf,
-        "symbol": "BTC/USD" if used_sources == ["Kraken BTC/USD"] else symbol,
+        "symbol": "BTC/USD" if any("Spot" in item for item in used_sources) else symbol,
         "quote_asset_note": ("Kraken BTC/USD Spot is a research proxy and is not equivalent to perpetual Futures." if any("Spot" in x for x in used_sources) else ("OKX BTC-USDT-SWAP and/or Binance USD-M BTCUSDT perpetual Futures data; cross-exchange prices may differ." if any("OKX" in x for x in used_sources) else "Binance USD-M BTCUSDT Futures market data.")),
         "base_interval": "5m",
         "feature_timeframes": list(INTERVALS.keys()),
