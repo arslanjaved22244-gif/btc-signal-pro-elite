@@ -249,18 +249,79 @@ def latest_closed_index(candles, timestamp, interval_minutes):
     return bisect.bisect_right(times, cutoff) - 1
 
 
-def combined_features(data, base_index):
+def precompute_candle_features(candles):
+    # Calculate indicators once per candle instead of recalculating the full
+    # history for every training row. This makes longer 5m history practical.
+    n = len(candles)
+    closes = [c["close"] for c in candles]
+    volumes = [c["volume"] for c in candles]
+    ema_periods = (9, 21, 50, 200)
+    ema_series = {}
+    for period in ema_periods:
+        alpha = 2.0 / (period + 1.0)
+        values = [closes[0]]
+        for price in closes[1:]:
+            values.append(alpha * price + (1.0 - alpha) * values[-1])
+        ema_series[period] = values
+
+    rsi_values = [50.0] * n
+    if n > 14:
+        changes = [closes[i] - closes[i - 1] for i in range(1, n)]
+        avg_gain = sum(max(v, 0.0) for v in changes[:14]) / 14.0
+        avg_loss = sum(max(-v, 0.0) for v in changes[:14]) / 14.0
+        def rsi_value(gain, loss):
+            if loss <= 1e-15:
+                return 100.0 if gain > 1e-15 else 50.0
+            return 100.0 - 100.0 / (1.0 + gain / loss)
+        rsi_values[14] = rsi_value(avg_gain, avg_loss)
+        for i in range(15, n):
+            change = changes[i - 1]
+            avg_gain = (avg_gain * 13.0 + max(change, 0.0)) / 14.0
+            avg_loss = (avg_loss * 13.0 + max(-change, 0.0)) / 14.0
+            rsi_values[i] = rsi_value(avg_gain, avg_loss)
+
+    result = [None] * n
+    volume_sum = 0.0
+    for i, candle in enumerate(candles):
+        volume_sum += volumes[i]
+        if i >= 20:
+            volume_sum -= volumes[i - 20]
+        if i < 199:
+            continue
+        price = closes[i]
+        if price <= 0:
+            continue
+        e9, e21 = ema_series[9][i], ema_series[21][i]
+        e50, e200 = ema_series[50][i], ema_series[200][i]
+        avg_vol = volume_sum / min(i + 1, 20)
+        span = max(candle["high"] - candle["low"], 0.0)
+        def ret(period):
+            return closes[i] / closes[i - period] - 1.0 if i >= period and closes[i - period] else 0.0
+        result[i] = [
+            ret(1), ret(3), ret(6), ret(12), ret(24), rsi_values[i] / 100.0,
+            e9 / e21 - 1.0 if e21 else 0.0,
+            e21 / e50 - 1.0 if e50 else 0.0,
+            e50 / e200 - 1.0 if e200 else 0.0,
+            price / e200 - 1.0 if e200 else 0.0,
+            min(volumes[i] / avg_vol, 5.0) if avg_vol > 0 else 1.0,
+            span / price, (candle["close"] - candle["open"]) / price,
+            (candle["close"] - candle["low"]) / span if span > 0 else 0.5
+        ]
+    return result
+
+
+def combined_features(data, base_index, prepared):
     base = data["5m"]
     timestamp = base[base_index]["time"]
-    features = candle_features(base, base_index)
+    features = prepared["5m"][base_index]
     if features is None:
         return None
+    features = list(features)
     for tf in ("15m", "1h", "4h", "1d"):
-        candles = data[tf]
-        idx = latest_closed_index(candles, timestamp, INTERVALS[tf])
+        idx = latest_closed_index(data[tf], timestamp, INTERVALS[tf])
         if idx < 199:
             return None
-        values = candle_features(candles, idx)
+        values = prepared[tf][idx]
         if values is None:
             return None
         features.extend([
@@ -270,11 +331,11 @@ def combined_features(data, base_index):
     return features
 
 
-def build_dataset(data):
+def build_dataset(data, prepared):
     candles = data["5m"]
     rows, labels = [], []
     for i in range(200, len(candles) - FUTURE_CANDLES):
-        features = combined_features(data, i)
+        features = combined_features(data, i, prepared)
         if features is None:
             continue
         move = candles[i + FUTURE_CANDLES]["close"] / candles[i]["close"] - 1.0
@@ -428,7 +489,7 @@ def main():
             data = {}
             try:
                 print("Loading Coinbase Exchange 5m history...")
-                data["5m"] = get_coinbase_data(300, 3000)
+                data["5m"] = get_coinbase_data(300, 9000)
                 print("Loading Coinbase Exchange 15m history...")
                 data["15m"] = get_coinbase_data(900, 3000)
                 print("Loading Coinbase Exchange 1h history for 1h and 4h...")
@@ -447,14 +508,15 @@ def main():
                 for tf, minutes in INTERVALS.items():
                     print(f"Loading Kraken Spot {tf} candles...")
                     data[tf] = get_kraken_data(minutes)
-    rows, labels = build_dataset(data)
+    prepared = {tf: precompute_candle_features(candles) for tf, candles in data.items()}
+    rows, labels = build_dataset(data, prepared)
     if len(rows) < 250:
         raise ValueError(f"Not enough aligned multi-timeframe samples: {len(rows)}")
     validation, folds = walk_forward_validate(rows, labels)
     final_model = train_model(rows, labels)
     class_counts = [max(1, labels.count(k)) for k in range(len(CLASSES))]
     class_weights = [min(2.5, len(labels) / (len(CLASSES) * count)) for count in class_counts]
-    latest = combined_features(data, len(data["5m"]) - 1)
+    latest = combined_features(data, len(data["5m"]) - 1, prepared)
     if latest is None:
         raise ValueError("Could not build latest multi-timeframe features.")
     scores = predict(final_model, latest)
@@ -465,7 +527,7 @@ def main():
     result = {
         "system": "BTC Signal Pro Elite Advanced ML",
         "model": "Multinomial Logistic Regression",
-        "model_version": "3.4-restored-class-balance-walkforward",
+        "model_version": "3.5-cached-indicators-expanded-history",
         "data_source": source,
         "symbol": symbol,
         "base_interval": "5m",
@@ -485,7 +547,7 @@ def main():
         "last_candle_time": data["5m"][-1]["time"],
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "limitations": [
-            "Uses one consistent OHLCV source across all timeframes. Source fallback order is Binance USD-M Futures, Binance Spot, Coinbase Exchange, then Kraken Spot. Coinbase 4h candles are aggregated from 1h candles. Spot sources are not Futures data; CVD, open interest, funding, order book and liquidation feeds are not model features yet.",
+            "Uses one consistent OHLCV source across all timeframes. Source fallback order is Binance USD-M Futures, Binance Spot, Coinbase Exchange, then Kraken Spot. Coinbase 4h candles are aggregated from 1h candles. Coinbase 5m history is expanded to 9000 candles. Spot sources are not Futures data; CVD, open interest, funding, order book and liquidation feeds are not model features yet.",
             "Class scores are model scores, not calibrated real-world win probabilities.",
             "Walk-forward metrics are historical diagnostics, not guarantees of future performance."
         ]
