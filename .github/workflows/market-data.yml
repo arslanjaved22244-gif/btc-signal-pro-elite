@@ -9,6 +9,8 @@ on:
   push:
     paths:
       - "market_data.py"
+      - "paper_trader.py"
+      - "exchange_compare.py"
       - "news_guard.py"
       - "signal_engine.py"
       - "ai_result.json"
