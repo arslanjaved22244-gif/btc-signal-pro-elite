@@ -1,7 +1,7 @@
 {
   "system": "BTC Signal Pro Elite Advanced ML",
   "model": "Multinomial Logistic Regression",
-  "model_version": "3.4-restored-class-balance-walkforward",
+  "model_version": "3.5-cached-indicators-expanded-history",
   "data_source": "Coinbase Exchange public candles (fallback)",
   "symbol": "BTC/USD",
   "base_interval": "5m",
@@ -14,219 +14,219 @@
   ],
   "signal": "WAIT",
   "class_scores": {
-    "SHORT": 33.09,
-    "WAIT": 33.43,
-    "LONG": 33.48
+    "SHORT": 35.13,
+    "WAIT": 29.12,
+    "LONG": 35.75
   },
-  "confidence_score": 33.48,
-  "confidence_margin": 0.05,
+  "confidence_score": 35.75,
+  "confidence_margin": 0.62,
   "walk_forward_metrics": {
-    "accuracy": 33.62,
-    "macro_precision": 36.8,
-    "macro_recall": 37.7,
-    "macro_f1": 29.13,
+    "accuracy": 40.58,
+    "macro_precision": 35.32,
+    "macro_recall": 33.8,
+    "macro_f1": 32.66,
     "per_class": {
       "SHORT": {
-        "precision": 44.06,
-        "recall": 52.41,
-        "f1": 47.87,
-        "support": 580
+        "precision": 43.26,
+        "recall": 58.22,
+        "f1": 49.64,
+        "support": 1836
       },
       "WAIT": {
-        "precision": 21.34,
-        "recall": 55.92,
-        "f1": 30.89,
-        "support": 245
+        "precision": 24.11,
+        "recall": 7.19,
+        "f1": 11.08,
+        "support": 751
       },
       "LONG": {
-        "precision": 45.0,
-        "recall": 4.76,
-        "f1": 8.61,
-        "support": 567
+        "precision": 38.6,
+        "recall": 35.99,
+        "f1": 37.25,
+        "support": 1595
       }
     },
     "confusion_matrix": [
       [
-        304,
-        248,
-        28
+        1069,
+        100,
+        667
       ],
       [
-        103,
-        137,
-        5
+        451,
+        54,
+        246
       ],
       [
-        283,
-        257,
-        27
+        951,
+        70,
+        574
       ]
     ]
   },
   "walk_forward_folds": [
     {
       "fold": 1,
-      "train_samples": 1390,
-      "test_samples": 464,
+      "train_samples": 4179,
+      "test_samples": 1394,
       "metrics": {
-        "accuracy": 29.53,
-        "macro_precision": 21.51,
-        "macro_recall": 35.2,
-        "macro_f1": 24.5,
+        "accuracy": 36.73,
+        "macro_precision": 45.46,
+        "macro_recall": 36.66,
+        "macro_f1": 26.85,
         "per_class": {
           "SHORT": {
-            "precision": 44.75,
-            "recall": 41.97,
-            "f1": 43.32,
-            "support": 193
+            "precision": 73.68,
+            "recall": 2.22,
+            "f1": 4.31,
+            "support": 631
           },
           "WAIT": {
-            "precision": 19.79,
-            "recall": 63.64,
-            "f1": 30.19,
-            "support": 88
+            "precision": 24.11,
+            "recall": 22.04,
+            "f1": 23.03,
+            "support": 245
           },
           "LONG": {
-            "precision": 0.0,
-            "recall": 0.0,
-            "f1": 0.0,
-            "support": 183
+            "precision": 38.58,
+            "recall": 85.71,
+            "f1": 53.21,
+            "support": 518
           }
         },
         "confusion_matrix": [
           [
-            81,
-            112,
-            0
+            14,
+            100,
+            517
           ],
           [
-            32,
-            56,
-            0
+            1,
+            54,
+            190
           ],
           [
-            68,
-            115,
-            0
+            4,
+            70,
+            444
           ]
         ]
       }
     },
     {
       "fold": 2,
-      "train_samples": 1854,
-      "test_samples": 464,
+      "train_samples": 5573,
+      "test_samples": 1394,
       "metrics": {
-        "accuracy": 37.28,
-        "macro_precision": 45.47,
-        "macro_recall": 34.2,
-        "macro_f1": 27.39,
+        "accuracy": 43.04,
+        "macro_precision": 27.31,
+        "macro_recall": 33.38,
+        "macro_f1": 28.27,
         "per_class": {
           "SHORT": {
-            "precision": 44.07,
-            "recall": 68.72,
-            "f1": 53.7,
-            "support": 211
+            "precision": 44.7,
+            "recall": 77.6,
+            "f1": 56.73,
+            "support": 625
           },
           "WAIT": {
-            "precision": 17.32,
-            "recall": 30.56,
-            "f1": 22.11,
-            "support": 72
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 259
           },
           "LONG": {
-            "precision": 75.0,
-            "recall": 3.31,
-            "f1": 6.35,
-            "support": 181
+            "precision": 37.22,
+            "recall": 22.55,
+            "f1": 28.08,
+            "support": 510
           }
         },
         "confusion_matrix": [
           [
-            145,
-            64,
-            2
+            485,
+            0,
+            140
           ],
           [
-            50,
-            22,
-            0
+            205,
+            0,
+            54
           ],
           [
-            134,
-            41,
-            6
+            395,
+            0,
+            115
           ]
         ]
       }
     },
     {
       "fold": 3,
-      "train_samples": 2318,
-      "test_samples": 464,
+      "train_samples": 6967,
+      "test_samples": 1394,
       "metrics": {
-        "accuracy": 34.05,
-        "macro_precision": 36.38,
-        "macro_recall": 41.36,
-        "macro_f1": 32.5,
+        "accuracy": 41.97,
+        "macro_precision": 32.42,
+        "macro_recall": 33.64,
+        "macro_f1": 21.2,
         "per_class": {
           "SHORT": {
-            "precision": 43.33,
-            "recall": 44.32,
-            "f1": 43.82,
-            "support": 176
+            "precision": 41.7,
+            "recall": 98.28,
+            "f1": 58.55,
+            "support": 580
           },
           "WAIT": {
-            "precision": 25.43,
-            "recall": 69.41,
-            "f1": 37.22,
-            "support": 85
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 247
           },
           "LONG": {
-            "precision": 40.38,
-            "recall": 10.34,
-            "f1": 16.47,
-            "support": 203
+            "precision": 55.56,
+            "recall": 2.65,
+            "f1": 5.05,
+            "support": 567
           }
         },
         "confusion_matrix": [
           [
-            78,
-            72,
-            26
+            570,
+            0,
+            10
           ],
           [
-            21,
-            59,
-            5
+            245,
+            0,
+            2
           ],
           [
-            81,
-            101,
-            21
+            552,
+            0,
+            15
           ]
         ]
       }
     }
   ],
-  "training_samples": 2786,
+  "training_samples": 8364,
   "label_distribution": {
-    "SHORT": 1204,
-    "WAIT": 504,
-    "LONG": 1078
+    "SHORT": 3361,
+    "WAIT": 2060,
+    "LONG": 2943
   },
   "training_class_weights": {
-    "SHORT": 0.7713178294573644,
-    "WAIT": 1.8425925925925926,
-    "LONG": 0.8614718614718615
+    "SHORT": 0.8295150252900922,
+    "WAIT": 1.3533980582524272,
+    "LONG": 0.9473326537546721
   },
   "future_horizon": "3 candles / 15 minutes",
   "neutral_threshold_pct": 0.05,
-  "last_price": 60540.46,
-  "last_candle_time": 1795738800000,
-  "generated_at": "2026-11-27T00:27:57.465294+00:00",
+  "last_price": 60470.67,
+  "last_candle_time": 1795739100000,
+  "generated_at": "2026-11-27T00:32:11.234778+00:00",
   "limitations": [
-    "Uses one consistent OHLCV source across all timeframes. Source fallback order is Binance USD-M Futures, Binance Spot, Coinbase Exchange, then Kraken Spot. Coinbase 4h candles are aggregated from 1h candles. Spot sources are not Futures data; CVD, open interest, funding, order book and liquidation feeds are not model features yet.",
+    "Uses one consistent OHLCV source across all timeframes. Source fallback order is Binance USD-M Futures, Binance Spot, Coinbase Exchange, then Kraken Spot. Coinbase 4h candles are aggregated from 1h candles. Coinbase 5m history is expanded to 9000 candles. Spot sources are not Futures data; CVD, open interest, funding, order book and liquidation feeds are not model features yet.",
     "Class scores are model scores, not calibrated real-world win probabilities.",
     "Walk-forward metrics are historical diagnostics, not guarantees of future performance."
   ]
