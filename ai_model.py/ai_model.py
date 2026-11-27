@@ -2694,9 +2694,12 @@ def main():
         "note": "Only horizons passing their own validation gate are counted; this is a conflict filter, not a guarantee."
     }
     news_event_veto = None
-    if signal in ("LONG", "SHORT") and macro_news_risk.get("high_risk"):
+    if signal in ("LONG", "SHORT") and macro_news_risk.get("status") != "CLEAR":
         signal = "WAIT"
-        news_event_veto = "Directional signal blocked for at least 30 minutes due to fresh BTC-relevant macro/geopolitical headlines."
+        if macro_news_risk.get("high_risk"):
+            news_event_veto = "Directional signal blocked for at least 30 minutes due to fresh BTC-relevant macro/geopolitical headlines."
+        else:
+            news_event_veto = "Directional signal blocked because the news-risk feed is unavailable or not confirmed clear; no blind entry while event coverage is missing."
     model_probabilities = {
         "full_history_logistic": predict(final_model["full_history"], latest),
         "recent_regime_logistic": predict(final_model["recent_regime"], latest),
