@@ -85,7 +85,8 @@ def liquidation_worker():
         time.sleep(5)
 
 def dashboard_server():
-    proc = subprocess.Popen([sys.executable, "-m", "http.server", "8080", "--bind", "0.0.0.0"],
+    port = str(int(os.environ.get("PORT", "8080")))
+    proc = subprocess.Popen([sys.executable, "-m", "http.server", port, "--bind", "0.0.0.0"],
                             cwd=ROOT, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
     print("Dashboard HTTP server PID:", proc.pid, flush=True)
     proc.wait()
