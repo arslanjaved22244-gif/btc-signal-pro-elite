@@ -255,6 +255,33 @@
     "must_beat_majority_baseline": true,
     "decision": "WAIT only \u2014 historical validation too weak"
   },
+  "futures_microstructure": {
+    "source": "Binance USD-M Futures public REST",
+    "status": "PARTIAL",
+    "api_key_required": false,
+    "features": {
+      "positioning_interpretation": {
+        "open_interest": "UNAVAILABLE",
+        "taker_flow": "UNAVAILABLE",
+        "funding_crowding": "UNAVAILABLE",
+        "squeeze_context": "NO_CLEAR_BUILDUP",
+        "note": "Position buildup is not proof of an imminent liquidation or squeeze."
+      }
+    },
+    "limitations": [
+      "Current and short-lookback context only; not historical training features.",
+      "Taker buy/sell volume is a CVD proxy, not exchange-wide true CVD.",
+      "REST order book is a snapshot, not a live order-book feed."
+    ],
+    "errors": [
+      "funding: HTTP Error 451: ",
+      "open_interest_history: HTTP Error 451: ",
+      "taker_flow: HTTP Error 451: ",
+      "premium_index: HTTP Error 451: ",
+      "orderbook: HTTP Error 451: "
+    ],
+    "retrieved_at": "2026-11-27T12:54:29.667441+00:00"
+  },
   "advanced_intelligence": {
     "market_regime": {
       "regime": "RANGE / CHOP",
@@ -1221,7 +1248,7 @@
   "last_candle_time": 1795783500000,
   "data_freshness": {
     "status": "FRESH",
-    "latest_5m_candle_age_minutes": 7.16,
+    "latest_5m_candle_age_minutes": 9.71,
     "latest_5m_candle_time": "2026-11-27T12:45:00+00:00",
     "source_by_timeframe": {
       "5m": "Kraken BTC/USD",
@@ -1232,7 +1259,7 @@
     },
     "max_allowed_age_minutes": 15
   },
-  "generated_at": "2026-11-27T12:52:37.387992+00:00",
+  "generated_at": "2026-11-27T12:55:04.136771+00:00",
   "limitations": [
     "When Binance USD-M Futures is unavailable, Kraken BTC/USD spot OHLC is used as a proxy and is not equivalent to BTC/USDT Futures. Funding, open interest, CVD, order book and liquidation remain separate confluence inputs.",
     "Class scores are model scores, not calibrated real-world win probabilities.",

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "last_updated": "2026-11-27T12:52:37.388401+00:00",
+  "last_updated": "2026-11-27T12:55:04.137251+00:00",
   "scoring_rule": "Each forecast is scored at its own horizon using a prediction-time ATR-scaled neutral threshold",
   "predictions": [
     {
