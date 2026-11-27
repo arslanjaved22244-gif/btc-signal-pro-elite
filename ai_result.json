@@ -1,9 +1,9 @@
 {
   "system": "BTC Signal Pro Elite Advanced ML",
-  "model": "Temporal Ensemble (full-history + recent-regime logistic experts)",
-  "model_version": "3.8-temporal-ensemble-regime-specialist",
-  "data_source": "Coinbase Exchange public candles (fallback)",
-  "symbol": "BTC/USD",
+  "model": "Four-model vote: full-history logistic, recent-regime logistic, nearest-centroid and decision-stump ensemble",
+  "model_version": "4.0-four-model-futures-only-voting",
+  "data_source": "Binance USD-M Futures public klines",
+  "symbol": "BTC/USDT",
   "base_interval": "5m",
   "feature_timeframes": [
     "5m",
@@ -14,220 +14,258 @@
   ],
   "signal": "WAIT",
   "class_scores": {
-    "SHORT": 32.47,
-    "WAIT": 33.36,
-    "LONG": 34.17
+    "SHORT": 28.42,
+    "WAIT": 40.23,
+    "LONG": 31.35
   },
-  "confidence_score": 34.17,
-  "confidence_margin": 0.81,
+  "individual_model_votes": {
+    "full_history_logistic": "WAIT",
+    "recent_regime_logistic": "WAIT",
+    "nearest_centroid": "LONG",
+    "decision_stumps": "WAIT"
+  },
+  "individual_model_scores": {
+    "full_history_logistic": {
+      "SHORT": 27.76,
+      "WAIT": 43.65,
+      "LONG": 28.59
+    },
+    "recent_regime_logistic": {
+      "SHORT": 23.5,
+      "WAIT": 49.41,
+      "LONG": 27.09
+    },
+    "nearest_centroid": {
+      "SHORT": 31.94,
+      "WAIT": 25.79,
+      "LONG": 42.26
+    },
+    "decision_stumps": {
+      "SHORT": 30.47,
+      "WAIT": 39.65,
+      "LONG": 29.88
+    }
+  },
+  "confidence_score": 40.23,
+  "confidence_margin": 8.88,
   "wait_probability_threshold": 0.35000000000000003,
   "ensemble_configuration": {
-    "full_history_weight": 0.65,
-    "recent_regime_weight": 0.35,
+    "models": [
+      "full_history_logistic",
+      "recent_regime_logistic",
+      "nearest_centroid",
+      "decision_stumps"
+    ],
+    "weights": {
+      "full_history_logistic": 0.35,
+      "recent_regime_logistic": 0.2,
+      "nearest_centroid": 0.2,
+      "decision_stumps": 0.25
+    },
     "recent_training_window": 3000
   },
   "walk_forward_metrics": {
-    "accuracy": 33.64,
-    "macro_precision": 33.71,
-    "macro_recall": 33.68,
-    "macro_f1": 32.37,
+    "accuracy": 34.0,
+    "macro_precision": 35.57,
+    "macro_recall": 34.58,
+    "macro_f1": 32.61,
     "per_class": {
       "SHORT": {
-        "precision": 44.71,
-        "recall": 27.83,
-        "f1": 34.31,
-        "support": 1836
+        "precision": 32.95,
+        "recall": 27.35,
+        "f1": 29.89,
+        "support": 1455
       },
       "WAIT": {
-        "precision": 18.17,
-        "recall": 32.22,
-        "f1": 23.24,
-        "support": 748
+        "precision": 41.48,
+        "recall": 19.84,
+        "f1": 26.84,
+        "support": 1522
       },
       "LONG": {
-        "precision": 38.24,
-        "recall": 40.99,
-        "f1": 39.57,
-        "support": 1598
+        "precision": 32.28,
+        "recall": 56.53,
+        "f1": 41.09,
+        "support": 1385
       }
     },
     "confusion_matrix": [
       [
-        511,
-        552,
-        773
+        398,
+        232,
+        825
       ],
       [
-        222,
-        241,
-        285
+        402,
+        302,
+        818
       ],
       [
-        410,
-        533,
-        655
+        408,
+        194,
+        783
       ]
     ]
   },
   "walk_forward_folds": [
     {
       "fold": 1,
-      "train_samples": 4179,
-      "test_samples": 1394,
+      "train_samples": 4359,
+      "test_samples": 1454,
       "wait_threshold": 0.4,
       "metrics": {
-        "accuracy": 39.53,
-        "macro_precision": 38.99,
-        "macro_recall": 34.84,
-        "macro_f1": 24.67,
+        "accuracy": 30.4,
+        "macro_precision": 20.3,
+        "macro_recall": 34.88,
+        "macro_f1": 25.23,
         "per_class": {
           "SHORT": {
-            "precision": 50.0,
-            "recall": 11.04,
-            "f1": 18.09,
-            "support": 634
+            "precision": 30.2,
+            "recall": 65.82,
+            "f1": 41.4,
+            "support": 395
           },
           "WAIT": {
-            "precision": 28.57,
-            "recall": 0.82,
-            "f1": 1.6,
-            "support": 243
+            "precision": 0.0,
+            "recall": 0.0,
+            "f1": 0.0,
+            "support": 590
           },
           "LONG": {
-            "precision": 38.41,
-            "recall": 92.65,
-            "f1": 54.31,
-            "support": 517
+            "precision": 30.69,
+            "recall": 38.81,
+            "f1": 34.27,
+            "support": 469
           }
         },
         "confusion_matrix": [
           [
-            70,
-            4,
-            560
+            260,
+            0,
+            135
           ],
           [
-            33,
-            2,
-            208
+            314,
+            0,
+            276
           ],
           [
-            37,
-            1,
-            479
+            287,
+            0,
+            182
           ]
         ]
       }
     },
     {
       "fold": 2,
-      "train_samples": 5573,
-      "test_samples": 1394,
-      "wait_threshold": 0.30000000000000004,
+      "train_samples": 5813,
+      "test_samples": 1454,
+      "wait_threshold": 0.4,
       "metrics": {
-        "accuracy": 42.11,
-        "macro_precision": 27.34,
-        "macro_recall": 33.45,
-        "macro_f1": 29.65,
+        "accuracy": 32.32,
+        "macro_precision": 43.58,
+        "macro_recall": 35.76,
+        "macro_f1": 23.04,
         "per_class": {
           "SHORT": {
-            "precision": 44.3,
-            "recall": 66.03,
-            "f1": 53.02,
-            "support": 624
+            "precision": 53.06,
+            "recall": 4.77,
+            "f1": 8.75,
+            "support": 545
           },
           "WAIT": {
-            "precision": 0.0,
-            "recall": 0.0,
-            "f1": 0.0,
-            "support": 260
+            "precision": 47.06,
+            "recall": 8.33,
+            "f1": 14.16,
+            "support": 480
           },
           "LONG": {
-            "precision": 37.72,
-            "recall": 34.31,
-            "f1": 35.93,
-            "support": 510
+            "precision": 30.61,
+            "recall": 94.17,
+            "f1": 46.2,
+            "support": 429
           }
         },
         "confusion_matrix": [
           [
-            412,
-            0,
-            212
+            26,
+            27,
+            492
           ],
           [
-            183,
-            0,
-            77
+            16,
+            40,
+            424
           ],
           [
-            335,
-            0,
-            175
+            7,
+            18,
+            404
           ]
         ]
       }
     },
     {
       "fold": 3,
-      "train_samples": 6967,
-      "test_samples": 1394,
-      "wait_threshold": 0.2,
+      "train_samples": 7267,
+      "test_samples": 1454,
+      "wait_threshold": 0.30000000000000004,
       "metrics": {
-        "accuracy": 19.3,
-        "macro_precision": 35.95,
-        "macro_recall": 34.25,
-        "macro_f1": 13.27,
+        "accuracy": 39.27,
+        "macro_precision": 38.91,
+        "macro_recall": 40.05,
+        "macro_f1": 38.27,
         "per_class": {
           "SHORT": {
-            "precision": 39.73,
-            "recall": 5.02,
-            "f1": 8.91,
-            "support": 578
+            "precision": 37.58,
+            "recall": 21.75,
+            "f1": 27.55,
+            "support": 515
           },
           "WAIT": {
-            "precision": 18.12,
-            "recall": 97.55,
-            "f1": 30.56,
-            "support": 245
+            "precision": 40.75,
+            "recall": 57.96,
+            "f1": 47.85,
+            "support": 452
           },
           "LONG": {
-            "precision": 50.0,
-            "recall": 0.18,
-            "f1": 0.35,
-            "support": 571
+            "precision": 38.4,
+            "recall": 40.45,
+            "f1": 39.4,
+            "support": 487
           }
         },
         "confusion_matrix": [
           [
-            29,
-            548,
-            1
+            112,
+            205,
+            198
           ],
           [
-            6,
-            239,
-            0
+            72,
+            262,
+            118
           ],
           [
-            38,
-            532,
-            1
+            114,
+            176,
+            197
           ]
         ]
       }
     }
   ],
-  "training_samples": 8365,
+  "training_samples": 8725,
   "label_distribution": {
-    "SHORT": 3360,
-    "WAIT": 2059,
-    "LONG": 2946
+    "SHORT": 2821,
+    "WAIT": 3160,
+    "LONG": 2744
   },
   "training_class_weights": {
-    "SHORT": 0.8298611111111112,
-    "WAIT": 1.3542172575683988,
-    "LONG": 0.9464811043222449
+    "SHORT": 1.030958289022805,
+    "WAIT": 0.9203586497890295,
+    "LONG": 1.05988824101069
   },
   "recency_weighting": {
     "method": "exponential",
@@ -235,11 +273,11 @@
   },
   "future_horizon": "3 candles / 15 minutes",
   "neutral_threshold_pct": 0.05,
-  "last_price": 60605.43,
-  "last_candle_time": 1795740300000,
-  "generated_at": "2026-11-27T00:57:35.433373+00:00",
+  "last_price": 77522.6,
+  "last_candle_time": 1793490900000,
+  "generated_at": "2026-11-27T01:28:34.857583+00:00",
   "limitations": [
-    "Uses one consistent OHLCV source across all timeframes. Source fallback order is Binance USD-M Futures, Binance Spot, Coinbase Exchange, then Kraken Spot. Coinbase 4h candles are aggregated from 1h candles. Coinbase 5m history is expanded to 9000 candles. Spot sources are not Futures data; CVD, open interest, funding, order book and liquidation feeds are not model features yet.",
+    "Training is strictly Binance USD-M Futures OHLCV. If Futures endpoints fail, training fails closed and never substitutes Spot data. CVD, open interest, funding, order book and liquidation remain separate confluence inputs.",
     "Class scores are model scores, not calibrated real-world win probabilities.",
     "Walk-forward metrics are historical diagnostics, not guarantees of future performance."
   ]
