@@ -30,12 +30,17 @@ def publish_wait_override(signal_path, stage, reason, now=None):
         },
     })
     early = payload.get("early_setup")
-    if isinstance(early, dict):
-        early["direction"] = "WAIT"
-        early["status"] = "BLOCKED_BY_RUNNER_SAFETY"
+    if not isinstance(early, dict):
+        early = {}
+    early.update({
+        "direction": "WAIT",
+        "status": "BLOCKED_BY_RUNNER_SAFETY",
+    })
+    payload["early_setup"] = early
     risk = payload.get("risk_levels")
-    if isinstance(risk, dict):
-        risk.update({
+    if not isinstance(risk, dict):
+        risk = {}
+    risk.update({
             "entry_reference": None,
             "stop_loss": None,
             "take_profit_1": None,
