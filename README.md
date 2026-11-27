@@ -5,6 +5,15 @@ Phone-friendly BTC/USDT signal dashboard. It is **signal-only**: it does not con
 ## Open the dashboard
 GitHub Pages: https://arslanjaved22244-gif.github.io/btc-signal-pro-elite/
 
+## Install on iPhone (free)
+1. Open the GitHub Pages link above in **Safari** on your iPhone.
+2. Tap the **Share** button (square with an up arrow).
+3. Choose **Add to Home Screen**.
+4. Keep the suggested name **BTC Signal** and tap **Add**.
+5. Open the new BTC Signal icon from your Home Screen.
+
+This is an installable web app (PWA), not an App Store listing. The app shell can open offline, but live prices, market snapshots and AI forecasts still require an internet connection. iOS may keep some browser chrome or apply platform-specific install behavior.
+
 ## What is included
 - Multi-timeframe BTC context: 5m, 15m, 1h, 4h and 1d.
 - Experimental ML forecasts for 15m, 30m, 1h and 4h, including a Random Forest, gradient-boosting, neural MLP and optional XGBoost ensemble.
