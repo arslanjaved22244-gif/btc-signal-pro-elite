@@ -1,8 +1,8 @@
 {
   "source": "OKX BTC-USDT-SWAP public ticker; same-exchange reference and evaluation; directional close comparison only",
-  "updated_at": "2026-11-27T23:31:27.699075+00:00",
+  "updated_at": "2026-11-27T23:31:40.453867+00:00",
   "model_generated_at": "2026-11-27T23:20:02.466048+00:00",
-  "current_price": 59830.4,
+  "current_price": 59814.5,
   "stats": {
     "15m": {
       "evaluated": 22,
@@ -1208,8 +1208,8 @@
       "reference_price": 59925.7,
       "reference_exchange": "OKX BTC-USDT-SWAP",
       "outcome": "ABSTAINED",
-      "evaluated_at": "2026-11-27T23:31:27.699075+00:00",
-      "realized_change_pct": -0.15903,
+      "evaluated_at": "2026-11-27T23:31:40.453867+00:00",
+      "realized_change_pct": -0.18573,
       "correct": null,
       "raw_correct": null,
       "validation_status": "WEAK EDGE \u2014 WAIT"
@@ -1766,8 +1766,8 @@
       "reference_price": 59739.1,
       "reference_exchange": "OKX BTC-USDT-SWAP",
       "outcome": "ABSTAINED",
-      "evaluated_at": "2026-11-27T23:31:27.699075+00:00",
-      "realized_change_pct": 0.15283,
+      "evaluated_at": "2026-11-27T23:31:40.453867+00:00",
+      "realized_change_pct": 0.12605,
       "correct": null,
       "raw_correct": true,
       "validation_status": "VALIDATED TREE ENSEMBLE"
@@ -1802,8 +1802,8 @@
       "reference_price": 59771.1,
       "reference_exchange": "OKX BTC-USDT-SWAP",
       "outcome": "ABSTAINED",
-      "evaluated_at": "2026-11-27T23:31:27.699075+00:00",
-      "realized_change_pct": 0.09921,
+      "evaluated_at": "2026-11-27T23:31:40.453867+00:00",
+      "realized_change_pct": 0.07244,
       "correct": null,
       "raw_correct": true,
       "validation_status": "VALIDATED TREE ENSEMBLE"
