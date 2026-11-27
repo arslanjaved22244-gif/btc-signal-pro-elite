@@ -171,7 +171,7 @@ button{background:#f5b942;color:#111;border:0;padding:12px 18px;border-radius:8p
 <button onclick="clearLiquidationHistory()">CLEAR LIQUIDATION LOG</button>
 <div class="metric"><span>Server-side Binance sample</span><b id="liqServerStatus">CHECKING</b></div>
 <div class="metric"><span>Sampled long / short liquidation</span><b id="liqServerVolumes">-- / --</b></div>
-<p class="note" id="liqServerNote">20-second scheduled sample; this is a backup snapshot, not continuous coverage.</p>
+<p class="note" id="liqServerNote">10–20-second GitHub Actions sample every 5 minutes; gaps between samples are not covered.</p>
 <p class="note">Binance force-order stream reports snapshots, not every liquidation.</p>
 </div>
 
@@ -294,6 +294,18 @@ button{background:#f5b942;color:#111;border:0;padding:12px 18px;border-radius:8p
 </div>
 <div class="metric"><span>AI training source</span><b id="advSource">Checking...</b></div>
 <div class="metric"><span>Futures source safety gate</span><b id="advSourceGate">Checking...</b></div>
+<div class="card" id="hybridSignalCard">
+<h3>Server Hybrid Confluence Signal</h3>
+<div class="note">Combines multi-timeframe structure, validated AI source gate, liquidity sweeps, news and volatility safety checks. Separate from the browser setup; no orders are placed.</div>
+<div class="price yellow" id="hybridSignal">WAIT</div>
+<div class="metric"><span>Confidence score (not win probability)</span><b id="hybridConfidence">--</b></div>
+<div class="metric"><span>Long / short evidence score</span><b id="hybridScores">--</b></div>
+<div class="metric"><span>Liquidity sweep input</span><b id="hybridSweep">--</b></div>
+<div class="metric"><span>Safety locks</span><b id="hybridLocks">Checking...</b></div>
+<div class="metric"><span>Server signal freshness</span><b id="hybridUpdated">Checking...</b></div>
+<p class="note" id="hybridWarnings">Waiting for server hybrid signal.</p>
+<button onclick="loadHybridSignal(true)">REFRESH HYBRID SIGNAL</button>
+</div>
 <div class="card" id="derivativesAiCard">
 <h3>Live Derivatives & News Intelligence</h3>
 <div class="metric"><span>Derivatives signal</span><b id="derivSignal">WAIT</b></div>
@@ -1464,17 +1476,19 @@ async function loadAdvancedIntelligence(force=false){
   if(!response.ok)throw Error("AI result HTTP "+response.status);
   const data=await response.json(),a=data.advanced_intelligence;
   if(!a)throw Error("Advanced AI model output not published yet");
+  const gate=data.validation_gate||{};
+  const globalGatePassed=gate.passed===true&&gate.futures_source_passed===true;
   for(const [h,id] of [["15m","adv15"],["30m","adv30"],["60m","adv60"],["4h","adv4h"]]){
-   const x=a.multi_horizon_forecasts?.[h]||{},el=$(id),side=(x.macro_f1!=null&&x.macro_f1<25)?"WAIT":(x.signal||"WAIT");
+   const x=a.multi_horizon_forecasts?.[h]||{},el=$(id),side=globalGatePassed&&!(x.macro_f1!=null&&x.macro_f1<25)?(x.signal||"WAIT"):"WAIT";
    setText(id,side);if(el)el.className=side==="LONG"?"green":side==="SHORT"?"red":"yellow";
    setText(id+"Meta",x.holdout_accuracy!=null?"Holdout "+x.holdout_accuracy+"% • n="+(x.validation_samples||0):x.status||"Not ready");
   }
   const tree=a.tree_ensemble||{};
-  setText("advTreeStatus",tree.status||"NOT READY");
+  setText("advTreeStatus",globalGatePassed?(tree.status||"NOT READY"):"GATE BLOCKED — WAIT ONLY");
   setText("advTreeModels",(tree.algorithms||[]).join(" • ")||"Models unavailable");
   const tf=tree.forecasts||{};
-  setText("advTreeForecast",["15m","30m","60m","4h"].map(h=>{const x=tf[h]||{};return h+": "+((x.macro_f1!=null&&x.macro_f1<25)?"WAIT":(x.signal||"WAIT"))+(x.holdout_accuracy!=null?" • "+x.holdout_accuracy+"% holdout":"");}).join(" | ")||"Tree forecasts unavailable");
-  const vm=data.walk_forward_metrics||{},gate=data.validation_gate||{};
+  setText("advTreeForecast",["15m","30m","60m","4h"].map(h=>{const x=tf[h]||{};const side=globalGatePassed&&!(x.macro_f1!=null&&x.macro_f1<25)?(x.signal||"WAIT"):"WAIT";return h+": "+side+(x.holdout_accuracy!=null?" • "+x.holdout_accuracy+"% holdout":"");}).join(" | ")||"Tree forecasts unavailable");
+  const vm=data.walk_forward_metrics||{};
   setText("advSource",data.data_source||"Unknown");
   setText("advSourceGate",gate.futures_source_passed===true?"BINANCE FUTURES SOURCE CONFIRMED":"NOT FUTURES — WAIT ONLY");
   const sourceGateEl=$("advSourceGate");if(sourceGateEl)sourceGateEl.className=gate.futures_source_passed===true?"green":"red";
@@ -1492,10 +1506,42 @@ async function loadAdvancedIntelligence(force=false){
   const fresh=data.data_freshness||{};setText("advFreshness",fresh.status==="FRESH"?"FRESH • "+(fresh.latest_5m_candle_age_minutes??"--")+" min old":fresh.status||"NOT REPORTED");
   const freshEl=$("advFreshness");if(freshEl)freshEl.className=fresh.status==="FRESH"?"green":"yellow";
   setText("advUpdated",data.generated_at?new Date(data.generated_at).toLocaleString():"--");
-  setText("advAiNote","Method: "+(a.method||"Advanced AI")+". Scores are not calibrated win probabilities.");
+  setText("advAiNote",globalGatePassed?("Method: "+(a.method||"Advanced AI")+". Scores are not calibrated win probabilities."):"SAFETY GATE BLOCKED: source is not verified Binance USD-M Futures or validation failed. Raw model directions are suppressed; WAIT only.");
   advancedAiLastLoad=Date.now();
  }catch(e){setText("advAiNote","Advanced AI data unavailable: "+e.message+".");}
  finally{advancedAiBusy=false;}
+}
+
+let hybridSignalBusy=false,hybridSignalLast=0;
+async function loadHybridSignal(force=false){
+ if(hybridSignalBusy||(!force&&Date.now()-hybridSignalLast<30000))return;
+ hybridSignalBusy=true;
+ try{
+  const response=await fetch("./signal_result.json?ts="+Date.now(),{cache:"no-store"});
+  if(!response.ok)throw Error("Hybrid signal HTTP "+response.status);
+  const d=await response.json(),side=d.signal||"WAIT",el=$("hybridSignal");
+  setText("hybridSignal",side);
+  if(el)el.className=side==="LONG"?"green":side==="SHORT"?"red":"yellow";
+  setText("hybridConfidence",d.confidence_score==null?"--":Number(d.confidence_score).toFixed(1)+"/100");
+  const scores=d.scores||{};
+  setText("hybridScores",Number(scores.LONG||0).toFixed(2)+" / "+Number(scores.SHORT||0).toFixed(2));
+  const sw=d.liquidity_sweep||{};
+  setText("hybridSweep",sw.status==="CONFIRMED_BULLISH_SWEEP"?"BULLISH • "+(sw.level!=null?"$"+fmt(sw.level):"level n/a"):sw.status==="CONFIRMED_BEARISH_SWEEP"?"BEARISH • "+(sw.level!=null?"$"+fmt(sw.level):"level n/a"):(sw.status||"NO CONFIRMED SWEEP"));
+  const locks=[];
+  if(d.news_guard?.block)locks.push("NEWS BLOCK");
+  if(d.volatility_guard?.blocked)locks.push("VOLATILITY BLOCK");
+  if(d.ml_context?.futures_source!==true)locks.push("ML SOURCE NOT FUTURES");
+  if(d.data_quality?.core_timeframes_ok!==true)locks.push("CORE DATA NOT READY");
+  setText("hybridLocks",locks.join(" • ")||"No active hard lock");
+  const updated=d.generated_at?new Date(d.generated_at):null;
+  const age=updated?Math.max(0,(Date.now()-updated.getTime())/60000):null;
+  setText("hybridUpdated",age==null?"TIME UNKNOWN":age<10?"FRESH • "+age.toFixed(1)+" min":"STALE • "+age.toFixed(1)+" min");
+  const warnings=(d.warnings||[]).slice(0,4);
+  const gateText=d.ml_context?.futures_source===true?"Futures ML source confirmed":"ML confirmation disabled: source is not verified Futures";
+  setText("hybridWarnings",gateText+(warnings.length?" • "+warnings.join(" | "):"")+(age!=null&&age>=10?" • Snapshot is stale.":""));
+  hybridSignalLast=Date.now();
+ }catch(e){setText("hybridSignal","WAIT");setText("hybridWarnings","Hybrid signal unavailable: "+e.message);}
+ finally{hybridSignalBusy=false;}
 }
 
 let liquidationSnapshotBusy=false,liquidationSnapshotLast=0;
@@ -1688,6 +1734,7 @@ renderLiq();
 renderWhales();
 renderLiveCVD();
 loadAdvancedIntelligence();
+loadHybridSignal();
 loadDerivativesIntelligence();
 loadPredictionPerformance();
 loadLiquidationSnapshot();
@@ -1702,6 +1749,7 @@ setInterval(loadDerivativesIntelligence,60000);
 setInterval(loadPredictionPerformance,60000);
 setInterval(loadLiquidationSnapshot,60000);
 setInterval(loadAdvancedIntelligence,300000);
+setInterval(loadHybridSignal,30000);
 setInterval(renderLiq,10000);
 setInterval(renderWhales,5000);
 setInterval(renderLiveCVD,5000);
