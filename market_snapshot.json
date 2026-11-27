@@ -1,15 +1,15 @@
 {
-  "price": 61762.0,
-  "funding_rate": -1.56045257853e-05,
-  "funding_percent": -0.00156045257853,
-  "open_interest": 3210358.980000011,
+  "price": 61755.4,
+  "funding_rate": -1.56996633157e-05,
+  "funding_percent": -0.00156996633157,
+  "open_interest": 3214257.990000011,
   "oi_change_5m_pct": null,
   "oi_history": [
     {
       "timestamp": "1795779000000",
-      "oi_contracts": "3210003.28000001147",
-      "oi_coin": "32100.0328000001147",
-      "oi_usd": "1982689110.4166570531633"
+      "oi_contracts": "3211318.29000001178",
+      "oi_coin": "32113.1829000001178",
+      "oi_usd": "1982003685.22288708210562"
     },
     {
       "timestamp": "1795778700000",
@@ -18,18 +18,26 @@
       "oi_usd": "1980271956.67024731301832"
     }
   ],
-  "orderbook_imbalance": 0.28997485086656877,
-  "cvd_proxy": 0.8119320426708818,
-  "taker_buy_ratio": 0.9059660213354409,
+  "orderbook_imbalance": 0.44306650150661253,
+  "cvd_proxy": -0.6165475555062625,
+  "taker_buy_ratio": 0.19172622224686878,
   "large_trades": [],
   "data_source": "OKX public BTC-USDT-SWAP perpetual API",
-  "as_of": "2026-11-27T11:34:38.928705+00:00",
+  "as_of": "2026-11-27T11:35:22.843498+00:00",
   "oi_note": "Waiting for a valid 4-12 minute OI sample pair",
   "signal": "WAIT",
   "reason": "News safety pause active (minimum 30 minutes)",
   "news_pause_active": true,
-  "pause_until": "2026-11-27T11:59:23.443889+00:00",
-  "news_alerts": [],
-  "updated_at": "2026-11-27T11:34:40.309777+00:00",
+  "pause_until": "2026-11-27T12:05:23.840504+00:00",
+  "news_alerts": [
+    {
+      "title": "We support Iraqi Prime Minister Ali al-Zaidi\u2019s efforts to assert state authority throughout Iraq, stop the smuggling of Iraqi oil, end corruption, and bring all weapons under the exclusive control of the state.We support Prime Minister al-Zaidi\u2019s efforts to build a united, prospe",
+      "published": "2026-11-27T10:23:58+00:00",
+      "age_minutes": 71.4,
+      "source": "Trump's Truth archive RSS (third-party)",
+      "url": "https://www.trumpstruth.org/statuses/43750"
+    }
+  ],
+  "updated_at": "2026-11-27T11:35:23.840504+00:00",
   "safety_note": "Signal-only; manual trading only. Large trades are trade-size alerts, not verified whale identities. Trump social posts are monitored through a third-party archive RSS, not an official API."
 }
