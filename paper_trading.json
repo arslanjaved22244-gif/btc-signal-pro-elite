@@ -4,7 +4,7 @@
   "source": "OKX public Futures 5m candles",
   "horizon_minutes": 15,
   "estimated_round_trip_cost_pct": 0.14,
-  "updated_at": "2026-11-27T18:31:35.982592+00:00",
+  "updated_at": "2026-11-27T18:33:41.488515+00:00",
   "current_signal": "WAIT",
   "current_signal_reason": null,
   "closed_trades": 0,
@@ -27,7 +27,7 @@
     "average_net_return_pct": -0.27592,
     "net_return_pct_compounded": -0.2759,
     "validation_gate_passed_now": false,
-    "latest_model_timestamp": "2026-11-27T18:30:21.753840+00:00",
+    "latest_model_timestamp": "2026-11-27T18:32:28.288675+00:00",
     "latest_model_fresh": true,
     "note": "Research-only forecast tracking. Each fresh model generation is counted once; stale or repeated AI snapshots are skipped. Forecasts never authorize trades."
   },
