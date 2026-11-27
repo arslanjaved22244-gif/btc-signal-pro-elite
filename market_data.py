@@ -404,7 +404,9 @@ def okx_candles(interval, limit=300):
     # using the oldest timestamp returned; never include the live candle.
     raw_all=[]
     cursor=None
-    pages=2 if interval=="5m" else 1
+    # Collect up to 3,000 completed 5m candles for a more meaningful
+    # chronological holdout; keep higher timeframes to one page.
+    pages=10 if interval=="5m" else 1
     for _ in range(pages):
         params={"instId":"BTC-USDT-SWAP","bar":bar,"limit":str(limit)}
         if cursor is not None:
@@ -614,7 +616,10 @@ def bitget_candles(interval):
     # have enough completed observations instead of silently stalling at 199.
     combined = list(raw or [])
     seen = {int(row[0]) for row in combined if row}
-    for _ in range(2):
+    # Up to 2,000 completed 5m candles (latest page plus nine history pages).
+    # Other timeframes need only one page for EMA200 and trend structure.
+    history_pages = 9 if interval == "5m" else 0
+    for _ in range(history_pages):
         if not combined:
             break
         oldest = min(int(row[0]) for row in combined if row)
