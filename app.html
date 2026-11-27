@@ -52,7 +52,7 @@ async function refresh(){
   $("model").textContent=(s.version||a.model_version||"Model pending")+" • Futures hybrid confluence";
   const candles=tf["5m"]?.candles||[],last=candles[candles.length-1];
   $("price").textContent=last?"$"+fmt(last.close):"—";
-  $("priceSource").textContent="Binance USD-M Futures • "+(tf["5m"]?.age_seconds??"—")+"s old";
+  $("priceSource").textContent=(m.exchange||"Perpetual Futures")+" • "+(tf["5m"]?.age_seconds??"—")+"s old";
   const premium=feeds.mark_price_funding?.data;
   $("funding").textContent=premium?fmt(Number(premium.lastFundingRate)*100,5)+"%":"—";
   $("mark").textContent="Mark price "+(premium?"$"+fmt(premium.markPrice):"—");
