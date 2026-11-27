@@ -4,7 +4,7 @@
   "source": "OKX public Futures 5m candles",
   "horizon_minutes": 15,
   "estimated_round_trip_cost_pct": 0.14,
-  "updated_at": "2026-11-27T18:09:49.810492+00:00",
+  "updated_at": "2026-11-27T18:10:55.452491+00:00",
   "current_signal": "WAIT",
   "current_signal_reason": null,
   "closed_trades": 0,
@@ -18,11 +18,11 @@
   "limitations": "15m fixed-close simulation only. Estimated 0.14% round-trip costs; no stop/target, funding, liquidation, intrabar fills or live order execution. Historical results are not predictive.",
   "records": [
     {
-      "entry_candle_time": 1795802400000,
-      "recorded_at": "2026-11-27T18:09:49.810418+00:00",
+      "entry_candle_time": 1795802700000,
+      "recorded_at": "2026-11-27T18:10:55.452398+00:00",
       "exchange": "OKX",
       "side": "WAIT",
-      "entry": 59814.5,
+      "entry": 59884.8,
       "status": "ABSTAINED",
       "exit": null,
       "gross_return_pct": null,
