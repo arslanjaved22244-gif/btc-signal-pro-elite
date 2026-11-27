@@ -367,8 +367,11 @@ def run():
     if news.get("block"):
         signal = "WAIT"
         warnings.append("High-risk news lock active; entries blocked until the event lock expires.")
+    elif news.get("available") and not news_fresh:
+        signal = "WAIT"
+        warnings.append("Stale news snapshot: directional entries blocked until a fresh timestamped event scan is available.")
     elif not news_fresh:
-        # Missing or stale headlines are not proof of an active event. Keep the signal
+        # Missing headlines are not proof of an active event. Keep the signal
         # conservative by demanding stronger independent price/flow confluence.
         if signal != "WAIT" and (confidence < 55 or margin < 3.5):
             signal = "WAIT"
