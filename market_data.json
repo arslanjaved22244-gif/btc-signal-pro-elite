@@ -3,7 +3,7 @@
   "version": "4.0-market-data-foundation",
   "symbol": "BTCUSDT",
   "market_type": "BINANCE_USDM_FUTURES",
-  "generated_at": "2026-11-27T01:45:45.878364+00:00",
+  "generated_at": "2026-11-27T01:48:27.490746+00:00",
   "source": "https://fapi.binance.com",
   "timeframes": {
     "5m": {
@@ -31,37 +31,37 @@
     "mark_price_funding": {
       "ok": false,
       "error": "Empty response from https://fapi4.binance.com (HTTP 202)",
-      "latency_ms": 1471
+      "latency_ms": 2102
     },
     "open_interest_current": {
       "ok": false,
       "error": "Empty response from https://fapi4.binance.com (HTTP 202)",
-      "latency_ms": 1434
+      "latency_ms": 2093
     },
     "open_interest_history_5m": {
       "ok": false,
       "error": "Empty response from https://fapi4.binance.com (HTTP 202)",
-      "latency_ms": 1406
+      "latency_ms": 2069
     },
     "taker_flow_5m": {
       "ok": false,
       "error": "Empty response from https://fapi4.binance.com (HTTP 202)",
-      "latency_ms": 1432
+      "latency_ms": 2050
     },
     "order_book": {
       "ok": false,
       "error": "Empty response from https://fapi4.binance.com (HTTP 202)",
-      "latency_ms": 1409
+      "latency_ms": 2094
     },
     "recent_agg_trades": {
       "ok": false,
       "error": "Empty response from https://fapi4.binance.com (HTTP 202)",
-      "latency_ms": 1417
+      "latency_ms": 2046
     },
     "funding_history": {
       "ok": false,
       "error": "Empty response from https://fapi4.binance.com (HTTP 202)",
-      "latency_ms": 1419
+      "latency_ms": 2052
     },
     "liquidations": {
       "ok": false,
