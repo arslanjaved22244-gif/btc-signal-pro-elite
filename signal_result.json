@@ -1,9 +1,13 @@
 {
   "system": "BTC Signal Pro Elite Hybrid Confluence Engine",
   "version": "4.1-hybrid-futures-confluence",
-  "generated_at": "2026-11-27T13:41:46.595730+00:00",
+  "generated_at": "2026-11-27T13:42:49.893853+00:00",
   "symbol": "BTCUSDT",
-  "market_type": "BINANCE_USDM_FUTURES",
+  "market_type": "OKX_BTC_USDT_SWAP",
+  "market_exchange": "OKX",
+  "market_instrument": "BTC-USDT-SWAP",
+  "market_source": "https://www.okx.com/api/v5/market (BTC-USDT-SWAP perpetual)",
+  "execution_price_note": "Use this exchange feed as the analysis reference only; verify the live Binance Futures execution price and spread before any manual entry.",
   "signal": "WAIT",
   "early_setup": {
     "direction": "WAIT",
@@ -17,7 +21,7 @@
   },
   "confidence_score": 19.51,
   "scores": {
-    "LONG": 0.5,
+    "LONG": 0.75,
     "SHORT": 2.0
   },
   "timeframe_analysis": {
@@ -35,7 +39,7 @@
         "signal": -46.33575,
         "histogram": -12.735
       },
-      "age_seconds": 80
+      "age_seconds": 143
     },
     "15m": {
       "available": true,
@@ -51,7 +55,7 @@
         "signal": 24.17463,
         "histogram": -34.79265
       },
-      "age_seconds": 681
+      "age_seconds": 743
     },
     "1h": {
       "available": true,
@@ -67,7 +71,7 @@
         "signal": 308.16238,
         "histogram": 17.39271
       },
-      "age_seconds": 2481
+      "age_seconds": 2544
     },
     "4h": {
       "available": true,
@@ -83,7 +87,7 @@
         "signal": -82.33866,
         "histogram": 256.79631
       },
-      "age_seconds": 6081
+      "age_seconds": 6144
     },
     "1d": {
       "available": true,
@@ -99,16 +103,16 @@
         "signal": -4496.99009,
         "histogram": -173.08834
       },
-      "age_seconds": 78081
+      "age_seconds": 78144
     }
   },
   "order_flow": {
-    "cvd_base": -285.36,
-    "order_book_imbalance": -0.104129,
+    "cvd_base": -940.48,
+    "order_book_imbalance": 0.42469,
     "funding_rate_pct": 0.001185,
     "funding_crowding": "NEUTRAL",
-    "open_interest_change_30m_pct": 0.3266,
-    "taker_buy_sell_ratio": 1.6962944416848715
+    "open_interest_change_30m_pct": 0.2524,
+    "taker_buy_sell_ratio": 0.8817306936787079
   },
   "ml_context": {
     "model_version": "4.1-volatility-adaptive-labels",
@@ -135,7 +139,7 @@
     "derivatives_confluence_status": "AVAILABLE"
   },
   "news_guard": {
-    "generated_at": "2026-11-27T13:41:23.462384+00:00",
+    "generated_at": "2026-11-27T13:42:26.347111+00:00",
     "source": "Google News RSS public fallback",
     "available": true,
     "block": false,
