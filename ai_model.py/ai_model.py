@@ -818,6 +818,158 @@ def advanced_horizon_models(data, prepared):
 
 
 
+
+def lstm_sequence_forecast(rows, labels, sequence_length=24):
+    """
+    True recurrent sequence model: PyTorch LSTM reads ordered 5m feature vectors.
+    Uses a chronological purged holdout and training-only feature normalization.
+    """
+    try:
+        import numpy as np
+        import torch
+        from torch import nn
+        from torch.utils.data import DataLoader, TensorDataset
+    except Exception as exc:
+        return {"signal": "WAIT", "status": "LSTM DEPENDENCY ERROR", "detail": str(exc)[:220]}
+
+    if len(rows) != len(labels) or len(rows) < sequence_length + 420:
+        return {"signal": "WAIT", "status": "INSUFFICIENT LSTM HISTORY",
+                "samples": len(rows), "sequence_length": sequence_length}
+
+    sequences, targets = [], []
+    for end in range(sequence_length - 1, len(rows)):
+        window = rows[end - sequence_length + 1:end + 1]
+        sequences.append(window)
+        targets.append(int(labels[end]))
+
+    split = int(len(sequences) * 0.80)
+    purge = sequence_length + FUTURE_CANDLES
+    train_end = split - purge
+    if train_end < 280 or len(sequences) - split < 60:
+        return {"signal": "WAIT", "status": "INSUFFICIENT PURGED LSTM HOLDOUT",
+                "training_samples": train_end, "validation_samples": len(sequences) - split}
+
+    x_train = np.asarray(sequences[:train_end], dtype=np.float32)
+    y_train = np.asarray(targets[:train_end], dtype=np.int64)
+    x_test = np.asarray(sequences[split:], dtype=np.float32)
+    y_test = np.asarray(targets[split:], dtype=np.int64)
+    if len(set(y_train.tolist())) < 2:
+        return {"signal": "WAIT", "status": "LSTM TRAINING HAS TOO FEW CLASSES"}
+
+    # Normalize each feature using training-window observations only.
+    feature_mean = x_train.reshape(-1, x_train.shape[-1]).mean(axis=0)
+    feature_std = x_train.reshape(-1, x_train.shape[-1]).std(axis=0)
+    feature_std[feature_std < 1e-8] = 1.0
+    x_train = (x_train - feature_mean) / feature_std
+    x_test = (x_test - feature_mean) / feature_std
+    latest = np.asarray([rows[-sequence_length:]], dtype=np.float32)
+    latest = (latest - feature_mean) / feature_std
+
+    class LSTMClassifier(nn.Module):
+        def __init__(self, input_size):
+            super().__init__()
+            self.lstm = nn.LSTM(
+                input_size=input_size, hidden_size=48, num_layers=2,
+                batch_first=True, dropout=0.15
+            )
+            self.norm = nn.LayerNorm(48)
+            self.head = nn.Sequential(
+                nn.Linear(48, 24), nn.ReLU(), nn.Dropout(0.15),
+                nn.Linear(24, 3)
+            )
+
+        def forward(self, x):
+            sequence_output, _ = self.lstm(x)
+            last_state = self.norm(sequence_output[:, -1, :])
+            return self.head(last_state)
+
+    try:
+        torch.set_num_threads(1)
+        torch.manual_seed(42)
+        np.random.seed(42)
+        # Keep the last part of the training window for early stopping.
+        inner_split = int(len(x_train) * 0.85)
+        inner_purge = sequence_length + FUTURE_CANDLES
+        fit_end = inner_split - inner_purge
+        if fit_end < 200 or len(x_train) - inner_split < 25:
+            return {"signal": "WAIT", "status": "INSUFFICIENT LSTM EARLY-STOP VALIDATION"}
+        x_fit, y_fit = x_train[:fit_end], y_train[:fit_end]
+        x_val, y_val = x_train[inner_split:], y_train[inner_split:]
+        model = LSTMClassifier(x_train.shape[-1])
+        counts = np.bincount(y_fit, minlength=3).astype(np.float32)
+        weights = len(y_fit) / np.maximum(counts * 3.0, 1.0)
+        weights = np.clip(weights, 0.5, 3.0)
+        loss_fn = nn.CrossEntropyLoss(weight=torch.tensor(weights, dtype=torch.float32))
+        optimizer = torch.optim.AdamW(model.parameters(), lr=0.001, weight_decay=0.015)
+        train_ds = TensorDataset(torch.tensor(x_fit), torch.tensor(y_fit))
+        loader = DataLoader(train_ds, batch_size=64, shuffle=True)
+        val_x = torch.tensor(x_val)
+        val_y = torch.tensor(y_val)
+        best_loss, best_state, best_epoch, patience = float("inf"), None, 0, 0
+        for epoch in range(35):
+            model.train()
+            for batch_x, batch_y in loader:
+                optimizer.zero_grad()
+                loss = loss_fn(model(batch_x), batch_y)
+                loss.backward()
+                torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0)
+                optimizer.step()
+            model.eval()
+            with torch.no_grad():
+                val_loss = float(loss_fn(model(val_x), val_y).item())
+            if val_loss < best_loss - 1e-4:
+                best_loss = val_loss
+                best_state = {key: value.detach().clone() for key, value in model.state_dict().items()}
+                best_epoch = epoch + 1
+                patience = 0
+            else:
+                patience += 1
+            if patience >= 6:
+                break
+        if best_state is None:
+            return {"signal": "WAIT", "status": "LSTM TRAINING DID NOT CONVERGE"}
+        model.load_state_dict(best_state)
+        model.eval()
+        with torch.no_grad():
+            test_probs = torch.softmax(model(torch.tensor(x_test)), dim=1).cpu().numpy()
+            latest_probs = torch.softmax(model(torch.tensor(latest)), dim=1)[0].cpu().numpy()
+        predicted = [int(value) for value in np.argmax(test_probs, axis=1)]
+        metrics = classification_metrics(y_test.tolist(), predicted)
+        majority = max(float(np.mean(y_test == k)) * 100.0 for k in range(3))
+        ordered = sorted(float(value) for value in latest_probs)
+        margin = ordered[-1] - ordered[-2]
+        candidate = CLASSES[int(np.argmax(latest_probs))]
+        passed = (
+            metrics["accuracy"] >= 40.0
+            and metrics["accuracy"] >= majority + 2.0
+            and metrics["macro_f1"] >= 30.0
+            and margin >= 0.12
+            and float(max(latest_probs)) >= 0.50
+            and candidate != "WAIT"
+        )
+        return {
+            "signal": candidate if passed else "WAIT",
+            "raw_model_class": candidate,
+            "scores": {name: round(float(latest_probs[k]) * 100.0, 2)
+                       for k, name in enumerate(CLASSES)},
+            "confidence_margin": round(margin * 100.0, 2),
+            "holdout_accuracy": metrics["accuracy"],
+            "macro_f1": metrics["macro_f1"],
+            "majority_baseline_pct": round(majority, 2),
+            "per_class_metrics": metrics["per_class"],
+            "confusion_matrix": metrics["confusion_matrix"],
+            "training_samples": len(x_fit),
+            "early_stop_validation_samples": len(x_val),
+            "validation_samples": len(x_test),
+            "sequence_length": sequence_length,
+            "architecture": "2-layer PyTorch LSTM (48 hidden) + LayerNorm + dense classifier",
+            "best_epoch": best_epoch,
+            "status": "VALIDATED LSTM MODEL" if passed else "WEAK EDGE — WAIT",
+            "normalization": "training-only per-feature mean/std"
+        }
+    except Exception as exc:
+        return {"signal": "WAIT", "status": "LSTM TRAINING ERROR", "detail": str(exc)[:260]}
+
 def temporal_sequence_forecast(rows, labels, sequence_length=12):
     """Train a neural model on ordered windows of the previous 12 five-minute feature vectors."""
     try:
@@ -1139,6 +1291,12 @@ def update_prediction_feedback(data, result, path="prediction_feedback.json"):
         }
 
     intelligence = result.get("advanced_intelligence", {})
+    lstm = intelligence.get("lstm_sequence_model", {})
+    if lstm.get("raw_model_class") in CLASSES:
+        models["lstm_sequence_15m"] = {
+            "class": lstm["raw_model_class"], "scores": lstm.get("scores", {}),
+            "approved_signal": lstm.get("signal", "WAIT"), "horizon_candles": 3
+        }
     temporal = intelligence.get("temporal_sequence_model", {})
     if temporal.get("raw_model_class") in CLASSES:
         models["temporal_sequence_15m"] = {
@@ -1286,6 +1444,7 @@ def main():
     regime_analysis = advanced_regime(data)
     horizon_forecasts = advanced_horizon_models(data, prepared)
     temporal_model = temporal_sequence_forecast(rows, labels, sequence_length=12)
+    lstm_model = lstm_sequence_forecast(rows, labels, sequence_length=24)
     temporal_horizons = temporal_sequence_horizon_forecasts(data, prepared, sequence_length=12)
     tree_ensemble = advanced_tree_ensemble(data, prepared)
     tree_blend_applied = False
@@ -1322,6 +1481,10 @@ def main():
     if signal in ("LONG", "SHORT") and temporal_model.get("signal") in ("LONG", "SHORT") and temporal_model["signal"] != signal:
         signal = "WAIT"
         temporal_veto = "Primary signal conflicts with the independently validated temporal neural model."
+    lstm_veto = None
+    if signal in ("LONG", "SHORT") and lstm_model.get("signal") in ("LONG", "SHORT") and lstm_model["signal"] != signal:
+        signal = "WAIT"
+        lstm_veto = "Primary signal conflicts with the independently validated recurrent LSTM model."
     valid_horizon_signals = {
         f"classic_{timeframe}": forecast.get("signal")
         for timeframe, forecast in horizon_forecasts.items()
@@ -1378,7 +1541,7 @@ def main():
         "ensemble_configuration": {"models": ["full_history_logistic", "recent_regime_logistic", "nearest_centroid", "decision_stumps"], "weights": {"full_history_logistic": 0.35, "recent_regime_logistic": 0.20, "nearest_centroid": 0.20, "decision_stumps": 0.25}, "recent_training_window": final_model["recent_window"]},
         "walk_forward_metrics": validation,
         "validation_gate": {"passed": validation_gate, "minimum_accuracy_pct": 38.0, "minimum_macro_f1_pct": 30.0, "must_beat_majority_baseline": True, "decision": "directional signals allowed" if validation_gate else "WAIT only — historical validation too weak"},
-        "advanced_intelligence": {"market_regime": regime_analysis, "multi_timeframe_trend_alignment": trend_alignment, "alignment_veto": alignment_veto, "multi_horizon_forecasts": horizon_forecasts, "multi_horizon_consensus": horizon_consensus, "temporal_sequence_model": temporal_model, "temporal_sequence_horizons": temporal_horizons, "temporal_model_veto": temporal_veto, "tree_ensemble": tree_ensemble, "tree_blend_applied_to_primary_signal": tree_blend_applied, "method": "ordered 12-candle temporal neural network + four-horizon chronological ML + Random Forest + gradient boosting + neural MLP + XGBoost (when installed) + volatility regime + liquidity sweep detector"},
+        "advanced_intelligence": {"market_regime": regime_analysis, "multi_timeframe_trend_alignment": trend_alignment, "alignment_veto": alignment_veto, "multi_horizon_forecasts": horizon_forecasts, "multi_horizon_consensus": horizon_consensus, "temporal_sequence_model": temporal_model, "lstm_sequence_model": lstm_model, "temporal_sequence_horizons": temporal_horizons, "temporal_model_veto": temporal_veto, "lstm_model_veto": lstm_veto, "tree_ensemble": tree_ensemble, "tree_blend_applied_to_primary_signal": tree_blend_applied, "method": "2-layer recurrent PyTorch LSTM on 24 ordered candles + temporal MLP + four-horizon chronological ML + Random Forest + gradient boosting + neural MLP + XGBoost (when installed) + volatility regime + liquidity sweep detector"},
         "walk_forward_folds": folds,
         "training_samples": len(rows),
         "label_distribution": {name: labels.count(i) for i, name in enumerate(CLASSES)},
