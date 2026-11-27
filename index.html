@@ -271,6 +271,19 @@ button{background:#f5b942;color:#111;border:0;padding:12px 18px;border-radius:8p
 <p class="note" id="advAiNote">Forecast scores are model outputs, not guaranteed probabilities. WAIT is retained when validation edge is weak.</p>
 <button onclick="loadAdvancedIntelligence(true)">REFRESH ADVANCED AI</button>
 </div>
+<div class="card" id="derivativesAiCard">
+<h3>Live Derivatives & News Intelligence</h3>
+<div class="metric"><span>Derivatives signal</span><b id="derivSignal">WAIT</b></div>
+<div class="metric"><span>Funding rate</span><b id="derivFunding">--</b></div>
+<div class="metric"><span>Open interest change (5m)</span><b id="derivOI">--</b></div>
+<div class="metric"><span>CVD trade-flow proxy</span><b id="derivCVD">--</b></div>
+<div class="metric"><span>Taker buy ratio</span><b id="derivTaker">--</b></div>
+<div class="metric"><span>Order-book imbalance</span><b id="derivBook">--</b></div>
+<div class="metric"><span>News safety pause</span><b id="derivNewsPause">--</b></div>
+<div class="metric"><span>Large trade alerts (≥10 BTC)</span><b id="derivLarge">--</b></div>
+<p class="note" id="derivReason">Waiting for derivatives snapshot.</p>
+<p class="note" id="derivSource">Data source: public perpetual market feed.</p>
+</div>
 <div class="card">
 <h3>Experimental ML Forecast</h3>
 <div class="note">Browser-trained logistic regression using historical Binance 15M candles. Experimental estimate, not guaranteed prediction.</div>
@@ -1384,6 +1397,29 @@ async function loadAdvancedIntelligence(force=false){
  finally{advancedAiBusy=false;}
 }
 
+let derivativesLastLoad=0,derivativesBusy=false;
+async function loadDerivativesIntelligence(force=false){
+ if(derivativesBusy||(!force&&Date.now()-derivativesLastLoad<60000))return;
+ derivativesBusy=true;
+ try{
+  const r=await fetch("./market_snapshot.json?ts="+Date.now(),{cache:"no-store"});
+  if(!r.ok)throw Error("Market snapshot HTTP "+r.status);
+  const d=await r.json(),sig=d.signal||"WAIT",se=$("derivSignal");
+  setText("derivSignal",sig);if(se)se.className=sig==="LONG"?"green":sig==="SHORT"?"red":"yellow";
+  setText("derivFunding",d.funding_percent!=null?Number(d.funding_percent).toFixed(4)+"%":"--");
+  setText("derivOI",d.oi_change_5m_pct!=null?Number(d.oi_change_5m_pct).toFixed(3)+"%":"--");
+  setText("derivCVD",d.cvd_proxy!=null?(Number(d.cvd_proxy)*100).toFixed(1)+"%":"--");
+  setText("derivTaker",d.taker_buy_ratio!=null?(Number(d.taker_buy_ratio)*100).toFixed(1)+"%":"--");
+  setText("derivBook",d.orderbook_imbalance!=null?(Number(d.orderbook_imbalance)*100).toFixed(1)+"%":"--");
+  setText("derivNewsPause",d.news_pause_active?"ACTIVE • WAIT":"Clear");
+  setText("derivLarge",String((d.large_trades||[]).length));
+  setText("derivReason",d.reason||"--");
+  setText("derivSource",(d.data_source||"Public market feed")+" • "+(d.updated_at?new Date(d.updated_at).toLocaleString():"time unavailable"));
+  derivativesLastLoad=Date.now();
+ }catch(e){setText("derivReason","Derivatives snapshot unavailable: "+e.message);}
+ finally{derivativesBusy=false;}
+}
+
 function sigmoid(z){return 1/(1+Math.exp(-Math.max(-30,Math.min(30,z))))}
 function mlFeatures(cs){
  const close=cs.map(x=>x.c),volumes=cs.map(x=>x.v);
@@ -1487,6 +1523,7 @@ engine();
 if(Date.now()-mlLastRun>15*60000)loadML();
 if(Date.now()-nextMoveLastRun>5*60000)loadNextMoveAI();
 if(Date.now()-advancedAiLastLoad>5*60000)loadAdvancedIntelligence();
+if(Date.now()-derivativesLastLoad>60000)loadDerivativesIntelligence();
 setText("status","Data updated • "+new Date().toLocaleTimeString());
 
 }catch(e){
