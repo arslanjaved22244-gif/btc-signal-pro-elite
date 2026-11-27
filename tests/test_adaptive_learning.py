@@ -185,7 +185,7 @@ class AdaptiveLearningTests(unittest.TestCase):
     def test_validation_gate_requires_futures_and_profitable_sample(self):
         validation = {
             "accuracy": 68.0, "macro_f1": 36.0,
-            "majority_class_baseline_pct": 65.0,
+            "majority_class_baseline_pct": 65.0, "out_of_sample_samples": 300,
             "cost_aware_backtest": {
                 "trades": 35, "average_net_trade_return_pct": 0.025,
                 "estimated_net_win_rate_pct": 54.0,
