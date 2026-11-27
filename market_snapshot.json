@@ -1,40 +1,40 @@
 {
-  "price": 59804.9,
-  "funding_rate": 1.327188608e-05,
-  "funding_percent": 0.001327188608,
-  "open_interest": 3239665.800000016,
-  "oi_change_5m_pct": 0.0,
+  "price": 59781.4,
+  "funding_rate": 1.26859187139e-05,
+  "funding_percent": 0.00126859187139,
+  "open_interest": 3237341.8300000164,
+  "oi_change_5m_pct": 0.04573054096432999,
   "oi_history": [
     {
-      "timestamp": "1795812300000",
-      "oi_contracts": "3238924.85000001607",
-      "oi_coin": "32389.2485000001607",
-      "oi_usd": "1936349115.54945960724059"
+      "timestamp": "1795812900000",
+      "oi_contracts": "3237545.59000001607",
+      "oi_coin": "32375.4559000001607",
+      "oi_usd": "1934857608.49729960393017"
     },
     {
-      "timestamp": "1795812000000",
-      "oi_contracts": "3238924.85000001607",
-      "oi_coin": "32389.2485000001607",
-      "oi_usd": "1936349115.54945960724059"
+      "timestamp": "1795812600000",
+      "oi_contracts": "3236563.9600000163",
+      "oi_coin": "32365.639600000163",
+      "oi_usd": "1933973192.0944497398857"
     }
   ],
-  "orderbook_imbalance": 0.18140683775608732,
-  "cvd_proxy": 0.04601615933511642,
-  "taker_buy_ratio": 0.5230080796675582,
+  "orderbook_imbalance": -0.3985748151997855,
+  "cvd_proxy": -0.22306992724333455,
+  "taker_buy_ratio": 0.38846503637833274,
   "large_trades": [],
   "data_source": "OKX public BTC-USDT-SWAP perpetual API",
-  "as_of": "2026-11-27T20:46:26.904359+00:00",
+  "as_of": "2026-11-27T20:57:50.692726+00:00",
   "oi_note": "OKX public 5-minute open-interest history when available",
-  "atr_5m_pct": 0.12055,
-  "latest_range_atr_ratio": 1.798,
+  "atr_5m_pct": 0.12445,
+  "latest_range_atr_ratio": 0.759,
   "volatility_status": "NORMAL",
   "volatility_source": "Bybit/OKX completed BTC perpetual 5m candles",
   "oi_change_source": "OKX 5-minute OI history",
-  "signal": "WAIT",
-  "reason": "Derivatives flow is mixed or squeeze/crowding filters are active",
+  "signal": "SHORT",
+  "reason": "Negative taker flow, CVD and order-book imbalance",
   "news_pause_active": false,
   "pause_until": "2026-11-27T18:13:05.922760+00:00",
   "news_alerts": [],
-  "updated_at": "2026-11-27T20:46:28.777169+00:00",
+  "updated_at": "2026-11-27T20:57:52.201931+00:00",
   "safety_note": "Signal-only; manual trading only. Large trades are trade-size alerts, not verified whale identities. Trump social posts are monitored through a third-party archive RSS, not an official API."
 }
