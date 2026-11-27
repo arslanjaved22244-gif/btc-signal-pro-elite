@@ -1,10 +1,20 @@
 {
   "source": "OKX BTC-USDT-SWAP public ticker; directional close comparison only",
-  "updated_at": "2026-11-27T11:48:09.765925+00:00",
-  "model_generated_at": "2026-11-27T11:23:41.578220+00:00",
-  "current_price": 61499.7,
+  "updated_at": "2026-11-27T12:16:59.233294+00:00",
+  "model_generated_at": "2026-11-27T11:51:23.041323+00:00",
+  "current_price": 61650.0,
   "stats": {
     "15m": {
+      "evaluated": 2,
+      "directional_calls": 0,
+      "correct": 0,
+      "directional_accuracy_pct": null,
+      "raw_directional_calls": 1,
+      "raw_correct": 1,
+      "raw_directional_accuracy_pct": 100.0,
+      "wait_abstentions": 2
+    },
+    "30m": {
       "evaluated": 1,
       "directional_calls": 0,
       "correct": 0,
@@ -13,16 +23,6 @@
       "raw_correct": 0,
       "raw_directional_accuracy_pct": null,
       "wait_abstentions": 1
-    },
-    "30m": {
-      "evaluated": 0,
-      "directional_calls": 0,
-      "correct": 0,
-      "directional_accuracy_pct": null,
-      "raw_directional_calls": 0,
-      "raw_correct": 0,
-      "raw_directional_accuracy_pct": null,
-      "wait_abstentions": 0
     },
     "60m": {
       "evaluated": 0,
@@ -67,11 +67,12 @@
       "horizon_minutes": 30,
       "direction": "WAIT",
       "reference_price": 61651.9,
-      "outcome": null,
-      "evaluated_at": null,
-      "realized_change_pct": null,
+      "outcome": "ABSTAINED",
+      "evaluated_at": "2026-11-27T12:16:59.233294+00:00",
+      "realized_change_pct": -0.00308,
       "correct": null,
-      "validation_status": "WEAK EDGE \u2014 WAIT"
+      "validation_status": "WEAK EDGE \u2014 WAIT",
+      "raw_correct": null
     },
     {
       "model_generated_at": "2026-11-27T11:23:41.578220+00:00",
@@ -97,6 +98,66 @@
       "evaluated_at": null,
       "realized_change_pct": null,
       "correct": null,
+      "validation_status": "WEAK EDGE \u2014 WAIT"
+    },
+    {
+      "model_generated_at": "2026-11-27T11:51:23.041323+00:00",
+      "logged_at": "2026-11-27T11:51:23.041323+00:00",
+      "horizon": "15m",
+      "horizon_minutes": 15,
+      "direction": "WAIT",
+      "raw_direction": "SHORT",
+      "reference_price": 77522.6,
+      "outcome": "ABSTAINED",
+      "evaluated_at": "2026-11-27T12:16:59.233294+00:00",
+      "realized_change_pct": -20.4748,
+      "correct": null,
+      "raw_correct": true,
+      "validation_status": "WEAK EDGE \u2014 WAIT"
+    },
+    {
+      "model_generated_at": "2026-11-27T11:51:23.041323+00:00",
+      "logged_at": "2026-11-27T11:51:23.041323+00:00",
+      "horizon": "30m",
+      "horizon_minutes": 30,
+      "direction": "WAIT",
+      "raw_direction": "SHORT",
+      "reference_price": 77522.6,
+      "outcome": null,
+      "evaluated_at": null,
+      "realized_change_pct": null,
+      "correct": null,
+      "raw_correct": null,
+      "validation_status": "WEAK EDGE \u2014 WAIT"
+    },
+    {
+      "model_generated_at": "2026-11-27T11:51:23.041323+00:00",
+      "logged_at": "2026-11-27T11:51:23.041323+00:00",
+      "horizon": "60m",
+      "horizon_minutes": 60,
+      "direction": "WAIT",
+      "raw_direction": "SHORT",
+      "reference_price": 77522.6,
+      "outcome": null,
+      "evaluated_at": null,
+      "realized_change_pct": null,
+      "correct": null,
+      "raw_correct": null,
+      "validation_status": "WEAK EDGE \u2014 WAIT"
+    },
+    {
+      "model_generated_at": "2026-11-27T11:51:23.041323+00:00",
+      "logged_at": "2026-11-27T11:51:23.041323+00:00",
+      "horizon": "4h",
+      "horizon_minutes": 240,
+      "direction": "WAIT",
+      "raw_direction": "LONG",
+      "reference_price": 77522.6,
+      "outcome": null,
+      "evaluated_at": null,
+      "realized_change_pct": null,
+      "correct": null,
+      "raw_correct": null,
       "validation_status": "WEAK EDGE \u2014 WAIT"
     }
   ],
