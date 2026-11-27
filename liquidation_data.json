@@ -1,7 +1,7 @@
 {
   "available": true,
   "source": "Binance USD-M forceOrder WebSocket",
-  "generated_at": "2026-11-27T01:29:40.579227+00:00",
+  "generated_at": "2026-11-27T01:33:45.034438+00:00",
   "sample_window_seconds": 45,
   "continuous": false,
   "event_count": 0,

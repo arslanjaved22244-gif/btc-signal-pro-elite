@@ -1,7 +1,7 @@
 {
   "system": "BTC Signal Pro Elite Hybrid Confluence Engine",
   "version": "4.1-hybrid-futures-confluence",
-  "generated_at": "2026-11-27T01:29:40.616430+00:00",
+  "generated_at": "2026-11-27T01:33:45.084034+00:00",
   "symbol": "BTCUSDT",
   "market_type": "BINANCE_USDM_FUTURES",
   "signal": "WAIT",
@@ -41,9 +41,9 @@
     "taker_buy_sell_ratio": null
   },
   "ml_context": {
-    "model_version": "3.8-temporal-ensemble-regime-specialist",
-    "data_source": "Coinbase Exchange public candles (fallback)",
-    "futures_source": false,
+    "model_version": "4.0-four-model-futures-only-voting",
+    "data_source": "Binance USD-M Futures public klines",
+    "futures_source": true,
     "signal": "WAIT"
   },
   "risk_levels": {
@@ -62,18 +62,18 @@
     "warnings": [
       "One or more Futures candle timeframes failed.",
       "5m Futures candle data is stale.",
-      "mark_price_funding feed unavailable: HTTP Error 451: ",
-      "open_interest_current feed unavailable: HTTP Error 451: ",
-      "open_interest_history_5m feed unavailable: HTTP Error 451: ",
-      "taker_flow_5m feed unavailable: HTTP Error 451: ",
-      "order_book feed unavailable: HTTP Error 451: ",
-      "recent_agg_trades feed unavailable: HTTP Error 451: ",
-      "funding_history feed unavailable: HTTP Error 451: ",
+      "mark_price_funding feed unavailable: Expecting value: line 1 column 1 (char 0)",
+      "open_interest_current feed unavailable: Expecting value: line 1 column 1 (char 0)",
+      "open_interest_history_5m feed unavailable: Expecting value: line 1 column 1 (char 0)",
+      "taker_flow_5m feed unavailable: Expecting value: line 1 column 1 (char 0)",
+      "order_book feed unavailable: Expecting value: line 1 column 1 (char 0)",
+      "recent_agg_trades feed unavailable: Expecting value: line 1 column 1 (char 0)",
+      "funding_history feed unavailable: Expecting value: line 1 column 1 (char 0)",
       "Liquidation feed is not connected yet."
     ]
   },
   "news_guard": {
-    "generated_at": "2026-11-27T01:28:44.626471+00:00",
+    "generated_at": "2026-11-27T01:32:45.958595+00:00",
     "source": "GDELT DOC public API",
     "available": false,
     "block": false,
@@ -92,13 +92,13 @@
   "warnings": [
     "One or more Futures candle timeframes failed.",
     "5m Futures candle data is stale.",
-    "mark_price_funding feed unavailable: HTTP Error 451: ",
-    "open_interest_current feed unavailable: HTTP Error 451: ",
-    "open_interest_history_5m feed unavailable: HTTP Error 451: ",
-    "taker_flow_5m feed unavailable: HTTP Error 451: ",
-    "order_book feed unavailable: HTTP Error 451: ",
-    "recent_agg_trades feed unavailable: HTTP Error 451: ",
-    "funding_history feed unavailable: HTTP Error 451: ",
+    "mark_price_funding feed unavailable: Expecting value: line 1 column 1 (char 0)",
+    "open_interest_current feed unavailable: Expecting value: line 1 column 1 (char 0)",
+    "open_interest_history_5m feed unavailable: Expecting value: line 1 column 1 (char 0)",
+    "taker_flow_5m feed unavailable: Expecting value: line 1 column 1 (char 0)",
+    "order_book feed unavailable: Expecting value: line 1 column 1 (char 0)",
+    "recent_agg_trades feed unavailable: Expecting value: line 1 column 1 (char 0)",
+    "funding_history feed unavailable: Expecting value: line 1 column 1 (char 0)",
     "Liquidation feed is not connected yet.",
     "News monitor unavailable; verify major headlines manually before any trade."
   ],
