@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "last_updated": "2026-11-27T13:00:57.763823+00:00",
+  "last_updated": "2026-11-27T13:02:47.078497+00:00",
   "scoring_rule": "Each forecast is scored at its own horizon using a prediction-time ATR-scaled neutral threshold",
   "predictions": [
     {
@@ -1004,6 +1004,23 @@
         "SHORT": 80.37,
         "WAIT": 11.3,
         "LONG": 8.33
+      },
+      "status": "PENDING"
+    },
+    {
+      "id": "lstm_sequence_15m:1795784100000:1795785000000",
+      "model": "lstm_sequence_15m",
+      "prediction_time": 1795784100000,
+      "target_time": 1795785000000,
+      "horizon_minutes": 15,
+      "reference_price": 61559.1,
+      "threshold_pct": 0.00035,
+      "predicted_class": "WAIT",
+      "approved_signal": "WAIT",
+      "scores": {
+        "SHORT": 31.07,
+        "WAIT": 38.96,
+        "LONG": 29.96
       },
       "status": "PENDING"
     }

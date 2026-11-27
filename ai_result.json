@@ -285,7 +285,7 @@
       "bybit_ticker: HTTP Error 403: Forbidden",
       "bybit_orderbook: HTTP Error 403: Forbidden"
     ],
-    "retrieved_at": "2026-11-27T13:00:26.814519+00:00"
+    "retrieved_at": "2026-11-27T13:02:08.196578+00:00"
   },
   "historical_derivatives_training": {
     "status": "FETCH ERROR",
@@ -450,7 +450,83 @@
     },
     "lstm_sequence_model": {
       "signal": "WAIT",
-      "status": "HISTORICAL DERIVATIVES DATA UNAVAILABLE"
+      "raw_model_class": "WAIT",
+      "scores": {
+        "SHORT": 31.07,
+        "WAIT": 38.96,
+        "LONG": 29.96
+      },
+      "confidence_margin": 7.89,
+      "holdout_accuracy": 25.25,
+      "macro_f1": 19.21,
+      "majority_baseline_pct": 41.41,
+      "per_class_metrics": {
+        "SHORT": {
+          "precision": 35.71,
+          "recall": 48.78,
+          "f1": 41.24,
+          "support": 41
+        },
+        "WAIT": {
+          "precision": 11.63,
+          "recall": 27.78,
+          "f1": 16.39,
+          "support": 18
+        },
+        "LONG": {
+          "precision": 0.0,
+          "recall": 0.0,
+          "f1": 0.0,
+          "support": 40
+        }
+      },
+      "confusion_matrix": [
+        [
+          20,
+          21,
+          0
+        ],
+        [
+          13,
+          5,
+          0
+        ],
+        [
+          23,
+          17,
+          0
+        ]
+      ],
+      "predicted_class_distribution_pct": {
+        "SHORT": 56.57,
+        "WAIT": 43.43,
+        "LONG": 0.0
+      },
+      "actual_holdout_class_distribution_pct": {
+        "SHORT": 41.41,
+        "WAIT": 18.18,
+        "LONG": 40.4
+      },
+      "directional_coverage_pct": {
+        "SHORT": 56.57,
+        "LONG": 0.0
+      },
+      "directional_recall_pct": {
+        "LONG": 0.0,
+        "SHORT": 48.78
+      },
+      "both_directions_tested": false,
+      "class_balancing": "sqrt inverse-frequency weighted sampling + capped class-weighted loss",
+      "training_samples": 285,
+      "early_stop_validation_samples": 56,
+      "validation_samples": 99,
+      "sequence_length": 24,
+      "architecture": "2-layer PyTorch LSTM (48 hidden) + LayerNorm + dense classifier; balanced sequence sampling",
+      "best_epoch": 4,
+      "status": "WEAK EDGE \u2014 WAIT",
+      "normalization": "training-only per-feature mean/std",
+      "feature_mode": "MARKET_ONLY_DERIVATIVES_UNAVAILABLE",
+      "derivatives_dataset_status": "FETCH ERROR"
     },
     "temporal_sequence_horizons": {
       "status": "COMPLETE",
@@ -1219,7 +1295,7 @@
   "last_candle_time": 1795784100000,
   "data_freshness": {
     "status": "FRESH",
-    "latest_5m_candle_age_minutes": 5.66,
+    "latest_5m_candle_age_minutes": 7.32,
     "latest_5m_candle_time": "2026-11-27T12:55:00+00:00",
     "source_by_timeframe": {
       "5m": "Kraken BTC/USD",
@@ -1230,7 +1306,7 @@
     },
     "max_allowed_age_minutes": 15
   },
-  "generated_at": "2026-11-27T13:00:57.763350+00:00",
+  "generated_at": "2026-11-27T13:02:47.077821+00:00",
   "limitations": [
     "When Binance USD-M Futures is unavailable, Kraken BTC/USD spot OHLC is used as a proxy and is not equivalent to BTC/USDT Futures. Funding, open interest, CVD, order book and liquidation remain separate confluence inputs.",
     "Class scores are model scores, not calibrated real-world win probabilities.",
@@ -1239,7 +1315,7 @@
   "prediction_feedback": {
     "status": "ACTIVE",
     "method": "multi-horizon forecasts scored against subsequent closed 5m candles",
-    "history_retained": 57,
+    "history_retained": 58,
     "models": {
       "classic_horizon_15m": {
         "evaluated_predictions": 1,
@@ -1271,7 +1347,7 @@
       },
       "lstm_sequence_15m": {
         "evaluated_predictions": 0,
-        "pending_predictions": 2,
+        "pending_predictions": 3,
         "realized_accuracy_pct": null,
         "realized_macro_f1_pct": null,
         "status": "COLLECTING LIVE OUTCOMES"
