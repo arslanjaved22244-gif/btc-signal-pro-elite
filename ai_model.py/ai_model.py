@@ -784,6 +784,15 @@ def walk_forward_validate(rows, labels, forward_returns=None, round_trip_cost_pc
             )
     if forward_returns is not None:
         net_values = [item["estimated_net_return_pct"] for item in backtest_trades]
+        directional_performance = {}
+        for side in ("SHORT", "LONG"):
+            side_trades = [item for item in backtest_trades if item["side"] == side]
+            side_returns = [item["estimated_net_return_pct"] for item in side_trades]
+            directional_performance[side] = {
+                "trades": len(side_trades),
+                "net_win_rate_pct": round(sum(1 for value in side_returns if value > 0) / len(side_returns) * 100.0, 2) if side_returns else None,
+                "average_net_trade_return_pct": round(sum(side_returns) / len(side_returns), 5) if side_returns else None
+            }
         equity = 1.0
         peak = 1.0
         max_drawdown = 0.0
@@ -810,6 +819,7 @@ def walk_forward_validate(rows, labels, forward_returns=None, round_trip_cost_pc
             "compounded_net_return_pct": round((equity-1.0)*100.0, 4)
                 if net_values else None,
             "net_max_drawdown_pct": round(max_drawdown, 4) if net_values else None,
+            "directional_performance": directional_performance,
             "trade_sample": backtest_trades[-20:],
             "warning": "Illustrative costs only; real spread, funding, fills and exchange fees may differ."
         }
@@ -2800,6 +2810,20 @@ def evaluate_validation_gate(validation, futures_source_gate):
         "minimum_backtest_trades_passed": trades >= 30,
         "positive_average_net_return_passed": isinstance(average_net, (int, float)) and average_net > 0,
         "net_win_rate_passed": isinstance(net_win_rate, (int, float)) and net_win_rate >= 50.0,
+        "short_direction_passed": (
+            int((backtest.get("directional_performance") or {}).get("SHORT", {}).get("trades") or 0) >= 10
+            and isinstance((backtest.get("directional_performance") or {}).get("SHORT", {}).get("average_net_trade_return_pct"), (int, float))
+            and (backtest.get("directional_performance") or {}).get("SHORT", {}).get("average_net_trade_return_pct") > 0
+            and isinstance((backtest.get("directional_performance") or {}).get("SHORT", {}).get("net_win_rate_pct"), (int, float))
+            and (backtest.get("directional_performance") or {}).get("SHORT", {}).get("net_win_rate_pct") >= 50.0
+        ),
+        "long_direction_passed": (
+            int((backtest.get("directional_performance") or {}).get("LONG", {}).get("trades") or 0) >= 10
+            and isinstance((backtest.get("directional_performance") or {}).get("LONG", {}).get("average_net_trade_return_pct"), (int, float))
+            and (backtest.get("directional_performance") or {}).get("LONG", {}).get("average_net_trade_return_pct") > 0
+            and isinstance((backtest.get("directional_performance") or {}).get("LONG", {}).get("net_win_rate_pct"), (int, float))
+            and (backtest.get("directional_performance") or {}).get("LONG", {}).get("net_win_rate_pct") >= 50.0
+        ),
     }
     return all(checks.values()), {
         "checks": checks,
