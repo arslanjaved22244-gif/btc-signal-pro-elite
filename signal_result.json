@@ -1,7 +1,7 @@
 {
   "system": "BTC Signal Pro Elite Hybrid Confluence Engine",
   "version": "4.3-hybrid-sweep-validated-futures",
-  "generated_at": "2026-11-27T18:13:30.037308+00:00",
+  "generated_at": "2026-11-27T18:18:03.168223+00:00",
   "symbol": "BTCUSDT",
   "market_type": "OKX_BTC_USDT_SWAP",
   "market_exchange": "OKX",
@@ -10,52 +10,52 @@
   "execution_price_note": "Use this exchange feed as the analysis reference only; verify the live Binance Futures execution price and spread before any manual entry.",
   "signal": "WAIT",
   "early_setup": {
-    "direction": "SHORT",
-    "status": "EARLY_SETUP_ONLY_NOT_ENTRY",
+    "direction": "WAIT",
+    "status": "NO_CLEAR_EARLY_SETUP",
     "momentum_scores": {
       "LONG": 0.0,
-      "SHORT": 4.0
+      "SHORT": 2.0
     },
-    "momentum_margin": 4.0,
+    "momentum_margin": 2.0,
     "note": "Early setup is a watchlist hint only, not an entry signal. Confirm the main signal and manual risk levels before any trade."
   },
-  "confidence_score": 67.39,
+  "confidence_score": 56.52,
   "scores": {
-    "LONG": 0.5,
-    "SHORT": 7.75
+    "LONG": 1.75,
+    "SHORT": 6.5
   },
   "timeframe_analysis": {
     "5m": {
       "available": true,
       "bias": "BEARISH",
       "momentum_bias": "NEUTRAL",
-      "price": 59884.8,
-      "ema50": 60147.8,
-      "ema200": 60830.95,
-      "rsi14": 48.99,
-      "atr14": 166.68,
+      "price": 59889.3,
+      "ema50": 60137.67,
+      "ema200": 60822.26,
+      "rsi14": 49.18,
+      "atr14": 163.84,
       "macd": {
-        "line": -97.72257,
-        "signal": -120.57536,
-        "histogram": 22.85279
+        "line": -83.60161,
+        "signal": -113.18061,
+        "histogram": 29.57901
       },
-      "age_seconds": 181
+      "age_seconds": 153
     },
     "15m": {
       "available": true,
       "bias": "NEUTRAL",
-      "momentum_bias": "BEARISH",
-      "price": 59897.9,
-      "ema50": 60773.82,
-      "ema200": 60659.22,
-      "rsi14": 39.12,
-      "atr14": 573.29,
+      "momentum_bias": "NEUTRAL",
+      "price": 59889.3,
+      "ema50": 60739.13,
+      "ema200": 60642.2,
+      "rsi14": 38.99,
+      "atr14": 468.89,
       "macd": {
-        "line": -418.62817,
-        "signal": -403.53859,
-        "histogram": -15.08958
+        "line": -398.0506,
+        "signal": -402.44099,
+        "histogram": 4.39039
       },
-      "age_seconds": 781
+      "age_seconds": 153
     },
     "1h": {
       "available": true,
@@ -71,7 +71,7 @@
         "signal": 96.8997,
         "histogram": -235.88013
       },
-      "age_seconds": 782
+      "age_seconds": 1053
     },
     "4h": {
       "available": true,
@@ -87,7 +87,7 @@
         "signal": -45.02399,
         "histogram": 149.25868
       },
-      "age_seconds": 7982
+      "age_seconds": 8253
     },
     "1d": {
       "available": true,
@@ -103,7 +103,7 @@
         "signal": -4502.17037,
         "histogram": -20.72115
       },
-      "age_seconds": 7982
+      "age_seconds": 8253
     }
   },
   "liquidity_sweep": {
@@ -111,12 +111,12 @@
     "status": "NO_CONFIRMED_SWEEP"
   },
   "order_flow": {
-    "cvd_base": -266.27,
-    "order_book_imbalance": -0.921511,
-    "funding_rate_pct": 0.001301,
+    "cvd_base": 368.69,
+    "order_book_imbalance": 0.311367,
+    "funding_rate_pct": 0.001384,
     "funding_crowding": "NEUTRAL",
-    "open_interest_change_30m_pct": -0.9757,
-    "taker_buy_sell_ratio": 1.6717710329028412
+    "open_interest_change_30m_pct": -0.9497,
+    "taker_buy_sell_ratio": 0.6615436815823887
   },
   "ml_context": {
     "model_version": "4.3-profitability-gated",
@@ -127,7 +127,7 @@
     "signal": "WAIT"
   },
   "risk_levels": {
-    "entry_reference": 59884.8,
+    "entry_reference": 59889.3,
     "stop_loss": null,
     "take_profit_1": null,
     "take_profit_2": null,
@@ -145,7 +145,7 @@
     "derivatives_confluence_status": "AVAILABLE"
   },
   "news_guard": {
-    "generated_at": "2026-11-27T18:13:04.137046+00:00",
+    "generated_at": "2026-11-27T18:17:36.173651+00:00",
     "source": "Google News RSS public fallback + Trump's Truth independent archive (unofficial)",
     "available": true,
     "block": false,
@@ -159,7 +159,7 @@
   },
   "volatility_guard": {
     "blocked": false,
-    "atr_5m_pct": 0.2783,
+    "atr_5m_pct": 0.2736,
     "atr_threshold_pct": 0.45,
     "range_spike": false
   },
