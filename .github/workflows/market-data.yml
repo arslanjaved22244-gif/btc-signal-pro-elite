@@ -37,13 +37,6 @@ jobs:
         run: python signal_engine.py
       - name: Calculate MACD, market structure, backtest and 10x risk
         run: python advanced_modules.py
-      - name: Send optional Telegram manual signal alert
-        env:
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-          RISK_EQUITY_USDT: ${{ secrets.RISK_EQUITY_USDT }}
-          RISK_FRACTION: "0.01"
-        run: python telegram_alerts.py
       - name: Publish market and signal snapshots
         run: |
           git config user.name "github-actions[bot]"
