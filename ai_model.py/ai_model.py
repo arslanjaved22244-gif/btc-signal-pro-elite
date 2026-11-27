@@ -1876,6 +1876,14 @@ def update_prediction_feedback(data, result, path="prediction_feedback.json"):
             "scores": scores, "approved_signal": result.get("signal", "WAIT"),
             "horizon_candles": FUTURE_CANDLES
         }
+    for component_name, component_scores in result.get("individual_model_scores", {}).items():
+        if component_name in ("full_history_logistic", "recent_regime_logistic",
+                              "nearest_centroid", "decision_stumps") and isinstance(component_scores, dict):
+            models[component_name] = {
+                "class": max(CLASSES, key=lambda name: float(component_scores.get(name, 0.0))),
+                "scores": component_scores, "approved_signal": "WAIT",
+                "horizon_candles": FUTURE_CANDLES
+            }
 
     intelligence = result.get("advanced_intelligence", {})
     lstm = intelligence.get("lstm_sequence_model", {})
@@ -2177,6 +2185,67 @@ def fetch_macro_news_risk():
     result["retrieved_at"] = datetime.now(timezone.utc).isoformat()
     return result
 
+
+
+
+def adaptive_component_weights(path="prediction_feedback.json", minimum_samples=30):
+    """
+    Learn bounded ensemble component weights from matured, out-of-sample forecasts.
+    Uses a 30-sample neutral prior and only adapts after every component has
+    enough evaluated history. This adjusts ensemble blending, not neural weights.
+    """
+    base = {
+        "full_history_logistic": 0.35,
+        "recent_regime_logistic": 0.20,
+        "nearest_centroid": 0.20,
+        "decision_stumps": 0.25
+    }
+    try:
+        with open(path, "r", encoding="utf-8") as handle:
+            ledger = json.load(handle)
+        records = ledger.get("predictions", []) if isinstance(ledger, dict) else []
+    except (OSError, ValueError, TypeError):
+        records = []
+    details = {}
+    ready = True
+    raw = {}
+    prior_n = 30
+    prior_accuracy = 1.0 / len(CLASSES)
+    for name, base_weight in base.items():
+        evaluated = [
+            item for item in records
+            if item.get("model") == name and item.get("status") == "EVALUATED"
+            and item.get("predicted_class") in CLASSES and item.get("actual_class") in CLASSES
+        ]
+        count = len(evaluated)
+        correct = sum(1 for item in evaluated if item.get("correct"))
+        accuracy = correct / count if count else None
+        details[name] = {
+            "evaluated_predictions": count,
+            "realized_accuracy_pct": round(accuracy * 100.0, 2) if accuracy is not None else None,
+            "base_weight": base_weight
+        }
+        if count < minimum_samples:
+            ready = False
+        # Shrink small samples strongly toward the 3-class chance baseline.
+        smoothed_accuracy = (correct + prior_n * prior_accuracy) / (count + prior_n)
+        raw[name] = base_weight * max(0.75, min(1.25, smoothed_accuracy / prior_accuracy))
+    if ready:
+        total = sum(raw.values()) or 1.0
+        weights = {name: value / total for name, value in raw.items()}
+        status = "ADAPTIVE WEIGHTS ACTIVE"
+    else:
+        weights = dict(base)
+        status = "COLLECTING COMPONENT OUTCOMES"
+    return weights, {
+        "status": status,
+        "minimum_evaluated_predictions_per_component": minimum_samples,
+        "weights_retrained": False,
+        "method": "bounded reliability weighting with 30-sample neutral prior; chronological matured forecasts only",
+        "component_history": details,
+        "weights": {name: round(value, 4) for name, value in weights.items()},
+        "note": "This safely adapts ensemble blending; it does not retrain the underlying neural-network weights."
+    }
 
 
 def apply_feedback_risk_gate(signal, feedback):
@@ -2605,7 +2674,17 @@ def main():
     latest = combined_features(data, len(data["5m"]) - 1, prepared)
     if latest is None:
         raise ValueError("Could not build latest multi-timeframe features.")
-    scores = predict_ensemble(final_model, latest)
+    model_probabilities = {
+        "full_history_logistic": predict(final_model["full_history"], latest),
+        "recent_regime_logistic": predict(final_model["recent_regime"], latest),
+        "nearest_centroid": predict_centroid(final_model["centroid"], latest),
+        "decision_stumps": predict_stumps(final_model["stumps"], latest)
+    }
+    adaptive_weights, adaptive_learning = adaptive_component_weights()
+    scores = [
+        sum(model_probabilities[name][k] * adaptive_weights[name] for name in adaptive_weights)
+        for k in range(len(CLASSES))
+    ]
     regime_analysis = advanced_regime(data)
     breakout_squeeze_analysis = advanced_breakout_squeeze(data)
     horizon_forecasts = advanced_horizon_models(data, prepared)
@@ -2700,12 +2779,6 @@ def main():
             news_event_veto = "Directional signal blocked for at least 30 minutes due to fresh BTC-relevant macro/geopolitical headlines."
         else:
             news_event_veto = "Directional signal blocked because the news-risk feed is unavailable or not confirmed clear; no blind entry while event coverage is missing."
-    model_probabilities = {
-        "full_history_logistic": predict(final_model["full_history"], latest),
-        "recent_regime_logistic": predict(final_model["recent_regime"], latest),
-        "nearest_centroid": predict_centroid(final_model["centroid"], latest),
-        "decision_stumps": predict_stumps(final_model["stumps"], latest)
-    }
     model_votes = {name: CLASSES[max(range(3), key=lambda k: probs[k])] for name, probs in model_probabilities.items()}
     result = {
         "system": "BTC Signal Pro Elite Advanced ML",
@@ -2724,7 +2797,8 @@ def main():
         "confidence_score": round(scores[best] * 100, 2),
         "confidence_margin": round(margin * 100, 2),
         "wait_probability_threshold": final_wait_threshold,
-        "ensemble_configuration": {"models": ["full_history_logistic", "recent_regime_logistic", "nearest_centroid", "decision_stumps"], "weights": {"full_history_logistic": 0.35, "recent_regime_logistic": 0.20, "nearest_centroid": 0.20, "decision_stumps": 0.25}, "recent_training_window": final_model["recent_window"]},
+        "ensemble_configuration": {"models": ["full_history_logistic", "recent_regime_logistic", "nearest_centroid", "decision_stumps"], "weights": adaptive_weights, "recent_training_window": final_model["recent_window"]},
+        "adaptive_learning": adaptive_learning,
         "walk_forward_metrics": validation,
         "validation_gate": {"passed": validation_gate, "minimum_accuracy_pct": 38.0, "minimum_macro_f1_pct": 30.0, "must_beat_majority_baseline": True, "decision": "directional signals allowed" if validation_gate else "WAIT only — historical validation too weak"},
         "futures_microstructure": futures_microstructure,
