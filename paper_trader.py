@@ -35,7 +35,7 @@ def run():
 
     records = load(OUT, {"records": []}).get("records", [])
     # Use the last completed candle; ignore the currently forming candle.
-    closed = candles[:-1] if len(candles) > 1 else []
+    closed = candles  # market_data.py publishes completed candles only
     if not closed:
         return {"status": "WAITING_FOR_CLOSED_CANDLES", "records": records}
     last = closed[-1]
