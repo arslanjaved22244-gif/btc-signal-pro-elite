@@ -1,6 +1,15 @@
 name: BTC Futures Market Data
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - "market_data.py"
+      - "news_guard.py"
+      - "signal_engine.py"
+      - "advanced_modules.py"
+      - "liquidation_monitor.py"
+      - "telegram_alerts.py"
+      - ".github/workflows/market-data.yml"
   schedule:
     - cron: "*/5 * * * *"
 permissions:
