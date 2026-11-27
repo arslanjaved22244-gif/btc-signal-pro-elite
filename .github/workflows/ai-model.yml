@@ -49,7 +49,7 @@ jobs:
           current_path = Path("ai_result.json")
           current = json.loads(current_path.read_text()) if current_path.exists() else {}
           if candidate.get("generated_at", "") > current.get("generated_at", ""):
-              current_path.write_text(json.dumps(candidate, indent=2) + "\\n")
+              current_path.write_text(json.dumps(candidate, indent=2))
               print("Publishing newer AI result:", candidate.get("generated_at"))
           else:
               print("Keeping newer published AI result:", current.get("generated_at"))
