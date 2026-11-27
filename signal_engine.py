@@ -322,7 +322,7 @@ def run():
 
     return {
         "system": "BTC Signal Pro Elite Hybrid Confluence Engine",
-        "version": "4.2-hybrid-sweep-confluence",
+        "version": "4.3-hybrid-sweep-validated-futures",
         "generated_at": datetime.now(timezone.utc).isoformat(),
         "symbol": "BTCUSDT",
         "market_type": market.get("market_type", "UNKNOWN"),
