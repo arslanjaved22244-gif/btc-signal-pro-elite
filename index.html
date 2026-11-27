@@ -283,6 +283,7 @@ button{background:#f5b942;color:#111;border:0;padding:12px 18px;border-radius:8p
 <div class="metric"><span>Order-book imbalance</span><b id="derivBook">--</b></div>
 <div class="metric"><span>News safety pause</span><b id="derivNewsPause">--</b></div>
 <div class="metric"><span>Large trade alerts (≥10 BTC)</span><b id="derivLarge">--</b></div>
+<p class="note" id="derivNewsItems">Latest market headlines and public Trump posts will appear here.</p>
 <p class="note" id="derivReason">Waiting for derivatives snapshot.</p>
 <p class="note" id="derivSource">Data source: public perpetual market feed.</p>
 </div>
@@ -1456,7 +1457,8 @@ async function loadDerivativesIntelligence(force=false){
   setText("derivNewsPause",d.news_pause_active?"ACTIVE • WAIT":"Clear");
   setText("derivLarge",String((d.large_trades||[]).length));
   setText("derivReason",d.reason||"--");
-  setText("derivSource",(d.data_source||"Public market feed")+" • "+(d.oi_note||"")+" • "+(d.updated_at?new Date(d.updated_at).toLocaleString():"time unavailable"));
+  setText("derivSource",(d.data_source||"Public market feed")+" • "+(d.oi_change_source||d.oi_note||"OI source unavailable")+" • "+(d.updated_at?new Date(d.updated_at).toLocaleString():"time unavailable"));
+  setText("derivNewsItems",(d.news_alerts||[]).slice(0,5).map(x=>"["+((x.source)||"News")+"] "+x.title+" ("+x.age_minutes+"m)").join(" | ")||"No qualifying market-risk headlines or Trump posts in the monitoring window.");
   derivativesLastLoad=Date.now();
  }catch(e){setText("derivReason","Derivatives snapshot unavailable: "+e.message);}
  finally{derivativesBusy=false;}
