@@ -535,6 +535,20 @@ def classification_metrics(actual, predicted):
     }
 
 
+def classify_feature_regime(row):
+    # Regime is inferred only from features available at the forecast timestamp.
+    slope = row[7] if len(row) > 7 else 0.0
+    ema_spread = row[8] if len(row) > 8 else 0.0
+    price_vs_ema200 = row[9] if len(row) > 9 else 0.0
+    if ema_spread > 0.001 and price_vs_ema200 > 0 and slope > 0:
+        return "BULL_TREND"
+    if ema_spread < -0.001 and price_vs_ema200 < 0 and slope < 0:
+        return "BEAR_TREND"
+    if abs(ema_spread) < 0.0015 and abs(slope) < 0.0015:
+        return "RANGE_CHOP"
+    return "TRANSITION"
+
+
 def predict_with_wait_threshold(probs, wait_threshold):
     # Keep WAIT as a first-class outcome instead of allowing directional
     # classes to dominate whenever their scores are only marginally higher.
@@ -575,33 +589,65 @@ def walk_forward_validate(rows, labels):
     test_size = n // 6
     if test_size < 25:
         raise ValueError("Not enough samples for three walk-forward test windows.")
-    actual_all, predicted_all, fold_results = [], [], []
+    actual_all, predicted_all, regime_all, fold_results = [], [], [], []
+    baseline_correct = 0
+    baseline_total = 0
     for fold in range(3):
         test_start = n // 2 + fold * test_size
         test_end = min(n, test_start + test_size)
-        train_end = test_start - FUTURE_CANDLES  # purge overlapping future labels
+        train_end = test_start - FUTURE_CANDLES
         if train_end < 150 or test_end <= test_start:
             continue
-        wait_threshold = tune_wait_threshold(rows[:train_end], labels[:train_end])
-        model = train_ensemble(rows[:train_end], labels[:train_end])
-        fold_actual, fold_predicted = [], []
+        train_labels = labels[:train_end]
+        wait_threshold = tune_wait_threshold(rows[:train_end], train_labels)
+        model = train_ensemble(rows[:train_end], train_labels)
+        fold_actual, fold_predicted, fold_regimes = [], [], []
+        majority_label = max(range(len(CLASSES)), key=lambda k: train_labels.count(k))
         for row, actual in zip(rows[test_start:test_end], labels[test_start:test_end]):
             probs = predict_ensemble(model, row)
             fold_actual.append(actual)
             fold_predicted.append(predict_with_wait_threshold(probs, wait_threshold))
+            fold_regimes.append(classify_feature_regime(row))
         fold_metrics = classification_metrics(fold_actual, fold_predicted)
+        fold_baseline = sum(1 for actual in fold_actual if actual == majority_label)
+        baseline_correct += fold_baseline
+        baseline_total += len(fold_actual)
+        fold_regime_metrics = {}
+        for regime in ("BULL_TREND", "BEAR_TREND", "RANGE_CHOP", "TRANSITION"):
+            indices = [i for i, value in enumerate(fold_regimes) if value == regime]
+            if indices:
+                fold_regime_metrics[regime] = classification_metrics(
+                    [fold_actual[i] for i in indices],
+                    [fold_predicted[i] for i in indices]
+                )
         fold_results.append({
             "fold": fold + 1, "train_samples": train_end,
             "test_samples": len(fold_actual),
             "wait_threshold": wait_threshold,
-            "metrics": fold_metrics
+            "train_majority_class": CLASSES[majority_label],
+            "majority_baseline_accuracy": round(fold_baseline / len(fold_actual) * 100, 2),
+            "metrics": fold_metrics,
+            "regime_metrics": fold_regime_metrics
         })
         actual_all.extend(fold_actual)
         predicted_all.extend(fold_predicted)
+        regime_all.extend(fold_regimes)
     if not actual_all:
         raise ValueError("Walk-forward validation could not create a valid fold.")
-    return classification_metrics(actual_all, predicted_all), fold_results
-
+    aggregate = classification_metrics(actual_all, predicted_all)
+    aggregate["majority_class_baseline_pct"] = round(
+        baseline_correct / max(1, baseline_total) * 100, 2
+    )
+    aggregate["balanced_random_baseline_pct"] = round(100 / len(CLASSES), 2)
+    aggregate["regime_breakdown"] = {}
+    for regime in ("BULL_TREND", "BEAR_TREND", "RANGE_CHOP", "TRANSITION"):
+        indices = [i for i, value in enumerate(regime_all) if value == regime]
+        if indices:
+            aggregate["regime_breakdown"][regime] = classification_metrics(
+                [actual_all[i] for i in indices],
+                [predicted_all[i] for i in indices]
+            )
+    return aggregate, fold_results
 
 
 def candle_atr(candles, index, period=14):
@@ -797,7 +843,18 @@ def main():
     ordered = sorted(scores, reverse=True)
     margin = ordered[0] - ordered[1]
     calibrated_class = predict_with_wait_threshold(scores, final_wait_threshold)
-    signal = CLASSES[calibrated_class] if calibrated_class == 1 or (scores[calibrated_class] >= 0.48 and margin >= 0.10) else "WAIT"
+    validation_gate = (
+        validation.get("accuracy", 0) >= 38.0
+        and validation.get("macro_f1", 0) >= 30.0
+        and validation.get("accuracy", 0) > validation.get("majority_class_baseline_pct", 100)
+    )
+    signal = (
+        CLASSES[calibrated_class]
+        if validation_gate and calibrated_class == 1
+        else CLASSES[calibrated_class]
+        if validation_gate and scores[calibrated_class] >= 0.48 and margin >= 0.10
+        else "WAIT"
+    )
     model_probabilities = {
         "full_history_logistic": predict(final_model["full_history"], latest),
         "recent_regime_logistic": predict(final_model["recent_regime"], latest),
@@ -821,7 +878,7 @@ def main():
         "confidence_margin": round(margin * 100, 2),
         "wait_probability_threshold": final_wait_threshold,
         "ensemble_configuration": {"models": ["full_history_logistic", "recent_regime_logistic", "nearest_centroid", "decision_stumps"], "weights": {"full_history_logistic": 0.35, "recent_regime_logistic": 0.20, "nearest_centroid": 0.20, "decision_stumps": 0.25}, "recent_training_window": final_model["recent_window"]},
-        "walk_forward_metrics": validation,
+        "walk_forward_metrics": validation,\n        "validation_gate": {"passed": validation_gate, "minimum_accuracy_pct": 38.0, "minimum_macro_f1_pct": 30.0, "must_beat_majority_baseline": True, "decision": "directional signals allowed" if validation_gate else "WAIT only — historical validation too weak"},
         "advanced_intelligence": {"market_regime": regime_analysis, "multi_horizon_forecasts": horizon_forecasts, "tree_ensemble": tree_ensemble, "tree_blend_applied_to_primary_signal": tree_blend_applied, "method": "four-horizon chronological ML + Random Forest + gradient boosting + neural MLP + XGBoost (when installed) + volatility regime + liquidity sweep detector"},
         "walk_forward_folds": folds,
         "training_samples": len(rows),
