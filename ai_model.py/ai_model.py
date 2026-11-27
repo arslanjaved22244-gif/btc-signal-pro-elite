@@ -892,6 +892,7 @@ def walk_forward_validate(rows, labels, forward_returns=None, round_trip_cost_pc
     if not actual_all:
         raise ValueError("Walk-forward validation could not create a valid fold.")
     aggregate = classification_metrics(actual_all, predicted_all)
+    aggregate["out_of_sample_samples"] = len(actual_all)
     aggregate["majority_class_baseline_pct"] = round(
         baseline_correct / max(1, baseline_total) * 100, 2
     )
@@ -2950,6 +2951,7 @@ def evaluate_validation_gate(validation, futures_source_gate):
         "macro_f1_passed": validation.get("macro_f1", 0) >= 30.0,
         "majority_baseline_passed": validation.get("accuracy", 0) > validation.get("majority_class_baseline_pct", 100),
         "minimum_backtest_trades_passed": trades >= 30,
+        "minimum_out_of_sample_samples_passed": int(validation.get("out_of_sample_samples") or 0) >= 300,
         "positive_average_net_return_passed": isinstance(average_net, (int, float)) and average_net > 0,
         "net_win_rate_passed": isinstance(net_win_rate, (int, float)) and net_win_rate >= 50.0,
         "short_direction_passed": (
@@ -2971,6 +2973,8 @@ def evaluate_validation_gate(validation, futures_source_gate):
         "checks": checks,
         "backtest_trade_count": trades,
         "minimum_backtest_trades": 30,
+        "out_of_sample_samples": int(validation.get("out_of_sample_samples") or 0),
+        "minimum_out_of_sample_samples": 300,
         "average_net_trade_return_pct": average_net,
         "estimated_net_win_rate_pct": net_win_rate,
         "decision": "directional signals allowed" if all(checks.values()) else "WAIT only — profitability evidence insufficient",
