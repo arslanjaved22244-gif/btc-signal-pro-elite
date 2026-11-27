@@ -1,10 +1,21 @@
 {
   "source": "OKX BTC-USDT-SWAP public ticker; same-exchange reference and evaluation; directional close comparison only",
-  "updated_at": "2026-11-27T20:57:51.931684+00:00",
+  "updated_at": "2026-11-27T21:13:13.006444+00:00",
   "model_generated_at": "2026-11-27T20:56:15.032352+00:00",
-  "current_price": 59781.4,
+  "current_price": 59830.0,
   "stats": {
     "15m": {
+      "evaluated": 18,
+      "directional_calls": 1,
+      "correct": 1,
+      "directional_accuracy_pct": 100.0,
+      "raw_directional_calls": 0,
+      "raw_correct": 0,
+      "raw_directional_accuracy_pct": null,
+      "wait_abstentions": 17,
+      "excluded_legacy_source_mismatch": 4
+    },
+    "30m": {
       "evaluated": 16,
       "directional_calls": 1,
       "correct": 1,
@@ -13,17 +24,6 @@
       "raw_correct": 0,
       "raw_directional_accuracy_pct": null,
       "wait_abstentions": 15,
-      "excluded_legacy_source_mismatch": 4
-    },
-    "30m": {
-      "evaluated": 15,
-      "directional_calls": 1,
-      "correct": 1,
-      "directional_accuracy_pct": 100.0,
-      "raw_directional_calls": 0,
-      "raw_correct": 0,
-      "raw_directional_accuracy_pct": null,
-      "wait_abstentions": 14,
       "excluded_legacy_source_mismatch": 4
     },
     "60m": {
@@ -1387,11 +1387,11 @@
       "model_source": "OKX BTC-USDT-SWAP Futures public OHLC candles",
       "reference_price": 59769.6,
       "reference_exchange": "OKX BTC-USDT-SWAP",
-      "outcome": null,
-      "evaluated_at": null,
-      "realized_change_pct": null,
+      "outcome": "ABSTAINED",
+      "evaluated_at": "2026-11-27T21:13:13.006444+00:00",
+      "realized_change_pct": 0.10105,
       "correct": null,
-      "raw_correct": null,
+      "raw_correct": true,
       "validation_status": "WEAK EDGE \u2014 WAIT"
     },
     {
@@ -1441,11 +1441,11 @@
       "model_source": "OKX BTC-USDT-SWAP Futures public OHLC candles",
       "reference_price": 59797.6,
       "reference_exchange": "OKX BTC-USDT-SWAP",
-      "outcome": null,
-      "evaluated_at": null,
-      "realized_change_pct": null,
+      "outcome": "ABSTAINED",
+      "evaluated_at": "2026-11-27T21:13:13.006444+00:00",
+      "realized_change_pct": 0.05418,
       "correct": null,
-      "raw_correct": null,
+      "raw_correct": true,
       "validation_status": "VALIDATED TREE ENSEMBLE"
     },
     {
@@ -1513,11 +1513,11 @@
       "model_source": "OKX BTC-USDT-SWAP Futures public OHLC candles",
       "reference_price": 59781.4,
       "reference_exchange": "OKX BTC-USDT-SWAP",
-      "outcome": null,
-      "evaluated_at": null,
-      "realized_change_pct": null,
+      "outcome": "ABSTAINED",
+      "evaluated_at": "2026-11-27T21:13:13.006444+00:00",
+      "realized_change_pct": 0.0813,
       "correct": null,
-      "raw_correct": null,
+      "raw_correct": true,
       "validation_status": "VALIDATED TREE ENSEMBLE"
     },
     {
