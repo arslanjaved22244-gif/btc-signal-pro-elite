@@ -1,26 +1,26 @@
 {
   "system": "BTC Signal Pro Elite Institutional Intelligence",
   "version": "1.0-six-upgrades",
-  "generated_at": "2026-11-27T20:57:32.484119+00:00",
+  "generated_at": "2026-11-27T21:12:55.964490+00:00",
   "market_regime": {
     "status": "AVAILABLE",
     "regime": "BEAR_TREND",
-    "ema50_200_spread_pct": -1.1616,
-    "ema50_slope_6h_pct": -0.3479,
-    "atr_pct": 0.3329,
+    "ema50_200_spread_pct": -1.1882,
+    "ema50_slope_6h_pct": -0.2966,
+    "atr_pct": 0.2888,
     "source_timeframe": "1h trend + 15m volatility",
     "note": "Rule-based regime classification, not a forecast."
   },
   "volume_profile": {
     "status": "AVAILABLE",
     "method": "15m typical-price volume bins; last 400 candles maximum",
-    "poc": 60425.28,
-    "value_area_high": 61403.32,
-    "value_area_low": 58986.97,
-    "vwap": 60060.65,
-    "last_price": 59801.8,
+    "poc": 60403.62,
+    "value_area_high": 60917.87,
+    "value_area_low": 58403.77,
+    "vwap": 60054.98,
+    "last_price": 59774.4,
     "price_vs_vwap": "BELOW",
-    "total_sampled_volume": 212283.9065,
+    "total_sampled_volume": 211574.502,
     "note": "Estimated profile from candle volume, not exchange tick-level volume-at-price."
   },
   "liquidity_structure": {
@@ -29,15 +29,15 @@
   "options": {
     "status": "AVAILABLE",
     "venue": "Deribit public BTC options",
-    "put_call_open_interest_ratio": 0.8037,
-    "call_open_interest": 189264.5,
-    "put_open_interest": 152104.8,
-    "call_volume_24h": 14035.4,
-    "put_volume_24h": 15412.0,
-    "average_call_mark_iv_pct": 54.82,
-    "average_put_mark_iv_pct": 54.82,
+    "put_call_open_interest_ratio": 0.8036,
+    "call_open_interest": 189288.9,
+    "put_open_interest": 152116.7,
+    "call_volume_24h": 14000.5,
+    "put_volume_24h": 15396.4,
+    "average_call_mark_iv_pct": 54.81,
+    "average_put_mark_iv_pct": 54.81,
     "approx_max_pain_strike": 68000.0,
-    "btc_index_price": 59763.71,
+    "btc_index_price": 59794.16,
     "instruments_sampled": 960,
     "note": "Aggregated listed BTC options snapshot; max-pain is an approximation across returned instruments, not a price target."
   },
@@ -46,18 +46,18 @@
     "window": "14 days of hourly returns",
     "correlations_vs_btc": {
       "NASDAQ": {
-        "correlation": 0.849,
-        "samples": 61,
+        "correlation": 0.751,
+        "samples": 60,
         "status": "AVAILABLE"
       },
       "DXY": {
-        "correlation": -0.494,
-        "samples": 205,
+        "correlation": -0.483,
+        "samples": 204,
         "status": "AVAILABLE"
       },
       "GOLD": {
-        "correlation": 0.7,
-        "samples": 197,
+        "correlation": 0.698,
+        "samples": 196,
         "status": "AVAILABLE"
       }
     },
@@ -67,30 +67,30 @@
     "15m": {
       "status": "RESEARCH_ONLY",
       "scenario": "SHORT_BIAS",
-      "directional_score": -7.57,
-      "recent_momentum_pct": 0.0556,
-      "ema_spread_bps": -5.71,
-      "atr_pct": 0.1266,
+      "directional_score": -6.6,
+      "recent_momentum_pct": 0.0666,
+      "ema_spread_bps": -4.35,
+      "atr_pct": 0.1284,
       "regime": "BEAR_TREND",
       "note": "Heuristic scenario, not a calibrated probability or an entry signal."
     },
     "30m": {
       "status": "RESEARCH_ONLY",
       "scenario": "SHORT_BIAS",
-      "directional_score": -7.67,
-      "recent_momentum_pct": 0.0139,
-      "ema_spread_bps": -5.71,
-      "atr_pct": 0.1266,
+      "directional_score": -6.46,
+      "recent_momentum_pct": 0.1222,
+      "ema_spread_bps": -4.35,
+      "atr_pct": 0.1284,
       "regime": "BEAR_TREND",
       "note": "Heuristic scenario, not a calibrated probability or an entry signal."
     },
     "1h": {
       "status": "RESEARCH_ONLY",
       "scenario": "SHORT_BIAS",
-      "directional_score": -35.19,
-      "recent_momentum_pct": -0.329,
-      "ema_spread_bps": -27.69,
-      "atr_pct": 0.3329,
+      "directional_score": -34.04,
+      "recent_momentum_pct": -0.1884,
+      "ema_spread_bps": -26.45,
+      "atr_pct": 0.2888,
       "regime": "BEAR_TREND",
       "note": "Heuristic scenario, not a calibrated probability or an entry signal."
     }
