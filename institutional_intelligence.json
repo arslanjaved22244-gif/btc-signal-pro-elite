@@ -1,7 +1,7 @@
 {
   "system": "BTC Signal Pro Elite Institutional Intelligence",
   "version": "1.0-six-upgrades",
-  "generated_at": "2026-11-27T20:27:51.686091+00:00",
+  "generated_at": "2026-11-27T20:28:48.726277+00:00",
   "market_regime": {
     "status": "INSUFFICIENT_DATA",
     "regime": "UNKNOWN",
@@ -27,13 +27,13 @@
     "venue": "Deribit public BTC options",
     "put_call_open_interest_ratio": 0.8034,
     "call_open_interest": 189293.5,
-    "put_open_interest": 152079.0,
+    "put_open_interest": 152080.0,
     "call_volume_24h": 13930.8,
-    "put_volume_24h": 15311.1,
-    "average_call_mark_iv_pct": 54.75,
-    "average_put_mark_iv_pct": 54.75,
+    "put_volume_24h": 15311.2,
+    "average_call_mark_iv_pct": 54.76,
+    "average_put_mark_iv_pct": 54.76,
     "approx_max_pain_strike": 68000.0,
-    "btc_index_price": 59718.61,
+    "btc_index_price": 59722.81,
     "instruments_sampled": 960,
     "note": "Aggregated listed BTC options snapshot; max-pain is an approximation across returned instruments, not a price target."
   },
@@ -47,7 +47,7 @@
         "status": "AVAILABLE"
       },
       "DXY": {
-        "correlation": -0.494,
+        "correlation": -0.492,
         "samples": 205,
         "status": "AVAILABLE"
       },
