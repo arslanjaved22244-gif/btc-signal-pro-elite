@@ -6,8 +6,8 @@ on:
       - "bot/monitor.py"
       - "liquidation_monitor.py"
       - ".github/workflows/btc-monitor.yml"
-  schedule:
-    - cron: "*/5 * * * *"
+  # Market-data completion triggers one monitor pass; a second 5-minute schedule
+  # would create duplicate publishers competing for the same main-branch lock.
   workflow_dispatch:
   workflow_run:
     workflows:
