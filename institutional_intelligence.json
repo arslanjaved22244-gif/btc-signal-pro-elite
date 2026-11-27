@@ -1,7 +1,7 @@
 {
   "system": "BTC Signal Pro Elite Institutional Intelligence",
   "version": "1.0-six-upgrades",
-  "generated_at": "2026-11-27T23:17:06.603456+00:00",
+  "generated_at": "2026-11-27T23:21:04.840076+00:00",
   "market_regime": {
     "status": "AVAILABLE",
     "regime": "BEAR_TREND",
@@ -29,15 +29,15 @@
   "options": {
     "status": "AVAILABLE",
     "venue": "Deribit public BTC options",
-    "put_call_open_interest_ratio": 0.8107,
-    "call_open_interest": 190502.7,
-    "put_open_interest": 154443.4,
-    "call_volume_24h": 13711.3,
-    "put_volume_24h": 15282.3,
+    "put_call_open_interest_ratio": 0.8109,
+    "call_open_interest": 190538.7,
+    "put_open_interest": 154514.6,
+    "call_volume_24h": 13712.2,
+    "put_volume_24h": 15238.9,
     "average_call_mark_iv_pct": 54.74,
     "average_put_mark_iv_pct": 54.74,
     "approx_max_pain_strike": 68000.0,
-    "btc_index_price": 59747.6,
+    "btc_index_price": 59735.51,
     "instruments_sampled": 960,
     "note": "Aggregated listed BTC options snapshot; max-pain is an approximation across returned instruments, not a price target."
   },
@@ -67,20 +67,20 @@
     "15m": {
       "status": "RESEARCH_ONLY",
       "scenario": "RANGE_OR_WAIT",
-      "directional_score": -1.41,
-      "recent_momentum_pct": 0.1375,
-      "ema_spread_bps": 1.3,
-      "atr_pct": 0.1483,
+      "directional_score": -1.38,
+      "recent_momentum_pct": -0.0182,
+      "ema_spread_bps": 1.8,
+      "atr_pct": 0.1466,
       "regime": "BEAR_TREND",
       "note": "Heuristic scenario, not a calibrated probability or an entry signal."
     },
     "30m": {
       "status": "RESEARCH_ONLY",
       "scenario": "RANGE_OR_WAIT",
-      "directional_score": -1.5,
-      "recent_momentum_pct": 0.1026,
-      "ema_spread_bps": 1.3,
-      "atr_pct": 0.1483,
+      "directional_score": -1.35,
+      "recent_momentum_pct": -0.0065,
+      "ema_spread_bps": 1.8,
+      "atr_pct": 0.1466,
       "regime": "BEAR_TREND",
       "note": "Heuristic scenario, not a calibrated probability or an entry signal."
     },
@@ -136,7 +136,7 @@
       }
     },
     "pending_forecasts": 0,
-    "abstentions": 10,
+    "abstentions": 11,
     "wins": 1,
     "losses": 5,
     "directional_accuracy_pct": 33.33,
@@ -145,18 +145,18 @@
     "average_net_return_pct": -0.15159,
     "net_return_pct_compounded": -0.9064,
     "validation_gate_passed_now": false,
-    "latest_model_timestamp": "2026-11-27T23:02:03.566883+00:00",
-    "latest_model_fresh": false,
+    "latest_model_timestamp": "2026-11-27T23:19:13.622197+00:00",
+    "latest_model_fresh": true,
     "latest_venue_alignment": {
-      "compatible": false,
-      "type": "BLOCKED",
+      "compatible": true,
+      "type": "SAME_VENUE",
       "ai_venue": "OKX BTC-USDT-SWAP Futures",
       "market_venue": "OKX",
-      "basis_pct": 0.03846,
-      "candle_skew_minutes": 20.0,
+      "basis_pct": 0.02608,
+      "candle_skew_minutes": 10.0,
       "max_basis_pct": 0.25,
       "max_candle_skew_minutes": 15,
-      "reason": "Perpetual price basis or 5m candle-time skew exceeds the safety tolerance."
+      "reason": "Same-venue or cross-venue BTC perpetual prices and 5m candle times are aligned."
     },
     "note": "Research-only forecast tracking. Each fresh model generation is counted once; same-venue Futures or cross-venue Futures with <=0.25% price basis and <=15-minute candle skew may be scored. Spot, stale, mismatched or unaligned feeds are abstentions. Forecasts never authorize trades."
   },
@@ -168,7 +168,7 @@
       {
         "name": "5m_futures_candles",
         "passed": true,
-        "detail": "candle age 97s"
+        "detail": "candle age 34s"
       },
       {
         "name": "all_five_timeframes",
@@ -183,7 +183,7 @@
       {
         "name": "open_interest_data",
         "passed": true,
-        "detail": "historical OI latest row age 2.12m"
+        "detail": "historical OI latest row age 1.09m"
       },
       {
         "name": "executed_taker_flow",
@@ -203,7 +203,7 @@
       {
         "name": "fresh_news_scan",
         "passed": true,
-        "detail": "news snapshot age 0.45m"
+        "detail": "news snapshot age 0.47m"
       },
       {
         "name": "trump_public_post_archive",
@@ -221,7 +221,7 @@
         "detail": "not connected / no recent message"
       }
     ],
-    "market_snapshot_age_minutes": 0.5,
+    "market_snapshot_age_minutes": 0.52,
     "note": "A feed marked unavailable is not guessed or replaced. This audit reports source presence and freshness, not signal accuracy. GitHub Actions sampled liquidation data does not count as a continuous stream."
   },
   "execution": "MANUAL_ONLY_NO_ORDERS",
