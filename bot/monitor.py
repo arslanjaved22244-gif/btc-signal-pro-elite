@@ -153,10 +153,12 @@ def update_prediction_performance():
    fc=forecasts.get(horizon,{})
    direction=fc.get("signal","WAIT")
    if direction not in ("LONG","SHORT","WAIT"): direction="WAIT"
+   raw_direction=fc.get("raw_model_class",direction)
+   if raw_direction not in ("LONG","SHORT","WAIT"): raw_direction=direction
    records.append({"model_generated_at":generated,"logged_at":now().isoformat(),"horizon":horizon,
-    "horizon_minutes":mins,"direction":direction,"reference_price":price,"outcome":None,
-    "evaluated_at":None,"realized_change_pct":None,"correct":None,
-    "validation_status":fc.get("status","unknown")})
+    "horizon_minutes":mins,"direction":direction,"raw_direction":raw_direction,
+    "reference_price":price,"outcome":None,"evaluated_at":None,"realized_change_pct":None,
+    "correct":None,"raw_correct":None,"validation_status":fc.get("status","unknown")})
  # Score only after each forecast horizon has elapsed. Directional hit rate excludes WAIT calls.
  current=now()
  for item in records:
@@ -172,6 +174,10 @@ def update_prediction_performance():
    if item["direction"]=="LONG": item["correct"]=change>0;item["outcome"]="UP" if change>0 else "DOWN_OR_FLAT"
    elif item["direction"]=="SHORT": item["correct"]=change<0;item["outcome"]="DOWN" if change<0 else "UP_OR_FLAT"
    else: item["correct"]=None;item["outcome"]="ABSTAINED"
+   raw=item.get("raw_direction",item["direction"])
+   if raw=="LONG": item["raw_correct"]=change>0
+   elif raw=="SHORT": item["raw_correct"]=change<0
+   else: item["raw_correct"]=None
   except Exception as exc:
    item["evaluation_error"]=str(exc)[:120]
  # Keep a bounded history; calculate hit rate only over evaluated directional calls.
@@ -181,8 +187,12 @@ def update_prediction_performance():
   group=[x for x in records if x.get("horizon")==horizon and x.get("outcome") is not None]
   directional=[x for x in group if x.get("direction") in ("LONG","SHORT") and isinstance(x.get("correct"),bool)]
   wins=sum(1 for x in directional if x["correct"])
+  raw_directional=[x for x in group if x.get("raw_direction") in ("LONG","SHORT") and isinstance(x.get("raw_correct"),bool)]
+  raw_wins=sum(1 for x in raw_directional if x["raw_correct"])
   stats[horizon]={"evaluated":len(group),"directional_calls":len(directional),"correct":wins,
    "directional_accuracy_pct":round(100*wins/len(directional),2) if directional else None,
+   "raw_directional_calls":len(raw_directional),"raw_correct":raw_wins,
+   "raw_directional_accuracy_pct":round(100*raw_wins/len(raw_directional),2) if raw_directional else None,
    "wait_abstentions":sum(1 for x in group if x.get("direction")=="WAIT")}
  data={"source":"OKX BTC-USDT-SWAP public ticker; directional close comparison only",
   "updated_at":current.isoformat(),"model_generated_at":generated,"current_price":price,
