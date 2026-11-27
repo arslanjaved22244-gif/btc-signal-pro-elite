@@ -416,6 +416,29 @@ def predict(model, row):
     ])
 
 
+def train_ensemble(rows, labels):
+    # Blend a long-history model with a recent-regime specialist.
+    full_model = train_model(rows, labels)
+    recent_window = min(3000, len(rows))
+    recent_model = train_model(rows[-recent_window:], labels[-recent_window:])
+    return {
+        "full_history": full_model,
+        "recent_regime": recent_model,
+        "weights": (0.65, 0.35),
+        "recent_window": recent_window
+    }
+
+
+def predict_ensemble(ensemble, row):
+    full_probs = predict(ensemble["full_history"], row)
+    recent_probs = predict(ensemble["recent_regime"], row)
+    full_weight, recent_weight = ensemble["weights"]
+    return [
+        full_weight * full_probs[k] + recent_weight * recent_probs[k]
+        for k in range(len(CLASSES))
+    ]
+
+
 def classification_metrics(actual, predicted):
     matrix = [[0 for _ in CLASSES] for _ in CLASSES]
     for a, p in zip(actual, predicted):
@@ -464,10 +487,10 @@ def tune_wait_threshold(rows, labels):
     calibration_start = split + FUTURE_CANDLES
     if split < 150 or calibration_start >= n - 30:
         return 0.30
-    calibration_model = train_model(rows[:split], labels[:split])
+    calibration_model = train_ensemble(rows[:split], labels[:split])
     actual = labels[calibration_start:]
     probability_rows = [
-        predict(calibration_model, row) for row in rows[calibration_start:]
+        predict_ensemble(calibration_model, row) for row in rows[calibration_start:]
     ]
     best_threshold, best_f1 = 0.30, -1.0
     for step in range(9):
@@ -496,10 +519,10 @@ def walk_forward_validate(rows, labels):
         if train_end < 150 or test_end <= test_start:
             continue
         wait_threshold = tune_wait_threshold(rows[:train_end], labels[:train_end])
-        model = train_model(rows[:train_end], labels[:train_end])
+        model = train_ensemble(rows[:train_end], labels[:train_end])
         fold_actual, fold_predicted = [], []
         for row, actual in zip(rows[test_start:test_end], labels[test_start:test_end]):
-            probs = predict(model, row)
+            probs = predict_ensemble(model, row)
             fold_actual.append(actual)
             fold_predicted.append(predict_with_wait_threshold(probs, wait_threshold))
         fold_metrics = classification_metrics(fold_actual, fold_predicted)
@@ -564,13 +587,13 @@ def main():
         raise ValueError(f"Not enough aligned multi-timeframe samples: {len(rows)}")
     validation, folds = walk_forward_validate(rows, labels)
     final_wait_threshold = tune_wait_threshold(rows, labels)
-    final_model = train_model(rows, labels)
+    final_model = train_ensemble(rows, labels)
     class_counts = [max(1, labels.count(k)) for k in range(len(CLASSES))]
     class_weights = [min(2.5, len(labels) / (len(CLASSES) * count)) for count in class_counts]
     latest = combined_features(data, len(data["5m"]) - 1, prepared)
     if latest is None:
         raise ValueError("Could not build latest multi-timeframe features.")
-    scores = predict(final_model, latest)
+    scores = predict_ensemble(final_model, latest)
     best = max(range(3), key=lambda k: scores[k])
     ordered = sorted(scores, reverse=True)
     margin = ordered[0] - ordered[1]
@@ -578,8 +601,8 @@ def main():
     signal = CLASSES[calibrated_class] if calibrated_class == 1 or (scores[calibrated_class] >= 0.48 and margin >= 0.10) else "WAIT"
     result = {
         "system": "BTC Signal Pro Elite Advanced ML",
-        "model": "Multinomial Logistic Regression",
-        "model_version": "3.7-inner-calibrated-wait-threshold",
+        "model": "Temporal Ensemble (full-history + recent-regime logistic experts)",
+        "model_version": "3.8-temporal-ensemble-regime-specialist",
         "data_source": source,
         "symbol": symbol,
         "base_interval": "5m",
@@ -589,6 +612,7 @@ def main():
         "confidence_score": round(scores[best] * 100, 2),
         "confidence_margin": round(margin * 100, 2),
         "wait_probability_threshold": final_wait_threshold,
+        "ensemble_configuration": {"full_history_weight": 0.65, "recent_regime_weight": 0.35, "recent_training_window": final_model["recent_window"]},
         "walk_forward_metrics": validation,
         "walk_forward_folds": folds,
         "training_samples": len(rows),
