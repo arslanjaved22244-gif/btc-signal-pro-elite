@@ -1,15 +1,15 @@
 {
-  "price": 59745.0,
-  "funding_rate": 1.35313737976e-05,
-  "funding_percent": 0.0013531373797599998,
-  "open_interest": 3222483.8000000156,
-  "oi_change_5m_pct": -0.5147127543731163,
+  "price": 59756.0,
+  "funding_rate": 1.47305860811e-05,
+  "funding_percent": 0.00147305860811,
+  "open_interest": 3226611.7300000163,
+  "oi_change_5m_pct": 0.0,
   "oi_history": [
     {
       "timestamp": "1795810200000",
-      "oi_contracts": "3221843.6700000159",
-      "oi_coin": "32218.436700000159",
-      "oi_usd": "1926169572.5784995057673"
+      "oi_contracts": "3237126.56000001694",
+      "oi_coin": "32371.2656000001694",
+      "oi_usd": "1936135106.91569013186482"
     },
     {
       "timestamp": "1795809900000",
@@ -18,15 +18,15 @@
       "oi_usd": "1936135106.91569013186482"
     }
   ],
-  "orderbook_imbalance": -0.9047347905983704,
-  "cvd_proxy": 0.43102929833047776,
-  "taker_buy_ratio": 0.7155146491652389,
+  "orderbook_imbalance": -0.7928112016236457,
+  "cvd_proxy": 0.4019513828637538,
+  "taker_buy_ratio": 0.7009756914318769,
   "large_trades": [],
   "data_source": "OKX public BTC-USDT-SWAP perpetual API",
-  "as_of": "2026-11-27T20:14:22.309937+00:00",
+  "as_of": "2026-11-27T20:20:32.644529+00:00",
   "oi_note": "OKX public 5-minute open-interest history when available",
-  "atr_5m_pct": 0.11816,
-  "latest_range_atr_ratio": 0.733,
+  "atr_5m_pct": 0.1207,
+  "latest_range_atr_ratio": 0.859,
   "volatility_status": "NORMAL",
   "volatility_source": "Bybit/OKX completed BTC perpetual 5m candles",
   "oi_change_source": "OKX 5-minute OI history",
@@ -35,6 +35,6 @@
   "news_pause_active": false,
   "pause_until": "2026-11-27T18:13:05.922760+00:00",
   "news_alerts": [],
-  "updated_at": "2026-11-27T20:14:24.147154+00:00",
+  "updated_at": "2026-11-27T20:20:34.361775+00:00",
   "safety_note": "Signal-only; manual trading only. Large trades are trade-size alerts, not verified whale identities. Trump social posts are monitored through a third-party archive RSS, not an official API."
 }
