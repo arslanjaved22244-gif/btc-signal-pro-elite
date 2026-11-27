@@ -52,9 +52,15 @@ class PaperTraderTests(unittest.TestCase):
         self.assertAlmostEqual(result["records"][0]["net_return_pct"], 2.86, places=2)
 
     def write_ai(self, generated_at):
+        with open("market_data.json", encoding="utf-8") as market_file:
+            market = json.load(market_file)
+        latest = market["timeframes"]["5m"]["candles"][-1]
         with open("ai_result.json", "w") as f:
             json.dump({
                 "generated_at": generated_at,
+                "symbol": "BTC/USDT",
+                "last_price": latest["close"],
+                "last_candle_time": latest["time"],
                 "data_source": "OKX BTC-USDT-SWAP Futures public OHLC candles",
                 "data_source_by_timeframe": {"5m": "OKX BTC-USDT-SWAP Futures"},
                 "class_scores": {"LONG": 70, "SHORT": 10, "WAIT": 20},
