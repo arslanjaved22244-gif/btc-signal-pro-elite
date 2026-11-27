@@ -529,11 +529,21 @@ function notifySweepOnce(event){
   }catch(e){}
  }
 }
+let livePriceUpdatedAt=0,livePriceVenue="";
 async function loadPrice(){
-let d=await get("/fapi/v1/ticker/price?symbol=BTCUSDT");
-M.price=+d.price;
-setText("price","$"+fmt(M.price));
-setText("updated","Updated "+new Date().toLocaleTimeString());
+ try{
+  const d=await get("/fapi/v1/ticker/price?symbol=BTCUSDT");
+  M.price=+d.price;livePriceVenue="Binance USD-M Futures";
+ }catch(primaryError){
+  const r=await fetch("https://www.okx.com/api/v5/market/ticker?instId=BTC-USDT-SWAP",{cache:"no-store"});
+  if(!r.ok)throw primaryError;
+  const d=await r.json();
+  if(!d.data||!d.data[0]||!d.data[0].last)throw primaryError;
+  M.price=Number(d.data[0].last);livePriceVenue="OKX BTC-USDT-SWAP";
+ }
+ livePriceUpdatedAt=Date.now();
+ setText("price","$"+fmt(M.price));
+ setText("updated","Live "+livePriceVenue+" • "+new Date().toLocaleTimeString());
 }
 
 async function loadFrames(){
@@ -1767,9 +1777,13 @@ async function refreshFromPublishedFuturesSnapshot(){
  M.frames=frames;
  const mark=d.feeds&&d.feeds.mark_price_funding&&d.feeds.mark_price_funding.data||{};
  const latest=frames.length?d.timeframes["5m"].candles.at(-1):null;
- M.price=Number(mark.markPrice||mark.lastPrice||(latest&&latest.close)||0);
- if(M.price)setText("price","$"+fmt(M.price));
- setText("updated","Published "+(d.exchange||"perpetual")+" Futures snapshot • "+(d.generated_at?new Date(d.generated_at).toLocaleTimeString():"time unavailable"));
+ if(Date.now()-livePriceUpdatedAt>10000){
+  M.price=Number(mark.markPrice||mark.lastPrice||(latest&&latest.close)||0);
+  if(M.price)setText("price","$"+fmt(M.price));
+  setText("updated","Published "+(d.exchange||"perpetual")+" Futures snapshot • "+(d.generated_at?new Date(d.generated_at).toLocaleTimeString():"time unavailable"));
+ }else{
+  setText("updated","Live "+livePriceVenue+" • "+new Date(livePriceUpdatedAt).toLocaleTimeString()+" • indicators from published "+(d.exchange||"Futures")+" snapshot");
+ }
  $("frames").innerHTML=frames.map(x=>'<tr><td>'+x.name+'</td><td class="'+(x.trend==="BULLISH"?"green":x.trend==="BEARISH"?"red":"yellow")+'">'+x.trend+'</td><td>'+x.rsi.toFixed(1)+'</td><td>'+fmt(x.e50)+'</td></tr>').join("");
  setText("status","Browser exchange API unavailable • displaying last published "+(d.exchange||"perpetual")+" Futures data");
  await Promise.allSettled([loadHybridSignal(true),loadDerivativesIntelligence(true),
