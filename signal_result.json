@@ -1,41 +1,96 @@
 {
   "system": "BTC Signal Pro Elite Hybrid Confluence Engine",
   "version": "4.1-hybrid-futures-confluence",
-  "generated_at": "2026-11-27T01:49:10.116428+00:00",
+  "generated_at": "2026-11-27T01:49:58.543227+00:00",
   "symbol": "BTCUSDT",
   "market_type": "BINANCE_USDM_FUTURES",
   "signal": "WAIT",
-  "confidence_score": 0.0,
+  "confidence_score": 39.02,
   "scores": {
-    "LONG": 0.0,
-    "SHORT": 0.0
+    "LONG": 3.25,
+    "SHORT": 4.0
   },
   "timeframe_analysis": {
     "5m": {
-      "available": false,
-      "bias": "UNKNOWN"
+      "available": true,
+      "bias": "BULLISH",
+      "price": 60675.1,
+      "ema50": 60633.09,
+      "ema200": 60628.7,
+      "rsi14": 52.03,
+      "atr14": 92.13,
+      "macd": {
+        "line": 35.5189,
+        "signal": 37.78657,
+        "histogram": -2.26767
+      },
+      "age_seconds": 283
     },
     "15m": {
-      "available": false,
-      "bias": "UNKNOWN"
+      "available": true,
+      "bias": "BULLISH",
+      "price": 60675.1,
+      "ema50": 60617.09,
+      "ema200": 60350.55,
+      "rsi14": 52.44,
+      "atr14": 156.43,
+      "macd": {
+        "line": 17.86715,
+        "signal": -0.94148,
+        "histogram": 18.80863
+      },
+      "age_seconds": 283
     },
     "1h": {
-      "available": false,
-      "bias": "UNKNOWN"
+      "available": true,
+      "bias": "NEUTRAL",
+      "price": 60674.6,
+      "ema50": 60331.25,
+      "ema200": 61040.57,
+      "rsi14": 54.83,
+      "atr14": 334.23,
+      "macd": {
+        "line": 131.14372,
+        "signal": 178.09464,
+        "histogram": -46.95093
+      },
+      "age_seconds": 2983
     },
     "4h": {
-      "available": false,
-      "bias": "UNKNOWN"
+      "available": true,
+      "bias": "BEARISH",
+      "price": 60549.9,
+      "ema50": 61347.19,
+      "ema200": 69151.7,
+      "rsi14": 51.37,
+      "atr14": 1000.35,
+      "macd": {
+        "line": -81.57883,
+        "signal": -264.26408,
+        "histogram": 182.68525
+      },
+      "age_seconds": 6584
     },
     "1d": {
-      "available": false,
-      "bias": "UNKNOWN"
+      "available": true,
+      "bias": "BEARISH",
+      "price": 60597.9,
+      "ema50": 71595.32,
+      "ema200": 73547.76,
+      "rsi14": 32.07,
+      "atr14": 3467.12,
+      "macd": {
+        "line": -4670.07842,
+        "signal": -4496.99009,
+        "histogram": -173.08834
+      },
+      "age_seconds": 35384
     }
   },
   "order_flow": {
-    "cvd_base": null,
-    "order_book_imbalance": null,
-    "funding_rate_pct": 0.0,
+    "cvd_base": -1111.36,
+    "order_book_imbalance": 0.685615,
+    "funding_rate_pct": 0.004646,
     "funding_crowding": "NEUTRAL",
     "open_interest_change_30m_pct": null,
     "taker_buy_sell_ratio": null
@@ -47,7 +102,7 @@
     "signal": "WAIT"
   },
   "risk_levels": {
-    "entry_reference": null,
+    "entry_reference": 60675.1,
     "stop_loss": null,
     "take_profit_1": null,
     "take_profit_2": null,
@@ -55,26 +110,18 @@
     "method": "No levels while signal is WAIT or ATR unavailable"
   },
   "data_quality": {
-    "core_timeframes_ok": false,
-    "five_minute_data_fresh": false,
+    "core_timeframes_ok": true,
+    "five_minute_data_fresh": true,
     "futures_only": true,
-    "status": "DEGRADED",
+    "status": "HEALTHY",
     "warnings": [
-      "One or more Futures candle timeframes failed.",
-      "5m Futures candle data is stale.",
-      "mark_price_funding feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
-      "open_interest_current feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
-      "open_interest_history_5m feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
-      "taker_flow_5m feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
-      "order_book feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
-      "recent_agg_trades feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
-      "funding_history feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
-      "Liquidation feed is not connected yet.",
-      "Bybit fallback did not provide complete fresh Futures candles: HTTP Error 403: Forbidden; HTTP Error 403: Forbidden; HTTP Error 403: Forbidden"
+      "open_interest_history_5m feed unavailable: OKX public OI history not configured in this fallback.",
+      "taker_flow_5m feed unavailable: OKX taker buy/sell ratio not configured in this fallback.",
+      "OKX BTC-USDT-SWAP is a separate exchange perpetual reference; confirm execution venue price and liquidity."
     ]
   },
   "news_guard": {
-    "generated_at": "2026-11-27T01:48:54.802204+00:00",
+    "generated_at": "2026-11-27T01:49:45.576614+00:00",
     "source": "Google News RSS public fallback",
     "available": true,
     "block": false,
@@ -84,22 +131,14 @@
   },
   "volatility_guard": {
     "blocked": false,
-    "atr_5m_pct": 0.0,
+    "atr_5m_pct": 0.1518,
     "atr_threshold_pct": 0.45,
     "range_spike": false
   },
   "warnings": [
-    "One or more Futures candle timeframes failed.",
-    "5m Futures candle data is stale.",
-    "mark_price_funding feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
-    "open_interest_current feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
-    "open_interest_history_5m feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
-    "taker_flow_5m feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
-    "order_book feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
-    "recent_agg_trades feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
-    "funding_history feed unavailable: Empty response from https://fapi4.binance.com (HTTP 202)",
-    "Liquidation feed is not connected yet.",
-    "Bybit fallback did not provide complete fresh Futures candles: HTTP Error 403: Forbidden; HTTP Error 403: Forbidden; HTTP Error 403: Forbidden"
+    "open_interest_history_5m feed unavailable: OKX public OI history not configured in this fallback.",
+    "taker_flow_5m feed unavailable: OKX taker buy/sell ratio not configured in this fallback.",
+    "OKX BTC-USDT-SWAP is a separate exchange perpetual reference; confirm execution venue price and liquidity."
   ],
   "execution": "MANUAL_ONLY_NO_ORDERS"
 }
