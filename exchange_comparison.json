@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-11-27T21:28:32.878143+00:00",
+  "generated_at": "2026-11-27T21:35:03.965534+00:00",
   "symbol": "BTCUSDT perpetual contracts only",
   "venues_checked": [
     "Binance USD-M Futures",
@@ -11,7 +11,7 @@
   "venues": {
     "Binance USD-M Futures": {
       "available": false,
-      "error": "fapi.binance.com: HTTP Error 451:  | fapi1.binance.com: HTTP Error 429: Too Many Requests | fapi2.binance.com: HTTP Error 429: Too Many Requests | fapi3.binance.com: HTTP Error 429: Too Many Requests | fapi4.binance.com: HTTP Error 429: Too Many Requests"
+      "error": "fapi.binance.com: HTTP Error 451:  | fapi1.binance.com: Expecting value: line 1 column 1 (char 0) | fapi2.binance.com: Expecting value: line 1 column 1 (char 0) | fapi3.binance.com: Expecting value: line 1 column 1 (char 0) | fapi4.binance.com: Expecting value: line 1 column 1 (char 0)"
     },
     "Bybit linear perpetual": {
       "available": false,
@@ -19,15 +19,15 @@
     },
     "Bitget USDT-FUTURES": {
       "available": true,
-      "price": 59808.8,
+      "price": 59763.8,
       "endpoint": "https://api.bitget.com/api/v2/mix/market/ticker?productType=USDT-FUTURES&symbol=BTCUSDT",
       "fallback_errors": [],
-      "difference_usdt": 7.1,
-      "difference_pct": 0.01187
+      "difference_usdt": 4.3,
+      "difference_pct": 0.0072
     },
     "OKX BTC-USDT-SWAP": {
       "available": true,
-      "price": 59801.7,
+      "price": 59759.5,
       "endpoint": "https://www.okx.com/api/v5/market/ticker?instId=BTC-USDT-SWAP",
       "fallback_errors": [],
       "difference_usdt": 0.0,

@@ -1,26 +1,26 @@
 {
   "system": "BTC Signal Pro Elite Institutional Intelligence",
   "version": "1.0-six-upgrades",
-  "generated_at": "2026-11-27T21:28:33.826597+00:00",
+  "generated_at": "2026-11-27T21:35:05.170955+00:00",
   "market_regime": {
     "status": "AVAILABLE",
     "regime": "BEAR_TREND",
     "ema50_200_spread_pct": -1.1882,
     "ema50_slope_6h_pct": -0.2966,
-    "atr_pct": 0.2743,
+    "atr_pct": 0.2285,
     "source_timeframe": "1h trend + 15m volatility",
     "note": "Rule-based regime classification, not a forecast."
   },
   "volume_profile": {
     "status": "AVAILABLE",
     "method": "15m typical-price volume bins; last 400 candles maximum",
-    "poc": 60420.29,
-    "value_area_high": 61300.75,
-    "value_area_low": 58814.75,
-    "vwap": 60043.56,
-    "last_price": 59823.4,
+    "poc": 60414.19,
+    "value_area_high": 61396.33,
+    "value_area_low": 59018.52,
+    "vwap": 60035.34,
+    "last_price": 59803.2,
     "price_vs_vwap": "BELOW",
-    "total_sampled_volume": 209969.0545,
+    "total_sampled_volume": 209890.2076,
     "note": "Estimated profile from candle volume, not exchange tick-level volume-at-price."
   },
   "liquidity_structure": {
@@ -29,15 +29,15 @@
   "options": {
     "status": "AVAILABLE",
     "venue": "Deribit public BTC options",
-    "put_call_open_interest_ratio": 0.8039,
-    "call_open_interest": 189334.1,
-    "put_open_interest": 152209.3,
-    "call_volume_24h": 13997.4,
-    "put_volume_24h": 15400.2,
-    "average_call_mark_iv_pct": 54.8,
-    "average_put_mark_iv_pct": 54.8,
+    "put_call_open_interest_ratio": 0.804,
+    "call_open_interest": 189342.7,
+    "put_open_interest": 152230.3,
+    "call_volume_24h": 13972.4,
+    "put_volume_24h": 15397.4,
+    "average_call_mark_iv_pct": 54.79,
+    "average_put_mark_iv_pct": 54.79,
     "approx_max_pain_strike": 68000.0,
-    "btc_index_price": 59772.99,
+    "btc_index_price": 59729.82,
     "instruments_sampled": 960,
     "note": "Aggregated listed BTC options snapshot; max-pain is an approximation across returned instruments, not a price target."
   },
@@ -46,12 +46,12 @@
     "window": "14 days of hourly returns",
     "correlations_vs_btc": {
       "NASDAQ": {
-        "correlation": 0.752,
+        "correlation": 0.751,
         "samples": 60,
         "status": "AVAILABLE"
       },
       "DXY": {
-        "correlation": -0.485,
+        "correlation": -0.483,
         "samples": 204,
         "status": "AVAILABLE"
       },
@@ -67,30 +67,30 @@
     "15m": {
       "status": "RESEARCH_ONLY",
       "scenario": "SHORT_BIAS",
-      "directional_score": -4.74,
-      "recent_momentum_pct": 0.0373,
-      "ema_spread_bps": -1.55,
-      "atr_pct": 0.1144,
+      "directional_score": -4.73,
+      "recent_momentum_pct": -0.0338,
+      "ema_spread_bps": -1.42,
+      "atr_pct": 0.1116,
       "regime": "BEAR_TREND",
       "note": "Heuristic scenario, not a calibrated probability or an entry signal."
     },
     "30m": {
       "status": "RESEARCH_ONLY",
       "scenario": "SHORT_BIAS",
-      "directional_score": -4.58,
-      "recent_momentum_pct": 0.1039,
-      "ema_spread_bps": -1.55,
-      "atr_pct": 0.1144,
+      "directional_score": -4.53,
+      "recent_momentum_pct": 0.0482,
+      "ema_spread_bps": -1.42,
+      "atr_pct": 0.1116,
       "regime": "BEAR_TREND",
       "note": "Heuristic scenario, not a calibrated probability or an entry signal."
     },
     "1h": {
       "status": "RESEARCH_ONLY",
       "scenario": "SHORT_BIAS",
-      "directional_score": -31.82,
-      "recent_momentum_pct": 0.1086,
-      "ema_spread_bps": -24.14,
-      "atr_pct": 0.2743,
+      "directional_score": -30.81,
+      "recent_momentum_pct": 0.0452,
+      "ema_spread_bps": -22.41,
+      "atr_pct": 0.2285,
       "regime": "BEAR_TREND",
       "note": "Heuristic scenario, not a calibrated probability or an entry signal."
     }
