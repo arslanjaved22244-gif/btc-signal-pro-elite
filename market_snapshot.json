@@ -1,22 +1,35 @@
 {
-  "price": 61762.7,
-  "funding_rate": -1.56895473901e-05,
-  "funding_percent": -0.00156895473901,
-  "open_interest": 3210188.360000011,
+  "price": 61762.0,
+  "funding_rate": -1.56045257853e-05,
+  "funding_percent": -0.00156045257853,
+  "open_interest": 3210358.980000011,
   "oi_change_5m_pct": null,
-  "oi_history": [],
-  "orderbook_imbalance": -0.3500420750911492,
-  "cvd_proxy": -0.7879782417114896,
-  "taker_buy_ratio": 0.10601087914425522,
+  "oi_history": [
+    {
+      "timestamp": "1795779000000",
+      "oi_contracts": "3210003.28000001147",
+      "oi_coin": "32100.0328000001147",
+      "oi_usd": "1982689110.4166570531633"
+    },
+    {
+      "timestamp": "1795778700000",
+      "oi_contracts": "3211536.52000001186",
+      "oi_coin": "32115.3652000001186",
+      "oi_usd": "1980271956.67024731301832"
+    }
+  ],
+  "orderbook_imbalance": 0.28997485086656877,
+  "cvd_proxy": 0.8119320426708818,
+  "taker_buy_ratio": 0.9059660213354409,
   "large_trades": [],
   "data_source": "OKX public BTC-USDT-SWAP perpetual API",
-  "as_of": "2026-11-27T11:34:02.373873+00:00",
-  "oi_note": "Collecting first OI baseline sample",
+  "as_of": "2026-11-27T11:34:38.928705+00:00",
+  "oi_note": "Waiting for a valid 4-12 minute OI sample pair",
   "signal": "WAIT",
   "reason": "News safety pause active (minimum 30 minutes)",
   "news_pause_active": true,
   "pause_until": "2026-11-27T11:59:23.443889+00:00",
   "news_alerts": [],
-  "updated_at": "2026-11-27T11:34:03.470912+00:00",
+  "updated_at": "2026-11-27T11:34:40.309777+00:00",
   "safety_note": "Signal-only; manual trading only. Large trades are trade-size alerts, not verified whale identities. Trump social posts are monitored through a third-party archive RSS, not an official API."
 }
