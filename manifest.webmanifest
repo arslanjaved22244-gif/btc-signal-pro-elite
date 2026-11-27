@@ -1,0 +1,21 @@
+{
+  "id": "./",
+  "name": "BTC Signal Pro Elite",
+  "short_name": "BTC Signal",
+  "description": "BTC/USDT market intelligence and manual trading signals.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b1020",
+  "theme_color": "#0b1020",
+  "categories": ["finance", "utilities"],
+  "icons": [
+    {
+      "src": "./app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
