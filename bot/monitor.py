@@ -77,12 +77,24 @@ def market_data_okx():
  cvd=(buy-sell)/(buy+sell) if buy+sell else 0
  taker=buy/(buy+sell) if buy+sell else .5
  oi=float(oi_rows[0]["oi"]) if oi_rows else None
+ oi_change=None;oi_history=[]
+ try:
+  hist=okx("/api/v5/rubik/stat/contracts/open-interest-history",{"instId":inst,"period":"5m","limit":2})
+  if len(hist)>=2:
+   # OKX returns newest first; use oiUsd for a comparable USD notional change.
+   newest=float(hist[0].get("oiUsd") or hist[0].get("oiCcy") or hist[0].get("oi"))
+   older=float(hist[1].get("oiUsd") or hist[1].get("oiCcy") or hist[1].get("oi"))
+   oi_change=(newest-older)/older*100 if older else None
+   oi_history=[{"timestamp":x.get("ts"),"oi_usd":x.get("oiUsd"),"oi_coin":x.get("oiCcy"),"oi_contracts":x.get("oi")} for x in hist]
+ except Exception as exc:
+  print("OKX OI history warning:",str(exc)[:160])
  return {"price":float(tick["last"]),"funding_rate":float(funding_row["fundingRate"]),
-  "funding_percent":float(funding_row["fundingRate"])*100,"open_interest":oi,"oi_change_5m_pct":None,
+  "funding_percent":float(funding_row["fundingRate"])*100,"open_interest":oi,"oi_change_5m_pct":oi_change,
+  "oi_history":oi_history,
   "orderbook_imbalance":imbalance,"cvd_proxy":cvd,"taker_buy_ratio":taker,
   "large_trades":sorted(large,key=lambda x:x["qty_btc"],reverse=True)[:8],
   "data_source":"OKX public BTC-USDT-SWAP perpetual API","as_of":now().isoformat(),
-  "oi_note":"Current open interest available; 5-minute change not supplied by fallback feed"}
+  "oi_note":"OKX public 5-minute open-interest history when available"}
 
 def market_data():
  errors=[]
