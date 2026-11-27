@@ -39,7 +39,7 @@ button{background:#f5b942;color:#111;border:0;padding:12px 18px;border-radius:8p
 <body>
 
 <h1>₿ BTC Signal Pro Elite</h1>
-<small>BINANCE FUTURES • MANUAL TRADING ONLY • PUBLIC DATA</small>
+<small>BTC PERPETUAL FUTURES • MANUAL TRADING ONLY • PUBLIC DATA • SOURCE SHOWN BELOW</small>
 
 <div class="card">
 <small>LIVE BTC/USDT PRICE</small>
@@ -1749,6 +1749,30 @@ function calcRisk(){
  setText("riskWarning",notional>cap*lev?"WARNING: Position exceeds selected leverage capacity. Reduce size.":"Leverage capped at 10x. Loss estimate excludes fees, slippage and funding.");
 }
 ["riskCapital","riskPct","riskEntry","riskStop","riskLev"].forEach(id=>$(id).addEventListener("input",calcRisk));
+async function refreshFromPublishedFuturesSnapshot(){
+ const r=await fetch("./market_data.json?ts="+Date.now(),{cache:"no-store"});
+ if(!r.ok)throw Error("Published Futures snapshot HTTP "+r.status);
+ const d=await r.json(),names=[["5m","5M"],["15m","15M"],["1h","1H"],["4h","4H"],["1d","1D"]];
+ const frames=[];
+ for(const [tf,label] of names){
+  const rows=d.timeframes&&d.timeframes[tf]&&d.timeframes[tf].candles||[];
+  if(!rows.length)continue;
+  const c=rows.map(x=>Number(x.close)),e9=ema(c,9).at(-1),e21=ema(c,21).at(-1);
+  const e50=ema(c,50).at(-1),e200=ema(c,200).at(-1);
+  frames.push({name:label,trend:e9>e21&&e50>e200?"BULLISH":e9<e21&&e50<e200?"BEARISH":"MIXED",
+   rsi:rsi(c),e9,e21,e50,e200,macd:macd(c).h});
+ }
+ M.frames=frames;
+ const mark=d.feeds&&d.feeds.mark_price_funding&&d.feeds.mark_price_funding.data||{};
+ const latest=frames.length?d.timeframes["5m"].candles.at(-1):null;
+ M.price=Number(mark.markPrice||mark.lastPrice||(latest&&latest.close)||0);
+ if(M.price)setText("price","$"+fmt(M.price));
+ setText("updated","Published "+(d.exchange||"perpetual")+" Futures snapshot • "+(d.generated_at?new Date(d.generated_at).toLocaleTimeString():"time unavailable"));
+ $("frames").innerHTML=frames.map(x=>'<tr><td>'+x.name+'</td><td class="'+(x.trend==="BULLISH"?"green":x.trend==="BEARISH"?"red":"yellow")+'">'+x.trend+'</td><td>'+x.rsi.toFixed(1)+'</td><td>'+fmt(x.e50)+'</td></tr>').join("");
+ setText("status","Browser exchange API unavailable • displaying last published "+(d.exchange||"perpetual")+" Futures data");
+ await Promise.allSettled([loadHybridSignal(true),loadDerivativesIntelligence(true),
+  loadPredictionPerformance(true),loadPaperTrading(true),loadExchangeComparison(true),loadAdvancedIntelligence(true)]);
+}
 async function refreshAll(){
 if(busy)return;
 busy=true;
@@ -1776,7 +1800,8 @@ if(Date.now()-derivativesLastLoad>60000)loadDerivativesIntelligence();
 setText("status","Data updated • "+new Date().toLocaleTimeString());
 
 }catch(e){
-setText("status","Some data unavailable: "+e.message+". Retry shortly.");
+ try{await refreshFromPublishedFuturesSnapshot();}
+ catch(fallbackError){setText("status","Live exchange and published Futures data unavailable: "+e.message+" / "+fallbackError.message);}
 }finally{
 busy=false;
 }
