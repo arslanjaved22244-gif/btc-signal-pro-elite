@@ -160,6 +160,9 @@ button{background:#f5b942;color:#111;border:0;padding:12px 18px;border-radius:8p
 <p id="liqAlertText">Listening for Binance liquidation snapshots.</p>
 <div id="liqEvents">No events received.</div>
 <button onclick="clearLiquidationHistory()">CLEAR LIQUIDATION LOG</button>
+<div class="metric"><span>Server-side Binance sample</span><b id="liqServerStatus">CHECKING</b></div>
+<div class="metric"><span>Sampled long / short liquidation</span><b id="liqServerVolumes">-- / --</b></div>
+<p class="note" id="liqServerNote">20-second scheduled sample; this is a backup snapshot, not continuous coverage.</p>
 <p class="note">Binance force-order stream reports snapshots, not every liquidation.</p>
 </div>
 
@@ -1418,6 +1421,24 @@ async function loadAdvancedIntelligence(force=false){
  finally{advancedAiBusy=false;}
 }
 
+let liquidationSnapshotBusy=false,liquidationSnapshotLast=0;
+async function loadLiquidationSnapshot(force=false){
+ if(liquidationSnapshotBusy||(!force&&Date.now()-liquidationSnapshotLast<60000))return;
+ liquidationSnapshotBusy=true;
+ try{
+  const r=await fetch("./liquidation_data.json?ts="+Date.now(),{cache:"no-store"});
+  if(!r.ok)throw Error("No server sample yet");
+  const d=await r.json();
+  const ok=!!d.connected;
+  setText("liqServerStatus",ok?(d.event_count+" events / connected"):"UNAVAILABLE");
+  $("liqServerStatus").className=ok?"green":"red";
+  setText("liqServerVolumes","$"+fmt(d.long_liquidation_notional_usdt||0)+" / $"+fmt(d.short_liquidation_notional_usdt||0));
+  setText("liqServerNote","Sample "+(d.sample_window_seconds||0)+"s • "+(d.generated_at?new Date(d.generated_at).toLocaleString():"time unknown")+" • "+(d.continuous?"continuous":"not continuous")+" • "+(d.warning||""));
+  liquidationSnapshotLast=Date.now();
+ }catch(e){setText("liqServerStatus","WAITING");setText("liqServerNote",e.message);}
+ finally{liquidationSnapshotBusy=false;}
+}
+
 let performanceLastLoad=0,performanceBusy=false;
 async function loadPredictionPerformance(force=false){
  if(performanceBusy||(!force&&Date.now()-performanceLastLoad<60000))return;
@@ -1584,6 +1605,7 @@ renderLiveCVD();
 loadAdvancedIntelligence();
 loadDerivativesIntelligence();
 loadPredictionPerformance();
+loadLiquidationSnapshot();
 connectLiq();
 connectWhales();
 refreshAll();
@@ -1591,6 +1613,7 @@ refreshAll();
 setInterval(refreshAll,30000);
 setInterval(loadDerivativesIntelligence,60000);
 setInterval(loadPredictionPerformance,60000);
+setInterval(loadLiquidationSnapshot,60000);
 setInterval(loadAdvancedIntelligence,300000);
 setInterval(renderLiq,10000);
 setInterval(renderWhales,5000);
