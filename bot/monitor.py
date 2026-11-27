@@ -110,11 +110,11 @@ def update_prediction_performance():
  path="prediction_performance.json"
  try:
   with open(path,encoding="utf-8") as f: data=json.load(f)
- except Exception: data={"source":"Binance USD-M Futures ticker","records":[],"updated_at":None}
+ except Exception: data={"source":"OKX BTC-USDT-SWAP public ticker","records":[],"updated_at":None}
  records=data.get("records",[])
  try:
-  ai=get_json("https://fapi.binance.com/fapi/v1/ticker/price?symbol=BTCUSDT")
-  price=float(ai["price"])
+  ai=get_json("https://www.okx.com/api/v5/market/ticker?instId=BTC-USDT-SWAP")
+  price=float(ai["data"][0]["last"])
   ai_result=get_json("https://raw.githubusercontent.com/arslanjaved22244-gif/btc-signal-pro-elite/main/ai_result.json") if False else None
   req=urllib.request.Request("https://raw.githubusercontent.com/arslanjaved22244-gif/btc-signal-pro-elite/main/ai_result.json",headers={"User-Agent":"BTC-Signal-Pro-Elite/5.0"})
   with urllib.request.urlopen(req,timeout=15) as r: model=json.loads(r.read().decode())
@@ -143,8 +143,8 @@ def update_prediction_performance():
   except Exception: continue
   if current<due: continue
   try:
-   req=urllib.request.Request("https://fapi.binance.com/fapi/v1/ticker/price?symbol=BTCUSDT",headers={"User-Agent":"BTC-Signal-Pro-Elite/5.0"})
-   with urllib.request.urlopen(req,timeout=12) as r: end_price=float(json.loads(r.read().decode())["price"])
+   end_data=get_json("https://www.okx.com/api/v5/market/ticker?instId=BTC-USDT-SWAP")
+   end_price=float(end_data["data"][0]["last"])
    start=float(item["reference_price"]); change=(end_price-start)/start*100 if start else 0
    item["realized_change_pct"]=round(change,5);item["evaluated_at"]=current.isoformat()
    if item["direction"]=="LONG": item["correct"]=change>0;item["outcome"]="UP" if change>0 else "DOWN_OR_FLAT"
@@ -162,7 +162,7 @@ def update_prediction_performance():
   stats[horizon]={"evaluated":len(group),"directional_calls":len(directional),"correct":wins,
    "directional_accuracy_pct":round(100*wins/len(directional),2) if directional else None,
    "wait_abstentions":sum(1 for x in group if x.get("direction")=="WAIT")}
- data={"source":"Binance USD-M Futures public ticker; directional close comparison only",
+ data={"source":"OKX BTC-USDT-SWAP public ticker; directional close comparison only",
   "updated_at":current.isoformat(),"model_generated_at":generated,"current_price":price,
   "stats":stats,"records":records,
   "limitations":"Not a trade P&L, win-rate guarantee, or stop/target simulation. LONG/SHORT accuracy is directional only; WAIT is counted as abstention."}
