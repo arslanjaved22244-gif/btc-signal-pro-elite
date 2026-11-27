@@ -22,9 +22,9 @@
   ],
   "signal": "WAIT",
   "class_scores": {
-    "SHORT": 21.05,
-    "WAIT": 9.29,
-    "LONG": 69.66
+    "SHORT": 21.16,
+    "WAIT": 8.05,
+    "LONG": 70.79
   },
   "individual_model_votes": {
     "full_history_logistic": "LONG",
@@ -34,29 +34,29 @@
   },
   "individual_model_scores": {
     "full_history_logistic": {
-      "SHORT": 20.03,
-      "WAIT": 13.25,
-      "LONG": 66.72
+      "SHORT": 21.24,
+      "WAIT": 9.88,
+      "LONG": 68.89
     },
     "recent_regime_logistic": {
-      "SHORT": 19.98,
-      "WAIT": 4.28,
-      "LONG": 75.74
+      "SHORT": 18.7,
+      "WAIT": 3.83,
+      "LONG": 77.47
     },
     "nearest_centroid": {
-      "SHORT": 0.15,
-      "WAIT": 0.01,
-      "LONG": 99.85
+      "SHORT": 0.12,
+      "WAIT": 0.0,
+      "LONG": 99.88
     },
     "decision_stumps": {
-      "SHORT": 40.07,
-      "WAIT": 15.18,
-      "LONG": 44.75
+      "SHORT": 39.87,
+      "WAIT": 15.29,
+      "LONG": 44.85
     }
   },
-  "confidence_score": 69.66,
-  "confidence_margin": 48.61,
-  "wait_probability_threshold": 0.25,
+  "confidence_score": 70.79,
+  "confidence_margin": 49.63,
+  "wait_probability_threshold": 0.2,
   "ensemble_configuration": {
     "models": [
       "full_history_logistic",
@@ -116,55 +116,55 @@
     "note": "This safely adapts ensemble blending; it does not retrain the underlying neural-network weights."
   },
   "walk_forward_metrics": {
-    "accuracy": 36.73,
-    "macro_precision": 45.04,
-    "macro_recall": 39.86,
-    "macro_f1": 35.43,
+    "accuracy": 35.71,
+    "macro_precision": 46.63,
+    "macro_recall": 38.3,
+    "macro_f1": 34.54,
     "per_class": {
       "SHORT": {
-        "precision": 70.37,
-        "recall": 38.0,
-        "f1": 49.35,
+        "precision": 80.0,
+        "recall": 32.0,
+        "f1": 45.71,
         "support": 50
       },
       "WAIT": {
-        "precision": 10.2,
-        "recall": 50.0,
-        "f1": 16.95,
-        "support": 10
+        "precision": 8.16,
+        "recall": 44.44,
+        "f1": 13.79,
+        "support": 9
       },
       "LONG": {
-        "precision": 54.55,
-        "recall": 31.58,
-        "f1": 40.0,
-        "support": 38
+        "precision": 51.72,
+        "recall": 38.46,
+        "f1": 44.12,
+        "support": 39
       }
     },
     "confusion_matrix": [
       [
-        19,
-        22,
-        9
-      ],
-      [
-        4,
-        5,
-        1
-      ],
-      [
-        4,
+        16,
         22,
         12
+      ],
+      [
+        3,
+        4,
+        2
+      ],
+      [
+        1,
+        23,
+        15
       ]
     ],
-    "majority_class_baseline_pct": 38.78,
+    "majority_class_baseline_pct": 39.8,
     "balanced_random_baseline_pct": 33.33,
     "regime_breakdown": {
       "BULL_TREND": {
-        "accuracy": 9.76,
-        "macro_precision": 3.25,
+        "accuracy": 7.69,
+        "macro_precision": 2.56,
         "macro_recall": 33.33,
-        "macro_f1": 5.93,
+        "macro_f1": 4.76,
         "per_class": {
           "SHORT": {
             "precision": 0.0,
@@ -173,16 +173,16 @@
             "support": 19
           },
           "WAIT": {
-            "precision": 9.76,
+            "precision": 7.69,
             "recall": 100.0,
-            "f1": 17.78,
-            "support": 4
+            "f1": 14.29,
+            "support": 3
           },
           "LONG": {
             "precision": 0.0,
             "recall": 0.0,
             "f1": 0.0,
-            "support": 18
+            "support": 17
           }
         },
         "confusion_matrix": [
@@ -193,21 +193,21 @@
           ],
           [
             0,
-            4,
+            3,
             0
           ],
           [
             0,
-            18,
+            17,
             0
           ]
         ]
       },
       "BEAR_TREND": {
-        "accuracy": 83.33,
-        "macro_precision": 27.78,
+        "accuracy": 87.5,
+        "macro_precision": 29.17,
         "macro_recall": 33.33,
-        "macro_f1": 30.3,
+        "macro_f1": 31.11,
         "per_class": {
           "SHORT": {
             "precision": 0.0,
@@ -222,10 +222,10 @@
             "support": 0
           },
           "LONG": {
-            "precision": 83.33,
+            "precision": 87.5,
             "recall": 100.0,
-            "f1": 90.91,
-            "support": 5
+            "f1": 93.33,
+            "support": 7
           }
         },
         "confusion_matrix": [
@@ -242,50 +242,50 @@
           [
             0,
             0,
-            5
+            7
           ]
         ]
       },
       "TRANSITION": {
-        "accuracy": 52.94,
-        "macro_precision": 42.21,
-        "macro_recall": 42.22,
-        "macro_f1": 42.04,
+        "accuracy": 49.02,
+        "macro_precision": 42.7,
+        "macro_recall": 41.11,
+        "macro_f1": 40.31,
         "per_class": {
           "SHORT": {
-            "precision": 70.37,
-            "recall": 63.33,
-            "f1": 66.67,
+            "precision": 80.0,
+            "recall": 53.33,
+            "f1": 64.0,
             "support": 30
           },
           "WAIT": {
-            "precision": 12.5,
+            "precision": 10.0,
             "recall": 16.67,
-            "f1": 14.29,
+            "f1": 12.5,
             "support": 6
           },
           "LONG": {
-            "precision": 43.75,
-            "recall": 46.67,
-            "f1": 45.16,
+            "precision": 38.1,
+            "recall": 53.33,
+            "f1": 44.44,
             "support": 15
           }
         },
         "confusion_matrix": [
           [
-            19,
+            16,
             3,
-            8
+            11
           ],
           [
-            4,
+            3,
             1,
-            1
+            2
           ],
           [
-            4,
-            4,
-            7
+            1,
+            6,
+            8
           ]
         ]
       }
@@ -295,130 +295,130 @@
       "trades": 17,
       "round_trip_cost_assumption_pct": 0.14,
       "cost_assumption": "0.05% taker fee + 0.02% slippage per side; funding excluded",
-      "gross_win_rate_pct": 64.71,
+      "gross_win_rate_pct": 70.59,
       "estimated_net_win_rate_pct": 35.29,
-      "average_net_trade_return_pct": -0.22504,
-      "compounded_net_return_pct": -3.7941,
-      "net_max_drawdown_pct": 4.8316,
+      "average_net_trade_return_pct": 0.00173,
+      "compounded_net_return_pct": -0.0076,
+      "net_max_drawdown_pct": 1.817,
       "trade_sample": [
         {
           "fold": 3,
-          "row_index": 246,
+          "row_index": 245,
           "side": "SHORT",
-          "gross_return_pct": -0.29867569244361736,
-          "estimated_net_return_pct": -0.43867569244361737
+          "gross_return_pct": 0.03358023730034576,
+          "estimated_net_return_pct": -0.10641976269965425
         },
         {
           "fold": 3,
-          "row_index": 249,
+          "row_index": 248,
           "side": "SHORT",
-          "gross_return_pct": 0.39785801148719546,
-          "estimated_net_return_pct": 0.25785801148719545
+          "gross_return_pct": -0.010710338884867276,
+          "estimated_net_return_pct": -0.1507103388848673
         },
         {
           "fold": 3,
-          "row_index": 252,
+          "row_index": 251,
           "side": "SHORT",
-          "gross_return_pct": -0.26044545602341707,
-          "estimated_net_return_pct": -0.4004454560234171
+          "gross_return_pct": 0.04251224660998254,
+          "estimated_net_return_pct": -0.09748775339001747
         },
         {
           "fold": 3,
-          "row_index": 255,
+          "row_index": 254,
           "side": "SHORT",
-          "gross_return_pct": 0.14885633579913016,
-          "estimated_net_return_pct": 0.008856335799130144
+          "gross_return_pct": 0.07548321431876115,
+          "estimated_net_return_pct": -0.06451678568123886
         },
         {
           "fold": 3,
-          "row_index": 258,
-          "side": "SHORT",
-          "gross_return_pct": 0.029880607485743838,
-          "estimated_net_return_pct": -0.11011939251425618
-        },
-        {
-          "fold": 3,
-          "row_index": 261,
-          "side": "SHORT",
-          "gross_return_pct": 0.1385640025990953,
-          "estimated_net_return_pct": -0.0014359974009047205
-        },
-        {
-          "fold": 3,
-          "row_index": 264,
+          "row_index": 257,
           "side": "LONG",
-          "gross_return_pct": 0.12883348759733515,
-          "estimated_net_return_pct": -0.011166512402664863
+          "gross_return_pct": -0.059457474909263563,
+          "estimated_net_return_pct": -0.19945747490926358
         },
         {
           "fold": 3,
-          "row_index": 267,
+          "row_index": 260,
+          "side": "LONG",
+          "gross_return_pct": 0.14645643693107502,
+          "estimated_net_return_pct": 0.006456436931075005
+        },
+        {
+          "fold": 3,
+          "row_index": 263,
           "side": "SHORT",
-          "gross_return_pct": 0.29860008870274957,
-          "estimated_net_return_pct": 0.15860008870274955
+          "gross_return_pct": 0.22577467006220653,
+          "estimated_net_return_pct": 0.08577467006220652
         },
         {
           "fold": 3,
-          "row_index": 270,
+          "row_index": 266,
           "side": "LONG",
-          "gross_return_pct": -0.04171412463072066,
-          "estimated_net_return_pct": -0.18171412463072067
+          "gross_return_pct": -0.07499471295406845,
+          "estimated_net_return_pct": -0.21499471295406847
         },
         {
           "fold": 3,
-          "row_index": 273,
+          "row_index": 269,
           "side": "LONG",
-          "gross_return_pct": 0.25430152662422323,
-          "estimated_net_return_pct": 0.11430152662422322
+          "gross_return_pct": -0.050468132630254736,
+          "estimated_net_return_pct": -0.19046813263025475
         },
         {
           "fold": 3,
-          "row_index": 276,
+          "row_index": 272,
+          "side": "LONG",
+          "gross_return_pct": 0.06189540003160854,
+          "estimated_net_return_pct": -0.07810459996839147
+        },
+        {
+          "fold": 3,
+          "row_index": 275,
+          "side": "LONG",
+          "gross_return_pct": 0.04199772430935056,
+          "estimated_net_return_pct": -0.09800227569064945
+        },
+        {
+          "fold": 3,
+          "row_index": 278,
           "side": "SHORT",
-          "gross_return_pct": 0.0905683693628423,
-          "estimated_net_return_pct": -0.04943163063715772
+          "gross_return_pct": 0.10592651531052821,
+          "estimated_net_return_pct": -0.0340734846894718
         },
         {
           "fold": 3,
-          "row_index": 279,
+          "row_index": 281,
           "side": "SHORT",
-          "gross_return_pct": 0.12173528109783449,
-          "estimated_net_return_pct": -0.018264718902165522
+          "gross_return_pct": 1.9585422347318748,
+          "estimated_net_return_pct": 1.8185422347318747
         },
         {
           "fold": 3,
-          "row_index": 282,
+          "row_index": 284,
           "side": "LONG",
-          "gross_return_pct": -0.9475313671174823,
-          "estimated_net_return_pct": -1.0875313671174824
+          "gross_return_pct": -1.6770171888446872,
+          "estimated_net_return_pct": -1.8170171888446873
         },
         {
           "fold": 3,
-          "row_index": 285,
+          "row_index": 287,
           "side": "LONG",
-          "gross_return_pct": -2.1517227765119995,
-          "estimated_net_return_pct": -2.2917227765119996
+          "gross_return_pct": 0.7576781658916287,
+          "estimated_net_return_pct": 0.6176781658916287
         },
         {
           "fold": 3,
-          "row_index": 288,
+          "row_index": 290,
           "side": "LONG",
-          "gross_return_pct": -0.7224216339808742,
-          "estimated_net_return_pct": -0.8624216339808742
+          "gross_return_pct": 0.2547409658355315,
+          "estimated_net_return_pct": 0.1147409658355315
         },
         {
           "fold": 3,
-          "row_index": 291,
+          "row_index": 293,
           "side": "LONG",
-          "gross_return_pct": 0.8872022055586015,
-          "estimated_net_return_pct": 0.7472022055586015
-        },
-        {
-          "fold": 3,
-          "row_index": 294,
-          "side": "LONG",
-          "gross_return_pct": 0.480405272708051,
-          "estimated_net_return_pct": 0.340405272708051
+          "gross_return_pct": 0.5774400270319724,
+          "estimated_net_return_pct": 0.4374400270319724
         }
       ],
       "warning": "Illustrative costs only; real spread, funding, fills and exchange fees may differ."
@@ -454,10 +454,10 @@
         "provider": "Deribit BTC perpetual"
       },
       "taker_flow": {
-        "buy_amount_contract_units": 1650190.0,
-        "sell_amount_contract_units": 1666190.0,
-        "buy_sell_ratio": 0.9904,
-        "buy_imbalance_pct": -0.48,
+        "buy_amount_contract_units": 1829350.0,
+        "sell_amount_contract_units": 1811980.0,
+        "buy_sell_ratio": 1.0096,
+        "buy_imbalance_pct": 0.48,
         "bias": "BALANCED",
         "samples": 1000,
         "window": "latest 1000 Deribit BTC perpetual trades",
@@ -465,10 +465,10 @@
         "note": "Cross-exchange contract-amount flow proxy, not Binance BTC spot CVD."
       },
       "orderbook_snapshot": {
-        "bid_quantity_contract_units_top5": 162350.0,
-        "ask_quantity_contract_units_top5": 38710.0,
-        "bid_ask_imbalance_pct": 61.49,
-        "bias": "BID_HEAVY",
+        "bid_quantity_contract_units_top5": 12310.0,
+        "ask_quantity_contract_units_top5": 218570.0,
+        "bid_ask_imbalance_pct": -89.34,
+        "bias": "ASK_HEAVY",
         "provider": "Deribit BTC perpetual",
         "note": "Cross-exchange snapshot; not Binance order-book depth."
       },
@@ -499,7 +499,7 @@
       "bybit_orderbook: HTTP Error 403: Forbidden"
     ],
     "available_context_fields": 4,
-    "retrieved_at": "2026-11-27T15:44:01.279888+00:00"
+    "retrieved_at": "2026-11-27T15:45:30.479404+00:00"
   },
   "macro_news_risk": {
     "status": "HIGH_RISK_EVENT",
@@ -517,7 +517,7 @@
         "domain": "Crypto News",
         "url": "https://news.google.com/rss/articles/CBMia0FVX3lxTFBuR1JNRnVtbmhqNTNNclhKdmU1VXNsTEJDa2U3R1M3VGdwbEhOVjN1TTdOY25PRVgtU2FfZ2toMmFoNXFCRnA5RkJYWFBCc2h3bTdZUnYyMm5WUzh1Qlk3M0RFcGE2OVRydktj?oc=5",
         "published_at": "2026-11-27T15:29:53+00:00",
-        "age_minutes": 14.3,
+        "age_minutes": 15.8,
         "matched_terms": [
           "etf"
         ],
@@ -528,7 +528,7 @@
         "domain": "Coinpaper",
         "url": "https://news.google.com/rss/articles/CBMipwFBVV95cUxObGpYUHltaXBMTzJkOFdXWUllM2xCSVJrWmdaU1g4SmRKTEJObkxmbllYUW9qZU5sQ1NiQWJqLWRsbUVPOGZORjRPUU5ORTlLSDZfZHlacmlraUJDSUVGSTdXWlNJQ1JKU2owbFlVOF8wY0M2S1hrRmotQmpScnB5U0dybHVPNUd5QXE3TkYzdmtuaWhIaFJtV25TaUJpMUVQazYxNWJaYw?oc=5",
         "published_at": "2026-11-27T15:25:42+00:00",
-        "age_minutes": 18.4,
+        "age_minutes": 19.9,
         "matched_terms": [
           "etf"
         ],
@@ -539,7 +539,7 @@
         "domain": "Yahoo Finance",
         "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxQZHhMQlhyVHNFTGFRRHNBQUtSRENFeDJDdDBfaGFOd0k3WmI4ZEtZc2VwRmNEcHFqT2pLMzc5RW1NYUdPbUo4WnRJM1hyMVdpVXZMMzBKUTJ3WDk2azhLMkdKSHQ4ZWlIMDgzVVY5a1pNbEZ4VDItazhpS3hPSEdTRmxZVUVUVE1tYzgyVnZJWHRXWTA1UFVwSmF3LVBiQQ?oc=5",
         "published_at": "2026-11-27T15:15:24+00:00",
-        "age_minutes": 28.7,
+        "age_minutes": 30.2,
         "matched_terms": [
           "etf",
           "bitcoin reserve"
@@ -551,7 +551,7 @@
         "domain": "Bitcoin Magazine",
         "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxNaGVhSTBZRE00VWk2dEozU2kyb2RXMTFYWFBIU1dpcTRkb2Jkc1F5YVF1d293SjBWU1N0Z3ZsTEFoanRhU01IYkxPamtoXzdUS2xrVkJBZWViUmVXaXkxNVdMQlM4WUxVNnBybGcxekNaQXRTa09CdkctdE9sdVB4MVJhRkVCQTZQRUQ0dEVib1ZaT3lobDJEdmFOM3JHRUk5ZkVZbXdPT0trRDJZWC02SVAtRQ?oc=5",
         "published_at": "2026-11-27T14:45:09+00:00",
-        "age_minutes": 59.0,
+        "age_minutes": 60.5,
         "matched_terms": [
           "fed",
           "inflation",
@@ -564,7 +564,7 @@
         "domain": "CryptoRank",
         "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxPWm8zUjlKOExoYW1RM1B2bExyMFluQWU5aHYwXy1GeFlqVEFZbzB6blFFelo1Wnp2YWJlQjJGLXZLR0YxeFQ1RUlnX3pPWkdfYmVzQ29tSUsyd3BtMUFDYldLS3ROQ0pBOVBUZW9OWXJ0TmlCM0ZLMzlPSVk0NlBmUGRfWXF4UUhnUm5zSVdRNlY?oc=5",
         "published_at": "2026-11-27T14:28:54+00:00",
-        "age_minutes": 75.2,
+        "age_minutes": 76.7,
         "matched_terms": [
           "etf"
         ],
@@ -575,7 +575,7 @@
         "domain": "TradingView",
         "url": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxPbV81M2J1Yk54QTJTRV9WRzF4OVh4Z0RhWVI3U3RJaTFKSUlLNHJjaHhsNGxHSG1LaEFxV25PMFVnOERoUmF2bm55Q0dXajlfYlV2TThCQzM3T2ZGZ21adDRRdDl2cUdvek1vOUVuVjdxNWxqTW5NUGVHUXNYbnZBc2Q0cVA1ZXpybFNyTURuODQ1TFVWck5pMWUzSkVmNFZ5Y3hKS0t6UzcyY095ZzU1VVNOd2ZSNGpqMnYyNUNXbnpVQ0dhMHpSdEEyaHYzblJhRUE?oc=5",
         "published_at": "2026-11-27T14:24:52+00:00",
-        "age_minutes": 79.3,
+        "age_minutes": 80.8,
         "matched_terms": [
           "etf"
         ],
@@ -586,7 +586,18 @@
         "domain": "Crypto Briefing",
         "url": "https://news.google.com/rss/articles/CBMigAFBVV95cUxPTWp2bE5Ha0w1N29HejE0RTN3TU9RZFp6U1djOFRLYnl0Y1lXU3FuY0RpVGloRGhHeXZWanZDQVdfM0pueGxIV1ZSVm1qMTh6dXJqcDM3RDNZLUx3bE83Rlpmb3JRSmp5VGNIOHBaT2I3S2pBMk5lT2RkYURnNTdnOQ?oc=5",
         "published_at": "2026-11-27T14:24:52+00:00",
-        "age_minutes": 79.3,
+        "age_minutes": 80.8,
+        "matched_terms": [
+          "etf"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "U.S. Spot Bitcoin ETFs Record $5.39 Billion Outflows in November 2026 - KuCoin",
+        "domain": "KuCoin",
+        "url": "https://news.google.com/rss/articles/CBMiowFBVV95cUxNLVRSTEh1bFVNcUkwTFByd2YtbzItMnB6dXdhZkFxejc5ZW95Wk14dkF4M0F3ZVhZbVM4cnpFeGVuTkxVaUJyVU0xaFRsa3BxR2VnUjJHVWRDS0RtOTFoT1hEOWpQTFV3TDhXMXE1UEFFb0RpbmJ0TnhzdUZ3NmdtVUxvVGVLTmZaRnJ6eWNvYkRHcmpuSnRXdmw4QWlwR3A2eXM4?oc=5",
+        "published_at": "2026-11-27T14:10:46+00:00",
+        "age_minutes": 94.9,
         "matched_terms": [
           "etf"
         ],
@@ -597,7 +608,7 @@
         "domain": "CCN.com",
         "url": "https://news.google.com/rss/articles/CBMikAFBVV95cUxQdUtOTm1BTEVQVkxRYm8tOF95UVdBZnBIejcyb2YwOHRPQWlLTllpRWU5cjBQdEVPTHFyYXdCZUFDa3l0Q1pzOWlWN0dOcmxBYTRucXducThveC12WWFMV3dDbGRHdWdoVlE5R2RKTmVCX3JDSXphNmw3d2c5YkZQMWxVUkkwN1ZYZ1JJcnllSDA?oc=5",
         "published_at": "2026-11-27T14:09:20+00:00",
-        "age_minutes": 94.8,
+        "age_minutes": 96.3,
         "matched_terms": [
           "war",
           "tariff",
@@ -610,7 +621,18 @@
         "domain": "FinanceX Magazine",
         "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxOQXZVLVFURG9MaHA4a2MzXzdETTZGc1BuaG1SdXo4Z1UxM2VIYjdXTWpCQjVXNW5BMXBZbDRhNTBsdzZQNVpXSkR3cWFmM0dVaFgyOFJtcGk3Rmw3a2VfT1VLQ1FkUmsxRTlyZ2pPSmVrb2t6cWh4amROUlplcjBIUVp4SWJTN01QQjVoZ3E0Ym9pc01IQWp5SEpoeWdOUQ?oc=5",
         "published_at": "2026-11-27T13:21:54+00:00",
-        "age_minutes": 142.2,
+        "age_minutes": 143.7,
+        "matched_terms": [
+          "etf"
+        ],
+        "provider": "Google News RSS"
+      },
+      {
+        "title": "Bitcoin Surpasses $61,000 Amid Record ETF Outflows - ForkLog",
+        "domain": "ForkLog",
+        "url": "https://news.google.com/rss/articles/CBMifEFVX3lxTE0yNGhBSjlOQ1d6Y2JKZHBBS2hfd0FiZ25WOF9LeFZvbi1sb0ZGaEQySmxLX1ZqNkwyRWtCSG1UZ0tjbG95VWV5RE0yZm9wZ2lPdU92SUIzZHh6Si16VGNzeFV4TlRoRkNVcHI1NkFaMGNKNlAxdDdDOXFmYzY?oc=5",
+        "published_at": "2026-11-27T13:00:00+00:00",
+        "age_minutes": 165.6,
         "matched_terms": [
           "etf"
         ],
@@ -621,7 +643,7 @@
         "domain": "Crypto Briefing",
         "url": "https://news.google.com/rss/articles/CBMif0FVX3lxTE15WW4xc0ZGLVFjSEVkUXJneUVMelJDa0FzU0txNWNnanRTdHc3TVp0RHhma2Zwcm1Ka2dWZGZfTkpmQ2tjZFFXdjVYWnc3aTE2LUd5WWpYcnZOUUQ1UFRMSVNLdXRsMFhQTjl5a2lwclFNY0RMWUtsRTlRWTFyX2M?oc=5",
         "published_at": "2026-11-27T12:25:01+00:00",
-        "age_minutes": 199.1,
+        "age_minutes": 200.6,
         "matched_terms": [
           "trump"
         ],
@@ -632,7 +654,7 @@
         "domain": "Crypto Briefing",
         "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE95VHNLcVhVVjlsdVNUUjQ2eVhqUDZrNk9sM2ZBTzB4RFJiSm5DWENaZ3ZoZHRzUWxJUjU2bG4wUGw3bTExZ1Q4bmZLeWxQMFVvb0wyTFdXejNHVUV2U2RaaTBhOHVCTXUwRGhpUw?oc=5",
         "published_at": "2026-11-27T12:11:57+00:00",
-        "age_minutes": 212.2,
+        "age_minutes": 213.7,
         "matched_terms": [
           "trump"
         ],
@@ -643,7 +665,7 @@
         "domain": "Howl.Link",
         "url": "https://news.google.com/rss/articles/CBMiO0FVX3lxTE1NREUtZy1JMjZ3MFA1VmwwVDhmN3dNVk94U0c0S3V5djUwQmlRanhsM2tKMmVYZ1pDSXBZ?oc=5",
         "published_at": "2026-11-27T12:03:57+00:00",
-        "age_minutes": 220.2,
+        "age_minutes": 221.7,
         "matched_terms": [
           "etf"
         ],
@@ -654,7 +676,7 @@
         "domain": "BeInCrypto",
         "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE9sWllBNXBIRW53VFk3bXJQS0NEd0c0M0wydXBhbTVxcV9NUHlRcUYzTkFMTEpZVzFmc3p2aUtXLXQ1elczeUlkUTB2VExjT2V3bVVJN2R2QU81dklPOGoyVFJ0Ml9haGd2VXNBMzNpZ2ZIdw?oc=5",
         "published_at": "2026-11-27T11:49:29+00:00",
-        "age_minutes": 234.7,
+        "age_minutes": 236.2,
         "matched_terms": [
           "war",
           "fed"
@@ -666,7 +688,7 @@
         "domain": "Crypto Briefing",
         "url": "https://news.google.com/rss/articles/CBMiekFVX3lxTFBTal8zSmR2dVdnSy1jQS1oRk5zNWhqeUJOdDdPRUZNSXV6OXZQbnVVWUU3UnB3WWJKYWNKOGc5VHR1UjgybHd3U1U0VFNoa0RUUzdDNVA1TlpDSGQ1RlFiQnNRQVpiTlFBVHA4Q0hKdV9LT1FCanNqWTFB?oc=5",
         "published_at": "2026-11-27T11:25:47+00:00",
-        "age_minutes": 258.4,
+        "age_minutes": 259.9,
         "matched_terms": [
           "etf"
         ],
@@ -677,7 +699,7 @@
         "domain": "lincolnjournal.com",
         "url": "https://news.google.com/rss/articles/CBMiqAJBVV95cUxOU3F0aG92RU1qUm42LUIwYVVrYWdrVmVjZTZCTVRjWjVXSmZqR0NNdWZIVmw5bVI2dWpkOC16WTIyRlFTSWRseTI0bWl5ZHhLT292NFVHRHI4RkZTQk1KeFJNeWlmVkxHUGw3ZHhzc081c29vLUdnbVdfamdfalFGUHpZVmJPMWM1WUZzTmswbXZMaU1uSTg5WlF3Wk9GZmVHOEVVX1hJV2JtZ2d0VUtGZWtRMUVLTnNUVlFlNjN2Sm8wRjNva0diUWI5a2F5d3FSOUVpbGdJT0otdEVEcDJWM3dsdlhpa2t2NnZsdGhjRmdwWFRSZi1FTE8yaGVEeFQ2Z3F1eEJXaUxndTFhOTM5TVlndEplSnJaX2JDZmJfY0FQakxTRlgyUA?oc=5",
         "published_at": "2026-11-27T11:23:31+00:00",
-        "age_minutes": 260.6,
+        "age_minutes": 262.1,
         "matched_terms": [
           "etf"
         ],
@@ -688,7 +710,7 @@
         "domain": "GlobeNewswire",
         "url": "https://news.google.com/rss/articles/CBMi9AFBVV95cUxNZ0lzVWNnenozRjhadWhVZUE1bWhMODRJXzJwWEtIdWRiV3VSUmRsZ2JQT1FIZ04tQnZXS2w2VTRtMzc0NUotQXI0Qm1BU04zMWU0d0xYaHU1bHpfY2RMelRNelEzdmRiQUtxU19LTmJET3FVYnpMNnZYVnFDZUxfTmVYNXE2MkFjaXB5SVc4UWVJcW84VE5KMmgyN0t2SFZaUnVKaER3RUZJSllsSjhrMkMzaGFvR2FmZWtIVG1WbG5BQ2tqS0tBcWM5TXFNcTBiY0VwbmMtUnU1dDdJVmM3b3JrLXZWZlVwSFdjdi1TbU1IaFIz?oc=5",
         "published_at": "2026-11-27T11:23:31+00:00",
-        "age_minutes": 260.6,
+        "age_minutes": 262.1,
         "matched_terms": [
           "etf"
         ],
@@ -699,7 +721,7 @@
         "domain": "Cryptonews",
         "url": "https://news.google.com/rss/articles/CBMickFVX3lxTE1kdlpaVE9zVG93cVBzeXpKTkdsMzlVV3JPb1BvcnpoVldxa3JWZXJfZzUzUlgwWGw1UnRPclpzWGdDYXJ2T0RiQjhtbEV5UDhWczk1c2NPdmdhbjQ2Wk9ScFF3OG1OVFR0eEN5UTJuMjVzUQ?oc=5",
         "published_at": "2026-11-27T10:15:48+00:00",
-        "age_minutes": 328.3,
+        "age_minutes": 329.8,
         "matched_terms": [
           "etf"
         ],
@@ -710,31 +732,9 @@
         "domain": "unchainedcrypto.com",
         "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxQaHg3SUlLT3VQcWo5bkdMN1F3bldCZVU1ZzNhUUw1bWFqYlVkU252OHJVSkd5Tm9naEMtQkMtMzkta04wQ1JGZTR1R3l1LVJJNTVsMW04VTJ3bzBuSms0SXlmSzFhQktLcURGLUgwU0g4Zm1PNElIN2pGSmxSRktWM0phWmY4MS1SbmNPMTRrSEpHOHlwUktXT08zdmdQRmMxSW9PZTZqQ1dzcjdlNllnY093?oc=5",
         "published_at": "2026-11-27T10:15:00+00:00",
-        "age_minutes": 329.1,
+        "age_minutes": 330.6,
         "matched_terms": [
           "hack"
-        ],
-        "provider": "Google News RSS"
-      },
-      {
-        "title": "Bitcoin ETF Outflows vs AI ETF Inflows: Where Is Crypto Liquidity Going? - KuCoin",
-        "domain": "KuCoin",
-        "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxNeGFNV292a3N4NmRsNUpHZ2lKN1A0Y2Q2MGNxWElkTVZSVXBiQVpaLUJGeUFRemNzSmh5WlBkc3RfUVFGcXhjWVczNjVRYVdtLTRxdXphNkdkc2NMaDJfWFZrcGVqS0p5NzVyNmVLaUlad2R6cDBoS3ZpN3F0RlVtZG1NU1I4NXlGUnRjT0x3NGJPOG9ZVTdDOTJMVkZEWGc?oc=5",
-        "published_at": "2026-11-27T10:06:00+00:00",
-        "age_minutes": 338.1,
-        "matched_terms": [
-          "etf"
-        ],
-        "provider": "Google News RSS"
-      },
-      {
-        "title": "EU plans crypto blockade of Kyrgyzstan over Russian sanctions evasion - Traders Union",
-        "domain": "Traders Union",
-        "url": "https://news.google.com/rss/articles/CBMikgFBVV95cUxPaGEzVE5qVzdpdmEwVktJY0REMTFmT2pydGt4MWNydDhobWhJcktoS0pqUDhxWC1neWVBa002eklzbVRRZTRoSGpna3RvNEVMNThuRXE2Mk9hMHVoQml5OTVNSURzZDBuSUtVcGk5ZmJlTVAwa3lCdVkxRjVEaHRDcVhRc2luT2JRYkJ2eDZ0QkZ0dw?oc=5",
-        "published_at": "2026-11-27T08:51:25+00:00",
-        "age_minutes": 412.7,
-        "matched_terms": [
-          "sanction"
         ],
         "provider": "Google News RSS"
       }
@@ -746,8 +746,8 @@
     ],
     "gdelt_error": "<urlopen error _ssl.c:1001: The handshake operation timed out>",
     "provider_used": "Google News RSS",
-    "fresh_high_risk_count": 3,
-    "retrieved_at": "2026-11-27T15:44:08.919404+00:00"
+    "fresh_high_risk_count": 2,
+    "retrieved_at": "2026-11-27T15:45:38.031009+00:00"
   },
   "news_event_veto": null,
   "historical_derivatives_training": {
@@ -773,8 +773,8 @@
   "advanced_intelligence": {
     "market_regime": {
       "regime": "HIGH VOLATILITY",
-      "atr_ratio": 3.339,
-      "trend_slope_pct": -0.9967,
+      "atr_ratio": 3.01,
+      "trend_slope_pct": -0.9586,
       "liquidity_sweep": "BULLISH LOW-SIDE LIQUIDITY SWEEP",
       "liquidity_sweep_detail": {
         "direction": "BULLISH",
@@ -782,9 +782,9 @@
         "wick_extreme": 58729.6,
         "close": 59128.7,
         "candle_time": 1795791900000,
-        "bars_ago": 6
+        "bars_ago": 7
       },
-      "range_high": 61536.1,
+      "range_high": 61499.9,
       "range_low": 58729.6,
       "explanation": "Volatility expansion"
     },
@@ -792,12 +792,12 @@
       "status": "AVAILABLE",
       "volatility_compression": false,
       "squeeze_score_0_100": 15,
-      "bollinger_width_pct": 5.8062,
-      "bollinger_width_percentile_lookback": 94.17,
-      "atr_expansion_ratio": 3.406,
-      "volume_ratio_vs_prior_20": 0.835,
-      "close_location_in_candle_pct": 62.97,
-      "prior_20_candle_high": 61536.1,
+      "bollinger_width_pct": 5.5048,
+      "bollinger_width_percentile_lookback": 93.33,
+      "atr_expansion_ratio": 3.061,
+      "volume_ratio_vs_prior_20": 0.424,
+      "close_location_in_candle_pct": 76.05,
+      "prior_20_candle_high": 61499.9,
       "prior_20_candle_low": 58729.6,
       "prior_50_candle_high": 61809.0,
       "prior_50_candle_low": 58729.6,
@@ -821,14 +821,14 @@
       "by_timeframe": {
         "5m": {
           "trend": "BEARISH",
-          "ema20_slope_pct": -0.3057,
-          "close_vs_ema200_pct": -1.7353,
+          "ema20_slope_pct": -0.1897,
+          "close_vs_ema200_pct": -1.6514,
           "samples": 599
         },
         "15m": {
           "trend": "MIXED",
-          "ema20_slope_pct": -1.0098,
-          "close_vs_ema200_pct": -1.6226,
+          "ema20_slope_pct": -1.1099,
+          "close_vs_ema200_pct": -0.9999,
           "samples": 299
         },
         "1h": {
@@ -857,22 +857,22 @@
       "15m": {
         "signal": "WAIT",
         "status": "INSUFFICIENT DATA",
-        "samples": 296
+        "samples": 294
       },
       "30m": {
         "signal": "WAIT",
         "status": "INSUFFICIENT DATA",
-        "samples": 293
+        "samples": 291
       },
       "60m": {
         "signal": "WAIT",
         "status": "INSUFFICIENT DATA",
-        "samples": 287
+        "samples": 285
       },
       "4h": {
         "signal": "WAIT",
         "status": "INSUFFICIENT DATA",
-        "samples": 251
+        "samples": 249
       }
     },
     "multi_horizon_consensus": {
@@ -886,13 +886,13 @@
     "temporal_sequence_model": {
       "signal": "WAIT",
       "status": "INSUFFICIENT SEQUENCE HISTORY",
-      "samples": 296,
+      "samples": 294,
       "sequence_length": 12
     },
     "lstm_sequence_model": {
       "signal": "WAIT",
       "status": "INSUFFICIENT LSTM HISTORY",
-      "samples": 296,
+      "samples": 294,
       "sequence_length": 24,
       "matured_feedback_training": {
         "status": "COLLECTING COMPATIBLE OUTCOMES",
@@ -910,7 +910,7 @@
         "days_requested": 3,
         "days_loaded": 3,
         "trade_records": 7041050,
-        "covered_samples": 211,
+        "covered_samples": 210,
         "features": [
           "taker_delta_pct",
           "taker_buy_ratio",
@@ -924,10 +924,10 @@
           "Missing flow is explicitly marked unavailable; no future observations are joined.",
           "Historical OI, funding and order-book depth are not included in this dataset."
         ],
-        "aggtrade_samples": 211,
+        "aggtrade_samples": 210,
         "kline_taker_samples": 0,
-        "coverage_pct_of_eligible_candles": 53.28,
-        "samples": 296,
+        "coverage_pct_of_eligible_candles": 53.03,
+        "samples": 294,
         "note": "Full chronological dataset retained; aggTrade features override kline taker-buy proxy where available.",
         "sources_used": [
           "AGGTRADES"
@@ -936,7 +936,7 @@
       "historical_tradeflow_dataset_status": "PARTIAL",
       "walk_forward_validation": {
         "status": "INSUFFICIENT HISTORY",
-        "samples": 296
+        "samples": 294
       }
     },
     "temporal_sequence_horizons": {
@@ -945,25 +945,25 @@
         "15m": {
           "signal": "WAIT",
           "status": "INSUFFICIENT PURGED HOLDOUT",
-          "training_samples": 213,
+          "training_samples": 211,
           "validation_samples": 57
         },
         "30m": {
           "signal": "WAIT",
           "status": "INSUFFICIENT PURGED HOLDOUT",
-          "training_samples": 207,
-          "validation_samples": 57
+          "training_samples": 206,
+          "validation_samples": 56
         },
         "1h": {
           "signal": "WAIT",
           "status": "INSUFFICIENT PURGED HOLDOUT",
-          "training_samples": 196,
-          "validation_samples": 56
+          "training_samples": 195,
+          "validation_samples": 55
         },
         "4h": {
           "signal": "WAIT",
           "status": "INSUFFICIENT PURGED HOLDOUT",
-          "training_samples": 132,
+          "training_samples": 130,
           "validation_samples": 48
         }
       },
@@ -983,22 +983,22 @@
         "15m": {
           "signal": "WAIT",
           "status": "INSUFFICIENT DATA",
-          "samples": 296
+          "samples": 294
         },
         "30m": {
           "signal": "WAIT",
           "status": "INSUFFICIENT DATA",
-          "samples": 293
+          "samples": 291
         },
         "60m": {
           "signal": "WAIT",
           "status": "INSUFFICIENT DATA",
-          "samples": 287
+          "samples": 285
         },
         "4h": {
           "signal": "WAIT",
           "status": "INSUFFICIENT DATA",
-          "samples": 251
+          "samples": 249
         }
       },
       "validation": "chronological holdout with horizon purge; scores are not calibrated win probabilities"
@@ -1009,16 +1009,16 @@
   "walk_forward_folds": [
     {
       "fold": 2,
-      "train_samples": 194,
+      "train_samples": 193,
       "test_samples": 49,
       "wait_threshold": 0.2,
       "train_majority_class": "LONG",
-      "majority_baseline_accuracy": 44.9,
+      "majority_baseline_accuracy": 46.94,
       "metrics": {
-        "accuracy": 10.2,
-        "macro_precision": 3.4,
+        "accuracy": 8.16,
+        "macro_precision": 2.72,
         "macro_recall": 33.33,
-        "macro_f1": 6.17,
+        "macro_f1": 5.03,
         "per_class": {
           "SHORT": {
             "precision": 0.0,
@@ -1027,16 +1027,16 @@
             "support": 22
           },
           "WAIT": {
-            "precision": 10.2,
+            "precision": 8.16,
             "recall": 100.0,
-            "f1": 18.52,
-            "support": 5
+            "f1": 15.09,
+            "support": 4
           },
           "LONG": {
             "precision": 0.0,
             "recall": 0.0,
             "f1": 0.0,
-            "support": 22
+            "support": 23
           }
         },
         "confusion_matrix": [
@@ -1047,22 +1047,22 @@
           ],
           [
             0,
-            5,
+            4,
             0
           ],
           [
             0,
-            22,
+            23,
             0
           ]
         ]
       },
       "regime_metrics": {
         "BULL_TREND": {
-          "accuracy": 9.76,
-          "macro_precision": 3.25,
+          "accuracy": 7.69,
+          "macro_precision": 2.56,
           "macro_recall": 33.33,
-          "macro_f1": 5.93,
+          "macro_f1": 4.76,
           "per_class": {
             "SHORT": {
               "precision": 0.0,
@@ -1071,16 +1071,16 @@
               "support": 19
             },
             "WAIT": {
-              "precision": 9.76,
+              "precision": 7.69,
               "recall": 100.0,
-              "f1": 17.78,
-              "support": 4
+              "f1": 14.29,
+              "support": 3
             },
             "LONG": {
               "precision": 0.0,
               "recall": 0.0,
               "f1": 0.0,
-              "support": 18
+              "support": 17
             }
           },
           "confusion_matrix": [
@@ -1091,21 +1091,21 @@
             ],
             [
               0,
-              4,
+              3,
               0
             ],
             [
               0,
-              18,
+              17,
               0
             ]
           ]
         },
         "TRANSITION": {
-          "accuracy": 12.5,
-          "macro_precision": 4.17,
+          "accuracy": 10.0,
+          "macro_precision": 3.33,
           "macro_recall": 33.33,
-          "macro_f1": 7.41,
+          "macro_f1": 6.06,
           "per_class": {
             "SHORT": {
               "precision": 0.0,
@@ -1114,16 +1114,16 @@
               "support": 3
             },
             "WAIT": {
-              "precision": 12.5,
+              "precision": 10.0,
               "recall": 100.0,
-              "f1": 22.22,
+              "f1": 18.18,
               "support": 1
             },
             "LONG": {
               "precision": 0.0,
               "recall": 0.0,
               "f1": 0.0,
-              "support": 4
+              "support": 6
             }
           },
           "confusion_matrix": [
@@ -1139,7 +1139,7 @@
             ],
             [
               0,
-              4,
+              6,
               0
             ]
           ]
@@ -1148,21 +1148,21 @@
     },
     {
       "fold": 3,
-      "train_samples": 243,
+      "train_samples": 242,
       "test_samples": 49,
       "wait_threshold": 0.6000000000000001,
       "train_majority_class": "LONG",
       "majority_baseline_accuracy": 32.65,
       "metrics": {
         "accuracy": 63.27,
-        "macro_precision": 41.64,
-        "macro_recall": 47.62,
-        "macro_f1": 44.08,
+        "macro_precision": 43.91,
+        "macro_recall": 50.3,
+        "macro_f1": 44.44,
         "per_class": {
           "SHORT": {
-            "precision": 70.37,
-            "recall": 67.86,
-            "f1": 69.09,
+            "precision": 80.0,
+            "recall": 57.14,
+            "f1": 66.67,
             "support": 28
           },
           "WAIT": {
@@ -1172,36 +1172,36 @@
             "support": 5
           },
           "LONG": {
-            "precision": 54.55,
-            "recall": 75.0,
-            "f1": 63.16,
+            "precision": 51.72,
+            "recall": 93.75,
+            "f1": 66.67,
             "support": 16
           }
         },
         "confusion_matrix": [
           [
-            19,
-            0,
-            9
-          ],
-          [
-            4,
-            0,
-            1
-          ],
-          [
-            4,
+            16,
             0,
             12
+          ],
+          [
+            3,
+            0,
+            2
+          ],
+          [
+            1,
+            0,
+            15
           ]
         ]
       },
       "regime_metrics": {
         "BEAR_TREND": {
-          "accuracy": 83.33,
-          "macro_precision": 27.78,
+          "accuracy": 87.5,
+          "macro_precision": 29.17,
           "macro_recall": 33.33,
-          "macro_f1": 30.3,
+          "macro_f1": 31.11,
           "per_class": {
             "SHORT": {
               "precision": 0.0,
@@ -1216,10 +1216,10 @@
               "support": 0
             },
             "LONG": {
-              "precision": 83.33,
+              "precision": 87.5,
               "recall": 100.0,
-              "f1": 90.91,
-              "support": 5
+              "f1": 93.33,
+              "support": 7
             }
           },
           "confusion_matrix": [
@@ -1236,20 +1236,20 @@
             [
               0,
               0,
-              5
+              7
             ]
           ]
         },
         "TRANSITION": {
-          "accuracy": 60.47,
-          "macro_precision": 38.04,
-          "macro_recall": 44.67,
-          "macro_f1": 40.74,
+          "accuracy": 58.54,
+          "macro_precision": 39.37,
+          "macro_recall": 49.38,
+          "macro_f1": 40.47,
           "per_class": {
             "SHORT": {
-              "precision": 70.37,
-              "recall": 70.37,
-              "f1": 70.37,
+              "precision": 80.0,
+              "recall": 59.26,
+              "f1": 68.09,
               "support": 27
             },
             "WAIT": {
@@ -1259,43 +1259,43 @@
               "support": 5
             },
             "LONG": {
-              "precision": 43.75,
-              "recall": 63.64,
-              "f1": 51.85,
-              "support": 11
+              "precision": 38.1,
+              "recall": 88.89,
+              "f1": 53.33,
+              "support": 9
             }
           },
           "confusion_matrix": [
             [
-              19,
+              16,
+              0,
+              11
+            ],
+            [
+              3,
+              0,
+              2
+            ],
+            [
+              1,
               0,
               8
-            ],
-            [
-              4,
-              0,
-              1
-            ],
-            [
-              4,
-              0,
-              7
             ]
           ]
         }
       }
     }
   ],
-  "training_samples": 296,
+  "training_samples": 294,
   "label_distribution": {
-    "SHORT": 118,
+    "SHORT": 115,
     "WAIT": 49,
-    "LONG": 129
+    "LONG": 130
   },
   "training_class_weights": {
-    "SHORT": 0.8361581920903954,
-    "WAIT": 2.0136054421768708,
-    "LONG": 0.7648578811369509
+    "SHORT": 0.8521739130434782,
+    "WAIT": 2.0,
+    "LONG": 0.7538461538461538
   },
   "recency_weighting": {
     "method": "exponential",
@@ -1309,12 +1309,12 @@
     "horizon_candles": 3,
     "lookahead_free": true
   },
-  "last_price": 60085.4,
-  "last_candle_time": 1795793700000,
+  "last_price": 60126.3,
+  "last_candle_time": 1795794000000,
   "data_freshness": {
     "status": "FRESH",
-    "latest_5m_candle_age_minutes": 9.38,
-    "latest_5m_candle_time": "2026-11-27T15:35:00+00:00",
+    "latest_5m_candle_age_minutes": 5.86,
+    "latest_5m_candle_time": "2026-11-27T15:40:00+00:00",
     "source_by_timeframe": {
       "5m": "OKX BTC-USDT-SWAP Futures",
       "15m": "OKX BTC-USDT-SWAP Futures",
@@ -1324,7 +1324,7 @@
     },
     "max_allowed_age_minutes": 15
   },
-  "generated_at": "2026-11-27T15:44:47.380216+00:00",
+  "generated_at": "2026-11-27T15:46:09.551925+00:00",
   "limitations": [
     "When Binance USD-M Futures is unavailable, Kraken BTC/USD spot OHLC is used as a proxy and is not equivalent to BTC/USDT Futures. Funding, open interest, CVD, order book and liquidation remain separate confluence inputs.",
     "Class scores are model scores, not calibrated real-world win probabilities.",
@@ -1333,7 +1333,7 @@
   "prediction_feedback": {
     "status": "ACTIVE",
     "method": "multi-horizon forecasts scored against subsequent closed 5m candles",
-    "history_retained": 304,
+    "history_retained": 309,
     "models": {
       "classic_horizon_15m": {
         "evaluated_predictions": 17,
@@ -1409,7 +1409,7 @@
       },
       "decision_stumps": {
         "evaluated_predictions": 7,
-        "pending_predictions": 2,
+        "pending_predictions": 3,
         "realized_accuracy_pct": 14.29,
         "realized_macro_f1_pct": 8.33,
         "approved_directional_trades": 0,
@@ -1427,7 +1427,7 @@
       },
       "full_history_logistic": {
         "evaluated_predictions": 7,
-        "pending_predictions": 2,
+        "pending_predictions": 3,
         "realized_accuracy_pct": 57.14,
         "realized_macro_f1_pct": 38.33,
         "approved_directional_trades": 0,
@@ -1463,7 +1463,7 @@
       },
       "nearest_centroid": {
         "evaluated_predictions": 7,
-        "pending_predictions": 2,
+        "pending_predictions": 3,
         "realized_accuracy_pct": 28.57,
         "realized_macro_f1_pct": 42.86,
         "approved_directional_trades": 0,
@@ -1481,7 +1481,7 @@
       },
       "primary_ensemble": {
         "evaluated_predictions": 18,
-        "pending_predictions": 2,
+        "pending_predictions": 3,
         "realized_accuracy_pct": 55.56,
         "realized_macro_f1_pct": 39.95,
         "approved_directional_trades": 0,
@@ -1499,7 +1499,7 @@
       },
       "recent_regime_logistic": {
         "evaluated_predictions": 7,
-        "pending_predictions": 2,
+        "pending_predictions": 3,
         "realized_accuracy_pct": 85.71,
         "realized_macro_f1_pct": 55.56,
         "approved_directional_trades": 0,

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "last_updated": "2026-11-27T15:44:47.402832+00:00",
+  "last_updated": "2026-11-27T15:46:09.566958+00:00",
   "scoring_rule": "Each forecast is scored at its own horizon using a prediction-time ATR-scaled neutral threshold",
   "predictions": [
     {
@@ -15681,6 +15681,96 @@
         "SHORT": 11.61,
         "WAIT": 9.7,
         "LONG": 78.69
+      },
+      "status": "PENDING",
+      "market_regime": "HIGH VOLATILITY"
+    },
+    {
+      "id": "full_history_logistic:1795794000000:1795794900000",
+      "model": "full_history_logistic",
+      "prediction_time": 1795794000000,
+      "target_time": 1795794900000,
+      "horizon_minutes": 15,
+      "reference_price": 60126.3,
+      "threshold_pct": 0.0014941167889212274,
+      "predicted_class": "LONG",
+      "approved_signal": "WAIT",
+      "scores": {
+        "SHORT": 21.24,
+        "WAIT": 9.88,
+        "LONG": 68.89
+      },
+      "status": "PENDING",
+      "market_regime": "HIGH VOLATILITY"
+    },
+    {
+      "id": "recent_regime_logistic:1795794000000:1795794900000",
+      "model": "recent_regime_logistic",
+      "prediction_time": 1795794000000,
+      "target_time": 1795794900000,
+      "horizon_minutes": 15,
+      "reference_price": 60126.3,
+      "threshold_pct": 0.0014941167889212274,
+      "predicted_class": "LONG",
+      "approved_signal": "WAIT",
+      "scores": {
+        "SHORT": 18.7,
+        "WAIT": 3.83,
+        "LONG": 77.47
+      },
+      "status": "PENDING",
+      "market_regime": "HIGH VOLATILITY"
+    },
+    {
+      "id": "nearest_centroid:1795794000000:1795794900000",
+      "model": "nearest_centroid",
+      "prediction_time": 1795794000000,
+      "target_time": 1795794900000,
+      "horizon_minutes": 15,
+      "reference_price": 60126.3,
+      "threshold_pct": 0.0014941167889212274,
+      "predicted_class": "LONG",
+      "approved_signal": "WAIT",
+      "scores": {
+        "SHORT": 0.12,
+        "WAIT": 0.0,
+        "LONG": 99.88
+      },
+      "status": "PENDING",
+      "market_regime": "HIGH VOLATILITY"
+    },
+    {
+      "id": "decision_stumps:1795794000000:1795794900000",
+      "model": "decision_stumps",
+      "prediction_time": 1795794000000,
+      "target_time": 1795794900000,
+      "horizon_minutes": 15,
+      "reference_price": 60126.3,
+      "threshold_pct": 0.0014941167889212274,
+      "predicted_class": "LONG",
+      "approved_signal": "WAIT",
+      "scores": {
+        "SHORT": 39.87,
+        "WAIT": 15.29,
+        "LONG": 44.85
+      },
+      "status": "PENDING",
+      "market_regime": "HIGH VOLATILITY"
+    },
+    {
+      "id": "primary_ensemble:1795794000000:1795794900000",
+      "model": "primary_ensemble",
+      "prediction_time": 1795794000000,
+      "target_time": 1795794900000,
+      "horizon_minutes": 15,
+      "reference_price": 60126.3,
+      "threshold_pct": 0.0014941167889212274,
+      "predicted_class": "LONG",
+      "approved_signal": "WAIT",
+      "scores": {
+        "SHORT": 21.16,
+        "WAIT": 8.05,
+        "LONG": 70.79
       },
       "status": "PENDING",
       "market_regime": "HIGH VOLATILITY"
