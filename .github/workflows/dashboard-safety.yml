@@ -28,7 +28,7 @@ jobs:
           from pathlib import Path
 
           html = Path("index.html").read_text(encoding="utf-8")
-          scripts = re.findall(r"<script\\b(?![^>]*\\bsrc=)[^>]*>(.*?)</script>", html, re.I | re.S)
+          scripts = re.findall(r"<script\b(?![^>]*\bsrc=)[^>]*>(.*?)</script>", html, re.I | re.S)
           if not scripts:
               raise SystemExit("No inline dashboard scripts found")
           for index, script in enumerate(scripts):
