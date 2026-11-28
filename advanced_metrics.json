@@ -1,61 +1,61 @@
 {
-  "generated_at": "2026-11-27T23:31:14.576023+00:00",
+  "generated_at": "2026-11-28T00:11:41.240006+00:00",
   "timeframe_indicators": {
     "5m": {
       "available": true,
-      "ema50": 59811.14,
-      "ema200": 60344.15,
-      "rsi14": 54.64,
+      "ema50": 59830.13,
+      "ema200": 60308.22,
+      "rsi14": 67.2,
       "macd": {
-        "macd": 6.7741,
-        "signal": -4.4332,
-        "histogram": 11.2073,
+        "macd": 40.1413,
+        "signal": 20.8433,
+        "histogram": 19.298,
         "bullish": true,
         "cross_up": false,
         "cross_down": false
       },
       "structure": {
         "trend": "RANGE",
-        "event": "NONE",
+        "event": "BULLISH_BOS",
         "last_swing_high": 59864.3,
         "last_swing_low": 59545.8,
         "note": "Confirmed pivots use candles on both sides; most recent pivot is delayed by the confirmation window."
       },
-      "volatility_atr14": 77.19,
-      "atr_pct": 0.129
+      "volatility_atr14": 57.64,
+      "atr_pct": 0.0961
     },
     "15m": {
       "available": true,
-      "ema50": 60201.42,
-      "ema200": 60485.76,
-      "rsi14": 45.2,
+      "ema50": 60175.48,
+      "ema200": 60481.16,
+      "rsi14": 49.05,
       "macd": {
-        "macd": -126.619,
-        "signal": -168.3445,
-        "histogram": 41.7255,
+        "macd": -96.2873,
+        "signal": -145.0866,
+        "histogram": 48.7993,
         "bullish": true,
         "cross_up": false,
         "cross_down": false
       },
       "structure": {
         "trend": "DOWNTREND",
-        "event": "NONE",
+        "event": "BULLISH_BOS",
         "last_swing_high": 59851.0,
         "last_swing_low": 59545.8,
         "note": "Confirmed pivots use candles on both sides; most recent pivot is delayed by the confirmation window."
       },
-      "volatility_atr14": 119.29,
-      "atr_pct": 0.1994
+      "volatility_atr14": 110.42,
+      "atr_pct": 0.1844
     },
     "1h": {
       "available": true,
-      "ema50": 60503.43,
-      "ema200": 60974.26,
-      "rsi14": 36.16,
+      "ema50": 60479.52,
+      "ema200": 60959.85,
+      "rsi14": 40.05,
       "macd": {
-        "macd": -309.7417,
-        "signal": -149.0065,
-        "histogram": -160.7352,
+        "macd": -308.1765,
+        "signal": -180.8405,
+        "histogram": -127.336,
         "bullish": false,
         "cross_up": false,
         "cross_down": false
@@ -67,31 +67,31 @@
         "last_swing_low": 58729.6,
         "note": "Confirmed pivots use candles on both sides; most recent pivot is delayed by the confirmation window."
       },
-      "volatility_atr14": 556.59,
-      "atr_pct": 0.9321
+      "volatility_atr14": 551.06,
+      "atr_pct": 0.9201
     },
     "4h": {
       "available": true,
-      "ema50": 61263.11,
-      "ema200": 68723.13,
-      "rsi14": 44.54,
+      "ema50": 61209.41,
+      "ema200": 68646.58,
+      "rsi14": 44.66,
       "macd": {
-        "macd": 32.3616,
-        "signal": -29.5469,
-        "histogram": 61.9085,
+        "macd": -23.2172,
+        "signal": -28.2809,
+        "histogram": 5.0638,
         "bullish": true,
         "cross_up": false,
         "cross_down": false
       },
       "structure": {
-        "trend": "RANGE",
-        "event": "BEARISH_BOS",
-        "last_swing_high": 61620.0,
+        "trend": "UPTREND",
+        "event": "NONE",
+        "last_swing_high": 62199.2,
         "last_swing_low": 59886.8,
         "note": "Confirmed pivots use candles on both sides; most recent pivot is delayed by the confirmation window."
       },
-      "volatility_atr14": 1183.81,
-      "atr_pct": 1.977
+      "volatility_atr14": 1092.88,
+      "atr_pct": 1.8247
     },
     "1d": {
       "available": true,
@@ -122,7 +122,7 @@
     "method": "Chronological 60/20/20 split; reported trades only in final 20% holdout",
     "total_candles": 2999,
     "test_candles": 1200,
-    "test_start_time": 1795462200000,
+    "test_start_time": 1795464600000,
     "trades": 65,
     "win_rate_pct": 18.46,
     "net_return_pct": -12.68,
