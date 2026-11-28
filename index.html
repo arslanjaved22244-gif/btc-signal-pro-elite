@@ -1335,7 +1335,9 @@ conflicts<=2&&
 a.vr>=.8&&
 cvdReady;
 
-let side=dataReady&&enough?scoreSide:"WAIT";
+let researchSide=dataReady&&enough?scoreSide:"WAIT";
+/* Browser-only heuristic is research context, never an approved trading signal. */
+let side="WAIT";
 
 let conf=Math.round(Math.min(
 90,
@@ -1368,7 +1370,7 @@ M.side=side;
 setText("signal",side);
 setPriceClass("signal",side==="LONG"?"green":side==="SHORT"?"red":"yellow");
 setText("reason",why);
-setText("signalDetails",`Bull ${bull} • Bear ${bear} • Heuristic evidence strength ${conf}/100. ${flow}.`);
+setText("signalDetails",`RESEARCH ONLY • Browser heuristic candidate: ${researchSide} • Bull ${bull} • Bear ${bear} • Evidence score ${conf}/100. Not an approved signal; server quality gate controls trade direction. ${flow}.`);
 
 setText("setupSide",side);
 setPriceClass("setupSide",side==="LONG"?"green":side==="SHORT"?"red":"yellow");
@@ -1569,26 +1571,30 @@ async function loadHybridSignal(force=false){
  try{
   const response=await fetch("./signal_result.json?ts="+Date.now(),{cache:"no-store"});
   if(!response.ok)throw Error("Hybrid signal HTTP "+response.status);
-  const d=await response.json(),side=d.signal||"WAIT",el=$("hybridSignal");
-  setText("hybridSignal",side);
-  if(el)el.className=side==="LONG"?"green":side==="SHORT"?"red":"yellow";
-  setText("hybridConfidence",d.confidence_score==null?"--":Number(d.confidence_score).toFixed(1)+"/100");
-  const scores=d.scores||{};
-  setText("hybridScores",Number(scores.LONG||0).toFixed(2)+" / "+Number(scores.SHORT||0).toFixed(2));
-  const sw=d.liquidity_sweep||{};
-  setText("hybridSweep",sw.status==="CONFIRMED_BULLISH_SWEEP"?"BULLISH • "+(sw.level!=null?"$"+fmt(sw.level):"level n/a"):sw.status==="CONFIRMED_BEARISH_SWEEP"?"BEARISH • "+(sw.level!=null?"$"+fmt(sw.level):"level n/a"):(sw.status||"NO CONFIRMED SWEEP"));
+  const d=await response.json(),el=$("hybridSignal");
+  const updated=d.generated_at?new Date(d.generated_at):null;
+  const age=updated?((Date.now()-updated.getTime())/60000):null;
+  const timestampValid=Number.isFinite(age)&&age>=-1&&age<=20;
   const locks=[];
+  if(!timestampValid)locks.push("SIGNAL SNAPSHOT STALE / TIME INVALID");
   if(d.news_guard?.block)locks.push("NEWS BLOCK");
   if(d.volatility_guard?.blocked)locks.push("VOLATILITY BLOCK");
   if(d.ml_context?.futures_source!==true)locks.push("ML SOURCE / VALIDATION GATE BLOCKED");
   if(d.data_quality?.core_timeframes_ok!==true)locks.push("CORE DATA NOT READY");
+  const forcedWait=locks.length>0;
+  const side=forcedWait?"WAIT":(d.signal||"WAIT");
+  setText("hybridSignal",side);
+  if(el)el.className=side==="LONG"?"green":side==="SHORT"?"red":"yellow";
+  setText("hybridConfidence",forcedWait?"0.0/100":(d.confidence_score==null?"--":Number(d.confidence_score).toFixed(1)+"/100"));
+  const scores=forcedWait?{}:(d.scores||{});
+  setText("hybridScores",Number(scores.LONG||0).toFixed(2)+" / "+Number(scores.SHORT||0).toFixed(2));
+  const sw=d.liquidity_sweep||{};
+  setText("hybridSweep",sw.status==="CONFIRMED_BULLISH_SWEEP"?"BULLISH • "+(sw.level!=null?"$"+fmt(sw.level):"level n/a"):sw.status==="CONFIRMED_BEARISH_SWEEP"?"BEARISH • "+(sw.level!=null?"$"+fmt(sw.level):"level n/a"):(sw.status||"NO CONFIRMED SWEEP"));
   setText("hybridLocks",locks.join(" • ")||"No active hard lock");
-  const updated=d.generated_at?new Date(d.generated_at):null;
-  const age=updated?Math.max(0,(Date.now()-updated.getTime())/60000):null;
-  setText("hybridUpdated",age==null?"TIME UNKNOWN":age<10?"FRESH • "+age.toFixed(1)+" min":"STALE • "+age.toFixed(1)+" min");
+  setText("hybridUpdated",age==null?"TIME UNKNOWN":age<20&&age>=-1?"FRESH • "+age.toFixed(1)+" min":"STALE • "+Math.max(0,age).toFixed(1)+" min");
   const warnings=(d.warnings||[]).slice(0,4);
   const gateText=d.ml_context?.futures_source===true?"Futures ML source and validation confirmed":"ML confirmation blocked: Futures source or validation gate not passed";
-  setText("hybridWarnings",gateText+(warnings.length?" • "+warnings.join(" | "):"")+(age!=null&&age>=10?" • Snapshot is stale.":""));
+  setText("hybridWarnings",(forcedWait?"FRONTEND SAFETY OVERRIDE: WAIT • ":"")+gateText+(warnings.length?" • "+warnings.join(" | "):"")+(forcedWait?" • No directional signal is displayed until all checks are fresh and clear.":""));
   hybridSignalLast=Date.now();
  }catch(e){setText("hybridSignal","WAIT");setText("hybridWarnings","Hybrid signal unavailable: "+e.message);}
  finally{hybridSignalBusy=false;}
@@ -1602,11 +1608,15 @@ async function loadLiquidationSnapshot(force=false){
   const r=await fetch("./liquidation_data.json?ts="+Date.now(),{cache:"no-store"});
   if(!r.ok)throw Error("No server sample yet");
   const d=await r.json();
-  const ok=!!d.connected;
-  setText("liqServerStatus",ok?(d.event_count+" events / connected"):"UNAVAILABLE");
+  const stamp=Date.parse(d.generated_at||"");
+  const ageMs=Date.now()-stamp;
+  const fresh=Number.isFinite(stamp)&&ageMs>=-60000&&ageMs<=20*60*1000;
+  const ok=!!d.connected&&fresh;
+  setText("liqServerStatus",ok?(d.event_count+" sampled events / connected"):("UNAVAILABLE • "+(fresh?"disconnected":"stale / timestamp invalid")));
   $("liqServerStatus").className=ok?"green":"red";
-  setText("liqServerVolumes","$"+fmt(d.long_liquidation_notional_usdt||0)+" / $"+fmt(d.short_liquidation_notional_usdt||0));
-  setText("liqServerNote","Sample "+(d.sample_window_seconds||0)+"s • "+(d.generated_at?new Date(d.generated_at).toLocaleString():"time unknown")+" • "+(d.continuous?"continuous":"not continuous")+" • "+(d.warning||""));
+  const hasEvents=Number(d.event_count)>0;
+  setText("liqServerVolumes",ok&&hasEvents?("$"+fmt(d.long_liquidation_notional_usdt||0)+" / $"+fmt(d.short_liquidation_notional_usdt||0)):"-- / --");
+  setText("liqServerNote","Sample "+(d.sample_window_seconds||0)+"s • "+(Number.isFinite(stamp)?new Date(stamp).toLocaleString():"time unknown")+" • "+(d.continuous?"continuous":"not continuous")+" • "+(fresh?"snapshot fresh":"snapshot stale; values suppressed")+" • "+(d.warning||""));
   liquidationSnapshotLast=Date.now();
  }catch(e){setText("liqServerStatus","WAITING");setText("liqServerNote",e.message);}
  finally{liquidationSnapshotBusy=false;}
