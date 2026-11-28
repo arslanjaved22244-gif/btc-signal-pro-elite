@@ -1,38 +1,38 @@
 {
-  "generated_at": "2026-11-28T00:30:11.029267+00:00",
+  "generated_at": "2026-11-28T01:50:04.011406+00:00",
   "timeframe_indicators": {
     "5m": {
       "available": true,
-      "ema50": 59843.41,
-      "ema200": 60297.56,
-      "rsi14": 63.18,
+      "ema50": 59939.25,
+      "ema200": 60258.54,
+      "rsi14": 65.05,
       "macd": {
-        "macd": 47.0704,
-        "signal": 33.0711,
-        "histogram": 13.9993,
+        "macd": 81.4479,
+        "signal": 65.4405,
+        "histogram": 16.0074,
         "bullish": true,
         "cross_up": false,
         "cross_down": false
       },
       "structure": {
-        "trend": "RANGE",
+        "trend": "DOWNTREND",
         "event": "BULLISH_BOS",
-        "last_swing_high": 59864.3,
-        "last_swing_low": 59545.8,
+        "last_swing_high": 59995.6,
+        "last_swing_low": 59807.5,
         "note": "Confirmed pivots use candles on both sides; most recent pivot is delayed by the confirmation window."
       },
-      "volatility_atr14": 50.16,
-      "atr_pct": 0.0837
+      "volatility_atr14": 78.42,
+      "atr_pct": 0.1304
     },
     "15m": {
       "available": true,
-      "ema50": 60166.64,
-      "ema200": 60472.0,
-      "rsi14": 51.85,
+      "ema50": 60134.8,
+      "ema200": 60454.7,
+      "rsi14": 61.01,
       "macd": {
-        "macd": -77.5707,
-        "signal": -131.5834,
-        "histogram": 54.0127,
+        "macd": 10.1989,
+        "signal": -49.717,
+        "histogram": 59.9158,
         "bullish": true,
         "cross_up": false,
         "cross_down": false
@@ -44,18 +44,18 @@
         "last_swing_low": 59545.8,
         "note": "Confirmed pivots use candles on both sides; most recent pivot is delayed by the confirmation window."
       },
-      "volatility_atr14": 107.51,
-      "atr_pct": 0.1793
+      "volatility_atr14": 118.04,
+      "atr_pct": 0.1962
     },
     "1h": {
       "available": true,
-      "ema50": 60479.52,
-      "ema200": 60959.85,
-      "rsi14": 40.05,
+      "ema50": 60455.79,
+      "ema200": 60915.43,
+      "rsi14": 39.76,
       "macd": {
-        "macd": -308.1765,
-        "signal": -180.8405,
-        "histogram": -127.336,
+        "macd": -304.9937,
+        "signal": -205.6712,
+        "histogram": -99.3226,
         "bullish": false,
         "cross_up": false,
         "cross_down": false
@@ -67,8 +67,8 @@
         "last_swing_low": 58729.6,
         "note": "Confirmed pivots use candles on both sides; most recent pivot is delayed by the confirmation window."
       },
-      "volatility_atr14": 551.06,
-      "atr_pct": 0.9201
+      "volatility_atr14": 547.6,
+      "atr_pct": 0.9146
     },
     "4h": {
       "available": true,
@@ -122,7 +122,7 @@
     "method": "Chronological 60/20/20 split; reported trades only in final 20% holdout",
     "total_candles": 2999,
     "test_candles": 1200,
-    "test_start_time": 1795465500000,
+    "test_start_time": 1795470300000,
     "trades": 65,
     "win_rate_pct": 18.46,
     "net_return_pct": -12.68,
