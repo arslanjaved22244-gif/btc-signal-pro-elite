@@ -1335,7 +1335,9 @@ conflicts<=2&&
 a.vr>=.8&&
 cvdReady;
 
-let side=dataReady&&enough?scoreSide:"WAIT";
+let researchSide=dataReady&&enough?scoreSide:"WAIT";
+/* Browser-only heuristic is research context, never an approved trading signal. */
+let side="WAIT";
 
 let conf=Math.round(Math.min(
 90,
@@ -1368,7 +1370,7 @@ M.side=side;
 setText("signal",side);
 setPriceClass("signal",side==="LONG"?"green":side==="SHORT"?"red":"yellow");
 setText("reason",why);
-setText("signalDetails",`Bull ${bull} • Bear ${bear} • Heuristic evidence strength ${conf}/100. ${flow}.`);
+setText("signalDetails",`RESEARCH ONLY • Browser heuristic candidate: ${researchSide} • Bull ${bull} • Bear ${bear} • Evidence score ${conf}/100. Not an approved signal; server quality gate controls trade direction. ${flow}.`);
 
 setText("setupSide",side);
 setPriceClass("setupSide",side==="LONG"?"green":side==="SHORT"?"red":"yellow");
@@ -1589,7 +1591,7 @@ async function loadHybridSignal(force=false){
   const sw=d.liquidity_sweep||{};
   setText("hybridSweep",sw.status==="CONFIRMED_BULLISH_SWEEP"?"BULLISH • "+(sw.level!=null?"$"+fmt(sw.level):"level n/a"):sw.status==="CONFIRMED_BEARISH_SWEEP"?"BEARISH • "+(sw.level!=null?"$"+fmt(sw.level):"level n/a"):(sw.status||"NO CONFIRMED SWEEP"));
   setText("hybridLocks",locks.join(" • ")||"No active hard lock");
-  setText("hybridUpdated",age==null?"TIME UNKNOWN":age<10&&age>=-1?"FRESH • "+age.toFixed(1)+" min":"STALE • "+Math.max(0,age).toFixed(1)+" min");
+  setText("hybridUpdated",age==null?"TIME UNKNOWN":age<20&&age>=-1?"FRESH • "+age.toFixed(1)+" min":"STALE • "+Math.max(0,age).toFixed(1)+" min");
   const warnings=(d.warnings||[]).slice(0,4);
   const gateText=d.ml_context?.futures_source===true?"Futures ML source and validation confirmed":"ML confirmation blocked: Futures source or validation gate not passed";
   setText("hybridWarnings",(forcedWait?"FRONTEND SAFETY OVERRIDE: WAIT • ":"")+gateText+(warnings.length?" • "+warnings.join(" | "):"")+(forcedWait?" • No directional signal is displayed until all checks are fresh and clear.":""));
