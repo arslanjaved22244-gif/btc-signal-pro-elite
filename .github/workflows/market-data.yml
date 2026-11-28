@@ -19,7 +19,7 @@ on:
       - "telegram_alerts.py"
       - ".github/workflows/market-data.yml"
   schedule:
-    - cron: "*/15 * * * *"
+    - cron: "*/15 * * * *" # Best-effort scheduled snapshot; workflow-path pushes can also refresh immediately.
 permissions:
   contents: write
 concurrency:
