@@ -1,5 +1,6 @@
 import importlib.util
 import unittest
+from unittest import mock
 from pathlib import Path
 
 PATH = Path(__file__).resolve().parents[1] / "ai_model.py" / "ai_model.py"
@@ -68,8 +69,8 @@ class ValidationGateRegressionTests(unittest.TestCase):
         rows = [[0.0] for _ in range(400)]
         labels = [1 for _ in rows]
         forward_returns = [0.01 for _ in rows]
-        with unittest.mock.patch.object(AI, "train_ensemble", return_value=object()), \
-             unittest.mock.patch.object(AI, "predict_ensemble", return_value=[0.05, 0.10, 0.85]):
+        with mock.patch.object(AI, "train_ensemble", return_value=object()), \
+             mock.patch.object(AI, "predict_ensemble", return_value=[0.05, 0.10, 0.85]):
             threshold, report = AI.calibrate_wait_threshold(rows, labels, forward_returns)
 
         self.assertGreaterEqual(threshold, 0.20)
@@ -85,8 +86,8 @@ class ValidationGateRegressionTests(unittest.TestCase):
         rows = [[0.0] for _ in range(400)]
         labels = [1 for _ in rows]
         forward_returns = [-0.01 for _ in rows]
-        with unittest.mock.patch.object(AI, "train_ensemble", return_value=object()), \
-             unittest.mock.patch.object(AI, "predict_ensemble", return_value=[0.05, 0.10, 0.85]):
+        with mock.patch.object(AI, "train_ensemble", return_value=object()), \
+             mock.patch.object(AI, "predict_ensemble", return_value=[0.05, 0.10, 0.85]):
             threshold, report = AI.calibrate_wait_threshold(rows, labels, forward_returns)
 
         self.assertEqual(threshold, 1.01)
