@@ -1,7 +1,7 @@
 {
   "system": "BTC Signal Pro Elite Hybrid Confluence Engine",
   "version": "4.3-hybrid-sweep-validated-futures",
-  "generated_at": "2026-11-28T11:56:23.336075+00:00",
+  "generated_at": "2026-11-28T12:42:03.046418+00:00",
   "symbol": "BTCUSDT",
   "market_type": "OKX_BTC_USDT_SWAP",
   "market_exchange": "OKX",
@@ -19,75 +19,75 @@
     "momentum_margin": 5.5,
     "note": "Early setup is a watchlist hint only, not an entry signal. Confirm the main signal and manual risk levels before any trade."
   },
-  "confidence_score": 73.91,
+  "confidence_score": 80.43,
   "scores": {
-    "LONG": 2.5,
-    "SHORT": 8.5
+    "LONG": 1.25,
+    "SHORT": 9.25
   },
   "timeframe_analysis": {
     "5m": {
       "available": true,
       "bias": "BEARISH",
       "momentum_bias": "NEUTRAL",
-      "price": 59192.5,
-      "ema50": 59401.9,
-      "ema200": 59802.61,
-      "rsi14": 42.06,
-      "atr14": 95.95,
+      "price": 59205.6,
+      "ema50": 59357.1,
+      "ema200": 59755.43,
+      "rsi14": 44.06,
+      "atr14": 85.84,
       "macd": {
-        "line": -76.86702,
-        "signal": -88.14393,
-        "histogram": 11.27691
+        "line": -27.89125,
+        "signal": -41.72541,
+        "histogram": 13.83415
       },
-      "age_seconds": 54
+      "age_seconds": 93
     },
     "15m": {
       "available": true,
       "bias": "BEARISH",
       "momentum_bias": "BEARISH",
-      "price": 59138.9,
-      "ema50": 59705.94,
-      "ema200": 60164.95,
-      "rsi14": 24.3,
-      "atr14": 150.86,
+      "price": 59244.5,
+      "ema50": 59653.39,
+      "ema200": 60138.62,
+      "rsi14": 34.52,
+      "atr14": 147.16,
       "macd": {
-        "line": -166.77761,
-        "signal": -134.69516,
-        "histogram": -32.08245
+        "line": -153.50978,
+        "signal": -146.36298,
+        "histogram": -7.1468
       },
-      "age_seconds": 654
+      "age_seconds": 693
     },
     "1h": {
       "available": true,
       "bias": "BEARISH",
       "momentum_bias": "BEARISH",
-      "price": 59226.2,
-      "ema50": 60218.28,
-      "ema200": 60811.8,
-      "rsi14": 32.15,
-      "atr14": 299.06,
+      "price": 59209.8,
+      "ema50": 60178.73,
+      "ema200": 60778.4,
+      "rsi14": 31.92,
+      "atr14": 306.93,
       "macd": {
-        "line": -292.92719,
-        "signal": -258.88276,
-        "histogram": -34.04443
+        "line": -312.80289,
+        "signal": -269.66679,
+        "histogram": -43.1361
       },
-      "age_seconds": 3354
+      "age_seconds": 2493
     },
     "4h": {
       "available": true,
       "bias": "BEARISH",
       "momentum_bias": "BEARISH",
-      "price": 59800.3,
-      "ema50": 61108.54,
-      "ema200": 68484.44,
-      "rsi14": 44.03,
-      "atr14": 967.78,
+      "price": 59209.8,
+      "ema50": 61034.08,
+      "ema200": 68365.19,
+      "rsi14": 39.48,
+      "atr14": 934.66,
       "macd": {
-        "line": -100.65407,
-        "signal": -47.53126,
-        "histogram": -53.12281
+        "line": -179.92972,
+        "signal": -74.01096,
+        "histogram": -105.91877
       },
-      "age_seconds": 14154
+      "age_seconds": 2494
     },
     "1d": {
       "available": true,
@@ -103,7 +103,7 @@
         "signal": -4502.17037,
         "histogram": -20.72115
       },
-      "age_seconds": 71755
+      "age_seconds": 74494
     }
   },
   "liquidity_sweep": {
@@ -113,17 +113,17 @@
     "wick_extreme": 59017.2,
     "close": 59226.2,
     "time": 1795862700000,
-    "bars_ago": 3,
+    "bars_ago": 6,
     "note": "15m wick swept below the prior 20-bar low and closed back above it."
   },
   "order_flow": {
-    "cvd_base": -444.39,
-    "order_book_imbalance": 0.398968,
+    "cvd_base": -385.1,
+    "order_book_imbalance": -0.262074,
     "order_book_imbalance_method": "Top-20 visible levels; quote-notional (price \u00d7 quantity); (bid-ask)/(bid+ask)",
-    "funding_rate_pct": 0.006749,
+    "funding_rate_pct": 0.006361,
     "funding_crowding": "NEUTRAL",
-    "open_interest_change_30m_pct": 0.0,
-    "taker_buy_sell_ratio": 3.5252123055936715
+    "open_interest_change_30m_pct": -0.0266,
+    "taker_buy_sell_ratio": 1.0119622144083087
   },
   "ml_context": {
     "model_version": "4.6-causal-market-context",
@@ -136,8 +136,8 @@
       "type": "BLOCKED",
       "model_venue": "OKX BTC-USDT-SWAP Futures",
       "market_venue": "OKX",
-      "basis_pct": 0.62812,
-      "candle_skew_minutes": 115.0,
+      "basis_pct": 0.60585,
+      "candle_skew_minutes": 160.0,
       "max_basis_pct": 0.25,
       "max_candle_skew_minutes": 15,
       "reason": "Perpetual price basis or 5m candle-time skew exceeds safety tolerance."
@@ -145,7 +145,7 @@
     "signal": "WAIT"
   },
   "risk_levels": {
-    "entry_reference": 59192.5,
+    "entry_reference": 59205.6,
     "stop_loss": null,
     "take_profit_1": null,
     "take_profit_2": null,
@@ -165,33 +165,33 @@
     "timeframe_freshness": {
       "5m": {
         "fresh": true,
-        "age_seconds": 54,
+        "age_seconds": 93,
         "max_age_seconds": 600
       },
       "15m": {
         "fresh": true,
-        "age_seconds": 654,
+        "age_seconds": 693,
         "max_age_seconds": 1800
       },
       "1h": {
         "fresh": true,
-        "age_seconds": 3354,
+        "age_seconds": 2493,
         "max_age_seconds": 7200
       },
       "4h": {
         "fresh": true,
-        "age_seconds": 14154,
+        "age_seconds": 2494,
         "max_age_seconds": 28800
       },
       "1d": {
         "fresh": true,
-        "age_seconds": 71755,
+        "age_seconds": 74494,
         "max_age_seconds": 172800
       }
     }
   },
   "news_guard": {
-    "generated_at": "2026-11-28T11:55:56.614436+00:00",
+    "generated_at": "2026-11-28T12:41:36.129235+00:00",
     "source": "Google News RSS public fallback + Trump's Truth independent archive (unofficial)",
     "available": true,
     "block": false,
@@ -205,7 +205,7 @@
   },
   "volatility_guard": {
     "blocked": false,
-    "atr_5m_pct": 0.1621,
+    "atr_5m_pct": 0.145,
     "atr_threshold_pct": 0.45,
     "range_spike": false
   },
