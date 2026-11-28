@@ -63,6 +63,11 @@ class ValidationGateRegressionTests(unittest.TestCase):
         self.assertFalse(passed)
         self.assertFalse(report["checks"]["futures_source_passed"])
 
+    def test_force_wait_sentinel_blocks_directional_predictions(self):
+        probabilities = [0.80, 0.10, 0.10]
+        self.assertEqual(AI.predict_with_wait_threshold(probabilities, 1.01), 1)
+        self.assertEqual(AI.predict_actionable_class(probabilities, 1.01), 1)
+
 
 if __name__ == "__main__":
     unittest.main()
