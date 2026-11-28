@@ -4,12 +4,12 @@
   "source": "OKX public Futures 5m candles",
   "horizon_minutes": 15,
   "estimated_round_trip_cost_pct": 0.14,
-  "updated_at": "2026-11-28T09:30:54.851255+00:00",
+  "updated_at": "2026-11-28T10:20:52.828849+00:00",
   "current_signal": "WAIT",
   "current_signal_reason": null,
   "closed_trades": 0,
   "pending_trades": 0,
-  "wait_abstentions": 46,
+  "wait_abstentions": 47,
   "wins": 0,
   "losses": 0,
   "win_rate_pct": null,
@@ -38,7 +38,7 @@
       }
     },
     "pending_forecasts": 0,
-    "abstentions": 13,
+    "abstentions": 14,
     "wins": 1,
     "losses": 5,
     "directional_accuracy_pct": 33.33,
@@ -47,15 +47,15 @@
     "average_net_return_pct": -0.15159,
     "net_return_pct_compounded": -0.9064,
     "validation_gate_passed_now": false,
-    "latest_model_timestamp": "2026-11-28T09:12:34.347593+00:00",
-    "latest_model_fresh": false,
+    "latest_model_timestamp": "2026-11-28T10:13:20.041114+00:00",
+    "latest_model_fresh": true,
     "latest_venue_alignment": {
       "compatible": false,
       "type": "BLOCKED",
       "ai_venue": "OKX BTC-USDT-SWAP Futures",
       "market_venue": "OKX",
-      "basis_pct": 0.03237,
-      "candle_skew_minutes": 25.0,
+      "basis_pct": 0.30311,
+      "candle_skew_minutes": 20.0,
       "max_basis_pct": 0.25,
       "max_candle_skew_minutes": 15,
       "reason": "Perpetual price basis or 5m candle-time skew exceeds the safety tolerance."
@@ -569,6 +569,17 @@
       "exit": null,
       "gross_return_pct": null,
       "net_return_pct": null
+    },
+    {
+      "entry_candle_time": 1795860900000,
+      "recorded_at": "2026-11-28T10:20:52.042194+00:00",
+      "exchange": "OKX",
+      "side": "WAIT",
+      "entry": 59384.3,
+      "status": "ABSTAINED",
+      "exit": null,
+      "gross_return_pct": null,
+      "net_return_pct": null
     }
   ],
   "shadow_forecasts": [
@@ -1044,6 +1055,31 @@
       "realized_move_pct": -0.14124,
       "label_threshold_pct": 0.18,
       "classification_exit_candle_time": 1795836300000
+    },
+    {
+      "entry_candle_time": 1795860900000,
+      "model_generated_at": "2026-11-28T10:13:20.041114+00:00",
+      "recorded_at": "2026-11-28T10:20:52.042233+00:00",
+      "exchange": "OKX",
+      "side": "WAIT",
+      "entry": 59384.3,
+      "status": "ABSTAINED",
+      "actionable": false,
+      "validation_gate_passed": false,
+      "model_version": "4.6-causal-market-context",
+      "model_source": "OKX BTC-USDT-SWAP Futures public OHLC candles",
+      "venue_alignment": {
+        "compatible": false,
+        "type": "BLOCKED",
+        "ai_venue": "OKX BTC-USDT-SWAP Futures",
+        "market_venue": "OKX",
+        "basis_pct": 0.30311,
+        "candle_skew_minutes": 20.0,
+        "max_basis_pct": 0.25,
+        "max_candle_skew_minutes": 15,
+        "reason": "Perpetual price basis or 5m candle-time skew exceeds the safety tolerance."
+      },
+      "note": "Shadow-only raw ML forecast. Not a trading signal; validation gate may have failed. Cross-venue records are accepted only when both perpetual Futures feeds pass price-basis and candle-time checks."
     }
   ]
 }
