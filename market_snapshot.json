@@ -1,40 +1,40 @@
 {
-  "price": 59958.1,
-  "funding_rate": 5.32791966134e-05,
-  "funding_percent": 0.0053279196613400005,
-  "open_interest": 3202948.6000000145,
-  "oi_change_5m_pct": 0.00944766887476571,
+  "price": 60144.0,
+  "funding_rate": 5.56606516735e-05,
+  "funding_percent": 0.0055660651673499996,
+  "open_interest": 3206361.410000014,
+  "oi_change_5m_pct": 0.06794477706749731,
   "oi_history": [
     {
-      "timestamp": "1795825800000",
-      "oi_contracts": "3203052.4800000146",
-      "oi_coin": "32030.524800000146",
-      "oi_usd": "1919746300.8355287504954"
+      "timestamp": "1795830300000",
+      "oi_contracts": "3205267.27000001444",
+      "oi_coin": "32052.6727000001444",
+      "oi_usd": "1929850388.77678863206338"
     },
     {
-      "timestamp": "1795825500000",
-      "oi_contracts": "3203052.4800000146",
-      "oi_coin": "32030.524800000146",
-      "oi_usd": "1919564946.69552894760872"
+      "timestamp": "1795830000000",
+      "oi_contracts": "3205418.51000001442",
+      "oi_coin": "32054.1851000001442",
+      "oi_usd": "1928540046.541508675793"
     }
   ],
-  "orderbook_imbalance": -0.875475102006197,
-  "cvd_proxy": 0.49076699932890255,
-  "taker_buy_ratio": 0.7453834996644513,
+  "orderbook_imbalance": 0.3485038026833168,
+  "cvd_proxy": 0.4718364321850927,
+  "taker_buy_ratio": 0.7359182160925464,
   "large_trades": [],
   "data_source": "OKX public BTC-USDT-SWAP perpetual API",
-  "as_of": "2026-11-28T00:30:26.871450+00:00",
+  "as_of": "2026-11-28T01:50:22.723749+00:00",
   "oi_note": "OKX public 5-minute open-interest history when available",
-  "atr_5m_pct": 0.07969,
-  "latest_range_atr_ratio": 0.862,
+  "atr_5m_pct": 0.1349,
+  "latest_range_atr_ratio": 0.861,
   "volatility_status": "NORMAL",
   "volatility_source": "Bybit/OKX completed BTC perpetual 5m candles",
   "oi_change_source": "OKX 5-minute OI history",
-  "signal": "WAIT",
-  "reason": "Derivatives flow is mixed or squeeze/crowding filters are active",
+  "signal": "LONG",
+  "reason": "Positive taker flow, CVD and order-book imbalance",
   "news_pause_active": false,
   "pause_until": "2026-11-27T18:13:05.922760+00:00",
   "news_alerts": [],
-  "updated_at": "2026-11-28T00:30:29.226175+00:00",
+  "updated_at": "2026-11-28T01:50:24.670853+00:00",
   "safety_note": "Signal-only; manual trading only. Large trades are trade-size alerts, not verified whale identities. Trump social posts are monitored through a third-party archive RSS, not an official API."
 }
