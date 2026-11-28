@@ -849,7 +849,11 @@ def walk_forward_validate(rows, labels, forward_returns=None, round_trip_cost_pc
         if train_end < 150 or test_end <= test_start:
             continue
         train_labels = labels[:train_end]
-        wait_threshold = tune_wait_threshold(\n            rows[:train_end], train_labels,\n            forward_returns[:train_end] if forward_returns is not None else None,\n            round_trip_cost_pct\n        )
+        wait_threshold = tune_wait_threshold(
+            rows[:train_end], train_labels,
+            forward_returns[:train_end] if forward_returns is not None else None,
+            round_trip_cost_pct
+        )
         model = train_ensemble(rows[:train_end], train_labels)
         fold_actual, fold_predicted, fold_regimes = [], [], []
         majority_label = max(range(len(CLASSES)), key=lambda k: train_labels.count(k))
