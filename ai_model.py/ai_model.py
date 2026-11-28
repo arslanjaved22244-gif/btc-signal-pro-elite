@@ -753,6 +753,10 @@ def classify_feature_regime(row):
 
 
 def predict_with_wait_threshold(probs, wait_threshold):
+    # A sentinel above the probability range means calibration found no
+    # cost-profitable threshold. In that case, explicitly force WAIT.
+    if wait_threshold > 1.0:
+        return 1
     # Keep WAIT as a first-class outcome instead of allowing directional
     # classes to dominate whenever their scores are only marginally higher.
     if probs[1] >= wait_threshold:
