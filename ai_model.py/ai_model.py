@@ -772,29 +772,52 @@ def predict_actionable_class(probs, wait_threshold, min_direction_score=0.48, mi
     return candidate
 
 
-def tune_wait_threshold(rows, labels):
-    # Tune only on a chronological calibration tail inside the training data.
-    # The outer walk-forward test window is never used to choose this value.
+def tune_wait_threshold(rows, labels, forward_returns=None, round_trip_cost_pct=0.14):
+    """Select the WAIT threshold on a chronological, cost-aware calibration tail.
+
+    The outer walk-forward test window is never used for calibration. A threshold
+    is accepted only when its non-overlapping paper trades show positive net
+    expectancy and at least a 50% net win rate after the configured costs.
+    If no candidate qualifies, return a threshold that forces WAIT.
+    """
     n = len(rows)
+    if forward_returns is None or len(forward_returns) != n:
+        return 1.01
     split = int(n * 0.80)
     calibration_start = split + FUTURE_CANDLES
     if split < 150 or calibration_start >= n - 30:
-        return 0.30
+        return 1.01
     calibration_model = train_ensemble(rows[:split], labels[:split])
-    actual = labels[calibration_start:]
     probability_rows = [
         predict_ensemble(calibration_model, row) for row in rows[calibration_start:]
     ]
-    best_threshold, best_f1 = 0.30, -1.0
+    calibration_returns = forward_returns[calibration_start:]
+    best_threshold, best_score = 1.01, float("-inf")
     for step in range(9):
         threshold = 0.20 + step * 0.05
-        predicted = [
-            predict_actionable_class(probs, threshold)
-            for probs in probability_rows
-        ]
-        score = classification_metrics(actual, predicted)["macro_f1"]
-        if score > best_f1:
-            best_f1 = score
+        net_values = []
+        next_entry = 0
+        for offset, probs in enumerate(probability_rows):
+            row_index = calibration_start + offset
+            if row_index < next_entry:
+                continue
+            predicted = predict_actionable_class(probs, threshold)
+            if predicted not in (0, 2):
+                continue
+            side = 1.0 if predicted == 2 else -1.0
+            net_return = float(calibration_returns[offset]) * side * 100.0 - round_trip_cost_pct
+            net_values.append(net_return)
+            next_entry = row_index + FUTURE_CANDLES
+        if len(net_values) < 8:
+            continue
+        average_net = sum(net_values) / len(net_values)
+        net_win_rate = sum(1 for value in net_values if value > 0) / len(net_values)
+        if average_net <= 0 or net_win_rate < 0.50:
+            continue
+        # Reward repeatable expectancy while avoiding a single-trade optimum.
+        score = average_net * math.sqrt(len(net_values))
+        if score > best_score:
+            best_score = score
             best_threshold = threshold
     return best_threshold
 
@@ -826,7 +849,7 @@ def walk_forward_validate(rows, labels, forward_returns=None, round_trip_cost_pc
         if train_end < 150 or test_end <= test_start:
             continue
         train_labels = labels[:train_end]
-        wait_threshold = tune_wait_threshold(rows[:train_end], train_labels)
+        wait_threshold = tune_wait_threshold(\n            rows[:train_end], train_labels,\n            forward_returns[:train_end] if forward_returns is not None else None,\n            round_trip_cost_pct\n        )
         model = train_ensemble(rows[:train_end], train_labels)
         fold_actual, fold_predicted, fold_regimes = [], [], []
         majority_label = max(range(len(CLASSES)), key=lambda k: train_labels.count(k))
@@ -3041,7 +3064,7 @@ def main():
     if len(rows) < 250:
         raise ValueError(f"Not enough aligned multi-timeframe samples: {len(rows)}")
     validation, folds = walk_forward_validate(rows, labels, primary_forward_returns)
-    final_wait_threshold = tune_wait_threshold(rows, labels)
+    final_wait_threshold = tune_wait_threshold(rows, labels, primary_forward_returns)
     final_model = train_ensemble(rows, labels)
     class_counts = [max(1, labels.count(k)) for k in range(len(CLASSES))]
     class_weights = [min(2.5, len(labels) / (len(CLASSES) * count)) for count in class_counts]
