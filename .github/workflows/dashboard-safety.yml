@@ -1,0 +1,51 @@
+name: Dashboard Safety Validation
+
+on:
+  pull_request:
+    paths:
+      - "index.html"
+      - ".github/workflows/dashboard-safety.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  dashboard-safety:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Check dashboard JavaScript syntax and safety guards
+        run: |
+          python - <<'PY'
+          import re
+          from pathlib import Path
+
+          html = Path("index.html").read_text(encoding="utf-8")
+          scripts = re.findall(r"<script\\b(?![^>]*\\bsrc=)[^>]*>(.*?)</script>", html, re.I | re.S)
+          if not scripts:
+              raise SystemExit("No inline dashboard scripts found")
+          for index, script in enumerate(scripts):
+              Path(f"/tmp/dashboard-{index}.js").write_text(script, encoding="utf-8")
+          required = [
+              "SIGNAL SNAPSHOT STALE / TIME INVALID (MAX 20 MIN)",
+              "validation_passed",
+              "market_alignment?.passed",
+              "institutional_quality_gate?.passed",
+              "timeframe_freshness",
+              '["5m","15m","1h","4h","1d"]',
+          ]
+          missing = [item for item in required if item not in html]
+          if missing:
+              raise SystemExit("Missing safety guards: " + ", ".join(missing))
+          print(f"Extracted {len(scripts)} inline script(s); required safety guards present.")
+          PY
+          for file in /tmp/dashboard-*.js; do
+            node --check "$file"
+          done
