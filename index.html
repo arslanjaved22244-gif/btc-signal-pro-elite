@@ -1576,11 +1576,18 @@ async function loadHybridSignal(force=false){
   const age=updated?((Date.now()-updated.getTime())/60000):null;
   const timestampValid=Number.isFinite(age)&&age>=-1&&age<=20;
   const locks=[];
-  if(!timestampValid)locks.push("SIGNAL SNAPSHOT STALE / TIME INVALID");
+  if(!timestampValid)locks.push("SIGNAL SNAPSHOT STALE / TIME INVALID (MAX 20 MIN)");
   if(d.news_guard?.block)locks.push("NEWS BLOCK");
   if(d.volatility_guard?.blocked)locks.push("VOLATILITY BLOCK");
-  if(d.ml_context?.futures_source!==true)locks.push("ML SOURCE / VALIDATION GATE BLOCKED");
+  if(d.ml_context?.source_is_futures!==true||d.ml_context?.futures_source!==true)locks.push("VERIFIED FUTURES ML SOURCE NOT PASSED");
+  if(d.ml_context?.validation_passed!==true)locks.push("AI WALK-FORWARD VALIDATION FAILED");
+  if(d.ml_context?.market_alignment?.passed!==true)locks.push("CROSS-VENUE / CANDLE ALIGNMENT FAILED");
+  if(d.institutional_quality_gate?.passed!==true)locks.push("INSTITUTIONAL QUALITY GATE BLOCKED");
   if(d.data_quality?.core_timeframes_ok!==true)locks.push("CORE DATA NOT READY");
+  const freshness=d.data_quality?.timeframe_freshness||{};
+  for(const tf of ["5m","15m","1h","4h","1d"]){
+   if(freshness[tf]?.fresh!==true)locks.push(tf+" TIMEFRAME STALE / MISSING");
+  }
   const forcedWait=locks.length>0;
   const side=forcedWait?"WAIT":(d.signal||"WAIT");
   setText("hybridSignal",side);
