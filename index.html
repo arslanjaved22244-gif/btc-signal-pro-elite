@@ -1574,7 +1574,7 @@ async function loadHybridSignal(force=false){
   const d=await response.json(),el=$("hybridSignal");
   const updated=d.generated_at?new Date(d.generated_at):null;
   const age=updated?((Date.now()-updated.getTime())/60000):null;
-  const timestampValid=Number.isFinite(age)&&age>=-1&&age<=10;
+  const timestampValid=Number.isFinite(age)&&age>=-1&&age<=20;
   const locks=[];
   if(!timestampValid)locks.push("SIGNAL SNAPSHOT STALE / TIME INVALID");
   if(d.news_guard?.block)locks.push("NEWS BLOCK");
