@@ -1,7 +1,7 @@
 {
   "system": "BTC Signal Pro Elite Hybrid Confluence Engine",
   "version": "4.3-hybrid-sweep-validated-futures",
-  "generated_at": "2026-11-28T11:14:04.657761+00:00",
+  "generated_at": "2026-11-28T11:56:23.336075+00:00",
   "symbol": "BTCUSDT",
   "market_type": "OKX_BTC_USDT_SWAP",
   "market_exchange": "OKX",
@@ -14,48 +14,48 @@
     "status": "EARLY_SETUP_ONLY_NOT_ENTRY",
     "momentum_scores": {
       "LONG": 0.0,
-      "SHORT": 6.5
+      "SHORT": 5.5
     },
-    "momentum_margin": 6.5,
+    "momentum_margin": 5.5,
     "note": "Early setup is a watchlist hint only, not an entry signal. Confirm the main signal and manual risk levels before any trade."
   },
-  "confidence_score": 71.74,
+  "confidence_score": 73.91,
   "scores": {
-    "LONG": 2.75,
-    "SHORT": 8.25
+    "LONG": 2.5,
+    "SHORT": 8.5
   },
   "timeframe_analysis": {
     "5m": {
       "available": true,
       "bias": "BEARISH",
-      "momentum_bias": "BEARISH",
-      "price": 59185.4,
-      "ema50": 59491.53,
-      "ema200": 59859.68,
-      "rsi14": 34.13,
-      "atr14": 114.31,
+      "momentum_bias": "NEUTRAL",
+      "price": 59192.5,
+      "ema50": 59401.9,
+      "ema200": 59802.61,
+      "rsi14": 42.06,
+      "atr14": 95.95,
       "macd": {
-        "line": -112.54325,
-        "signal": -99.75584,
-        "histogram": -12.78741
+        "line": -76.86702,
+        "signal": -88.14393,
+        "histogram": 11.27691
       },
-      "age_seconds": 215
+      "age_seconds": 54
     },
     "15m": {
       "available": true,
       "bias": "BEARISH",
       "momentum_bias": "BEARISH",
-      "price": 59226.2,
-      "ema50": 59770.13,
-      "ema200": 60192.88,
-      "rsi14": 26.58,
-      "atr14": 150.03,
+      "price": 59138.9,
+      "ema50": 59705.94,
+      "ema200": 60164.95,
+      "rsi14": 24.3,
+      "atr14": 150.86,
       "macd": {
-        "line": -147.64073,
-        "signal": -109.97513,
-        "histogram": -37.6656
+        "line": -166.77761,
+        "signal": -134.69516,
+        "histogram": -32.08245
       },
-      "age_seconds": 816
+      "age_seconds": 654
     },
     "1h": {
       "available": true,
@@ -71,7 +71,7 @@
         "signal": -258.88276,
         "histogram": -34.04443
       },
-      "age_seconds": 816
+      "age_seconds": 3354
     },
     "4h": {
       "available": true,
@@ -87,7 +87,7 @@
         "signal": -47.53126,
         "histogram": -53.12281
       },
-      "age_seconds": 11616
+      "age_seconds": 14154
     },
     "1d": {
       "available": true,
@@ -103,7 +103,7 @@
         "signal": -4502.17037,
         "histogram": -20.72115
       },
-      "age_seconds": 69216
+      "age_seconds": 71755
     }
   },
   "liquidity_sweep": {
@@ -113,17 +113,17 @@
     "wick_extreme": 59017.2,
     "close": 59226.2,
     "time": 1795862700000,
-    "bars_ago": 0,
+    "bars_ago": 3,
     "note": "15m wick swept below the prior 20-bar low and closed back above it."
   },
   "order_flow": {
-    "cvd_base": 626.81,
-    "order_book_imbalance": -0.91004,
+    "cvd_base": -444.39,
+    "order_book_imbalance": 0.398968,
     "order_book_imbalance_method": "Top-20 visible levels; quote-notional (price \u00d7 quantity); (bid-ask)/(bid+ask)",
-    "funding_rate_pct": 0.006444,
+    "funding_rate_pct": 0.006749,
     "funding_crowding": "NEUTRAL",
-    "open_interest_change_30m_pct": 0.0896,
-    "taker_buy_sell_ratio": 1.3128384616981774
+    "open_interest_change_30m_pct": 0.0,
+    "taker_buy_sell_ratio": 3.5252123055936715
   },
   "ml_context": {
     "model_version": "4.6-causal-market-context",
@@ -136,8 +136,8 @@
       "type": "BLOCKED",
       "model_venue": "OKX BTC-USDT-SWAP Futures",
       "market_venue": "OKX",
-      "basis_pct": 0.64019,
-      "candle_skew_minutes": 70.0,
+      "basis_pct": 0.62812,
+      "candle_skew_minutes": 115.0,
       "max_basis_pct": 0.25,
       "max_candle_skew_minutes": 15,
       "reason": "Perpetual price basis or 5m candle-time skew exceeds safety tolerance."
@@ -145,7 +145,7 @@
     "signal": "WAIT"
   },
   "risk_levels": {
-    "entry_reference": 59185.4,
+    "entry_reference": 59192.5,
     "stop_loss": null,
     "take_profit_1": null,
     "take_profit_2": null,
@@ -165,33 +165,33 @@
     "timeframe_freshness": {
       "5m": {
         "fresh": true,
-        "age_seconds": 215,
+        "age_seconds": 54,
         "max_age_seconds": 600
       },
       "15m": {
         "fresh": true,
-        "age_seconds": 816,
+        "age_seconds": 654,
         "max_age_seconds": 1800
       },
       "1h": {
         "fresh": true,
-        "age_seconds": 816,
+        "age_seconds": 3354,
         "max_age_seconds": 7200
       },
       "4h": {
         "fresh": true,
-        "age_seconds": 11616,
+        "age_seconds": 14154,
         "max_age_seconds": 28800
       },
       "1d": {
         "fresh": true,
-        "age_seconds": 69216,
+        "age_seconds": 71755,
         "max_age_seconds": 172800
       }
     }
   },
   "news_guard": {
-    "generated_at": "2026-11-28T11:13:38.415649+00:00",
+    "generated_at": "2026-11-28T11:55:56.614436+00:00",
     "source": "Google News RSS public fallback + Trump's Truth independent archive (unofficial)",
     "available": true,
     "block": false,
@@ -205,7 +205,7 @@
   },
   "volatility_guard": {
     "blocked": false,
-    "atr_5m_pct": 0.1931,
+    "atr_5m_pct": 0.1621,
     "atr_threshold_pct": 0.45,
     "range_spike": false
   },

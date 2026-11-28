@@ -1,13 +1,13 @@
 {
   "system": "BTC Signal Pro Elite Institutional Intelligence",
   "version": "1.0-six-upgrades",
-  "generated_at": "2026-11-28T11:14:03.934757+00:00",
+  "generated_at": "2026-11-28T11:56:22.769216+00:00",
   "market_regime": {
     "status": "AVAILABLE",
     "regime": "BEAR_TREND",
     "ema50_200_spread_pct": -0.976,
     "ema50_slope_6h_pct": -0.2849,
-    "atr_pct": 0.2533,
+    "atr_pct": 0.2551,
     "source_timeframe": "1h trend + 15m volatility",
     "note": "Rule-based regime classification, not a forecast."
   },
@@ -17,30 +17,27 @@
     "poc": 60500.59,
     "value_area_high": 60963.85,
     "value_area_low": 58390.2,
-    "vwap": 59932.64,
-    "last_price": 59226.2,
+    "vwap": 59939.49,
+    "last_price": 59138.9,
     "price_vs_vwap": "BELOW",
-    "total_sampled_volume": 36176639.46,
+    "total_sampled_volume": 35832234.33,
     "note": "Estimated profile from candle volume, not exchange tick-level volume-at-price."
   },
   "liquidity_structure": {
-    "status": "BULLISH_SWEEP_RECLAIM",
-    "level": 59156.2,
-    "wick": 59017.2,
-    "note": "Latest completed 15m candle swept the prior 20-bar low and reclaimed it."
+    "status": "NO_CONFIRMED_SWEEP_OR_BREAKOUT"
   },
   "options": {
     "status": "AVAILABLE",
     "venue": "Deribit public BTC options",
-    "put_call_open_interest_ratio": 0.8056,
-    "call_open_interest": 190989.6,
-    "put_open_interest": 153864.3,
-    "call_volume_24h": 8239.6,
-    "put_volume_24h": 9984.2,
-    "average_call_mark_iv_pct": 55.91,
-    "average_put_mark_iv_pct": 55.91,
+    "put_call_open_interest_ratio": 0.8055,
+    "call_open_interest": 191009.9,
+    "put_open_interest": 153864.9,
+    "call_volume_24h": 7817.5,
+    "put_volume_24h": 9385.1,
+    "average_call_mark_iv_pct": 56.03,
+    "average_put_mark_iv_pct": 56.03,
     "approx_max_pain_strike": 68000.0,
-    "btc_index_price": 59218.49,
+    "btc_index_price": 59143.95,
     "instruments_sampled": 954,
     "note": "Aggregated listed BTC options snapshot; max-pain is an approximation across returned instruments, not a price target."
   },
@@ -70,30 +67,30 @@
     "15m": {
       "status": "RESEARCH_ONLY",
       "scenario": "SHORT_BIAS",
-      "directional_score": -16.19,
-      "recent_momentum_pct": -0.0414,
-      "ema_spread_bps": -18.19,
-      "atr_pct": 0.1931,
+      "directional_score": -12.06,
+      "recent_momentum_pct": -0.0008,
+      "ema_spread_bps": -10.05,
+      "atr_pct": 0.1621,
       "regime": "BEAR_TREND",
       "note": "Heuristic scenario, not a calibrated probability or an entry signal."
     },
     "30m": {
       "status": "RESEARCH_ONLY",
       "scenario": "SHORT_BIAS",
-      "directional_score": -16.26,
-      "recent_momentum_pct": -0.0686,
-      "ema_spread_bps": -18.19,
-      "atr_pct": 0.1931,
+      "directional_score": -12.23,
+      "recent_momentum_pct": -0.0704,
+      "ema_spread_bps": -10.05,
+      "atr_pct": 0.1621,
       "regime": "BEAR_TREND",
       "note": "Heuristic scenario, not a calibrated probability or an entry signal."
     },
     "1h": {
       "status": "RESEARCH_ONLY",
       "scenario": "SHORT_BIAS",
-      "directional_score": -23.56,
-      "recent_momentum_pct": -0.5676,
-      "ema_spread_bps": -25.95,
-      "atr_pct": 0.2533,
+      "directional_score": -24.89,
+      "recent_momentum_pct": -0.1316,
+      "ema_spread_bps": -28.35,
+      "atr_pct": 0.2551,
       "regime": "BEAR_TREND",
       "note": "Heuristic scenario, not a calibrated probability or an entry signal."
     }
@@ -155,8 +152,8 @@
       "type": "BLOCKED",
       "ai_venue": "OKX BTC-USDT-SWAP Futures",
       "market_venue": "OKX",
-      "basis_pct": 0.64019,
-      "candle_skew_minutes": 70.0,
+      "basis_pct": 0.62812,
+      "candle_skew_minutes": 115.0,
       "max_basis_pct": 0.25,
       "max_candle_skew_minutes": 15,
       "reason": "Perpetual price basis or 5m candle-time skew exceeds the safety tolerance."
@@ -171,7 +168,7 @@
       {
         "name": "5m_futures_candles",
         "passed": true,
-        "detail": "candle age 215s"
+        "detail": "candle age 54s"
       },
       {
         "name": "all_five_timeframes",
@@ -186,7 +183,7 @@
       {
         "name": "open_interest_data",
         "passed": true,
-        "detail": "historical OI latest row age 4.08m"
+        "detail": "historical OI latest row age 6.39m"
       },
       {
         "name": "executed_taker_flow",
@@ -224,7 +221,7 @@
         "detail": "not connected / no recent message"
       }
     ],
-    "market_snapshot_age_minutes": 0.52,
+    "market_snapshot_age_minutes": 0.51,
     "note": "A feed marked unavailable is not guessed or replaced. This audit reports source presence and freshness, not signal accuracy. GitHub Actions sampled liquidation data does not count as a continuous stream."
   },
   "execution": "MANUAL_ONLY_NO_ORDERS",
