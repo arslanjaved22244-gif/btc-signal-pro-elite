@@ -1,12 +1,25 @@
 {
-  "generated_at": "2026-11-28T13:45:50.095325+00:00",
-  "source": "Trump's Truth independent archive (unofficial)",
+  "generated_at": "2026-11-28T14:34:26.696531+00:00",
+  "source": "Google News RSS public fallback + Trump's Truth independent archive (unofficial)",
   "available": true,
-  "block": false,
-  "block_until": null,
-  "matched_events": [],
+  "block": true,
+  "block_until": "2026-11-28T14:53:18+00:00",
+  "matched_events": [
+    {
+      "title": "Trash Island has been completely destroyed by the Storm! It is totally WIPED OUT, including the already eroding seawalls, which have collapsed along the Potomac, and the road, which has largely followed this wall \u2014 Almost everything is submerged and obliterated by the tides. God must have been watch",
+      "domain": "www.trumpstruth.org",
+      "source": "Trump's Truth independent Truth Social archive (unofficial)",
+      "post_url": "https://www.trumpstruth.org/statuses/43769",
+      "published_at": "2026-11-28T14:23:18+00:00",
+      "age_minutes": 11.1,
+      "matched_terms": [
+        "trump"
+      ]
+    }
+  ],
   "warnings": [],
   "sources": [
+    "Google News RSS public fallback",
     "Trump's Truth independent archive (unofficial)"
   ]
 }
