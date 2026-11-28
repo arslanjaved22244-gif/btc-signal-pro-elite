@@ -1,7 +1,7 @@
 {
   "system": "BTC Signal Pro Elite Hybrid Confluence Engine",
   "version": "4.3-hybrid-sweep-validated-futures",
-  "generated_at": "2026-11-28T12:42:03.046418+00:00",
+  "generated_at": "2026-11-28T13:46:20.271278+00:00",
   "symbol": "BTCUSDT",
   "market_type": "OKX_BTC_USDT_SWAP",
   "market_exchange": "OKX",
@@ -10,68 +10,68 @@
   "execution_price_note": "Use this exchange feed as the analysis reference only; verify the live Binance Futures execution price and spread before any manual entry.",
   "signal": "WAIT",
   "early_setup": {
-    "direction": "SHORT",
-    "status": "EARLY_SETUP_ONLY_NOT_ENTRY",
+    "direction": "WAIT",
+    "status": "NO_CLEAR_EARLY_SETUP",
     "momentum_scores": {
       "LONG": 0.0,
-      "SHORT": 5.5
+      "SHORT": 6.5
     },
-    "momentum_margin": 5.5,
+    "momentum_margin": 6.5,
     "note": "Early setup is a watchlist hint only, not an entry signal. Confirm the main signal and manual risk levels before any trade."
   },
-  "confidence_score": 80.43,
+  "confidence_score": 69.57,
   "scores": {
-    "LONG": 1.25,
-    "SHORT": 9.25
+    "LONG": 1.75,
+    "SHORT": 8.0
   },
   "timeframe_analysis": {
     "5m": {
       "available": true,
       "bias": "BEARISH",
-      "momentum_bias": "NEUTRAL",
-      "price": 59205.6,
-      "ema50": 59357.1,
-      "ema200": 59755.43,
-      "rsi14": 44.06,
-      "atr14": 85.84,
+      "momentum_bias": "BEARISH",
+      "price": 59011.3,
+      "ema50": 59281.48,
+      "ema200": 59684.56,
+      "rsi14": 35.48,
+      "atr14": 93.93,
       "macd": {
-        "line": -27.89125,
-        "signal": -41.72541,
-        "histogram": 13.83415
+        "line": -39.61897,
+        "signal": -30.91107,
+        "histogram": -8.7079
       },
-      "age_seconds": 93
+      "age_seconds": 47
     },
     "15m": {
       "available": true,
       "bias": "BEARISH",
       "momentum_bias": "BEARISH",
-      "price": 59244.5,
-      "ema50": 59653.39,
-      "ema200": 60138.62,
-      "rsi14": 34.52,
-      "atr14": 147.16,
+      "price": 59011.3,
+      "ema50": 59563.38,
+      "ema200": 60076.35,
+      "rsi14": 26.07,
+      "atr14": 164.94,
       "macd": {
-        "line": -153.50978,
-        "signal": -146.36298,
-        "histogram": -7.1468
+        "line": -147.42372,
+        "signal": -145.47209,
+        "histogram": -1.95163
       },
-      "age_seconds": 693
+      "age_seconds": 47
     },
     "1h": {
       "available": true,
       "bias": "BEARISH",
       "momentum_bias": "BEARISH",
-      "price": 59209.8,
-      "ema50": 60178.73,
-      "ema200": 60778.4,
-      "rsi14": 31.92,
-      "atr14": 306.93,
+      "price": 59180.4,
+      "ema50": 60139.58,
+      "ema200": 60793.41,
+      "rsi14": 31.49,
+      "atr14": 301.73,
       "macd": {
-        "line": -312.80289,
-        "signal": -269.66679,
-        "histogram": -43.1361
+        "line": -327.15562,
+        "signal": -281.16455,
+        "histogram": -45.99107
       },
-      "age_seconds": 2493
+      "age_seconds": 2748
     },
     "4h": {
       "available": true,
@@ -87,7 +87,7 @@
         "signal": -74.01096,
         "histogram": -105.91877
       },
-      "age_seconds": 2494
+      "age_seconds": 6348
     },
     "1d": {
       "available": true,
@@ -103,27 +103,21 @@
         "signal": -4502.17037,
         "histogram": -20.72115
       },
-      "age_seconds": 74494
+      "age_seconds": 78348
     }
   },
   "liquidity_sweep": {
-    "direction": "LONG",
-    "status": "CONFIRMED_BULLISH_SWEEP",
-    "level": 59156.2,
-    "wick_extreme": 59017.2,
-    "close": 59226.2,
-    "time": 1795862700000,
-    "bars_ago": 6,
-    "note": "15m wick swept below the prior 20-bar low and closed back above it."
+    "direction": "NONE",
+    "status": "NO_CONFIRMED_SWEEP"
   },
   "order_flow": {
-    "cvd_base": -385.1,
-    "order_book_imbalance": -0.262074,
+    "cvd_base": 824.59,
+    "order_book_imbalance": 0.264636,
     "order_book_imbalance_method": "Top-20 visible levels; quote-notional (price \u00d7 quantity); (bid-ask)/(bid+ask)",
-    "funding_rate_pct": 0.006361,
+    "funding_rate_pct": 0.006425,
     "funding_crowding": "NEUTRAL",
-    "open_interest_change_30m_pct": -0.0266,
-    "taker_buy_sell_ratio": 1.0119622144083087
+    "open_interest_change_30m_pct": -0.4711,
+    "taker_buy_sell_ratio": 0.5788037918649974
   },
   "ml_context": {
     "model_version": "4.6-causal-market-context",
@@ -136,8 +130,8 @@
       "type": "BLOCKED",
       "model_venue": "OKX BTC-USDT-SWAP Futures",
       "market_venue": "OKX",
-      "basis_pct": 0.60585,
-      "candle_skew_minutes": 160.0,
+      "basis_pct": 0.93711,
+      "candle_skew_minutes": 225.0,
       "max_basis_pct": 0.25,
       "max_candle_skew_minutes": 15,
       "reason": "Perpetual price basis or 5m candle-time skew exceeds safety tolerance."
@@ -145,7 +139,7 @@
     "signal": "WAIT"
   },
   "risk_levels": {
-    "entry_reference": 59205.6,
+    "entry_reference": 59011.3,
     "stop_loss": null,
     "take_profit_1": null,
     "take_profit_2": null,
@@ -165,49 +159,48 @@
     "timeframe_freshness": {
       "5m": {
         "fresh": true,
-        "age_seconds": 93,
+        "age_seconds": 47,
         "max_age_seconds": 600
       },
       "15m": {
         "fresh": true,
-        "age_seconds": 693,
+        "age_seconds": 47,
         "max_age_seconds": 1800
       },
       "1h": {
         "fresh": true,
-        "age_seconds": 2493,
+        "age_seconds": 2748,
         "max_age_seconds": 7200
       },
       "4h": {
         "fresh": true,
-        "age_seconds": 2494,
+        "age_seconds": 6348,
         "max_age_seconds": 28800
       },
       "1d": {
         "fresh": true,
-        "age_seconds": 74494,
+        "age_seconds": 78348,
         "max_age_seconds": 172800
       }
     }
   },
   "news_guard": {
-    "generated_at": "2026-11-28T12:41:36.129235+00:00",
-    "source": "Google News RSS public fallback + Trump's Truth independent archive (unofficial)",
+    "generated_at": "2026-11-28T13:45:50.095325+00:00",
+    "source": "Trump's Truth independent archive (unofficial)",
     "available": true,
     "block": false,
     "block_until": null,
     "matched_events": [],
     "warnings": [],
     "sources": [
-      "Google News RSS public fallback",
       "Trump's Truth independent archive (unofficial)"
     ]
   },
   "volatility_guard": {
-    "blocked": false,
-    "atr_5m_pct": 0.145,
+    "blocked": true,
+    "atr_5m_pct": 0.1592,
     "atr_threshold_pct": 0.45,
-    "range_spike": false
+    "range_spike": true
   },
   "institutional_quality_gate": {
     "status": "BLOCKED",
@@ -232,6 +225,7 @@
     "Selected a separate exchange Futures perpetual because it supplied better verified derivatives coverage; confirm execution venue price and liquidity.",
     "Cross-venue AI authorization blocked: Perpetual price basis or 5m candle-time skew exceeds safety tolerance.",
     "Directional entries blocked: AI must use verified perpetual Futures data AND pass the global walk-forward validation gate. Spot, unknown-source or failed-validation ML cannot authorize a Futures trade.",
+    "Volatility circuit breaker active: 5m ATR or candle range exceeded safety threshold.",
     "Institutional quality gate blocked: directional entries remain disabled until AI baseline, macro-F1, 30+ shadow forecasts and positive 300+ candle cost-aware backtest all pass."
   ],
   "execution": "MANUAL_ONLY_NO_ORDERS"
