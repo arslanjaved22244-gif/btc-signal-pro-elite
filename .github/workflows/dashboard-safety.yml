@@ -1,6 +1,9 @@
 name: Dashboard Safety Validation
 
 on:
+  push:
+    branches:
+      - "fix/dashboard-hard-safety-locks"
   pull_request:
     paths:
       - "index.html"
