@@ -1,12 +1,13 @@
 {
-  "generated_at": "2026-11-28T07:53:40.180447+00:00",
-  "source": "Trump's Truth independent archive (unofficial)",
+  "generated_at": "2026-11-28T08:39:57.168244+00:00",
+  "source": "Google News RSS public fallback + Trump's Truth independent archive (unofficial)",
   "available": true,
   "block": false,
   "block_until": null,
   "matched_events": [],
   "warnings": [],
   "sources": [
+    "Google News RSS public fallback",
     "Trump's Truth independent archive (unofficial)"
   ]
 }
