@@ -15,6 +15,7 @@ import xml.etree.ElementTree as ET
 import time
 import urllib.request
 import urllib.parse
+import os
 from datetime import datetime, timezone, timedelta
 
 SYMBOL = "BTC/USDT"
@@ -3189,6 +3190,13 @@ def main():
         "wait_probability_threshold": final_wait_threshold,
         "ensemble_configuration": {"models": ["full_history_logistic", "recent_regime_logistic", "nearest_centroid", "decision_stumps"], "weights": production_weights, "candidate_adaptive_weights": adaptive_weights, "adaptive_weights_applied": False, "recent_training_window": final_model["recent_window"]},
         "adaptive_learning": adaptive_learning,
+        "validation_provenance": {
+            "source_commit_sha": os.environ.get("GITHUB_SHA") or "UNKNOWN",
+            "calibration_method": "chronological training-tail macro-F1 threshold selection",
+            "fold_count": len(folds),
+            "decision_diagnostics_present": bool(validation.get("decision_diagnostics")),
+            "report_schema": "validation-provenance-v1"
+        },
         "walk_forward_metrics": validation,
         "validation_gate": {"passed": validation_gate, "futures_source_required": True, "minimum_accuracy_pct": 38.0, "minimum_macro_f1_pct": 30.0, "must_beat_majority_baseline": True, "profitability_evidence_required": True, **validation_gate_report},
         "futures_microstructure": futures_microstructure,
