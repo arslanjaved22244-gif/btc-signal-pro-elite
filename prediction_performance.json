@@ -1,8 +1,8 @@
 {
   "source": "OKX BTC-USDT-SWAP public ticker; same-exchange reference and evaluation; directional close comparison only",
-  "updated_at": "2026-11-28T02:42:01.274919+00:00",
-  "model_generated_at": "2026-11-27T23:20:02.466048+00:00",
-  "current_price": 59999.1,
+  "updated_at": "2026-11-28T03:16:08.900523+00:00",
+  "model_generated_at": "2026-11-28T03:14:28.703938+00:00",
+  "current_price": 59958.1,
   "stats": {
     "15m": {
       "evaluated": 23,
@@ -38,14 +38,14 @@
       "excluded_legacy_source_mismatch": 4
     },
     "4h": {
-      "evaluated": 21,
+      "evaluated": 22,
       "directional_calls": 1,
       "correct": 0,
       "directional_accuracy_pct": 0.0,
       "raw_directional_calls": 0,
       "raw_correct": 0,
       "raw_directional_accuracy_pct": null,
-      "wait_abstentions": 20,
+      "wait_abstentions": 21,
       "excluded_legacy_source_mismatch": 4
     }
   },
@@ -1855,11 +1855,11 @@
       "model_source": "OKX BTC-USDT-SWAP Futures public OHLC candles",
       "reference_price": 59771.1,
       "reference_exchange": "OKX BTC-USDT-SWAP",
-      "outcome": null,
-      "evaluated_at": null,
-      "realized_change_pct": null,
+      "outcome": "ABSTAINED",
+      "evaluated_at": "2026-11-28T03:16:08.900523+00:00",
+      "realized_change_pct": 0.31286,
       "correct": null,
-      "raw_correct": null,
+      "raw_correct": false,
       "validation_status": "VALIDATED TREE ENSEMBLE"
     },
     {
@@ -1933,6 +1933,78 @@
       "correct": null,
       "raw_correct": null,
       "validation_status": "VALIDATED TREE ENSEMBLE"
+    },
+    {
+      "model_generated_at": "2026-11-28T03:14:28.703938+00:00",
+      "logged_at": "2026-11-28T03:16:08.900491+00:00",
+      "horizon": "15m",
+      "horizon_minutes": 15,
+      "direction": "WAIT",
+      "raw_direction": "LONG",
+      "source_validated": false,
+      "model_source": "OKX BTC-USDT-SWAP Futures public OHLC candles",
+      "reference_price": 59958.1,
+      "reference_exchange": "OKX BTC-USDT-SWAP",
+      "outcome": null,
+      "evaluated_at": null,
+      "realized_change_pct": null,
+      "correct": null,
+      "raw_correct": null,
+      "validation_status": "WEAK EDGE \u2014 WAIT"
+    },
+    {
+      "model_generated_at": "2026-11-28T03:14:28.703938+00:00",
+      "logged_at": "2026-11-28T03:16:08.900491+00:00",
+      "horizon": "30m",
+      "horizon_minutes": 30,
+      "direction": "WAIT",
+      "raw_direction": "SHORT",
+      "source_validated": false,
+      "model_source": "OKX BTC-USDT-SWAP Futures public OHLC candles",
+      "reference_price": 59958.1,
+      "reference_exchange": "OKX BTC-USDT-SWAP",
+      "outcome": null,
+      "evaluated_at": null,
+      "realized_change_pct": null,
+      "correct": null,
+      "raw_correct": null,
+      "validation_status": "WEAK EDGE \u2014 WAIT"
+    },
+    {
+      "model_generated_at": "2026-11-28T03:14:28.703938+00:00",
+      "logged_at": "2026-11-28T03:16:08.900491+00:00",
+      "horizon": "60m",
+      "horizon_minutes": 60,
+      "direction": "WAIT",
+      "raw_direction": "LONG",
+      "source_validated": false,
+      "model_source": "OKX BTC-USDT-SWAP Futures public OHLC candles",
+      "reference_price": 59958.1,
+      "reference_exchange": "OKX BTC-USDT-SWAP",
+      "outcome": null,
+      "evaluated_at": null,
+      "realized_change_pct": null,
+      "correct": null,
+      "raw_correct": null,
+      "validation_status": "VALIDATED TREE ENSEMBLE"
+    },
+    {
+      "model_generated_at": "2026-11-28T03:14:28.703938+00:00",
+      "logged_at": "2026-11-28T03:16:08.900491+00:00",
+      "horizon": "4h",
+      "horizon_minutes": 240,
+      "direction": "WAIT",
+      "raw_direction": "SHORT",
+      "source_validated": false,
+      "model_source": "OKX BTC-USDT-SWAP Futures public OHLC candles",
+      "reference_price": 59958.1,
+      "reference_exchange": "OKX BTC-USDT-SWAP",
+      "outcome": null,
+      "evaluated_at": null,
+      "realized_change_pct": null,
+      "correct": null,
+      "raw_correct": null,
+      "validation_status": "WEAK EDGE \u2014 WAIT"
     }
   ],
   "limitations": "Not a trade P&L, win-rate guarantee, or stop/target simulation. LONG/SHORT accuracy is directional only; WAIT is counted as abstention."
