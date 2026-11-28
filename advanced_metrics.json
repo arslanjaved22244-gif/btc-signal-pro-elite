@@ -1,15 +1,15 @@
 {
-  "generated_at": "2026-11-28T00:11:41.240006+00:00",
+  "generated_at": "2026-11-28T00:30:11.029267+00:00",
   "timeframe_indicators": {
     "5m": {
       "available": true,
-      "ema50": 59830.13,
-      "ema200": 60308.22,
-      "rsi14": 67.2,
+      "ema50": 59843.41,
+      "ema200": 60297.56,
+      "rsi14": 63.18,
       "macd": {
-        "macd": 40.1413,
-        "signal": 20.8433,
-        "histogram": 19.298,
+        "macd": 47.0704,
+        "signal": 33.0711,
+        "histogram": 13.9993,
         "bullish": true,
         "cross_up": false,
         "cross_down": false
@@ -21,18 +21,18 @@
         "last_swing_low": 59545.8,
         "note": "Confirmed pivots use candles on both sides; most recent pivot is delayed by the confirmation window."
       },
-      "volatility_atr14": 57.64,
-      "atr_pct": 0.0961
+      "volatility_atr14": 50.16,
+      "atr_pct": 0.0837
     },
     "15m": {
       "available": true,
-      "ema50": 60175.48,
-      "ema200": 60481.16,
-      "rsi14": 49.05,
+      "ema50": 60166.64,
+      "ema200": 60472.0,
+      "rsi14": 51.85,
       "macd": {
-        "macd": -96.2873,
-        "signal": -145.0866,
-        "histogram": 48.7993,
+        "macd": -77.5707,
+        "signal": -131.5834,
+        "histogram": 54.0127,
         "bullish": true,
         "cross_up": false,
         "cross_down": false
@@ -44,8 +44,8 @@
         "last_swing_low": 59545.8,
         "note": "Confirmed pivots use candles on both sides; most recent pivot is delayed by the confirmation window."
       },
-      "volatility_atr14": 110.42,
-      "atr_pct": 0.1844
+      "volatility_atr14": 107.51,
+      "atr_pct": 0.1793
     },
     "1h": {
       "available": true,
@@ -122,7 +122,7 @@
     "method": "Chronological 60/20/20 split; reported trades only in final 20% holdout",
     "total_candles": 2999,
     "test_candles": 1200,
-    "test_start_time": 1795464600000,
+    "test_start_time": 1795465500000,
     "trades": 65,
     "win_rate_pct": 18.46,
     "net_return_pct": -12.68,
