@@ -63,6 +63,44 @@ class ValidationGateRegressionTests(unittest.TestCase):
         self.assertFalse(passed)
         self.assertFalse(report["checks"]["futures_source_passed"])
 
+
+    def test_calibration_reports_all_threshold_candidates(self):
+        rows = [[0.0] for _ in range(400)]
+        labels = [1 for _ in rows]
+        forward_returns = [0.01 for _ in rows]
+        with unittest.mock.patch.object(AI, "train_ensemble", return_value=object()), \
+             unittest.mock.patch.object(AI, "predict_ensemble", return_value=[0.05, 0.10, 0.85]):
+            threshold, report = AI.calibrate_wait_threshold(rows, labels, forward_returns)
+
+        self.assertGreaterEqual(threshold, 0.20)
+        self.assertLessEqual(threshold, 0.60)
+        self.assertEqual(report["calibration_samples"], 77)
+        self.assertEqual(len(report["candidates"]), 9)
+        self.assertGreater(report["eligible_candidate_count"], 0)
+        self.assertEqual(report["selection_reason"], "best_positive_net_expectancy")
+        self.assertTrue(all(item["eligible"] for item in report["candidates"]))
+        self.assertTrue(all(item["trades"] > 0 for item in report["candidates"]))
+
+    def test_unprofitable_calibration_forces_wait_and_reports_reason(self):
+        rows = [[0.0] for _ in range(400)]
+        labels = [1 for _ in rows]
+        forward_returns = [-0.01 for _ in rows]
+        with unittest.mock.patch.object(AI, "train_ensemble", return_value=object()), \
+             unittest.mock.patch.object(AI, "predict_ensemble", return_value=[0.05, 0.10, 0.85]):
+            threshold, report = AI.calibrate_wait_threshold(rows, labels, forward_returns)
+
+        self.assertEqual(threshold, 1.01)
+        self.assertEqual(report["eligible_candidate_count"], 0)
+        self.assertEqual(report["selection_reason"], "no_candidate_met_profitability_rules")
+        self.assertTrue(all(not item["eligible"] for item in report["candidates"]))
+
+    def test_calibration_missing_returns_forces_wait(self):
+        rows = [[0.0] for _ in range(400)]
+        labels = [1 for _ in rows]
+        threshold, report = AI.calibrate_wait_threshold(rows, labels)
+        self.assertEqual(threshold, 1.01)
+        self.assertEqual(report["selection_reason"], "missing_or_misaligned_forward_returns")
+
     def test_force_wait_sentinel_blocks_directional_predictions(self):
         probabilities = [0.80, 0.10, 0.10]
         self.assertEqual(AI.predict_with_wait_threshold(probabilities, 1.01), 1)
