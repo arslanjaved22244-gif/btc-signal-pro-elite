@@ -776,27 +776,27 @@ def predict_actionable_class(probs, wait_threshold, min_direction_score=0.48, mi
     return candidate
 
 
-def tune_wait_threshold(rows, labels, forward_returns=None, round_trip_cost_pct=0.14):
-    """Select the WAIT threshold on a chronological, cost-aware calibration tail.
-
-    The outer walk-forward test window is never used for calibration. A threshold
-    is accepted only when its non-overlapping paper trades show positive net
-    expectancy and at least a 50% net win rate after the configured costs.
-    If no candidate qualifies, return a threshold that forces WAIT.
-    """
+def calibrate_wait_threshold(rows, labels, forward_returns=None, round_trip_cost_pct=0.14):
+    """Return the selected WAIT threshold plus transparent candidate diagnostics."""
     n = len(rows)
+    empty = {
+        "calibration_samples": 0, "candidates": [],
+        "selection_reason": "missing_or_misaligned_forward_returns"
+    }
     if forward_returns is None or len(forward_returns) != n:
-        return 1.01
+        return 1.01, empty
     split = int(n * 0.80)
     calibration_start = split + FUTURE_CANDLES
     if split < 150 or calibration_start >= n - 30:
-        return 1.01
+        empty["selection_reason"] = "insufficient_calibration_history"
+        return 1.01, empty
     calibration_model = train_ensemble(rows[:split], labels[:split])
     probability_rows = [
         predict_ensemble(calibration_model, row) for row in rows[calibration_start:]
     ]
     calibration_returns = forward_returns[calibration_start:]
     best_threshold, best_score = 1.01, float("-inf")
+    candidate_reports = []
     for step in range(9):
         threshold = 0.20 + step * 0.05
         net_values = []
@@ -812,18 +812,41 @@ def tune_wait_threshold(rows, labels, forward_returns=None, round_trip_cost_pct=
             net_return = float(calibration_returns[offset]) * side * 100.0 - round_trip_cost_pct
             net_values.append(net_return)
             next_entry = row_index + FUTURE_CANDLES
-        if len(net_values) < 8:
+        average_net = sum(net_values) / len(net_values) if net_values else None
+        net_win_rate = (
+            sum(1 for value in net_values if value > 0) / len(net_values) * 100.0
+            if net_values else None
+        )
+        eligible = (
+            len(net_values) >= 8 and average_net is not None
+            and average_net > 0 and net_win_rate is not None and net_win_rate >= 50.0
+        )
+        candidate_reports.append({
+            "threshold": round(threshold, 2),
+            "trades": len(net_values),
+            "average_net_trade_return_pct": round(average_net, 5) if average_net is not None else None,
+            "net_win_rate_pct": round(net_win_rate, 2) if net_win_rate is not None else None,
+            "eligible": eligible
+        })
+        if not eligible:
             continue
-        average_net = sum(net_values) / len(net_values)
-        net_win_rate = sum(1 for value in net_values if value > 0) / len(net_values)
-        if average_net <= 0 or net_win_rate < 0.50:
-            continue
-        # Reward repeatable expectancy while avoiding a single-trade optimum.
         score = average_net * math.sqrt(len(net_values))
         if score > best_score:
             best_score = score
             best_threshold = threshold
-    return best_threshold
+    eligible_count = sum(1 for item in candidate_reports if item["eligible"])
+    return best_threshold, {
+        "calibration_samples": len(probability_rows),
+        "candidates": candidate_reports,
+        "eligible_candidate_count": eligible_count,
+        "selection_reason": "best_positive_net_expectancy" if eligible_count else "no_candidate_met_profitability_rules"
+    }
+
+
+def tune_wait_threshold(rows, labels, forward_returns=None, round_trip_cost_pct=0.14):
+    """Compatibility wrapper returning only the conservatively selected threshold."""
+    threshold, _ = calibrate_wait_threshold(rows, labels, forward_returns, round_trip_cost_pct)
+    return threshold
 
 
 def walk_forward_validate(rows, labels, forward_returns=None, round_trip_cost_pct=0.14):
@@ -853,7 +876,7 @@ def walk_forward_validate(rows, labels, forward_returns=None, round_trip_cost_pc
         if train_end < 150 or test_end <= test_start:
             continue
         train_labels = labels[:train_end]
-        wait_threshold = tune_wait_threshold(
+        wait_threshold, calibration_diagnostics = calibrate_wait_threshold(
             rows[:train_end], train_labels,
             forward_returns[:train_end] if forward_returns is not None else None,
             round_trip_cost_pct
@@ -912,6 +935,7 @@ def walk_forward_validate(rows, labels, forward_returns=None, round_trip_cost_pc
             "fold": fold + 1, "train_samples": train_end,
             "test_samples": len(fold_actual),
             "wait_threshold": wait_threshold,
+            "calibration_diagnostics": calibration_diagnostics,
             "train_majority_class": CLASSES[majority_label],
             "majority_baseline_accuracy": round(fold_baseline / len(fold_actual) * 100, 2),
             "metrics": fold_metrics,
